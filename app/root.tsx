@@ -1,5 +1,5 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import { auth } from "~/auth/auth.server";
 import {
   Links,
@@ -10,8 +10,10 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
+import { getSessionFlash } from "./utility/flash.server";
 import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
+import Toast from "./components/toast";
 
 // import { getUser } from "~/session.server";
 import stylesheet from "~/tailwind.css";
@@ -27,12 +29,15 @@ export const links: LinksFunction = () => [
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await auth.authenticate("auth0", request);
 
+  const session = await getSessionFlash(request);
+  if (session && session.flash) {
+    return json({ flash: session.flash, user: user._json }, { headers: session.headers });
+  }
+
   return { user: user._json };
 };
 
-export default function App() {
-  const { user } = useLoaderData();
-
+const App = ({ user, flash, children }: any) => {
   return (
     <html lang="en" className="h-full bg-white">
       <head>
@@ -44,7 +49,8 @@ export default function App() {
       <body className="h-full">
         <Progress />
         <Layout user={user}>
-          <Outlet />
+          {children}
+          <Toast level={flash?.level} title={flash?.text} />
         </Layout>
         <ScrollRestoration />
         <Scripts />
@@ -52,13 +58,33 @@ export default function App() {
       </body>
     </html>
   );
-}
+};
+
+export default () => {
+  const data = useLoaderData();
+
+  return (
+    <App {...data}>
+      <Outlet/>
+    </App>
+  );
+};
 
 export function CatchBoundary() {
-  // const params = useParams();
   return (
-    <div>
-      <h2>We couldn't find that page!</h2>
-    </div>
+    <App>
+      <h2>Not Found</h2>
+    </App>
   );
-}
+};
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
+  return (
+    <App>
+      <h2>Error</h2>
+      <h3>{error?.message}</h3>
+    </App>
+  );
+};

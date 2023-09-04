@@ -1,27 +1,30 @@
-import { redirect, type LoaderArgs } from '@remix-run/node';
+import { redirect, type LoaderArgs, json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
 import { ChevronRightIcon } from '@heroicons/react/24/outline'
 
-import { listRegionsByCountry } from '~/models/countries.server';
-import Empty from '~/layout/empty';
+import { getCountry, listRegionsByCountry } from '~/models/countries.server';
+import Alert, { Level } from '~/components/alert';
+
+const badRequest = (message: string) => json({ message }, { status: 400 });
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { country: isoCode } = params;
 
-  if (isoCode === undefined) return redirect('../..');
+  if (isoCode === undefined) return badRequest('Invalid request');
 
+  const region = await getCountry(isoCode);
   const regions = await listRegionsByCountry(isoCode);
 
-  return { regions };
+  return { regions, region };
 };
 
 export default function Holidays() {
-  const { regions } = useLoaderData();
+  const { regions, region } = useLoaderData();
 
   return (
     <>
-      <Empty data={regions} entity='holiday' message='sync' />
+      {regions.length === 0 && <Alert level={Level.Info} title={`No regions for ${region.name}`} />}
 
       <ul role="list" className="divide-y divide-gray-100">
         {regions.map((region: any) => (

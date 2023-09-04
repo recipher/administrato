@@ -1,49 +1,74 @@
-import { NavLink } from '@remix-run/react';
 import classnames from '~/helpers/classnames';
+
+const MAX_MOBILE_TABS = 3;
 
 type Props = {
   tabs: Array<{
     name: string;
-    to: string;
-  }>,
+    value?: string;
+    count?: string;
+  }>;
+  selected: string;
+  onClick: Function;
 };
 
-export default function Tabs({ tabs }: Props) {
+const Tabs = ({ tabs, selected, onClick }: Props) => (
+  <div className="border-b border-gray-200">
+    <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+      {tabs.map((tab) => (
+        <div
+          key={tab.name}
+          onClick={() => onClick(tab.name || tab.value)}
+          className={classnames(
+            tab.value || tab.name == selected
+              ? 'border-indigo-500 text-indigo-600'
+              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+            'flex whitespace-nowrap border-b-2 pt-4 pb-2 text-xs font-medium hover:cursor-pointer'
+          )}
+          aria-current={tab.value === selected ? 'page' : undefined}
+        >
+          {tab.name}
+          {tab.count ? (
+            <div
+              className={classnames(
+                tab.value || tab.name == selected ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
+                'ml-3 hidden rounded-full px-2 text-xs font-medium md:inline-block'
+              )}
+            >
+              {tab.count}
+            </div>
+          ) : null}
+        </div>
+      ))}
+    </nav>
+  </div>
+);
+
+export default ({ tabs, selected, onClick }: Props) => {
+  if (tabs === undefined || tabs.length === 0) return;
+
   return (
-    <>
-      <div className="mt-4">
-        <div className="sm:hidden">
-          <label htmlFor="current-tab" className="sr-only">
-            Select a tab
-          </label>
-          <select
-            id="current-tab"
-            name="current-tab"
-            className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-            defaultValue={tabs.find((tab) => false)?.name}
-          >
-            {tabs.map((tab) => (
-              <option key={tab.name}>{tab.name}</option>
-            ))}
-          </select>
-        </div>
-        <div className="hidden sm:block">
-          <nav className="-mb-px flex space-x-8">
-            {tabs.map((tab) => (
-              <NavLink key={tab.name} to={tab.to}>
-                {({ isActive, isPending }) => (
-                  <div aria-current={isActive ? 'page' : undefined}
-                    className={classnames(isActive
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                    'whitespace-nowrap border-b-2 mr-4 pb-4 text-sm font-medium'
-                  )}>{tab.name}</div>
-                )}
-              </NavLink>
-            ))}
-          </nav>
-        </div>
+    <div>
+      <div className="sm:hidden">
+        {tabs.length > MAX_MOBILE_TABS
+          ? <>
+              <label htmlFor="tabs" className="sr-only">
+                Select a tab
+              </label>
+              <select
+                name="tabs"
+                className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                defaultValue={selected}
+                onChange={(e) => onClick(e.target.value)}
+              >
+                {tabs.map((tab) => <option key={tab.name}>{tab.value || tab.name}</option>)}
+              </select>
+            </>
+          : <Tabs tabs={tabs} selected={selected} onClick={onClick} />}
       </div>
-    </>
-  );
+      <div className="hidden sm:block">
+        <Tabs tabs={tabs} selected={selected} onClick={onClick} />
+      </div>
+    </div>
+  )
 }

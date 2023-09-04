@@ -15,8 +15,8 @@ import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 import classnames from '~/helpers/classnames';
 
 const navigation = [
-  { name: 'Holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon },
   { name: 'Schedules', to: '/schedules', icon: CalendarDaysIcon },
+  { name: 'Holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon },
   { name: 'Milestones', to: '/milestones', icon: Bars3BottomLeftIcon },
   { name: 'Manage', to: '/manage/legal-entities', icon: CircleStackIcon,
     children: [

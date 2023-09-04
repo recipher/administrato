@@ -10,9 +10,9 @@ export default function Holidays() {
   return (
     <>
       <Breadcrumbs pages={pages} />
-      <main className="mt-5">
+      <div className="mt-5">
         <Outlet/>
-      </main>
+      </div>
     </>
   );
 }

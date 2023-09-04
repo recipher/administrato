@@ -9,13 +9,9 @@ import Image from '~/components/image';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/layout/pagination';
 import pluralize from '~/helpers/pluralize';
+import toNumber from '~/helpers/to-number';
 
 const LIMIT = 8;
-
-const toNumber = (text: string) => {
-  const number = parseInt(text);
-  return isNaN(number) ? undefined : number;
-};
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -47,7 +43,7 @@ export default function Countries() {
       <ul role="list" className="divide-y divide-gray-100">
         {countries.map((country: any) => (
           <li key={country.isoCode}>
-            <Link to={`${country.isoCode}`} className="flex justify-between gap-x-6 py-3">
+            <Link to={`${country.isoCode}`} className="flex justify-between gap-x-6 py-3 hover:bg-gray-50">
               <div className="flex min-w-0 gap-x-4">
                 <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
                   src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />

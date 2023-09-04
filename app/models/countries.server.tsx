@@ -2,15 +2,11 @@ import { HolidayAPI } from 'holidayapi';
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from './db.server';
-import Sort from '~/components/header/sort';
 
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
-type Country = {
-  name: string;
-  isoCode: string;
-};
+export type Country = s.localities.Selectable;
 
 type Count = {
   count: number;
@@ -25,10 +21,10 @@ export const getCountry = async (isoCode: string) => {
 };
 
 type ListParams = {
-  search: string | null | undefined;
-  offset: number | undefined;
-  limit: number | undefined;
-  sortDirection: string | null;
+  search?: string | null | undefined;
+  offset?: number | undefined;
+  limit?: number | undefined;
+  sortDirection?: string | null;
 };
 
 const ASC = 'asc', DESC = 'desc';
@@ -69,7 +65,7 @@ export const countCountries = async ({ search }: { search: string | null | undef
 };
 
 export const listRegionsByCountry = async (parent: string) => {
-  return await db.sql<s.localities.SQL, s.localities.Selectable[]>`
+  return db.sql<s.localities.SQL, s.localities.Selectable[]>`
     SELECT * FROM ${'localities'} WHERE ${{parent}} ORDER BY ${'name'}`.run(pool);
 };
 

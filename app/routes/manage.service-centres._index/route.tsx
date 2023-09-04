@@ -5,7 +5,8 @@ import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { listServiceCentres } from '~/models/service-centres.server';
 import type { ServiceCentre } from '~/models/service-centres.server';
-import Empty from '~/layout/empty';
+import Header from "~/components/header/with-actions";
+import Alert, { Level } from '~/components/alert';
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
 
@@ -15,14 +16,18 @@ export const loader = async ({ request }: LoaderArgs) => {
   return { serviceCentres };
 };
 
+const actions = [
+  { title: "Add Service Centre", to: "add", icon: PlusIcon },
+];
+
 export default function Countries() {
   const { serviceCentres } = useLoaderData();
 
   return (
     <>
-      <Empty data={serviceCentres} 
-        entity='service centre' 
-        message='Get started by adding a new service centre' />
+      <Header title="Service Centres" actions={actions} />
+
+      {serviceCentres.length === 0 && <Alert title="No service centres" level={Level.Info} />}
       
       <ul role="list" className="divide-y divide-gray-100">
         {serviceCentres.map((serviceCentre: ServiceCentre) => (
@@ -90,18 +95,6 @@ export default function Countries() {
           </li>
         ))}
       </ul>
-
-      <div className="pt-6 flex border-t border-gray-900/10  items-center justify-start gap-x-6">
-        <Link to='add'>
-          <button
-            type="button"
-            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            <PlusIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
-            New service centre
-          </button>
-        </Link>
-      </div>
     </>
-  )
+  );
 }

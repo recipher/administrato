@@ -347,26 +347,26 @@ declare module 'zapatos/schema' {
       */
       date: Date | null;
       /**
-      * **holidays.observedDate**
+      * **holidays.observed**
       * - `date` in database
       * - Nullable, no default
       */
-      observedDate: Date | null;
+      observed: Date | null;
       /**
       * **holidays.name**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       name: string | null;
       /**
       * **holidays.entity**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       entity: string | null;
       /**
       * **holidays.locality**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       locality: string | null;
@@ -397,26 +397,26 @@ declare module 'zapatos/schema' {
       */
       date: db.DateString | null;
       /**
-      * **holidays.observedDate**
+      * **holidays.observed**
       * - `date` in database
       * - Nullable, no default
       */
-      observedDate: db.DateString | null;
+      observed: db.DateString | null;
       /**
       * **holidays.name**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       name: string | null;
       /**
       * **holidays.entity**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       entity: string | null;
       /**
       * **holidays.locality**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       locality: string | null;
@@ -447,26 +447,26 @@ declare module 'zapatos/schema' {
       */
       date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **holidays.observedDate**
+      * **holidays.observed**
       * - `date` in database
       * - Nullable, no default
       */
-      observedDate?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn>;
+      observed?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.name**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.entity**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       entity?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.locality**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       locality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
@@ -497,26 +497,26 @@ declare module 'zapatos/schema' {
       */
       date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **holidays.observedDate**
+      * **holidays.observed**
       * - `date` in database
       * - Nullable, no default
       */
-      observedDate?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment;
+      observed?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **holidays.name**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **holidays.entity**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       entity?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **holidays.locality**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
@@ -547,26 +547,26 @@ declare module 'zapatos/schema' {
       */
       date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **holidays.observedDate**
+      * **holidays.observed**
       * - `date` in database
       * - Nullable, no default
       */
-      observedDate?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment>;
+      observed?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **holidays.name**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **holidays.entity**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       entity?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **holidays.locality**
-      * - `varchar` in database
+      * - `text` in database
       * - Nullable, no default
       */
       locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
