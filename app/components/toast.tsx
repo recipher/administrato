@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Transition } from '@headlessui/react'
 import { 
   XMarkIcon,
@@ -20,6 +20,7 @@ type Props = {
   level?: Level;
   title: string;
   message?: string;
+  hideAfter?: number;
 };
 
 const colours = new Map<Level, string>([
@@ -36,10 +37,17 @@ const icons = new Map<Level, any>([
   [ Level.Warning, ExclamationTriangleIcon ],  
 ]);
 
-export default function Toast({ level = Level.Success, title, message }: Props) {
+export default function Toast({ level = Level.Success, title, message, hideAfter = 10 }: Props) {
   if (title === undefined) return;
 
   const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setShow(false);
+    }, hideAfter * 1000);
+    return () => clearInterval(intervalId);
+  }, [hideAfter]);
 
   const colour = colours.get(level);
   const Icon = icons.get(level);

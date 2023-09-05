@@ -6,10 +6,16 @@ const pages = [
   { name: 'Service Centres', to: '/manage/service-centres', icon: PaperClipIcon, current: false },
 ];
 
+import { Breadcrumb } from "~/layout/breadcrumbs";
+
+export const handle = {
+  breadcrumb: ({ current }: { current: boolean }) => 
+    <Breadcrumb Icon={PaperClipIcon} to='/manage/service-centres' name="Service Centres" current={current} />
+};
+
 export default function ServiceCentres() {
   return (
     <>
-      <Breadcrumbs pages={pages} />
       <div className="mt-5">
         <Outlet/>
       </div>

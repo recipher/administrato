@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { Combobox } from '@headlessui/react'
 import { useField } from "remix-validated-form";
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 import classnames from '~/helpers/classnames';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 type ItemProps = {
   id: string;
@@ -16,8 +16,8 @@ type DataProps = Array<ItemProps>;
 type Props = {
   name: string;
   label: string;
-  data: DataProps;
-  defaultValue: DataProps;
+  data?: DataProps;
+  defaultValue?: DataProps;
 };
 
 export default function Combo({ name, label, data, defaultValue = [] }: Props) {
@@ -53,7 +53,7 @@ export default function Combo({ name, label, data, defaultValue = [] }: Props) {
           </Combobox.Button>
 
           {filtered.length > 0 && (
-            <Combobox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            <Combobox.Options className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               {filtered.map(item => (
                 <Combobox.Option
                   key={item.id}

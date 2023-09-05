@@ -9,6 +9,7 @@ import {
   KeyIcon,
   Bars3BottomLeftIcon,
   CircleStackIcon,
+  ReceiptPercentIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
@@ -23,7 +24,7 @@ const navigation = [
       { name: 'Legal Entities', to: '/manage/legal-entities', icon: WalletIcon },
       { name: 'Service Centres', to: '/manage/service-centres', icon: PaperClipIcon },
       { name: 'Clients', to: '/manage/clients', icon: IdentificationIcon },
-      { name: 'Providers', to: '/manage/providers', icon: IdentificationIcon },
+      { name: 'Providers', to: '/manage/providers', icon: ReceiptPercentIcon },
     ]
   },
   { name: 'Access', to: '/access', icon: KeyIcon },

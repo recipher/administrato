@@ -1,6 +1,6 @@
 import { Fragment, useState, PropsWithChildren } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { Link } from '@remix-run/react';
+import { Link, useActionData } from '@remix-run/react';
 import {
   Bars3Icon,
   BellIcon,
@@ -12,7 +12,12 @@ import {
   MagnifyingGlassIcon 
 } from '@heroicons/react/20/solid';
 
+import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
+
+import useBreadcrumbs from '~/hooks/use-breadcrumbs';
+
 import Navigation from './navigation';
+import Breadcrumbs from './breadcrumbs';
 
 const userNavigation = [
   { name: 'Your Profile', to: '/profile' },
@@ -30,6 +35,8 @@ type Props = {
 
 export default function Layout({ user, children }: PropsWithChildren<Props>) {
   const [ sidebarOpen, setSidebarOpen ] = useState(false)
+
+  const breadcrumbs = useBreadcrumbs();
 
   return (
     <>
@@ -194,7 +201,10 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
           </div>
 
           <main className="py-10">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <Breadcrumbs breadcrumbs={breadcrumbs} />
+              {children}
+            </div>
           </main>
         </div>
       </div>

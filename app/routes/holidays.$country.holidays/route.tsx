@@ -4,6 +4,7 @@ import { redirect, type LoaderArgs, type ActionArgs, json } from '@remix-run/nod
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { XCircleIcon } from '@heroicons/react/20/solid';
 
+import { badRequest } from '~/utility/errors';
 import { getCountry } from '~/models/countries.server';
 import { listHolidaysByCountry, syncHolidays, deleteHolidayById } from '~/models/holidays.server';
 import { getSession, storage } from '~/utility/flash.server';
@@ -12,7 +13,12 @@ import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Tabs from '~/components/tabs';
 import toNumber from '~/helpers/to-number';
 
-const badRequest = (message: string) => json({ message }, { status: 400 });
+import { Breadcrumb } from "~/layout/breadcrumbs";
+
+export const handle = {
+  breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
+    <Breadcrumb to={`/holidays/${country.isoCode}/holidays?year=${year}`} name="Holidays" current={current} />
+};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -47,7 +53,7 @@ export async function action({ request }: ActionArgs) {
     await syncHolidays({ year, locality: country.isoCode }, { shouldDelete: true });
     message = `Synchronization Successful:Holidays for ${country.name}, ${year} has been synchronized`;
   };
-
+ 
   const session = await getSession(request);
   session.flash("flashText", message);
   session.flash("flashLevel", Level.Success);

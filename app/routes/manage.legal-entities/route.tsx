@@ -1,18 +1,17 @@
 import { Outlet } from "@remix-run/react";
 import { WalletIcon } from "@heroicons/react/24/outline";
-import Breadcrumbs from "~/layout/breadcrumbs";
 
-const pages = [
-  { name: 'Legal Entities', to: '/manage/legal-entities', icon: WalletIcon, current: false },
-];
+import { Breadcrumb } from "~/layout/breadcrumbs";
+
+export const handle = {
+  breadcrumb: ({ current }: { current: boolean }) => 
+    <Breadcrumb Icon={WalletIcon} to='/manage/legal-entities' name="Legal Entities" current={current} />
+};
 
 export default function ServiceCentres() {
   return (
-    <>
-      <Breadcrumbs pages={pages} />
-      <main className="mt-5">
-        <Outlet/>
-      </main>
-    </>
-  )
+    <div className="mt-5">
+      <Outlet/>
+    </div>
+  );
 }

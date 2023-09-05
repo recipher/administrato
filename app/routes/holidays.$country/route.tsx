@@ -3,6 +3,8 @@ import { type LoaderArgs, json } from '@remix-run/node';
 import { Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { PlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
+import { badRequest } from '~/utility/errors';
+
 import { getCountry } from '~/models/countries.server';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Header from '~/components/header/with-actions';
@@ -10,7 +12,12 @@ import Image from '~/components/image';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
-const badRequest = (message: string) => json({ message }, { status: 400 });
+import { Breadcrumb } from "~/layout/breadcrumbs";
+
+export const handle = {
+  breadcrumb: ({ country, current }: { country: any, current: boolean }) => 
+    <Breadcrumb to={`/holidays/${country.isoCode}`} name={country.name} current={current} />
+};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
