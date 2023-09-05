@@ -83,7 +83,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
 
   return (
     <App>
-      <h2>Error</h2>
+      <h2>Unexpected Error</h2>
       <h3>{error?.message}</h3>
     </App>
   );

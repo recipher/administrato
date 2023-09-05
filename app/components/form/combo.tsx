@@ -4,23 +4,26 @@ import { Combobox } from '@headlessui/react'
 import { useField } from "remix-validated-form";
 
 import classnames from '~/helpers/classnames';
+import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
-type DataProps = Array<{
+type ItemProps = {
   id: string;
   name: string;
   image?: string;
-}>;
+};
+type DataProps = Array<ItemProps>;
 
 type Props = {
   name: string;
   label: string;
   data: DataProps;
+  defaultValue: DataProps;
 };
 
-export default function Combo({ name, label, data }: Props) {
+export default function Combo({ name, label, data, defaultValue = [] }: Props) {
   const { error, getInputProps } = useField(name);
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState([]);
+  const [selected, setSelected] = useState(defaultValue);
 
   const filtered =
     query === ""
@@ -29,20 +32,24 @@ export default function Combo({ name, label, data }: Props) {
 
   return (
     <div className="mb-6">
-      <Combobox as="div" id={name}
+      <Combobox as="div" multiple
         {...getInputProps({ id: name })}
-        value={selected} onChange={setSelected} multiple>
+        value={selected} onChange={setSelected}>
         <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">
           {label}
         </Combobox.Label>
         <div className="relative mt-2">
           <Combobox.Input
-            className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-12 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className={classnames(error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
+              "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
             onChange={(event) => setQuery(event.target.value)}
+            // displayValue={(data: ItemProps) => data?.name}
             displayValue={(data: DataProps) => data?.map((item) => item.name).join(', ')}
-          />
+            />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
-            <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            {error 
+              ? <ExclamationCircleIcon className="h-5 w-5 text-red-500 mr-1" aria-hidden="true" />
+              : <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />}
           </Combobox.Button>
 
           {filtered.length > 0 && (

@@ -48,7 +48,7 @@ export default function Countries() {
                 <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
                   src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />
                 <div className="min-w-0 flex-auto">
-                  <p className="text-sm font-semibold leading-6 text-gray-900">
+                  <p className="text-md font-semibold leading-6 text-gray-900">
                     {country.name}
                   </p>
                   <p className="mt-1 flex text-xs leading-5 text-gray-500">

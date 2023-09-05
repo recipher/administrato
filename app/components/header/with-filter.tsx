@@ -18,7 +18,7 @@ export default function Header({ title, subtitle, filterTitle, filterParam, allo
 
   return (
     <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-      <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
+      <h3 className="text-xl font-semibold leading-6 text-gray-900">{title}</h3>
       <div className="mt-3 sm:ml-4 sm:mt-0">
         <label htmlFor="search" className="sr-only">
           Search

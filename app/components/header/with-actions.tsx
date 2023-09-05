@@ -17,7 +17,7 @@ export default function Header({ title, subtitle, tabs = [], actions = [], icon 
       <>
         <div className="flex">
           {icon &&<div className="flex-shrink-0">{icon}</div>}
-          <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
+          <h3 className="text-xl font-semibold leading-6 text-gray-900">{title}</h3>
           {subtitle && <p className="ml-2 mr-6 mt-1 truncate text-sm text-gray-500">{subtitle}</p>}
         </div>
         <div className="mt-3 flex md:absolute md:right-0 md:top-0 md:mt-0">

@@ -2,6 +2,7 @@ import { ActionArgs, LoaderArgs, redirect } from '@remix-run/node';
 import { useActionData, useLoaderData } from '@remix-run/react'
 import { ValidatedForm as Form, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
+import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 import { addServiceCentre } from '~/models/service-centres.server';
 import { listCountries } from '~/models/countries.server';
@@ -18,17 +19,20 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const validator = withZod(
-  z
-    .object({
-      name: z
-        .string()
-        .nonempty("Service Centre Name is required")
-        .min(3, "Service Centre Name must be at least 3 characters long"),
-      localities: z
-        .object({ id: z.string() })
-        .array()
-        .nonempty("Please select at least one country")
-    })
+//   z
+//     .object({
+//       name: z
+//         .string()
+//         .nonempty("Service Centre Name is required")
+//         .min(3, "Service Centre Name must be at least 3 characters long"),
+//       localities: z
+//         .array(z.any())
+//         .nonempty({ message: "Please select at least one country" })
+//     })
+  zfd.formData({
+    name: z.string().nonempty("Service Centre Name is required").min(3, "Service Centre Name must be at least 3 characters long"),
+    localities: zfd.repeatable(z.array(z.any()).min(1, "Please select at least one country")),
+  })
 );
 
 export const action = async ({ request }: ActionArgs) => {
@@ -51,11 +55,11 @@ export default function Add() {
   const localities = countries.map((c: any) => ({ id: c.isoCode, name: c.name, image: `https://cdn.ipregistry.co/flags/twemoji/${c.isoCode.toLowerCase()}.svg` }));
 
   return (
-    <Form method="post" validator={validator}>
+    <Form method="post" validator={validator} id="add-service-centre">
       <div className="space-y-12">
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
           <div>
-            <h2 className="text-base font-semibold leading-7 text-gray-900">New Service Centre</h2>
+            <h2 className="text-lg font-semibold leading-7 text-gray-900">New Service Centre</h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">
               Please enter the new service centre details, specifying the countries to which the centre is associated.
             </p>
