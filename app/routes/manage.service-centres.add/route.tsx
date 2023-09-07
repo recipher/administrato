@@ -10,6 +10,7 @@ import { listCountries } from '~/models/countries.server';
 import { Input, Combo, Cancel, Submit } from '~/components/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import withAuthorization from '~/auth/with-authorization';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -48,7 +49,7 @@ export const action = async ({ request }: ActionArgs) => {
   return redirect('/manage/service-centres');
 };
 
-export default function Add() {
+const Add = () => {
   const { countries } = useLoaderData();
   const data = useActionData<typeof action>();
 
@@ -76,8 +77,10 @@ export default function Add() {
 
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <Cancel />
-        <Submit text="Save" submitting="Saving..." />
+        <Submit text="Save" submitting="Saving..." permission="manage:create:service-centre" />
       </div>
     </Form>
   )
 }
+
+export default withAuthorization("manage:create:service-centre")(Add);

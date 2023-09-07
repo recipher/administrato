@@ -1,7 +1,8 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
 import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
-import { auth } from "~/auth/auth.server";
+import { auth, mapProfileToUser } from "~/auth/auth.server";
 import {
+  isRouteErrorResponse,
   Links,
   LiveReload,
   Meta,
@@ -9,13 +10,14 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRouteError,
 } from "@remix-run/react";
 import { getSessionFlash } from "./utility/flash.server";
 import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
 import Toast from "./components/toast";
+import { NotFound, Error } from "~/pages";
 
-// import { getUser } from "~/session.server";
 import stylesheet from "~/tailwind.css";
 
 export const links: LinksFunction = () => [
@@ -27,38 +29,34 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await auth.authenticate("auth0", request);
+  const profile = await auth.authenticate("auth0", request);
+  const user = mapProfileToUser(profile);
+  // console.log(user);
+  const { flash, headers } = await getSessionFlash(request);
+  if (flash) return json({ flash, user }, { headers });
 
-  const session = await getSessionFlash(request);
-  if (session && session.flash) {
-    return json({ flash: session.flash, user: user._json }, { headers: session.headers });
-  }
-
-  return { user: user._json };
+  return { user };
 };
 
-const App = ({ user, flash, children }: any) => {
-  return (
-    <html lang="en" className="h-full bg-white">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body className="h-full">
-        <Progress />
-        <Layout user={user}>
-          {children}
-          <Toast level={flash?.level} title={flash?.text} />
-        </Layout>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
-  );
-};
+const App = ({ user, flash, children }: any) =>
+  <html lang="en" className="h-full bg-white">
+    <head>
+      <meta charSet="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <Meta />
+      <Links />
+    </head>
+    <body className="h-full">
+      <Progress />
+      <Layout user={user}>
+        {children}
+        <Toast level={flash?.level} title={flash?.text} />
+      </Layout>
+      <ScrollRestoration />
+      <Scripts />
+      <LiveReload />
+    </body>
+  </html>;
 
 export default () => {
   const data = useLoaderData();
@@ -70,21 +68,28 @@ export default () => {
   );
 };
 
-export function CatchBoundary() {
+export function ErrorBoundary() {
+  const error = useRouteError();
+  
+  console.log(error);
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <App>
+        {error.status === 404
+          ? <NotFound message={error.statusText} />
+          : <Error message={error.statusText} code={error.status} />
+        }
+      </App>
+    );
+  }
+
+  let message = "Unknown error";
+  if (error instanceof Error) message = (error as Error).message;
+
   return (
     <App>
-      <h2>Not Found</h2>
-    </App>
-  );
-};
-
-export function ErrorBoundary({ error }: { error: Error }) {
-  console.error(error);
-
-  return (
-    <App>
-      <h2>Unexpected Error</h2>
-      <h3>{error?.message}</h3>
+      <Error error={message} />
     </App>
   );
 };

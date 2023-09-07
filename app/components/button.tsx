@@ -11,6 +11,8 @@ export type ButtonProps = {
   type?: ButtonType;
   icon?: any;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  permission?: string;
+  disabled?: boolean;
 };
 
 export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => {

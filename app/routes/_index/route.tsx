@@ -1,15 +1,17 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-// import { Link } from "@remix-run/react";
-
-// import { useOptionalUser } from "~/utils";
+import { GlobeAmericasIcon } from "@heroicons/react/24/outline";
+import { useUser } from "~/hooks";
 
 export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
 
+import { Breadcrumb } from "~/layout/breadcrumbs";
+
+export const handle = {
+  breadcrumb: ({ current }: { current: boolean }) => 
+    <Breadcrumb to="/" name="Dashboard" current={current} Icon={GlobeAmericasIcon} />
+};
+
 export default function Index() {
-  // const user = useOptionalUser();
-  return (
-    <main className="">
-      Hello
-    </main>
-  );
+  const user = useUser();
+  return <div>Welcome {user.name}</div>;
 }

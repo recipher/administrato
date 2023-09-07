@@ -17,12 +17,12 @@ const addHoliday = async (holiday: s.localities.Insertable) => {
   // ).run(pool);
 };
 
-type SearchProps = { 
+type ListOptions = { 
   year: number;
   locality: string 
 };
 
-type OptionProps = { 
+type QueryOptions = { 
   shouldDelete?: boolean;
 };
 
@@ -32,7 +32,7 @@ export const deleteHolidayById = async (id: number) => {
     .run(pool);
 };
 
-export const deleteHolidaysByCountry = async ({ year, locality }: SearchProps) => {
+export const deleteHolidaysByCountry = async ({ year, locality }: ListOptions) => {
   return db.sql<s.holidays.SQL>`
     DELETE FROM ${'holidays'} 
     WHERE 
@@ -42,7 +42,7 @@ export const deleteHolidaysByCountry = async ({ year, locality }: SearchProps) =
     .run(pool);
 };
 
-export const listHolidaysByCountry = async ({ year, locality }: SearchProps) => {
+export const listHolidaysByCountry = async ({ year, locality }: ListOptions) => {
   return db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
     SELECT * FROM ${'holidays'} 
     WHERE 
@@ -52,7 +52,7 @@ export const listHolidaysByCountry = async ({ year, locality }: SearchProps) => 
     ORDER BY ${'date'} ASC`.run(pool);
 };
 
-export const syncHolidays = async ({ year, locality }: SearchProps, { shouldDelete = false }: OptionProps = {}) => {
+export const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
   if (shouldDelete) await deleteHolidaysByCountry({ year, locality });
 
   const { holidays = [] } = await holidayAPI.holidays({ country: locality, year, public: true });

@@ -1,6 +1,6 @@
 import { Fragment, useState, PropsWithChildren } from 'react';
 import { Dialog, Menu, Transition } from '@headlessui/react';
-import { Link, useActionData } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 import {
   Bars3Icon,
   BellIcon,
@@ -12,19 +12,17 @@ import {
   MagnifyingGlassIcon 
 } from '@heroicons/react/20/solid';
 
-import { GlobeEuropeAfricaIcon } from "@heroicons/react/24/outline";
-
 import useBreadcrumbs from '~/hooks/use-breadcrumbs';
 
 import Navigation from './navigation';
 import Breadcrumbs from './breadcrumbs';
 
+import classnames from '~/helpers/classnames';
+
 const userNavigation = [
-  { name: 'Your Profile', to: '/profile' },
+  { name: 'My Profile', to: '/profile' },
   { name: 'Sign Out', to: '/logout' },
 ];
-
-const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
 
 type Props = {
   user: {
@@ -136,8 +134,8 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
                   />
                   <input
                     id="search-field"
-                    className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
-                    placeholder="Search..."
+                    className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
+                    placeholder="Search"
                     type="search"
                     name="search"
                   />
@@ -182,9 +180,9 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
                             {({ active }) => (
                               <Link
                                 to={item.to}
-                                className={classNames(
+                                className={classnames(
                                   active ? 'bg-gray-50' : '',
-                                  'block px-3 py-1 text-sm leading-6 text-gray-900'
+                                  'block pl-3 pr-6 py-1 text-md leading-6 text-gray-900'
                                 )}
                               >
                                 {item.name}
@@ -203,7 +201,7 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
           <main className="py-10">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <Breadcrumbs breadcrumbs={breadcrumbs} />
-              {children}
+              <div className="mt-5">{children}</div>
             </div>
           </main>
         </div>

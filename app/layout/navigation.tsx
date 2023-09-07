@@ -10,33 +10,60 @@ import {
   Bars3BottomLeftIcon,
   CircleStackIcon,
   ReceiptPercentIcon,
+  UserCircleIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
 import classnames from '~/helpers/classnames';
+import { useUser } from '~/hooks';
 
-const navigation = [
-  { name: 'Schedules', to: '/schedules', icon: CalendarDaysIcon },
-  { name: 'Holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon },
-  { name: 'Milestones', to: '/milestones', icon: Bars3BottomLeftIcon },
+import { scheduler, security, manage } from '~/auth/permissions';
+
+type NavItem = {
+  name: string;
+  to: string;
+  icon?: any;
+  permission?: string | undefined;
+  children: Array<NavItem> | undefined;
+};
+
+export const navigation = [
+  { name: 'Schedules', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule },
+  { name: 'Holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon, permission: scheduler.read.holiday },
+  { name: 'Milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
   { name: 'Manage', to: '/manage/legal-entities', icon: CircleStackIcon,
     children: [
-      { name: 'Legal Entities', to: '/manage/legal-entities', icon: WalletIcon },
-      { name: 'Service Centres', to: '/manage/service-centres', icon: PaperClipIcon },
-      { name: 'Clients', to: '/manage/clients', icon: IdentificationIcon },
-      { name: 'Providers', to: '/manage/providers', icon: ReceiptPercentIcon },
+      { name: 'Legal Entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
+      { name: 'Service Centres', to: '/manage/service-centres', icon: PaperClipIcon, permission: manage.read.serviceCentre },
+      { name: 'Clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
+      { name: 'Providers', to: '/manage/providers', icon: ReceiptPercentIcon, permission: manage.read.provider },
     ]
   },
-  { name: 'Access', to: '/access', icon: KeyIcon },
+  { name: 'Access', to: '/access', icon: KeyIcon,
+    children: [
+      { name: 'Users', to: '/access/users', icon: UserCircleIcon, permission: security.read.user },
+      { name: 'Roles', to: '/access/roles', icon: UsersIcon, permission: security.read.role },
+    ]
+  },
 ];
 
 export default function Navigation() {
+  const { permissions } = useUser();
+
+  const filter = (items: Array<NavItem>) => {
+    return items.filter(({ permission }: NavItem) => {
+      if (permission === undefined) return true;
+      return permissions.includes(permission);
+    });
+  };
+    
   return (
     <nav className="flex flex-1 flex-col">
       <ul role="list" className="flex flex-1 flex-col gap-y-7">
         <li>
           <ul role="list" className="-mx-2 space-y-1">
-            {navigation.map((item) => (
+            {filter(navigation as Array<NavItem>).map((item) => (
               <li key={item.name}>
                 {!item.children ? (
                   <NavLink
@@ -53,7 +80,7 @@ export default function Navigation() {
                   <Disclosure as="div">
                     {({ open }) => (
                       <>
-                        <Disclosure.Button
+                        {filter(item.children as Array<NavItem>).length > 0 && <Disclosure.Button
                           className='flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-gray-700 hover:bg-gray-50'
                         >
                           <item.icon className="h-6 w-6 shrink-0 text-gray-400" aria-hidden="true" />
@@ -65,11 +92,10 @@ export default function Navigation() {
                             )}
                             aria-hidden="true"
                           />
-                        </Disclosure.Button>
+                        </Disclosure.Button>}
                         <Disclosure.Panel as="ul" className="mt-1 px-2">
-                          {item.children.map((subItem) => (
+                          {filter(item.children as Array<NavItem>)?.map((subItem) => (
                             <li key={subItem.name}>
-                              {/* 44px */}
                               <Disclosure.Button as="div">
                                 <NavLink to={subItem.to} className={({ isActive, isPending }) => classnames(
                                   isActive ? 'bg-gray-100' : 'hover:bg-gray-50',

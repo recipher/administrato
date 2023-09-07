@@ -3,13 +3,16 @@ import { Form, Link, useLoaderData } from '@remix-run/react';
 
 import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import { listCountries, countCountries, syncCountries } from '~/models/countries.server';
+import { searchCountries, countCountries, syncCountries } from '~/models/countries.server';
 import Header from '~/components/header/with-filter';
 import Image from '~/components/image';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/layout/pagination';
 import pluralize from '~/helpers/pluralize';
 import toNumber from '~/helpers/to-number';
+import { useUser } from '~/hooks';
+
+import { scheduler } from '~/auth/permissions';
 
 const LIMIT = 8;
 
@@ -19,7 +22,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
 
-  const countries = await listCountries({ search, offset, limit: LIMIT, sortDirection: sort });
+  const countries = await searchCountries({ search }, { offset, limit: LIMIT, sortDirection: sort });
   const count = await countCountries({ search });
 
   return { countries, count, offset, limit: LIMIT, search };
@@ -32,7 +35,10 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 export default function Countries() {
+  const user = useUser();
   const { countries, count, offset, limit, search } = useLoaderData();
+
+  const hasPermission = (p: string) => user.permissions.includes(p);
 
   return (
     <>
@@ -43,24 +49,26 @@ export default function Countries() {
       <ul role="list" className="divide-y divide-gray-100">
         {countries.map((country: any) => (
           <li key={country.isoCode}>
-            <Link to={`${country.isoCode}`} className="flex justify-between gap-x-6 py-3 hover:bg-gray-50">
-              <div className="flex min-w-0 gap-x-4">
-                <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
-                  src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />
-                <div className="min-w-0 flex-auto">
-                  <p className="text-md font-semibold leading-6 text-gray-900">
-                    {country.name}
-                  </p>
-                  <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                    {country.isoCode}
-                  </p>
+            <Link to={country.isoCode}>
+              <div className="flex justify-between gap-x-6 py-3 hover:bg-gray-50">
+                <div className="flex min-w-0 gap-x-4">
+                  <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
+                    src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />
+                  <div className="min-w-0 flex-auto">
+                    <p className="text-md font-semibold leading-6 text-gray-900">
+                      {country.name}
+                    </p>
+                    <p className="mt-1 flex text-xs leading-5 text-gray-500">
+                      {country.isoCode}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-x-6">
-                <Link to={`${country.isoCode}/regions`} className="hidden sm:flex sm:flex-col sm:items-end">
-                  {country.regions} {pluralize('region', country.regions)}
-                </Link>
-                <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                <div className="flex shrink-0 items-center gap-x-6">
+                  <Link to={`${country.isoCode}/regions`} className="hidden sm:flex sm:flex-col sm:items-end">
+                    {country.regions} {pluralize('region', country.regions)}
+                  </Link>
+                  <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                </div>
               </div>
             </Link>
           </li>
@@ -69,7 +77,7 @@ export default function Countries() {
 
       <Pagination entity='country' totalItems={count} offset={offset} limit={limit} />
 
-      <div className="pt-6 flex border-t border-gray-900/10  items-center justify-start gap-x-6">
+      {hasPermission(scheduler.create.holiday) &&<div className="pt-6 flex border-t border-gray-900/10  items-center justify-start gap-x-6">
         <Form method="post">
           <button
             type="submit"
@@ -79,7 +87,7 @@ export default function Countries() {
             Sync
           </button>
         </Form>
-      </div>
+      </div>}
     </>
   );
 }

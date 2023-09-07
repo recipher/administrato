@@ -30,7 +30,7 @@ export async function getSessionFlash(request: Request) {
     level: session.get("flashLevel"),
     text: session.get("flashText"),
   };
-  if (!flash.text) return null;
+  if (!flash.text) return {};
 
   const headers = { "Set-Cookie": await storage.commitSession(session) };
 

@@ -4,7 +4,7 @@ import { redirect, type LoaderArgs, type ActionArgs, json } from '@remix-run/nod
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { XCircleIcon } from '@heroicons/react/20/solid';
 
-import { badRequest } from '~/utility/errors';
+import { badRequest, notFound } from '~/utility/errors';
 import { getCountry } from '~/models/countries.server';
 import { listHolidaysByCountry, syncHolidays, deleteHolidayById } from '~/models/holidays.server';
 import { getSession, storage } from '~/utility/flash.server';
@@ -17,7 +17,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country.isoCode}/holidays?year=${year}`} name="Holidays" current={current} />
+    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name="Holidays" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -27,7 +27,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
-  const country = await getCountry(isoCode);
+  const country = await getCountry({ isoCode });
+
+  if (country === undefined) return notFound('Country not found');
+
   let holidays = await listHolidaysByCountry({ locality: isoCode, year });
 
   if (holidays.length === 0) {

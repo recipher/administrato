@@ -1,9 +1,9 @@
 import { useRef } from 'react';
-import { type LoaderArgs, json } from '@remix-run/node';
+import { type LoaderArgs } from '@remix-run/node';
 import { Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 import { PlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
-import { badRequest } from '~/utility/errors';
+import { badRequest, notFound } from '~/utility/errors';
 
 import { getCountry } from '~/models/countries.server';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
@@ -13,10 +13,11 @@ import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import withAuthorization from '~/auth/with-authorization';
 
 export const handle = {
   breadcrumb: ({ country, current }: { country: any, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country.isoCode}`} name={country.name} current={current} />
+    <Breadcrumb to={`/holidays/${country?.isoCode}`} name={country?.name } current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -25,9 +26,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const { country: isoCode } = params;
 
-  if (isoCode === undefined) return badRequest('Invalid request');
+  if (isoCode === undefined) return badRequest();
 
-  const country = await getCountry(isoCode);
+  const country = await getCountry({ isoCode });
+
+  if (country === undefined) return notFound(`Country ${isoCode} not found`);
 
   return { country, year };
 };

@@ -12,7 +12,7 @@ import { badRequest } from '~/utility/errors';
 
 export const handle = {
   breadcrumb: ({ country, current }: { country: any, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country.isoCode}/regions`} name="Regions" current={current} />
+    <Breadcrumb to={`/holidays/${country?.isoCode}/regions`} name="Regions" current={current} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {
@@ -20,8 +20,8 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
-  const region = await getCountry(isoCode);
-  const regions = await listRegionsByCountry(isoCode);
+  const region = await getCountry({ isoCode });
+  const regions = await listRegionsByCountry({ parent: isoCode });
 
   return { country: { isoCode }, regions, region };
 };

@@ -8,10 +8,4 @@ export const handle = {
     <Breadcrumb Icon={ReceiptPercentIcon} to='/manage/providers' name="Providers" current={current} />
 };
 
-export default function Providers() {
-  return (
-    <div className="mt-5">
-      <Outlet/>
-    </div>
-  );
-}
+export default () => <Outlet/>;

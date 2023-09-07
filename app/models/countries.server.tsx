@@ -3,6 +3,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from './db.server';
 
+import { type QueryOptions, ASC, DESC } from './types';
+
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
@@ -12,7 +14,11 @@ type Count = {
   count: number;
 };
 
-export const getCountry = async (isoCode: string) => {
+type IsoCodeOptions = {
+  isoCode: string;
+};
+
+export const getCountry = async ({ isoCode }: IsoCodeOptions) => {
   const [ country ] = await db.sql<s.localities.SQL, s.localities.Selectable[]>`
     SELECT * FROM ${'localities'} WHERE ${{isoCode}} 
   `.run(pool);
@@ -20,16 +26,15 @@ export const getCountry = async (isoCode: string) => {
   return country;
 };
 
-type ListParams = {
-  search?: string | null | undefined;
-  offset?: number | undefined;
-  limit?: number | undefined;
-  sortDirection?: string | null;
+type SearchOptions = {
+  search: string | null | undefined;
 };
 
-const ASC = 'asc', DESC = 'desc';
+export const listCountries = async ({ offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  return searchCountries({ search: undefined }, { offset, limit, sortDirection });
+};
 
-export const listCountries = async ({ search, offset = 0, limit = 8, sortDirection }: ListParams) => {  
+export const searchCountries = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
   const searchQuery = search == null ? db.sql<db.SQL, any>`` : db.sql<db.SQL, any>`
      AND
       (LOWER(${'localities'}.${'name'}) LIKE LOWER('${db.raw(search)}%') OR
@@ -49,7 +54,7 @@ export const listCountries = async ({ search, offset = 0, limit = 8, sortDirecti
   `.run(pool);
 };
 
-export const countCountries = async ({ search }: { search: string | null | undefined }) => {
+export const countCountries = async ({ search }: SearchOptions) => {
   const searchQuery = search == null ? db.sql<db.SQL, any>`` : db.sql<db.SQL, any>`
      AND
       (LOWER(${'name'}) LIKE LOWER('${db.raw(search)}%') OR
@@ -64,7 +69,12 @@ export const countCountries = async ({ search }: { search: string | null | undef
   return count;
 };
 
-export const listRegionsByCountry = async (parent: string) => {
+
+type ParentOptions = {
+  parent: string;
+};
+
+export const listRegionsByCountry = async ({ parent }: ParentOptions) => {
   return db.sql<s.localities.SQL, s.localities.Selectable[]>`
     SELECT * FROM ${'localities'} WHERE ${{parent}} ORDER BY ${'name'}`.run(pool);
 };

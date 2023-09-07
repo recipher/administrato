@@ -1,25 +1,26 @@
-import type { LoaderArgs, V2_MetaFunction } from '@remix-run/node';
+import type { LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 import { listServiceCentres } from '~/models/service-centres.server';
-import type { ServiceCentre } from '~/models/service-centres.server';
+import type { SecurityKeys, ServiceCentre } from '~/models/service-centres.server';
 import Header from "~/components/header/with-actions";
 import Alert, { Level } from '~/components/alert';
 import Image from '~/components/image';
-
-const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ');
+import { requireProfile } from '~/auth/auth.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const serviceCentres = await listServiceCentres();
+  const user = await requireProfile(request);
+  const keys = user.keys.serviceCentre as SecurityKeys;
+  const serviceCentres = await listServiceCentres({ keys });
 
   return { serviceCentres };
 };
 
 const actions = [
-  { title: "Add Service Centre", to: "add", icon: PlusIcon },
+  { title: "Add Service Centre", to: "add", icon: PlusIcon, permission: "manage:create:service-centre" },
 ];
 
-export default function Countries() {
+export default function ServiceCentres() {
   const { serviceCentres } = useLoaderData();
 
   return (

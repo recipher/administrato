@@ -14,6 +14,11 @@ import {
 
 const isDevelopment = NODE_ENV === "development";
 
+const DOMAIN = "recipher.co.uk";
+const DOMAINS = new Map<string, string>(
+  [ "manage", "scheduler", "security" ].map(d => [ `${d}.${DOMAIN}`, d ])
+);
+
 const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "_remix_session",
@@ -27,10 +32,86 @@ const sessionStorage = createCookieSessionStorage({
 
 export const auth = new Authenticator<Auth0Profile>(sessionStorage);
 
-export const requireProfile = (request: Request) =>
-  auth.isAuthenticated(request, { failureRedirect: "/" });
+export const requireProfile = async (request: Request) => {
+  const profile = await auth.isAuthenticated(request, { failureRedirect: "/" });
+  return mapProfileToUser(profile);
+};
 
 export type Profile = Auth0Profile;
+export type SecurityKey = {
+  keyStart: number;
+  keyEnd: number;
+};
+export type Organization = {
+  auth0id: string;
+  id: string;
+  displayName: string;
+  name: string;
+  isSelected: boolean;
+};
+
+export type User = {
+  name: string;
+  email: string;
+  picture: string;
+  permissions: Array<string>;
+  keys: Array<SecurityKey>;
+  organizations: Array<Organization>;
+};
+
+const mapOrganizations = (profile: Profile) => {
+  if (profile._json === undefined) return;
+  type ObjectKey = keyof typeof profile._json;
+  const key = `https://${DOMAIN}/organizations` as ObjectKey;
+  const organizations = profile._json[key] as Array<any>;
+  return organizations.map(o => ({
+    auth0id: o.id,
+    name: o.name,
+    displayName: o.display_name,
+    id: o.metadata.id,
+    isSelected: o.id === profile._json?.org_id,
+  }));
+};
+
+const mapPermissions = (profile: Profile) => {
+  if (profile._json === undefined) return;
+  type ObjectKey = keyof typeof profile._json;
+  let permissions = new Array<string>();
+  DOMAINS.forEach((name: string, domain: string) => {
+    const key = `https://${domain}/permissions` as ObjectKey;
+    const perms = profile._json && profile._json[key] as Array<string>;
+    if (perms) permissions = [ ...permissions, ...perms.map(p => `${name}:${p}`) ];
+  });
+  return permissions;
+};
+ 
+const mapKeys = (profile: Profile) => {
+  if (profile._json === undefined) return;
+  type ObjectKey = keyof typeof profile._json;
+  const key = `https://${DOMAIN}/metadata` as ObjectKey;
+  const metadata = profile._json[key] as any;
+  const keys = metadata?.keys;
+ 
+  if (keys === undefined) return [];
+
+  Object.keys(keys).forEach(k => {
+    keys[k] = keys[k].map((key: Array<[number, number]>) => {
+      const [ keyStart, keyEnd ] = key;
+      return { keyStart, keyEnd};
+    });
+  });
+
+  return keys;
+};
+
+export const mapProfileToUser = (profile: Profile) => ({
+  name: profile._json?.name, 
+  email: profile._json?.email, 
+  picture: profile._json?.picture,
+  permissions: mapPermissions(profile),
+  keys: mapKeys(profile),
+  organizations: mapOrganizations(profile),
+});
 
 const auth0Strategy = new Auth0Strategy(
   {
@@ -39,9 +120,7 @@ const auth0Strategy = new Auth0Strategy(
     clientSecret: AUTH0_CLIENT_SECRET,
     domain: AUTH0_DOMAIN,
   },
-  async ({ profile }) => {
-    return profile;
-  }
+  async ({ profile }) => profile
 );
 
 auth.use(auth0Strategy);

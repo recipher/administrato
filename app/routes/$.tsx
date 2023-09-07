@@ -1,9 +1,5 @@
-import NotFound from "~/pages/404";
+import { notFound } from '~/utility/errors';
 
-import type { V2_MetaFunction } from "@remix-run/node";
+export const loader = async () => notFound("Page not found");
 
-export const meta: V2_MetaFunction = () => [{ title: "Not Found" }];
-
-export default function Index() {
-  return NotFound();
-}
+export default () => null;

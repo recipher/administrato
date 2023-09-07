@@ -1,6 +1,5 @@
 import type { V2_MetaFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
-import { CircleStackIcon } from "@heroicons/react/24/outline";
 
 export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
 
