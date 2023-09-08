@@ -1,6 +1,5 @@
 import { cssBundleHref } from "@remix-run/css-bundle";
 import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
-import { auth, mapProfileToUser } from "~/auth/auth.server";
 import {
   isRouteErrorResponse,
   Links,
@@ -12,6 +11,7 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
+import { auth } from "~/auth/auth.server";
 import { getSessionFlash } from "./utility/flash.server";
 import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
@@ -29,8 +29,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const profile = await auth.authenticate("auth0", request);
-  const user = mapProfileToUser(profile);
+  const user = await auth.authenticate("auth0", request);
   // console.log(JSON.stringify(user, null, 2));
 
   const { flash, headers } = await getSessionFlash(request);

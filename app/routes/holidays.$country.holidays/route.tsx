@@ -48,13 +48,13 @@ export async function action({ request }: ActionArgs) {
   if (intent === "remove") {
     const { holiday } = data;
     await deleteHolidayById(holiday.id);
-    message = `Holiday Removed Successfully:${holiday.name}, ${year} has been removed`;
+    message = `Holiday Removed Successfully:${holiday.name}, ${year} has been removed.`;
   };
 
   if (intent === "sync") {
     const { country } = data;
     await syncHolidays({ year, locality: country.isoCode }, { shouldDelete: true });
-    message = `Synchronization Successful:Holidays for ${country.name}, ${year} has been synchronized`;
+    message = `Synchronization Successful:Holidays for ${country.name}, ${year} have been synchronized.`;
   };
  
   const session = await getSession(request);

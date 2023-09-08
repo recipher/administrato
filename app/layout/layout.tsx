@@ -40,10 +40,10 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
             </div>
           </div>
 
-          <main className="py-10">
+          <main className="py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <Breadcrumbs breadcrumbs={breadcrumbs} />
-              <div className="mt-5">{children}</div>
+              <div className="mt-6">{children}</div>
             </div>
           </main>
         </div>

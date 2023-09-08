@@ -13,7 +13,6 @@ import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import withAuthorization from '~/auth/with-authorization';
 
 export const handle = {
   breadcrumb: ({ country, current }: { country: any, current: boolean }) => 

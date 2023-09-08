@@ -6,7 +6,7 @@ type Props = {
   data?: Array<any>,
   idKey?: string;
   nameKey?: string;
-  onClick: Function;
+  onClick?: Function;
 };
 
 const Item = ({ title, subtitle }: { title: string, subtitle: string }) => (
@@ -30,14 +30,13 @@ const Item = ({ title, subtitle }: { title: string, subtitle: string }) => (
 );
 
 export default function List({ data = [], idKey = "id", nameKey = "name", onClick }: Props) {
-
   return (
     <ul role="list" className="divide-y divide-gray-100">
       {data.map((item: any) => (
         <li key={item[idKey]}>
           {onClick
             ? <span className="flex justify-between gap-x-6 py-3 cursor-pointer"
-                onClick={() => onClick(item[idKey])}>
+                onClick={() => onClick(item)}>
                 <Item title={item[nameKey]} subtitle={item[idKey]} />
               </span>
             : <Link to={`../../${item[idKey]}`} className="flex justify-between gap-x-6 py-3">

@@ -6,13 +6,13 @@ import type { SecurityKeys, ServiceCentre } from '~/models/service-centres.serve
 import Header from "~/components/header/with-actions";
 import Alert, { Level } from '~/components/alert';
 import Image from '~/components/image';
-import { requireProfile } from '~/auth/auth.server';
+import { requireUser } from '~/auth/auth.server';
 
 import { manage } from '~/auth/permissions';
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireProfile(request);
-  const keys = user.keys.serviceCentre as SecurityKeys;
+  const user = await requireUser(request);
+  const keys = user.keys.serviceCentre;
   const serviceCentres = await listServiceCentres({ keys });
 
   return { serviceCentres };
