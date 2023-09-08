@@ -31,7 +31,8 @@ export const links: LinksFunction = () => [
 export const loader = async ({ request }: LoaderArgs) => {
   const profile = await auth.authenticate("auth0", request);
   const user = mapProfileToUser(profile);
-  // console.log(user);
+  // console.log(JSON.stringify(user, null, 2));
+
   const { flash, headers } = await getSessionFlash(request);
   if (flash) return json({ flash, user }, { headers });
 

@@ -7,7 +7,7 @@ import { searchCountries, countCountries, syncCountries } from '~/models/countri
 import Header from '~/components/header/with-filter';
 import Image from '~/components/image';
 import Alert, { Level } from '~/components/alert';
-import Pagination from '~/layout/pagination';
+import Pagination from '~/components/pagination';
 import pluralize from '~/helpers/pluralize';
 import toNumber from '~/helpers/to-number';
 import { useUser } from '~/hooks';

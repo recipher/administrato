@@ -8,6 +8,8 @@ import Alert, { Level } from '~/components/alert';
 import Image from '~/components/image';
 import { requireProfile } from '~/auth/auth.server';
 
+import { manage } from '~/auth/permissions';
+
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireProfile(request);
   const keys = user.keys.serviceCentre as SecurityKeys;
@@ -17,7 +19,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const actions = [
-  { title: "Add Service Centre", to: "add", icon: PlusIcon, permission: "manage:create:service-centre" },
+  { title: "Add Service Centre", to: "add", icon: PlusIcon, permission: manage.create.serviceCentre },
 ];
 
 export default function ServiceCentres() {

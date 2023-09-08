@@ -10,10 +10,4 @@ export const handle = {
     <Breadcrumb to='/manage' name="Manage" current={current} />
 };
 
-export default function Index() {
-  return (
-    <div className="mt-5">
-      <Outlet />
-    </div>
-  );
-}
+export default () => <Outlet />;

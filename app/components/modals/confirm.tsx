@@ -40,21 +40,21 @@ const ConfirmModal = (props: Props, ref: Ref<RefConfirmModal>) => {
     if (props.onYes) props.onYes(value);
   };
 
-  useImperativeHandle(ref, () => ({ show, setValue }));
-
-  function show(
+  const show = (
     _question: string,
     _yesTitle: string = "Yes",
     _noTitle: string = "Cancel",
     _description?: string,
     _inputString?: string
-  ) {
+  ) => {
     setTitle(_question.toString());
     if (_yesTitle) setYesTitle(_yesTitle);
     if (_noTitle) setNoTitle(_noTitle);
     if (_description) setDescription(_description);
     setOpen(true);
   }
+
+  useImperativeHandle(ref, () => ({ show, setValue }));
 
   return (
     <Transition.Root show={open} as={Fragment}>

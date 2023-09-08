@@ -7,7 +7,7 @@ import { zfd } from 'zod-form-data';
 import { addServiceCentre } from '~/models/service-centres.server';
 import { listCountries } from '~/models/countries.server';
 
-import { Input, Combo, Cancel, Submit } from '~/components/form';
+import { Input, Select, Cancel, Submit } from '~/components/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
@@ -62,14 +62,30 @@ const Add = () => {
           <div>
             <h2 className="text-lg font-semibold leading-7 text-gray-900">New Service Centre</h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">
-              Please enter the new service centre details, specifying the countries to which the centre is associated.
+              Please enter the new service centre details.
             </p>
           </div>
 
           <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
             <div className="sm:col-span-4">
               <Input label="Service Centre Name" name="name" focus={true} placeholder="e.g. Scotland" />
-              <Combo label="Associated Countries" name="localities" data={localities} />
+            </div>
+          </div>
+        </div>
+      
+        <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+          <div>
+            <h3 className="text-base font-semibold leading-7 text-gray-900">
+              Specify Countries or Regions
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+              Enter the countries to which the centre is associated, or select a specific region.
+            </p>
+          </div>
+
+          <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+            <div className="sm:col-span-4">
+              <Select label="Associated Countries" name="localities" data={localities} />
             </div>
           </div>
         </div>

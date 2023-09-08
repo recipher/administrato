@@ -1,21 +1,23 @@
-import { forwardRef, Fragment, Ref, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, Fragment, Ref, useState, useImperativeHandle, type PropsWithChildren } from "react";
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
-export interface RefConfirmModal {
-  setValue: (value: any) => void;
-  show: (_question: string, _yesTitle?: string, _noTitle?: string, _description?: string, _inputString?: string) => void;
+export interface RefModal {
+  show: () => void;
+  hide: () => void;
 };
 
 interface Props {
   destructive?: boolean;
-  inputType?: string;
-  onYes?: (value: any) => void;
-  onNo?: () => void;
 };
 
-const Modal = (props: Props, ref: Ref<RefConfirmModal>) => {
+const Modal = ({ children, destructive = false }: PropsWithChildren<Props>, ref: Ref<RefModal>) => {
   const [open, setOpen] = useState(false);
+
+  const show = () => setOpen(true);
+  const hide = () => setOpen(false);
+
+  useImperativeHandle(ref, () => ({ show, hide }));
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="fixed z-50 inset-0 overflow-y-auto" onClose={setOpen}>
@@ -32,7 +34,7 @@ const Modal = (props: Props, ref: Ref<RefConfirmModal>) => {
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full items-end justify-center text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -42,11 +44,8 @@ const Modal = (props: Props, ref: Ref<RefConfirmModal>) => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
-                <div className="sm:flex sm:items-start">
-                  <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                  </div>
-                </div>
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                {children}
               </Dialog.Panel>
             </Transition.Child>
           </div>

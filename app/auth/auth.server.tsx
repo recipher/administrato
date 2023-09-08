@@ -47,7 +47,8 @@ export type Organization = {
   id: string;
   displayName: string;
   name: string;
-  isSelected: boolean;
+  active: boolean;
+  keys: Array<SecurityKey>;
 };
 
 export type User = {
@@ -55,8 +56,29 @@ export type User = {
   email: string;
   picture: string;
   permissions: Array<string>;
-  keys: Array<SecurityKey>;
   organizations: Array<Organization>;
+  keys: Array<SecurityKey>;
+  defaultKeys: Array<SecurityKey>;
+  organization: Organization;
+};
+
+const mapKeys = (profile: Profile, organisation: string) => {
+  if (profile._json === undefined) return;
+  type ObjectKey = keyof typeof profile._json;
+  const key = `https://${DOMAIN}/metadata` as ObjectKey;
+  const metadata = profile._json[key] as any;
+  const keys = metadata?.keys[organisation];
+ 
+  if (keys === undefined) return [];
+
+  Object.keys(keys).forEach(k => {
+    keys[k] = keys[k].map((key: Array<[number, number]>) => {
+      const [ keyStart, keyEnd ] = key;
+      return { keyStart, keyEnd};
+    });
+  });
+
+  return keys;
 };
 
 const mapOrganizations = (profile: Profile) => {
@@ -69,7 +91,8 @@ const mapOrganizations = (profile: Profile) => {
     name: o.name,
     displayName: o.display_name,
     id: o.metadata.id,
-    isSelected: o.id === profile._json?.org_id,
+    active: o.id === profile._json?.org_id,
+    keys: mapKeys(profile, o.id),
   }));
 };
 
@@ -84,34 +107,20 @@ const mapPermissions = (profile: Profile) => {
   });
   return permissions;
 };
- 
-const mapKeys = (profile: Profile) => {
-  if (profile._json === undefined) return;
-  type ObjectKey = keyof typeof profile._json;
-  const key = `https://${DOMAIN}/metadata` as ObjectKey;
-  const metadata = profile._json[key] as any;
-  const keys = metadata?.keys;
- 
-  if (keys === undefined) return [];
 
-  Object.keys(keys).forEach(k => {
-    keys[k] = keys[k].map((key: Array<[number, number]>) => {
-      const [ keyStart, keyEnd ] = key;
-      return { keyStart, keyEnd};
-    });
-  });
+export const mapProfileToUser = (profile: Profile) => {
+  const 
+    name = profile._json?.name, 
+    email = profile._json?.email, 
+    picture = profile._json?.picture,
+    permissions = mapPermissions(profile),
+    defaultKeys = mapKeys(profile, "default"),
+    organizations = mapOrganizations(profile),
+    organization = organizations?.find(o => o.active === false),
+    keys = organization?.keys === undefined ? defaultKeys : organization.keys;
 
-  return keys;
+  return { name, email, picture, permissions, organizations, organization, keys, defaultKeys };
 };
-
-export const mapProfileToUser = (profile: Profile) => ({
-  name: profile._json?.name, 
-  email: profile._json?.email, 
-  picture: profile._json?.picture,
-  permissions: mapPermissions(profile),
-  keys: mapKeys(profile),
-  organizations: mapOrganizations(profile),
-});
 
 const auth0Strategy = new Auth0Strategy(
   {

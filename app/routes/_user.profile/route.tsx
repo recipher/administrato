@@ -8,6 +8,4 @@ export const handle = {
     <Breadcrumb Icon={UserCircleIcon} to='/profile' name="My Profile" current={current} />
 };
 
-
-
 export default () => <Outlet/>;
