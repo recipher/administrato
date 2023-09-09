@@ -16,7 +16,7 @@ import {
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
 import classnames from '~/helpers/classnames';
-import { useUser } from '~/hooks';
+import { useOptionalUser } from '~/hooks';
 
 import { scheduler, security, manage } from '~/auth/permissions';
 
@@ -49,12 +49,12 @@ export const navigation = [
 ];
 
 export default function Navigation() {
-  const { permissions } = useUser();
+  const user = useOptionalUser();
 
   const filter = (items: Array<NavItem>) => {
     return items.filter(({ permission }: NavItem) => {
       if (permission === undefined) return true;
-      return permissions.includes(permission);
+      return user?.permissions.includes(permission);
     });
   };
     

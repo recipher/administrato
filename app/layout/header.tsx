@@ -17,7 +17,8 @@ import { Basic as List } from '~/components/list';
 type Props = { user: User };
 
 const OrganizationModal = ({ modal, user, onSelect }: { modal: RefObject<RefModal>, onSelect: Function } & Props) => {
-  const data = [ { id: "", displayName: "Remove" }, ...user?.organizations ];
+  const organizations = user?.organizations || [];
+  const data = [ { id: "", displayName: "Remove" }, ...organizations ];
 
   return (
     <Modal ref={modal}>

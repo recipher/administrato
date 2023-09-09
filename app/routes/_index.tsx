@@ -5,6 +5,7 @@ import { useUser } from "~/hooks";
 export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { useTranslation } from "react-i18next";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -13,5 +14,7 @@ export const handle = {
 
 export default function Index() {
   const user = useUser();
-  return <div>Welcome {user.name}</div>;
+  const { t } = useTranslation();
+
+  return <div>{t("welcome")} {user.name}</div>;
 }

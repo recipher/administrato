@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import type { User } from "~/auth/auth.server";
 
 export { default as useBreadcrumbs } from './use-breadcrumbs';
+export { default as useChangeLanguage } from './use-change-language';
 
 export function useMatchesData(id: string): Record<string, unknown> | undefined {
   const matchingRoutes = useMatches();
