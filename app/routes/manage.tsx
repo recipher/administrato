@@ -7,7 +7,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage' name="Manage" current={current} />
+    <Breadcrumb to='/manage' name="manage" current={current} />
 };
 
 export default () => <Outlet />;

@@ -6,7 +6,7 @@ import withAuthorization from "~/auth/with-authorization";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={IdentificationIcon} to="/manage/clients" name="Clients" current={current} />
+    <Breadcrumb Icon={IdentificationIcon} to="/manage/clients" name="clients" current={current} />
 };
 
 const Clients = () => <Outlet />;

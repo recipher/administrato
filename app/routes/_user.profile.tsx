@@ -10,7 +10,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={UserCircleIcon} to='/profile' name="My Profile" current={current} />
+    <Breadcrumb Icon={UserCircleIcon} to='/profile' name="my-profile" current={current} />
 };
 
 export async function action({ request }: ActionArgs) {

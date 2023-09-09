@@ -5,6 +5,7 @@ import { ValidatedForm as Form, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
+
 import { addServiceCentre } from '~/models/service-centres.server';
 import { listCountries } from '~/models/countries.server';
 
@@ -15,7 +16,7 @@ import withAuthorization from '~/auth/with-authorization';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage/service-centres/add' name="Add" current={current} />
+    <Breadcrumb to='/manage/service-centres/add' name="add-service-centre" current={current} />
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

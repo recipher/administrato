@@ -12,7 +12,7 @@ import List from '~/components/list/basic';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={UsersIcon} to='/access/roles' name="Roles" current={current} />
+    <Breadcrumb Icon={UsersIcon} to='/access/roles' name="roles" current={current} />
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

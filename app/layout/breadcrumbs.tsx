@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Link } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import classnames from '~/helpers/classnames';
 
 type PageProps = {
@@ -13,19 +14,23 @@ type Props = {
   breadcrumbs: Array<ReactNode>;
 };
 
-export const Breadcrumb = ({ name, to, Icon, current = false }: PageProps) => (
-  <>
-    {Icon && <Icon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />}
-    <Link
-      to={to}
-      className={classnames(Icon ? "ml-4" : "", current ? "text-indigo-500 hover:text-indigo-700" : "text-gray-500 hover:text-gray-700",
-        "text-md font-medium")}
-      aria-current={current ? 'page' : undefined}
-    >
-      {name}
-    </Link>
-  </>
-);
+export const Breadcrumb = ({ name, to, Icon, current = false }: PageProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      {Icon && <Icon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />}
+      <Link
+        to={to}
+        className={classnames(Icon ? "ml-4" : "", current ? "text-indigo-500 hover:text-indigo-700" : "text-gray-500 hover:text-gray-700",
+          "text-md font-medium")}
+        aria-current={current ? 'page' : undefined}
+      >
+        {t(name)}
+      </Link>
+    </>
+  );
+}
 
 export const Separator = () => (
   <svg

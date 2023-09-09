@@ -6,7 +6,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={MagnifyingGlassCircleIcon} to='/search' name="Search" current={current} />
+    <Breadcrumb Icon={MagnifyingGlassCircleIcon} to='/search' name="search" current={current} />
 };
 
 type LoaderData = {

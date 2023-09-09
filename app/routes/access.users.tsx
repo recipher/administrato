@@ -14,7 +14,7 @@ import List from '~/components/list/basic';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={UserCircleIcon} to='/access/users' name="Users" current={current} />
+    <Breadcrumb Icon={UserCircleIcon} to='/access/users' name="users" current={current} />
 };
 
 const LIMIT = 20;

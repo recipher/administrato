@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { redirect, type LoaderArgs, type ActionArgs, json } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { XCircleIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { getCountry } from '~/models/countries.server';
@@ -17,7 +18,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name="Holidays" current={current} />
+    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name="holidays" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -70,8 +71,10 @@ export async function action({ request }: ActionArgs) {
 const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);
 
 export default function Holidays() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const submit = useSubmit();
+
   const confirm = useRef<RefConfirmModal>(null);
   const [ holiday, setHoliday ] = useState<{ name: string, id: number}>();
   
@@ -126,7 +129,7 @@ export default function Holidays() {
                   className="inline-flex items-center gap-x-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-sm text-red-600 shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                 >
                   <XCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
-                  remove
+                  {t('remove')}
                 </button>
               </div>
             </div>

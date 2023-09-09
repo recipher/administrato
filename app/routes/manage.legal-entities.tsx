@@ -5,13 +5,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={WalletIcon} to='/manage/legal-entities' name="Legal Entities" current={current} />
+    <Breadcrumb Icon={WalletIcon} to='/manage/legal-entities' name="legal-entities" current={current} />
 };
 
-export default function ServiceCentres() {
-  return (
-    <div className="mt-5">
-      <Outlet/>
-    </div>
-  );
-}
+export default () => <Outlet />;

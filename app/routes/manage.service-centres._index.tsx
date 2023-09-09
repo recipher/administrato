@@ -24,7 +24,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const actions = [
-  { title: "Add Service Centre", to: "add", icon: PlusIcon, permission: manage.create.serviceCentre },
+  { title: "add-service-centre", to: "add", icon: PlusIcon, permission: manage.create.serviceCentre },
 ];
 
 export default function ServiceCentres() {

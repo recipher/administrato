@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
 import classnames from '~/helpers/classnames';
 
 const MAX_MOBILE_TABS = 3;
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export default function Tabs({ tabs }: Props) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -31,7 +33,7 @@ export default function Tabs({ tabs }: Props) {
             defaultValue={tabs.find((tab) => false)?.name}
             onChange={e => navigate(e.target.value)}
           >
-            {tabs.map((tab) => <option key={tab.name} value={tab.to}>{tab.name}</option>)}
+            {tabs.map((tab) => <option key={tab.name} value={tab.to}>{t(tab.name)}</option>)}
           </select>
         </div>
         <div className="hidden sm:block">
@@ -40,7 +42,7 @@ export default function Tabs({ tabs }: Props) {
               tab.hidden ? null :
                 tab.disabled
                   ? <div className="whitespace-nowrap text-gray-400 pr-4 mr-4 pb-3 text-sm font-medium">
-                      {tab.name}
+                      {t(tab.name)}
                     </div>
                   : <NavLink key={tab.name} to={tab.to}>
                       {({ isActive, isPending }) => (
@@ -49,7 +51,7 @@ export default function Tabs({ tabs }: Props) {
                             ? 'border-indigo-500 text-indigo-600'
                             : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
                           'whitespace-nowrap border-b-2 mr-4 pb-3 text-sm font-medium'
-                        )}>{tab.name}</div>
+                        )}>{t(tab.name)}</div>
                       )}
                     </NavLink>
             ))}

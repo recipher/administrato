@@ -1,5 +1,7 @@
 import { Form, useSearchParams } from '@remix-run/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { useTranslation } from 'react-i18next';
+
 import Sort from './sort';
 import classnames from '~/helpers/classnames';
 
@@ -12,16 +14,17 @@ type Props = {
 };
 
 export default function Header({ title, subtitle, filterTitle, filterParam, allowSort }: Props) {
+  const { t } = useTranslation();
   const [ searchParams ] = useSearchParams();
   const filter = searchParams.get(filterParam) || '';
   const sort = searchParams.get('sort');
 
   return (
     <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-      <h3 className="text-xl font-semibold leading-6 text-gray-900">{title}</h3>
+      <h3 className="text-xl font-semibold leading-6 text-gray-900">{t(title)}</h3>
       <div className="mt-3 sm:ml-4 sm:mt-0">
         <label htmlFor="search" className="sr-only">
-          Search
+          {t('search')}
         </label>
         <div className="flex rounded-md shadow-sm">
           <div className="relative flex-grow focus-within:z-10">

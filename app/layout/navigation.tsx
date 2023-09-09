@@ -15,8 +15,9 @@ import {
 } from '@heroicons/react/24/outline';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
-import classnames from '~/helpers/classnames';
+import { useTranslation } from 'react-i18next';
 import { useOptionalUser } from '~/hooks';
+import classnames from '~/helpers/classnames';
 
 import { scheduler, security, manage } from '~/auth/permissions';
 
@@ -29,26 +30,27 @@ type NavItem = {
 };
 
 export const navigation = [
-  { name: 'Schedules', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule },
-  { name: 'Holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon, permission: scheduler.read.holiday },
-  { name: 'Milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
-  { name: 'Manage', to: '/manage/legal-entities', icon: CircleStackIcon,
+  { name: 'schedules', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule },
+  { name: 'holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon, permission: scheduler.read.holiday },
+  { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
+  { name: 'manage', to: '/manage/legal-entities', icon: CircleStackIcon,
     children: [
-      { name: 'Legal Entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
-      { name: 'Service Centres', to: '/manage/service-centres', icon: PaperClipIcon, permission: manage.read.serviceCentre },
-      { name: 'Clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
-      { name: 'Providers', to: '/manage/providers', icon: ReceiptPercentIcon, permission: manage.read.provider },
+      { name: 'legal-entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
+      { name: 'service-centres', to: '/manage/service-centres', icon: PaperClipIcon, permission: manage.read.serviceCentre },
+      { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
+      { name: 'providers', to: '/manage/providers', icon: ReceiptPercentIcon, permission: manage.read.provider },
     ]
   },
-  { name: 'Access', to: '/access', icon: KeyIcon,
+  { name: 'access', to: '/access', icon: KeyIcon,
     children: [
-      { name: 'Users', to: '/access/users', icon: UserCircleIcon, permission: security.read.user },
-      { name: 'Roles', to: '/access/roles', icon: UsersIcon, permission: security.read.role },
+      { name: 'users', to: '/access/users', icon: UserCircleIcon, permission: security.read.user },
+      { name: 'roles', to: '/access/roles', icon: UsersIcon, permission: security.read.role },
     ]
   },
 ];
 
 export default function Navigation() {
+  const { t } = useTranslation();
   const user = useOptionalUser();
 
   const filter = (items: Array<NavItem>) => {
@@ -74,7 +76,7 @@ export default function Navigation() {
                     )}
                   >
                     <item.icon className="h-6 w-6 shrink-0 text-gray-400" aria-hidden="true" />
-                    {item.name}
+                    {t(item.name)}
                   </NavLink>
                 ) : (
                   <Disclosure as="div">
@@ -84,7 +86,7 @@ export default function Navigation() {
                           className='flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-gray-700 hover:bg-gray-50'
                         >
                           <item.icon className="h-6 w-6 shrink-0 text-gray-400" aria-hidden="true" />
-                          {item.name}
+                          {t(item.name)}
                           <ChevronRightIcon
                             className={classnames(
                               open ? 'rotate-90 text-gray-500' : 'text-gray-400',
@@ -101,7 +103,7 @@ export default function Navigation() {
                                   isActive ? 'bg-gray-100' : 'hover:bg-gray-50',
                                   'block rounded-md my-1 py-2 pr-2 pl-9 text-sm leading-6 text-gray-700'
                                 )}>
-                                  {subItem.name}
+                                  {t(subItem.name)}
                                 </NavLink>
                               </Disclosure.Button>
                             </li>

@@ -11,7 +11,7 @@ import { badRequest } from '~/utility/errors';
 
 export const handle = {
   breadcrumb: ({ country, current }: { country: any, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/regions`} name="Regions" current={current} />
+    <Breadcrumb to={`/holidays/${country?.isoCode}/regions`} name="regions" current={current} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

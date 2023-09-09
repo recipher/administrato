@@ -12,7 +12,7 @@ import Image from '~/components/image';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
-import { Breadcrumb, Separator } from "~/layout/breadcrumbs";
+import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ country, parent, current }: { country: Country, parent: Country, current: boolean }) => {
@@ -20,7 +20,7 @@ export const handle = {
       
       return !parent ? crumb : [ 
         <Breadcrumb key={parent.isoCode} to={`/holidays/${parent?.isoCode}`} name={parent?.name} />,
-        <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name="Regions" />,
+        <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name="regions" />,
         crumb ];
   }
 };
@@ -55,14 +55,14 @@ export default function Holidays() {
     src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} />;
 
   const tabs = [
-    { name: 'Holidays', to: 'holidays' },
-    { name: 'Regions', to: 'regions', hidden: !!country.parent },
-    { name: 'Overrides', to: 'overrides' },
+    { name: 'holidays', to: 'holidays' },
+    { name: 'regions', to: 'regions', hidden: !!country.parent },
+    { name: 'overrides', to: 'overrides' },
   ];
   
   const actions = [
-    { title: "Sync", icon: ArrowPathIcon, type: ButtonType.Secondary, onClick: sync },
-    { title: "Add a Holiday", to: "add", icon: PlusIcon },
+    { title: "sync", icon: ArrowPathIcon, type: ButtonType.Secondary, onClick: sync },
+    { title: "add-holiday", to: "add", icon: PlusIcon },
   ];
 
   return (

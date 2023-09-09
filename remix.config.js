@@ -11,7 +11,6 @@ module.exports = {
     v2_routeConvention: true,
   },
   ignoredRouteFiles: ["**/.*", "**/*.test.{js,jsx,ts,tsx}"],
-  // assetsBuildDirectory: "public",
   publicPath: "/_static/build/",
   postcss: true,
   server: "./server.ts",

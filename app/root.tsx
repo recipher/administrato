@@ -34,7 +34,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const handle = {
-  i18n: "common",
+  i18n: [ "navigation", "common" ]
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

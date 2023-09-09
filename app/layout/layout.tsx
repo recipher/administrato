@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, PropsWithChildren } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
@@ -12,6 +13,7 @@ import { User } from '~/auth/auth.server';
 type Props = { user: User };
 
 export default function Layout({ user, children }: PropsWithChildren<Props>) {
+  const { t } = useTranslation();
   const [ sidebarOpen, setSidebarOpen ] = useState(false)
 
   const breadcrumbs = useBreadcrumbs();

@@ -8,7 +8,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={Bars3BottomLeftIcon} to='/milestones' name="Milestones" current={current} />
+    <Breadcrumb Icon={Bars3BottomLeftIcon} to='/milestones' name="milestones" current={current} />
 };
 
 export default () => <Outlet />;

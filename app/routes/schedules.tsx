@@ -5,7 +5,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={CalendarDaysIcon} to='/schedules' name="Schedules" current={current} />
+    <Breadcrumb Icon={CalendarDaysIcon} to='/schedules' name="schedules" current={current} />
 };
 
 export default () => <Outlet/>;

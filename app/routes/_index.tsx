@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to="/" name="Dashboard" current={current} Icon={GlobeAmericasIcon} />
+    <Breadcrumb to="/" name="home" current={current} Icon={GlobeAmericasIcon} />
 };
 
 export default function Index() {

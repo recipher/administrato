@@ -1,4 +1,4 @@
-import { Fragment, RefObject, useRef } from 'react';
+import { Fragment, RefObject, useRef, useTransition } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { Form, Link, useLocation, useSubmit } from '@remix-run/react';
 import {
@@ -8,6 +8,7 @@ import {
   ChevronDownIcon, 
   MagnifyingGlassIcon 
 } from '@heroicons/react/20/solid';
+import { useTranslation } from 'react-i18next';
 
 import classnames from '~/helpers/classnames';
 import { Organization, type User } from '~/auth/auth.server';
@@ -17,39 +18,44 @@ import { Basic as List } from '~/components/list';
 type Props = { user: User };
 
 const OrganizationModal = ({ modal, user, onSelect }: { modal: RefObject<RefModal>, onSelect: Function } & Props) => {
+  const { t } = useTranslation();
   const organizations = user?.organizations || [];
   const data = [ { id: "", displayName: "Remove" }, ...organizations ];
 
   return (
     <Modal ref={modal}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-md">Select Organization</h2>
+        <h2 className="text-md">{t('select-organization')}</h2>
         <List data={data} nameKey="displayName" onClick={onSelect} />
       </div>
     </Modal>
   );
 };
 
-export const Search = () => (
-  <Form className="relative flex flex-1" action="/search" method="GET">
-    <label htmlFor="q" className="sr-only">
-      Search
-    </label>
-    <MagnifyingGlassIcon
-      className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-      aria-hidden="true"
-    />
-    <input
-      id="q"
-      className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
-      placeholder="Search"
-      type="search"
-      name="q"
-    />
-  </Form>
-);
+export const Search = () => {
+  const { t } = useTranslation();
+  return (
+    <Form className="relative flex flex-1" action="/search" method="GET">
+      <label htmlFor="q" className="sr-only">
+        {t('search')}
+      </label>
+      <MagnifyingGlassIcon
+        className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
+        aria-hidden="true"
+      />
+      <input
+        id="q"
+        className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
+        placeholder={t('search')}
+        type="search"
+        name="q"
+      />
+    </Form>
+  );
+}
 
 export default function Header({ user }: Props) {
+  const { t } = useTranslation();
   const submit = useSubmit();
   const { pathname: redirectTo } = useLocation();
   const modal = useRef<RefModal>(null);
@@ -65,9 +71,9 @@ export default function Header({ user }: Props) {
   const showOrganizationModal = () => modal.current?.show();
 
   const userNavigation = [
-    { name: 'My Profile', to: '/profile' },
-    { name: 'Select Organization', onClick: showOrganizationModal },
-    { name: 'Sign Out', to: '/logout' },
+    { name: 'my-profile', to: '/profile' },
+    { name: 'select-organization', onClick: showOrganizationModal },
+    { name: 'signout', to: '/logout' },
   ];
 
   return (
@@ -124,11 +130,11 @@ export default function Header({ user }: Props) {
                       item.onClick
                         ? <span className="block pl-3 pr-6 py-1 text-sm leading-6 text-gray-900 cursor-pointer"
                             onClick={item.onClick}>
-                            {item.name}
+                            {t(item.name)}
                           </span>
                         : <Link to={item.to} className={classnames(active ? 'bg-gray-50' : '',
                             'block pl-3 pr-6 py-1 text-sm leading-6 text-gray-900')}>
-                            {item.name}
+                            {t(item.name)}
                           </Link>
                     )}
                   </Menu.Item>
