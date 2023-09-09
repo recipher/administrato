@@ -1,7 +1,5 @@
-import { type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
-
-import { ChevronRightIcon } from '@heroicons/react/24/outline'
+import { json, type LoaderArgs } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 
 import { getCountry, listRegionsByCountry } from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
@@ -24,7 +22,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const region = await getCountry({ isoCode });
   const regions = await listRegionsByCountry({ parent: isoCode });
 
-  return { country: { isoCode }, regions, region };
+  return json({ country: { isoCode }, regions, region });
 };
 
 export default function Holidays() {

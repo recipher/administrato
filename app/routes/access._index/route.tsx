@@ -1,11 +1,5 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import { redirect, type LoaderArgs } from '@remix-run/node';
 
-export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
-
-export default function Index() {
-  return (
-    <div className="">
-      Access
-    </div>
-  );
-}
+export const loader = async ({ params }: LoaderArgs) => {
+  return redirect('/access/users');
+};

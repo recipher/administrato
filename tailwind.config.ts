@@ -28,6 +28,10 @@ export default {
     'text-yellow-800',
     'text-blue-800',
     'text-green-800',
+    'border-red-400',
+    'border-yellow-400',
+    'border-blue-400',
+    'border-green-400',
   ],
   plugins: [
     require('@tailwindcss/forms'),

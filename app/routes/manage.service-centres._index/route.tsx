@@ -1,8 +1,10 @@
 import type { LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
-import { listServiceCentres } from '~/models/service-centres.server';
-import type { SecurityKeys, ServiceCentre } from '~/models/service-centres.server';
+
+import { listServiceCentres, type ServiceCentre } from '~/models/service-centres.server';
+import { getCountries, type Country } from '~/models/countries.server';
+
 import Header from "~/components/header/with-actions";
 import Alert, { Level } from '~/components/alert';
 import Image from '~/components/image';
@@ -15,7 +17,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   const keys = user.keys.serviceCentre;
   const serviceCentres = await listServiceCentres({ keys });
 
-  return { serviceCentres };
+  const isoCodes = serviceCentres.map(s => s.localities || []).flat();
+  const countries = await getCountries({ isoCodes });
+
+  return { serviceCentres, countries };
 };
 
 const actions = [
@@ -23,7 +28,9 @@ const actions = [
 ];
 
 export default function ServiceCentres() {
-  const { serviceCentres } = useLoaderData();
+  const { serviceCentres, countries } = useLoaderData();
+
+  const country = (isoCode: string) => countries.find((c: Country) => c.isoCode === isoCode);
 
   return (
     <>
@@ -40,9 +47,19 @@ export default function ServiceCentres() {
                   {serviceCentre.name}
                 </p>
                 <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                  {serviceCentre.localities?.map(code => 
-                    <Image key={code} className="h-6 w-6 flex-none bg-white mr-2"
-                      src={`https://cdn.ipregistry.co/flags/twemoji/${code.toLowerCase()}.svg`} />)}
+                  {serviceCentre.localities?.map(isoCode => {
+                    const locality = country(isoCode);
+                    const code = locality.parent ? locality.parent : isoCode;
+                    return (
+                      <span key={code} className="mr-4">
+                        <span className="mr-2 text-base float-left">
+                          {locality?.name}
+                        </span>
+                        <Image className="h-6 w-6 bg-white float-right"
+                          src={`https://cdn.ipregistry.co/flags/twemoji/${code.toLowerCase()}.svg`} />
+                      </span>
+                    );
+                  })}
                 </p>
               </div>
             </div>

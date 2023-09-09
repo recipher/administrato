@@ -98,12 +98,14 @@ export default function Select({ name, label, data = [], defaultValue = [] }: Pr
             </Listbox.Label>
             <div className="relative mt-2">
               <Listbox.Button 
-                className={classnames(error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-500", 
-                  "relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}>
+                className={classnames(
+                  selected?.image ? "pl-3" : "h-9",
+                  error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-500", 
+                  "relative w-full cursor-default rounded-md bg-white py-1.5 pr-10 text-left ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}>
                 <span className="flex items-center">
                   <img src={selected?.image} alt={selected?.name} 
-                    className={classnames(selected?.image ? "" : "invisible", "h-6 w-6 flex-shrink-0")} />
-                  <span className="ml-3 block truncate">{selected?.name}</span>
+                    className={classnames(selected?.image ? "" : "hidden", "h-6 w-6 flex-shrink-0")} />
+                  <span className={classnames("ml-3 block truncate")}>{selected?.name}</span>
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                   <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

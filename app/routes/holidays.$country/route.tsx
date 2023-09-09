@@ -5,18 +5,24 @@ import { PlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import { getCountry } from '~/models/countries.server';
+import { getCountry, Country } from '~/models/countries.server';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Header from '~/components/header/with-actions';
 import Image from '~/components/image';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, Separator } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ country, current }: { country: any, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}`} name={country?.name } current={current} />
+  breadcrumb: ({ country, parent, current }: { country: Country, parent: Country, current: boolean }) => {
+      const crumb = <Breadcrumb key={country.isoCode} to={`/holidays/${country?.isoCode}`} name={country?.name } current={current} />;
+      
+      return !parent ? crumb : [ 
+        <Breadcrumb key={parent.isoCode} to={`/holidays/${parent?.isoCode}`} name={parent?.name} />,
+        <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name="Regions" />,
+        crumb ];
+  }
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -28,10 +34,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (isoCode === undefined) return badRequest();
 
   const country = await getCountry({ isoCode });
+  const parent = country.parent ? await getCountry({ isoCode: country.parent }) : null;
 
   if (country === undefined) return notFound(`Country ${isoCode} not found`);
 
-  return { country, year };
+  return { country, year, parent };
 };
 
 export default function Holidays() {

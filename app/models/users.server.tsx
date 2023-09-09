@@ -2,6 +2,8 @@ import client from './auth0.server';
 
 const { DOMAIN: ns } = process.env;
 
+import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
+
 type Id = {
   id: string;
 };
@@ -12,6 +14,10 @@ type Organization = {
 
 export const getUser = async ({ id }: Id) => {
   return client.getUser({ id });
+};
+
+export const searchUsers = async ({ search }: SearchOptions, { offset = 0, limit = 20 }: QueryOptions) => {
+  return [];
 };
 
 export const getOrganizations = async ({ id }: Id) => {

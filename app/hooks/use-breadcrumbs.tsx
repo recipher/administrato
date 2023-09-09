@@ -8,5 +8,6 @@ export default () => {
     .map(match => {
       const current = match.pathname === location.pathname;
       return match.handle?.breadcrumb({ current, ...match.data });
-    });
+    })
+    .flat();
 };

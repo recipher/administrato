@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { useRef, useState } from 'react';
 import { redirect, type LoaderArgs, type ActionArgs, json } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
-import { XCircleIcon } from '@heroicons/react/20/solid';
+import { XCircleIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { getCountry } from '~/models/countries.server';
@@ -123,7 +123,7 @@ export default function Holidays() {
                 <button
                   type="button"
                   onClick={() => remove(holiday.name, holiday.id)}
-                  className="inline-flex items-center gap-x-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                  className="inline-flex items-center gap-x-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-sm text-red-600 shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
                 >
                   <XCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
                   remove

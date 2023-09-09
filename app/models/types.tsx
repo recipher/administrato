@@ -5,5 +5,9 @@ export type QueryOptions = {
   sortDirection?: string | null;
 };
 
+export type SearchOptions = {
+  search: string | null | undefined;
+};
+
 export const ASC = 'asc'
 export const DESC = 'desc';

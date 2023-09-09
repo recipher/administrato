@@ -3,7 +3,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from './db.server';
 
-import { type QueryOptions, ASC, DESC } from './types';
+import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
@@ -18,6 +18,10 @@ type IsoCodeOptions = {
   isoCode: string;
 };
 
+type IsoCodesOptions = {
+  isoCodes: Array<string>;
+};
+
 export const getCountry = async ({ isoCode }: IsoCodeOptions) => {
   const [ country ] = await db.sql<s.localities.SQL, s.localities.Selectable[]>`
     SELECT * FROM ${'localities'} WHERE ${{isoCode}} 
@@ -26,8 +30,13 @@ export const getCountry = async ({ isoCode }: IsoCodeOptions) => {
   return country;
 };
 
-type SearchOptions = {
-  search: string | null | undefined;
+export const getCountries = async ({ isoCodes }: IsoCodesOptions) => {
+  const codes = isoCodes.map(code => `'${code}'`).join(',');
+  return db.sql<s.localities.SQL, s.localities.Selectable[]>`
+    SELECT ${'localities'}.*, p.name AS "parentName" FROM ${'localities'} 
+    LEFT JOIN ${'localities'} AS p ON ${'localities'}.${'parent'} = p.${'isoCode'}
+    WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
+  `.run(pool);
 };
 
 export const listCountries = async ({ offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  

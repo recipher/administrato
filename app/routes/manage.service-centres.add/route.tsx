@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { ActionArgs, LoaderArgs, redirect } from '@remix-run/node';
-import { useActionData, useLoaderData } from '@remix-run/react'
+import { useFetcher, useLoaderData } from '@remix-run/react'
 import { ValidatedForm as Form, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { z } from 'zod';
@@ -20,7 +21,7 @@ export const handle = {
 export const loader = async ({ request }: LoaderArgs) => {
   const countries = await listCountries({ limit: 300 });
 
-  return { countries };
+  return { countries, codes: [ "GB", "US" ] };
 };
 
 export const validator = withZod(
@@ -29,10 +30,10 @@ export const validator = withZod(
       .string()
       .nonempty("Service centre name is required")
       .min(3, "Service centre name must be at least 3 characters long"),
-    localities: zfd
-      .repeatable(z
-        .array(z.any())
-        .min(1, "Please select at least one country")),
+    localities: z
+      .object({
+        id: z.array(z.string())
+      })
   })
 );
 
@@ -41,19 +42,29 @@ export const action = async ({ request }: ActionArgs) => {
 
   if (result.error) return validationError(result.error);
 
-  const { data: { localities, ...data } } = result;
+  const { data: { localities: { id: localities }, ...data } } = result;
 
-  const serviceCentre = 
-    await addServiceCentre({ localities: localities.map(l => l.id),  ...data });
+  const serviceCentre = await addServiceCentre({ localities,  ...data });
 
   return redirect('/manage/service-centres');
 };
 
 const Add = () => {
-  const { countries } = useLoaderData();
-  const data = useActionData<typeof action>();
+  const { countries, codes: c } = useLoaderData();
+  const [ codes, setCodes ] = useState(c);
+  const fetchers = codes.map((code: string) => ({ code, fetcher: useFetcher() }));
 
-  const localities = countries.map((c: any) => ({ id: c.isoCode, name: c.name, image: `https://cdn.ipregistry.co/flags/twemoji/${c.isoCode.toLowerCase()}.svg` }));
+  useEffect(() => {
+    fetchers.forEach(({ code, fetcher }: any) => {
+      console.log(code)
+      if (fetcher.state === "idle" && fetcher.data == null) {
+        fetcher.load(`/holidays/${code}/regions`);
+      }
+    });
+  }, [fetchers, codes]);
+
+  const getFetcher = (code: string) => fetchers.find((fetcher: any) => code === fetcher.code);
+  const localities = (countries: any) => countries.map((c: any) => ({ id: c.isoCode, name: c.name })); //, image: `https://cdn.ipregistry.co/flags/twemoji/${c.isoCode.toLowerCase()}.svg` }));
 
   return (
     <Form method="post" validator={validator} id="add-service-centre">
@@ -84,9 +95,15 @@ const Add = () => {
           </div>
 
           <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-            <div className="sm:col-span-4">
-              <Select label="Associated Countries" name="localities" data={localities} />
-            </div>
+            {codes.map((code: string) => {
+              const fetcher = getFetcher(code)?.fetcher;
+              return (
+                <div key={code} className="sm:col-span-4">
+                  {fetcher?.state === "idle" && fetcher?.data &&
+                    <Select label={`Associated Countries ${code}`} name="localities" data={localities(fetcher.data.regions)} />
+                  }
+              </div>)
+              })}
           </div>
         </div>
       </div>
