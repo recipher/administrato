@@ -4,6 +4,13 @@ const { DOMAIN: ns } = process.env;
 
 import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 
+export type User = {
+  id: string;
+  email: string;
+  picture: string;
+  name: string;
+};
+
 type Id = {
   id: string;
 };
@@ -16,8 +23,22 @@ export const getUser = async ({ id }: Id) => {
   return client.getUser({ id });
 };
 
+const toUser = ({ user_id: id, name, picture, email }: any) => ({
+  id,
+  name,
+  picture,
+  email,
+});
+
 export const searchUsers = async ({ search }: SearchOptions, { offset = 0, limit = 20 }: QueryOptions) => {
-  return [];
+  if (search == null) search = '';
+  const users = await client.getUsers({
+    search_engine: 'v3',
+    q: `name:*${search}*`,
+    per_page: limit,
+    page: offset = 0 ? 0 : Math.round(offset / limit)
+  });
+  return users.map(toUser);
 };
 
 export const getOrganizations = async ({ id }: Id) => {

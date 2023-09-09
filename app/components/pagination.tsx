@@ -2,16 +2,20 @@ import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/24/outli
 import { Link, useSearchParams } from '@remix-run/react';
 import pluralize from '~/helpers/pluralize';
 
+const NO_COUNT = -1;
+
 type Props = {
   offset?: number;
   limit: number;
-  totalItems: number;
+  totalItems?: number;
   entity: string;
+  count?: number;
 };
 
-export default function Pagination({ offset = 0, limit, totalItems, entity }: Props) {
-  const from = totalItems <= 0 ? 0 : offset + 1, to = totalItems < offset + limit ? totalItems : offset + limit;
-  const isEnd = offset + limit > totalItems, isStart = offset - limit < 0;
+export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, count, entity }: Props) {
+  const from = totalItems <= 0 ? 0 : offset + 1, to = totalItems < offset + limit && totalItems !== NO_COUNT ? totalItems : offset + limit;
+  const isEnd = (count === 0 || (count && count < limit) || offset + limit > totalItems && totalItems !== NO_COUNT), 
+        isStart = offset - limit < 0;
   const next = isEnd ? offset : offset + limit, 
         previous = isStart ? offset : offset - limit;
 
@@ -27,13 +31,13 @@ export default function Pagination({ offset = 0, limit, totalItems, entity }: Pr
       className="flex items-center justify-between bg-white py-3"
       aria-label="Pagination"
     >
-      <div className="hidden sm:block">
+      {totalItems !== NO_COUNT && <div className="hidden sm:block">
         <p className="text-sm text-gray-700">
           Showing{' '}
           {totalItems > 0 && <><span className="font-medium">{from}</span><span>{' to '}</span><span className="font-medium">{to}</span> of{' '}</>}
           <span className="font-medium">{totalItems}</span> {pluralize(entity, totalItems)}
         </p>
-      </div>
+      </div>}
       <div className="flex flex-1 justify-between sm:justify-end">
         {isStart
           ? <div className="inline-flex items-center pr-4 pb-4 text-sm font-medium text-gray-300">

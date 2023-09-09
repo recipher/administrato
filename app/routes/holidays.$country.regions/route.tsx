@@ -3,7 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 
 import { getCountry, listRegionsByCountry } from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
-import { List } from '~/components/list';
+import { Basic as List } from '~/components/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
@@ -32,7 +32,7 @@ export default function Holidays() {
     <>
       {regions.length === 0 && <Alert level={Level.Info} title={`No regions for ${region.name}`} />}
 
-      <List data={regions} idKey="isoCode" />
+      <List data={regions} idKey="isoCode" buildTo={({ item }) => `../../${item.isoCode}` } />
     </>
   );
 }

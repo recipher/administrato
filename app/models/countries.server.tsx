@@ -8,7 +8,7 @@ import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
-export type Country = s.localities.Selectable;
+export type Country = s.localities.Selectable & { regions: number };
 
 type Count = {
   count: number;

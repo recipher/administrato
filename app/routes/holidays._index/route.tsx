@@ -1,13 +1,14 @@
-import type { ActionArgs, LoaderArgs, V2_MetaFunction } from '@remix-run/node';
+import type { ActionArgs, LoaderArgs } from '@remix-run/node';
 import { Form, Link, useLoaderData } from '@remix-run/react';
 
 import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import { searchCountries, countCountries, syncCountries } from '~/models/countries.server';
+import { searchCountries, countCountries, syncCountries, type Country } from '~/models/countries.server';
 import Header from '~/components/header/with-filter';
 import Image from '~/components/image';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
+import { List } from '~/components/list';
 import pluralize from '~/helpers/pluralize';
 import toNumber from '~/helpers/to-number';
 import { useUser } from '~/hooks';
@@ -34,6 +35,30 @@ export const action = async ({ request }: ActionArgs) => {
   return { countries };
 };
 
+const Country = ((country: Country) => (
+  <>
+    <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
+      src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />
+    <div className="min-w-0 flex-auto">
+      <p className="text-md font-semibold leading-6 text-gray-900">
+        {country.name}
+      </p>
+      <p className="mt-1 flex text-xs leading-5 text-gray-500">
+        {country.isoCode}
+      </p>
+    </div>
+  </>
+));
+
+const Context = (country: Country) => (
+  <>
+    <Link to={`${country.isoCode}/regions`} className="hidden sm:flex sm:flex-col sm:items-end">
+      {country.regions} {pluralize('region', country.regions)}
+    </Link>
+    <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+  </>
+);
+
 export default function Countries() {
   const user = useUser();
   const { countries, count, offset, limit, search } = useLoaderData();
@@ -46,35 +71,7 @@ export default function Countries() {
 
       {count <= 0 && <Alert title={`No countries found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
-      <ul role="list" className="divide-y divide-gray-100">
-        {countries.map((country: any) => (
-          <li key={country.isoCode}>
-            <Link to={country.isoCode}>
-              <div className="flex justify-between gap-x-6 py-3 hover:bg-gray-50">
-                <div className="flex min-w-0 gap-x-4">
-                  <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
-                    src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />
-                  <div className="min-w-0 flex-auto">
-                    <p className="text-md font-semibold leading-6 text-gray-900">
-                      {country.name}
-                    </p>
-                    <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                      {country.isoCode}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex shrink-0 items-center gap-x-6">
-                  <Link to={`${country.isoCode}/regions`} className="hidden sm:flex sm:flex-col sm:items-end">
-                    {country.regions} {pluralize('region', country.regions)}
-                  </Link>
-                  <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-                </div>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
+      <List data={countries} idKey="isoCode" renderItem={Country} renderContext={Context} />
       <Pagination entity='country' totalItems={count} offset={offset} limit={limit} />
 
       {hasPermission(scheduler.create.holiday) &&<div className="pt-6 flex border-t border-gray-900/10  items-center justify-start gap-x-6">

@@ -12,7 +12,7 @@ import {
 import classnames from '~/helpers/classnames';
 import { Organization, type User } from '~/auth/auth.server';
 import Modal, { RefModal } from '~/components/modals/modal';
-import { List } from '~/components/list';
+import { Basic as List } from '~/components/list';
 
 type Props = { user: User };
 
