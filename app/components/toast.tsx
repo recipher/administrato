@@ -62,7 +62,7 @@ export default function Toast({ level = Level.Success, title, message, hideAfter
     <>
       <div
         aria-live="assertive"
-        className="z-50 pointer-events-none fixed inset-0 flex items-end top-3 px-4 py-6 mt-12 mr-2 sm:items-start sm:p-6"
+        className="z-40 pointer-events-none fixed inset-0 flex items-end top-3 px-4 py-6 mt-12 mr-2 sm:items-start sm:p-6"
       >
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           <Transition

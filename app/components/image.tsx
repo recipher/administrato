@@ -13,5 +13,5 @@ export default function Image({ src, fallbackSrc, alt, className }: Props) {
   const addImageFallback = (e: SyntheticEvent<HTMLImageElement, Event>) =>
     e.currentTarget.src = fallbackSrc || DEFAULT_FALLBACK;
 
-  return <img src={src} alt={alt} onError={addImageFallback} className={className} />;
+  return <img src={src} alt={alt} title={alt} onError={addImageFallback} className={className} />;
 };

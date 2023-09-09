@@ -59,8 +59,8 @@ export async function action({ request }: ActionArgs) {
   };
  
   const session = await getSession(request);
-  session.flash("flashText", message);
-  session.flash("flashLevel", Level.Success);
+  session.flash("flasht:text", message);
+  session.flash("flash:level", Level.Success);
 
   return redirect(`?year=${year}`, {
     headers: { "Set-Cookie": await storage.commitSession(session) },

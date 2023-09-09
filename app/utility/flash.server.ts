@@ -23,16 +23,18 @@ export async function getSession(request: Request) {
   return await storage.getSession(request.headers.get("Cookie"));
 };
 
-export async function getSessionFlash(request: Request) {
+export async function getSessionFlash(request: Request, headers: Headers) {
+  if (!headers) headers = new Headers();
   const session = await getSession(request);
 
   const flash: FlashMessage = {
-    level: session.get("flashLevel"),
-    text: session.get("flashText"),
+    level: session.get("flash:level"),
+    text: session.get("flash:text"),
   };
-  if (!flash.text) return {};
+  if (!flash.text) return { headers };
 
-  const headers = { "Set-Cookie": await storage.commitSession(session) };
+  // const headers = { "Set-Cookie": await storage.commitSession(session) };
+  headers.append("Set-Cookie", await storage.commitSession(session));
 
   return { flash, headers };
 };

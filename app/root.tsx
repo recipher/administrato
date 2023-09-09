@@ -14,7 +14,7 @@ import {
 
 import { useChangeLanguage } from "~/hooks";
 import { useTranslation } from "react-i18next";
-import i18next from "~/i18next.server";
+import i18next, { i18nCookie } from "~/i18next.server";
 
 import { auth } from "~/auth/auth.server";
 import { getSessionFlash } from "./utility/flash.server";
@@ -34,15 +34,19 @@ export const links: LinksFunction = () => [
 ];
 
 export const handle = {
-  i18n: [ "navigation", "common" ]
+  i18n: "common"
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const headers = new Headers();
+
   const locale = await i18next.getLocale(request);
   const user = await auth.authenticate("auth0", request);
   // console.log(JSON.stringify(user, null, 2));
+  
+  const { flash } = await getSessionFlash(request, headers);
+  headers.append("Set-Cookie", await i18nCookie.serialize(locale));
 
-  const { flash, headers } = await getSessionFlash(request);
   if (flash) return json({ flash, user, locale }, { headers });
 
   return json({ user, locale });

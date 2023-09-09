@@ -20,7 +20,7 @@ type Organization = {
 };
 
 export const getUser = async ({ id }: Id) => {
-  return client.getUser({ id });
+  return toUser(await client.getUser({ id }));
 };
 
 const toUser = ({ user_id: id, name, picture, email }: any) => ({
@@ -50,7 +50,7 @@ export const getPermissions = async ({ id }: Id) => {
 };
 
 export const updateSettings = async ({ id, settings }: Id & { settings: any }) => {
-  const user = await getUser({ id });
+  const user = await client.getUser({ id });
 
   const { user_metadata: userMetadata } = user;
   const metadata = { ...userMetadata, ...settings };
@@ -59,7 +59,7 @@ export const updateSettings = async ({ id, settings }: Id & { settings: any }) =
 };
 
 export const getTokenizedUser = async ({ id }: Id) => {
-  const user = await getUser({ id });
+  const user = await client.getUser({ id });
 
   const permissions = await getPermissions({ id });
   const organizations = await getOrganizations({ id });

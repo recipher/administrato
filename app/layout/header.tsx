@@ -82,10 +82,10 @@ export default function Header({ user }: Props) {
         <Search />
 
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-            <span className="sr-only">View notifications</span>
+          <Link to="/notifications" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+            <span className="sr-only">View Notifications</span>
             <BellIcon className="h-6 w-6" aria-hidden="true" />
-          </button>
+          </Link>
 
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
         </div>
@@ -123,7 +123,7 @@ export default function Header({ user }: Props) {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+              <Menu.Items className="absolute right-0 z-50 mt-2.5 min-w-max origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                 {userNavigation.map((item) => (
                   <Menu.Item key={item.name}>
                     {({ active }) => (
