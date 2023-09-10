@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { intlFormat } from 'date-fns';
 import { useRef, useState } from 'react';
 import { redirect, type LoaderArgs, type ActionArgs, json } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
@@ -15,6 +15,7 @@ import Tabs from '~/components/tabs';
 import toNumber from '~/helpers/to-number';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { useLocale } from 'remix-i18next';
 
 export const handle = {
   breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
@@ -71,6 +72,7 @@ export async function action({ request }: ActionArgs) {
 const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);
 
 export default function Holidays() {
+  const locale = useLocale();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const submit = useSubmit();
@@ -117,7 +119,8 @@ export default function Holidays() {
                   {holiday.name}
                 </p>
                 <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                  {format(new Date(holiday.date), 'do MMMM yyyy')}
+                  {intlFormat(new Date(holiday.date),
+                    { year: 'numeric', month: 'long', day: 'numeric' }, { locale })}
                 </p>
               </div>
             </div>

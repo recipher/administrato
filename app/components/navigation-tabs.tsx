@@ -41,7 +41,7 @@ export default function Tabs({ tabs }: Props) {
             {tabs.map((tab) => (
               tab.hidden ? null :
                 tab.disabled
-                  ? <div className="whitespace-nowrap text-gray-400 pr-4 mr-4 pb-3 text-sm font-medium">
+                  ? <div className="whitespace-nowrap text-gray-400 pr-4 mr-4 pb-3 text-md font-medium">
                       {t(tab.name)}
                     </div>
                   : <NavLink key={tab.name} to={tab.to}>
@@ -50,7 +50,7 @@ export default function Tabs({ tabs }: Props) {
                           className={classnames(isActive
                             ? 'border-indigo-500 text-indigo-600'
                             : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                          'whitespace-nowrap border-b-2 mr-4 pb-3 text-sm font-medium'
+                          'whitespace-nowrap border-b-2 mr-4 pb-3 text-md font-medium'
                         )}>{t(tab.name)}</div>
                       )}
                     </NavLink>

@@ -11,6 +11,10 @@ type Id = {
   id: string;
 };
 
+type Organization = {
+  organization?: string;
+};
+
 export const getRole = async ({ id }: Id) => {
   return client.getRole({ id });
 };

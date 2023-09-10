@@ -16,11 +16,17 @@ type Id = {
 };
 
 type Organization = {
-  organization: string;
+  organization?: string;
 };
 
 export const getUser = async ({ id }: Id) => {
   return toUser(await client.getUser({ id }));
+};
+
+export const getUserRoles = async ({ id, organization }: Id & Organization) => {
+  return organization 
+    ? client.organizations.getMemberRoles({ id: organization,  user_id: id })
+    : client.getUserRoles({ id });
 };
 
 const toUser = ({ user_id: id, name, picture, email }: any) => ({
@@ -30,7 +36,9 @@ const toUser = ({ user_id: id, name, picture, email }: any) => ({
   email,
 });
 
-export const searchUsers = async ({ search }: SearchOptions, { offset = 0, limit = 20 }: QueryOptions) => {
+export const searchUsers = async ({ search, organization }: SearchOptions & Organization, { offset = 0, limit = 20 }: QueryOptions) => {
+  if (organization) return (await client.organizations.getMembers({ id: organization })).map(toUser);
+  
   if (search == null) search = '';
   const users = await client.getUsers({
     search_engine: 'v3',

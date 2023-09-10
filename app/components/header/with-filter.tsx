@@ -8,12 +8,12 @@ import classnames from '~/helpers/classnames';
 type Props = {
   title: string;
   subtitle?: string;
-  filterTitle: string;
-  filterParam: string;
+  filterTitle?: string;
+  filterParam?: string;
   allowSort?: boolean;
 };
 
-export default function Header({ title, subtitle, filterTitle, filterParam, allowSort }: Props) {
+export default function Header({ title, subtitle, filterTitle = 'Search', filterParam = 'q', allowSort }: Props) {
   const { t } = useTranslation();
   const [ searchParams ] = useSearchParams();
   const filter = searchParams.get(filterParam) || '';

@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import { Link } from '@remix-run/react';
 
-import Image from '../image';
-
 type Props = {
   data?: Array<any>,
   idKey?: string;
@@ -16,7 +14,7 @@ export default function List({ data = [], idKey = "id", renderItem, renderContex
       {data.map((item: any) => (
         <li key={item[idKey]}>
           <Link to={item[idKey]}>
-            <div className="flex justify-between gap-x-6 py-3 hover:bg-gray-50">
+            <div className="flex justify-between gap-x-6 py-3">
               <div className="flex min-w-0 gap-x-4">
                 {renderItem(item)}
               </div>

@@ -23,7 +23,7 @@ const Tabs = ({ tabs, selected, onClick }: Props) => (
             tab.value || tab.name == selected
               ? 'border-indigo-500 text-indigo-600'
               : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-            'flex whitespace-nowrap border-b-2 pt-4 pb-2 text-xs font-medium hover:cursor-pointer'
+            'flex whitespace-nowrap border-b-2 pt-4 pb-2 text-md hover:cursor-pointer'
           )}
           aria-current={tab.value === selected ? 'page' : undefined}
         >
@@ -32,7 +32,7 @@ const Tabs = ({ tabs, selected, onClick }: Props) => (
             <div
               className={classnames(
                 tab.value || tab.name == selected ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
-                'ml-3 hidden rounded-full px-2 text-xs font-medium md:inline-block'
+                'ml-3 hidden rounded-full px-2 text-md md:inline-block'
               )}
             >
               {tab.count}
