@@ -6,6 +6,8 @@ import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
 import { addServiceCentre } from '~/models/service-centres.server';
 import { getCountries, getRegions, type Country } from '~/models/countries.server';
 
@@ -16,7 +18,7 @@ import { CountriesModal } from '~/components/countries/countries';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
-import Button from '~/components/button';
+import Button, { ButtonType } from '~/components/button';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -113,7 +115,10 @@ const Add = () => {
 
             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
               <div className="sm:col-span-4">
-                <Button title="Select a Country" onClick={showCountriesModal} />
+                <Button title="Select a Country" 
+                  icon={MagnifyingGlassIcon} 
+                  type={ButtonType.Secondary} 
+                  onClick={showCountriesModal} />
 
                 {context.fieldErrors.localities && 
                   <p className="mt-2 text-sm text-red-600">
@@ -126,7 +131,7 @@ const Add = () => {
                 return (
                   <div key={code} className="sm:col-span-4">
                     <Select 
-                      label={`Select ${country.name} or a Region`} 
+                      label='Select Country or a Region'
                       name="localities" 
                       defaultValue={country}
                       data={[ country ].concat(regions)} />

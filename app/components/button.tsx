@@ -20,7 +20,7 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
   const { t } = useTranslation();
 
   const classNames = new Map([
-    [ ButtonType.Primary, "bg-indigo-600 font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" ],
+    [ ButtonType.Primary, "bg-indigo-600 font-medium text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" ],
     [ ButtonType.Secondary, "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50" ],
   ]);
 
