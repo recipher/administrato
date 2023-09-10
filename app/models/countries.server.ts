@@ -8,7 +8,7 @@ import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
-export type Country = s.localities.Selectable & { regionCount: number };
+export type Country = s.localities.Selectable & { regionCount: number | undefined };
 
 type Count = {
   count: number;
@@ -38,7 +38,6 @@ export const getCountries = async ({ isoCodes }: IsoCodesOptions) => {
     WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
   `.run(pool);
 };
-
 
 export const getRegions = async ({ isoCodes }: IsoCodesOptions) => {
   const codes = isoCodes.map(code => `'${code}'`).join(',');

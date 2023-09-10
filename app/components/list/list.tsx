@@ -25,8 +25,8 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
 
   return (
     <ul role="list" className="divide-y divide-gray-100">
-      {data.map((item: any) => (
-        <li key={item[idKey]}>
+      {data.map((item: any, index: number) => (
+        <li key={`${item[idKey]}-${index}`}>
           {onClick 
             ? <div className={classnames(item[idKey] ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
                 <Item item={item} />

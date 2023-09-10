@@ -48,7 +48,7 @@ type FlagProps = {
 };
 
 const Flag = ({ country, isoCode, size = 12 }: FlagProps) => {
-  if (isoCode === undefined) return <div className={`h-${size} w-${size} flex-none bg-white`} />
+  if (!isoCode) return <div className={`h-${size} w-${size} flex-none bg-white`} />
   return <Image className={`h-${size} w-${size} flex-none bg-white`} fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
     src={`https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`} alt={country} />
 };
@@ -65,7 +65,7 @@ const Country = ((country: Country) => (
 ));
 
 const Context = (country: Country) => {
-  if (country.isoCode === undefined) return;
+  if (!country.isoCode) return;
   return (
     <>
       <div className="hidden sm:flex sm:flex-col sm:items-end">
@@ -88,19 +88,23 @@ export const CountriesSearch = ({ onSelect }: { onSelect: Function }) => {
   const Search = ({ data }: { data: Array<Country> }) => {
     const [ offset, setOffset ] = useState(0);
     const [ filteredCountries, setFilteredCountries ] = useState(data);
-    const [ countries, setCountries ] = useState(data.slice(0, 6));
+    const [ countries, setCountries ] = useState(data.slice(0, LIMIT));
 
     const ensureSize = (items: Array<Country>) => {
+      const EMPTY = { name: '', isoCode: '', regionCount: undefined, parent: '', createdAt: new Date() };
+      
       if (items.length < LIMIT) {
-        const empty = [...Array(LIMIT - items.length).keys()].map(_ => ({ name: undefined, isoCode: undefined }));
+        const empty = [...Array(LIMIT - items.length).keys()].map(_ => EMPTY);
         return [ ...items, ...empty ];
       }
+      console.log(items.length);
       return items;
     };
 
     const handleFilter = (text: string) => {
-      const filtered = data.filter(c => c.name.toLowerCase().startsWith(text.toLowerCase()));
-      
+      const filtered = !text.length ? data : data
+        .filter(c => c.name.toLowerCase().startsWith(text.toLowerCase()) || 
+                     c.isoCode.toLowerCase() === text.toLowerCase());
       setFilteredCountries(filtered);
       const paged = filtered.slice(offset, offset + LIMIT);
       setOffset(0);
