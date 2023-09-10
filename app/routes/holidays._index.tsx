@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from '@remix-run/node';
+import { json, type ActionArgs, type LoaderArgs } from '@remix-run/node';
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
@@ -21,13 +21,14 @@ const LIMIT = 8;
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const offset = toNumber(url.searchParams.get("offset") as string);
+  const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
 
-  const countries = await searchCountries({ search }, { offset, limit: LIMIT, sortDirection: sort });
+  const countries = await searchCountries({ search }, { offset, limit, sortDirection: sort });
   const count = await countCountries({ search });
 
-  return { countries, count, offset, limit: LIMIT, search };
+  return json({ countries, count, offset, limit, search });
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -54,7 +55,7 @@ const Country = ((country: Country) => (
 const Context = (country: Country) => (
   <>
     <Link to={`${country.isoCode}/regions`} className="hidden sm:flex sm:flex-col sm:items-end">
-      {country.regions} {pluralize('region', country.regions)}
+      {country.regionCount} {pluralize('region', country.regionCount)}
     </Link>
     <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
   </>

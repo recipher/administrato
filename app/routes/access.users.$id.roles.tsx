@@ -3,7 +3,7 @@ import { type LoaderArgs } from '@remix-run/node';
 import { badRequest, notFound } from '~/utility/errors';
 
 import { getUser, getUserRoles, type User } from '~/models/users.server';
-import { listRoles } from '~/models/roles.server';
+import { listRoles, type Role } from '~/models/roles.server';
 
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
@@ -15,6 +15,8 @@ import { Breadcrumb } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';
 import { useLoaderData } from '@remix-run/react';
 import { Cancel, Submit, Toggle } from '~/components/form';
+
+import { security } from '~/auth/permissions';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -44,16 +46,16 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function Roles() {
   const { user, roles, userRoles } = useLoaderData();
-  const ids = userRoles.map(r => r.id);
+  const ids = userRoles.map((r: Role) => r.id);
 
-  const selected = id => ids.includes(id);
+  const selected = (id: string) => ids.includes(id);
 
   return (
     <Form method="GET" validator={validator} id="edit-user-roles">    
       <fieldset className="mt-6">
         <legend className="text-lg leading-6 text-gray-500">Select Roles</legend>
         <div className="mt-4 divide-y divide-gray-200 border-b">
-          {roles.map(({ id, description }) => (
+          {roles.map(({ id, description }: Role) => (
             <div key={id} className="relative flex items-start">
               <div className="min-w-0 flex-1 text-lg leading-6">
                 <label htmlFor={`role[${id}]`} className="py-4 block cursor-pointer text-gray-900">
@@ -69,7 +71,7 @@ export default function Roles() {
       </fieldset>
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <Cancel />
-        <Submit text="Save" submitting="Saving..." permission="security:edit:user" />
+        <Submit text="Save" submitting="Saving..." permission={security.edit.user} />
       </div>
     </Form>
   );

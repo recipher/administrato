@@ -5,6 +5,7 @@ import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 export type Role = {
   id: string;
   name: string;
+  description: string;
 };
 
 type Id = {

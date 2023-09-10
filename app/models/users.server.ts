@@ -37,12 +37,15 @@ const toUser = ({ user_id: id, name, picture, email }: any) => ({
 });
 
 export const searchUsers = async ({ search, organization }: SearchOptions & Organization, { offset = 0, limit = 20 }: QueryOptions) => {
-  if (organization) return (await client.organizations.getMembers({ id: organization })).map(toUser);
-  
   if (search == null) search = '';
+
+  const q = organization 
+    ? `organization_id:${organization} AND name:*${search}*` 
+    : `name:*${search}*`;
+
   const users = await client.getUsers({
     search_engine: 'v3',
-    q: `name:*${search}*`,
+    q,
     per_page: limit,
     page: offset = 0 ? 0 : Math.round(offset / limit)
   });

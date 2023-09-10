@@ -22,9 +22,11 @@ export default function Actions({ actions = [] }: Props) {
 
   return (
       filter(actions).map(action =>
-        action.to === undefined
-          ? <Button {...action} key={action.title} />
-          : <Link to={action.to} key={action.title}><Button {...action} /></Link>
+        <span className="ml-3">
+          {action.to === undefined
+            ? <Button {...action} key={action.title} />
+            : <Link to={action.to} key={action.title}><Button {...action} /></Link>}
+        </span>
       )
   );
 }

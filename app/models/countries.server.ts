@@ -8,7 +8,7 @@ import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
-export type Country = s.localities.Selectable & { regions: number };
+export type Country = s.localities.Selectable & { regionCount: number };
 
 type Count = {
   count: number;
@@ -39,6 +39,16 @@ export const getCountries = async ({ isoCodes }: IsoCodesOptions) => {
   `.run(pool);
 };
 
+
+export const getRegions = async ({ isoCodes }: IsoCodesOptions) => {
+  const codes = isoCodes.map(code => `'${code}'`).join(',');
+  return db.sql<s.localities.SQL, s.localities.Selectable[]>`
+    SELECT r.* FROM ${'localities'} 
+    LEFT JOIN ${'localities'} AS r ON ${'localities'}.${'isoCode'} = r.${'parent'}
+    WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
+  `.run(pool);
+};
+
 export const listCountries = async ({ offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
   return searchCountries({ search: undefined }, { offset, limit, sortDirection });
 };
@@ -53,7 +63,7 @@ export const searchCountries = async ({ search }: SearchOptions, { offset = 0, l
   if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
   return await db.sql<s.localities.SQL, s.localities.Selectable[]>`
-    SELECT ${'localities'}.*, COUNT(r.${'isoCode'}) AS regions FROM ${'localities'}
+    SELECT ${'localities'}.*, COUNT(r.${'isoCode'}) AS "regionCount" FROM ${'localities'}
     LEFT JOIN ${'localities'} AS r ON ${'localities'}.${'isoCode'} = r.${'parent'}
     WHERE ${'localities'}.${'parent'} IS NULL ${searchQuery}
     GROUP BY ${'localities'}.${'isoCode'}
