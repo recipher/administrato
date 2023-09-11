@@ -4,7 +4,7 @@ scheduler
 @aws
 # region eu-west-2
 # profile default
-timeout 10
+timeout 20
 
 @http
 /*

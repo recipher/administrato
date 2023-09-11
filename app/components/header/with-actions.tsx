@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import Tabs, { TabsProps } from '../navigation-tabs';
 import Actions, { ActionsProps } from '../actions';
-// import ButtonGroup from '../button-group';
+import ButtonGroup from '../button-group';
 
 type Props = {
   title: string;
@@ -11,9 +11,10 @@ type Props = {
   tabs?: TabsProps,
   actions?: ActionsProps,
   icon?: ReactNode;
+  group?: boolean;
 };
 
-export default function Header({ title, subtitle, tabs = [], actions = [], icon }: Props) {
+export default function Header({ title, subtitle, tabs = [], actions = [], icon, group = false }: Props) {
   const { t } = useTranslation();
 
   return (
@@ -25,7 +26,9 @@ export default function Header({ title, subtitle, tabs = [], actions = [], icon 
           {subtitle && <p className="ml-2 mr-6 mt-1 truncate text-sm text-gray-500">{t(subtitle)}</p>}
         </div>
         <div className="mt-3 flex md:absolute md:right-0 md:top-0 md:mt-0">
-          <Actions actions={actions} />
+          {group
+            ? <ButtonGroup buttons={actions} title='AA' /> 
+            : <Actions actions={actions} />}
         </div>
       </>
       <Tabs tabs={tabs} />

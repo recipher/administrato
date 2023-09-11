@@ -1,6 +1,7 @@
 const PLURALS = new Map<string, string>([
   [ 'person', 'people' ],
   [ 'country', 'countries' ],
+  [ 'legal-entity', 'legal-entities' ],
 ]);
 
 export default (word: string, count = 0, plural = `${word}s`) => {
@@ -13,8 +14,3 @@ export default (word: string, count = 0, plural = `${word}s`) => {
 
   return pluralize(count, word, plural);
 };
-
-// pluralize(0, 'apple'); // 'apples'
-// pluralize(1, 'apple'); // 'apple'
-// pluralize(2, 'apple'); // 'apples'
-// pluralize(2, 'person', 'people'); // 'people'

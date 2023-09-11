@@ -29,8 +29,9 @@ export default function User() {
   const { user } = useLoaderData();
 
   const tabs = [
+    { name: 'profile', to: 'profile' },
     { name: 'roles', to: 'roles' },
-    { name: 'authorization', to: 'authorization' },
+    { name: 'organizations', to: 'organizations' },
   ];
 
   return (

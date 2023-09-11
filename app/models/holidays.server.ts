@@ -6,7 +6,7 @@ import pool from './db.server';
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
-export type Holiday = s.localities.Selectable;
+export type Holiday = s.holidays.Selectable;
 
 const addHoliday = async (holiday: s.localities.Insertable) => {
   // return db.insert('holidays',

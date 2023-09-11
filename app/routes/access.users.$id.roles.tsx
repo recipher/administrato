@@ -51,13 +51,17 @@ export default function Roles() {
   const selected = (id: string) => ids.includes(id);
 
   return (
-    <Form method="GET" validator={validator} id="edit-user-roles">    
-      <fieldset className="mt-6">
-        <legend className="text-lg leading-6 text-gray-500">Select Roles</legend>
+    <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">
+      <h2 className="text-lg font-medium leading-7 text-gray-900">Select Role Membership</h2>
+      <p className="mt-1 text-sm leading-6 text-gray-500">
+        These settings determine what functionality this user has access to.
+      </p>
+
+      <Form method="GET" validator={validator} id="edit-user-roles">    
         <div className="mt-4 divide-y divide-gray-200 border-b">
           {roles.map(({ id, description }: Role) => (
             <div key={id} className="relative flex items-start">
-              <div className="min-w-0 flex-1 text-lg leading-6">
+              <div className="min-w-0 flex-1 text-md leading-6">
                 <label htmlFor={`role[${id}]`} className="py-4 block cursor-pointer text-gray-900">
                   {description}
                 </label>
@@ -68,11 +72,12 @@ export default function Roles() {
             </div>
           ))}
         </div>
-      </fieldset>
-      <div className="mt-6 flex items-center justify-end gap-x-6">
-        <Cancel />
-        <Submit text="Save" submitting="Saving..." permission={security.edit.user} />
-      </div>
-    </Form>
+
+        <div className="mt-6 flex items-center justify-end gap-x-6">
+          <Cancel />
+          <Submit text="Save" submitting="Saving..." permission={security.edit.user} />
+        </div>
+      </Form>
+    </div>
   );
 };

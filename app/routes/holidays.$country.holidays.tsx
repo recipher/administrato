@@ -1,13 +1,12 @@
 import { intlFormat } from 'date-fns';
 import { useRef, useState } from 'react';
-import { redirect, type LoaderArgs, type ActionArgs, json } from '@remix-run/node';
+import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
-import { XCircleIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { getCountry } from '~/models/countries.server';
-import { listHolidaysByCountry, syncHolidays, deleteHolidayById } from '~/models/holidays.server';
+import { listHolidaysByCountry, syncHolidays, deleteHolidayById, type Holiday } from '~/models/holidays.server';
 import { getSession, storage } from '~/utility/flash.server';
 import Alert, { Level } from '~/components/alert';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
@@ -60,7 +59,7 @@ export async function action({ request }: ActionArgs) {
   };
  
   const session = await getSession(request);
-  session.flash("flasht:text", message);
+  session.flash("flash:text", message);
   session.flash("flash:level", Level.Success);
 
   return redirect(`?year=${year}`, {
@@ -78,7 +77,7 @@ export default function Holidays() {
   const submit = useSubmit();
 
   const confirm = useRef<RefConfirmModal>(null);
-  const [ holiday, setHoliday ] = useState<{ name: string, id: number}>();
+  const [ holiday, setHoliday ] = useState<Holiday>();
   
   const { holidays, country, year } = useLoaderData();
 
@@ -94,14 +93,15 @@ export default function Holidays() {
     navigate(`?${params.toString()}`);
   };
 
-  const remove = (name: string, id: number) => {
-    setHoliday({ name, id });
-    confirm.current?.show("Remove this Holiday?", "Yes, Remove", "Cancel", `Are you sure you want to remove ${name}?`);
+  const remove = (holiday: Holiday) => {
+    setHoliday(holiday);
+    confirm.current?.show("Remove this Holiday?", "Yes, Remove", "Cancel", `Are you sure you want to remove ${holiday.name}?`);
   };
 
   const onConfirmRemove = () => {
     if (holiday === undefined) return;
-    submit({ intent: "remove", holiday, year }, { method: "post", encType: "application/json" });  
+    submit({ intent: "remove", holiday: { id: holiday.id, name: holiday.name }, year }, 
+      { method: "post", encType: "application/json" });  
   };
 
   return (
@@ -128,10 +128,9 @@ export default function Holidays() {
               <div className="hidden group-hover:block">
                 <button
                   type="button"
-                  onClick={() => remove(holiday.name, holiday.id)}
-                  className="inline-flex items-center gap-x-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-sm text-red-600 shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                  onClick={() => remove(holiday)}
+                  className="inline-flex items-center gap-x-1.5 font-medium text-sm text-red-600 hover:text-red-500"
                 >
-                  <XCircleIcon className="-ml-0.5 h-5 w-5" aria-hidden="true" />
                   {t('remove')}
                 </button>
               </div>

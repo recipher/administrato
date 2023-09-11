@@ -66,3 +66,17 @@ export const listServiceCentres = async (query: QueryOptions) => {
     WHERE ${where(query)}
     `.run(pool);
 };
+
+export const listServiceCentresForKeys = async ({ keys }: QueryOptions) => {
+  let query = db.sql<db.SQL>`${'id'} = 0`;
+
+  for (let i = 0; i < keys?.length; i++) {
+    const { keyStart, keyEnd } = keys[i];
+    query = db.sql<db.SQL>`${query} OR (${db.param(keyStart)} = ${'keyStart'} AND ${db.param(keyEnd)} = ${'keyEnd'})`;
+  };
+  
+  return await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+    SELECT * FROM ${'serviceCentres'}
+    WHERE ${query}
+    `.run(pool);
+};

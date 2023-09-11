@@ -97,7 +97,6 @@ export const CountriesSearch = ({ onSelect }: { onSelect: Function }) => {
         const empty = [...Array(LIMIT - items.length).keys()].map(_ => EMPTY);
         return [ ...items, ...empty ];
       }
-      console.log(items.length);
       return items;
     };
 

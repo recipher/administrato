@@ -1,4 +1,4 @@
-import { Fragment, RefObject, useRef, useTransition } from 'react';
+import { Fragment, RefObject, useRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { Form, Link, useLocation, useSubmit } from '@remix-run/react';
 import {
@@ -20,7 +20,7 @@ type Props = { user: User };
 const OrganizationModal = ({ modal, user, onSelect }: { modal: RefObject<RefModal>, onSelect: Function } & Props) => {
   const { t } = useTranslation();
   const organizations = user?.organizations || [];
-  const data = [ { id: "", displayName: "Remove" }, ...organizations ];
+  const data = [ { id: "", displayName: "No Organization" }, ...organizations ];
 
   return (
     <Modal ref={modal}>

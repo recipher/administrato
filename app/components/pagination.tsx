@@ -1,5 +1,6 @@
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/24/outline';
 import { Link, useSearchParams } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
 import pluralize from '~/helpers/pluralize';
 
 const NO_COUNT = -1;
@@ -14,6 +15,8 @@ type Props = {
 };
 
 export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, count, entity, onPage }: Props) {
+  const { t } = useTranslation();
+
   const from = totalItems <= 0 ? 0 : offset + 1, to = totalItems < offset + limit && totalItems !== NO_COUNT ? totalItems : offset + limit;
   const isEnd = (count === 0 || (count && count < limit) || offset + limit >= totalItems && totalItems !== NO_COUNT), 
         isStart = offset - limit < 0;
@@ -47,23 +50,23 @@ export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, c
           <Arrow />{'Previous'}
         </div>
       : <Link to={`?${previousParams.toString()}`} className={className}>
-          {'Previous'}<Arrow />
+          <Arrow />{'Previous'}
         </Link>
   };
 
   return (
     <nav
-      className="flex items-center justify-between bg-white py-3"
+      className="flex items-center justify-between bg-white"
       aria-label="Pagination"
     >
       {totalItems !== NO_COUNT && <div className="hidden sm:block">
         <p className="text-sm text-gray-700">
           Showing{' '}
           {totalItems > 0 && <><span className="font-medium">{from}</span><span>{' to '}</span><span className="font-medium">{to}</span> of{' '}</>}
-          <span className="font-medium">{totalItems}</span> {pluralize(entity, totalItems)}
+          <span className="font-medium">{totalItems}</span> {t(pluralize(entity, totalItems))}
         </p>
       </div>}
-      <div className="flex flex-1 justify-between sm:justify-end mt-3">
+      <div className="flex flex-1 justify-between sm:justify-end mt-4">
         {isStart
           ? <div className="inline-flex items-center pr-4 pb-4 text-sm font-medium text-gray-300">
               <ArrowLongLeftIcon className="mr-3 h-5 w-5 text-gray-200" aria-hidden="true" />

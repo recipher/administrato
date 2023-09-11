@@ -73,7 +73,10 @@ export default function Select({ name, label, data = [], defaultValue = null }: 
                           <div className="flex items-center">
                             {item.image && <img src={item.image} alt={item.name} className="h-6 w-6 flex-shrink-0" />}
                             <span
-                              className={classnames(selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate')}
+                              className={classnames(
+                                selected ? 'font-semibold' : 'font-normal',
+                                item.image ? 'ml-3' : '',
+                                'block truncate')}
                             >
                               {item.name}
                             </span>
