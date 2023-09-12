@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import {
@@ -22,6 +23,8 @@ import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
 import Toast from "./components/toast";
 import { NotFound, Error } from "~/pages";
+
+import ToastContext from "./hooks/use-toast";
 
 import stylesheet from "~/tailwind.css";
 
@@ -52,25 +55,36 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ user, locale });
 };
 
-const App = ({ user, flash, lang, dir, children }: any) =>
-  <html lang={lang} dir={dir} className="h-full bg-white">
-    <head>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <Meta />
-      <Links />
-    </head>
-    <body className="h-full">
-      <Progress />
-      <Layout user={user}>
-        {children}
-        <Toast level={flash?.level} title={flash?.text} />
-      </Layout>
-      <ScrollRestoration />
-      <Scripts />
-      <LiveReload />
-    </body>
-  </html>;
+const App = ({ user, flash, lang, dir, children }: any) => {
+  const [ toast, setToast ] = useState(flash);
+
+  useEffect(() => {
+    setToast(flash);
+  }, [flash]);
+
+  return (
+    <html lang={lang} dir={dir} className="h-full bg-white">
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <Meta />
+        <Links />
+      </head>
+      <body className="h-full">
+        <Progress />
+        <ToastContext.Provider value={{ createToast: setToast, flash: toast }}>
+          <Layout user={user}>
+            {children}
+            <Toast title={toast?.message} level={toast?.level} />
+          </Layout>
+        </ToastContext.Provider>
+        <ScrollRestoration />
+        <Scripts />
+        <LiveReload />
+      </body>
+    </html>
+  );
+}
 
 export default () => {
   const { locale, ...data } = useLoaderData<typeof loader>();

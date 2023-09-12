@@ -12,7 +12,7 @@
   }
   ```
 */
-import { Fragment, useState } from 'react'
+import { Fragment, PropsWithChildren, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
@@ -55,7 +55,7 @@ const team = [
   },
 ]
 
-export default function Example({ open, children }: { open: boolean }) {
+export default function Example({ open, children }: PropsWithChildren<{ open: boolean }>) {
   const [o, setOpen] = useState(open);
 
   return (

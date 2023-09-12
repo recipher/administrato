@@ -1,15 +1,19 @@
-import type { V2_MetaFunction } from "@remix-run/node";
-// import { Link } from "@remix-run/react";
+import { json, type LoaderArgs } from '@remix-run/node';
+import { requireUser } from '~/auth/auth.server';
 
-// import { useOptionalUser } from "~/utils";
+import { manage } from '~/auth/permissions';
 
-export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await requireUser(request);
+  const keys = user.keys.legalEntity;
+  // const serviceCentres = await listServiceCentres({ keys });
 
-export default function Index() {
-  // const user = useOptionalUser();
-  return (
-    <main className="">
-      Legal Entities
-    </main>
-  );
+  // const isoCodes = serviceCentres.map(s => s.localities || []).flat();
+  // const countries = await getCountries({ isoCodes });
+
+  return json({ legalEntities: [] }); //, countries });
+};
+
+export default function LegalEntities() {
+  return null;
 }

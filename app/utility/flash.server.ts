@@ -1,10 +1,12 @@
 import { createCookieSessionStorage } from "@remix-run/node";
 
+import { Level } from '~/components/toast';
+
 const secret = process.env.SESSION_SECRET || "";
 
 export type FlashMessage = {
-  level: string;
-  text: string;
+  level?: Level;
+  message?: string;
 };
 
 // Create a minimal cookie sesssion
@@ -23,17 +25,23 @@ export async function getSession(request: Request) {
   return await storage.getSession(request.headers.get("Cookie"));
 };
 
+export async function setFlashMessage({ request, message = "", level = Level.Info }: { request: Request } & FlashMessage) {
+  const session = await getSession(request);
+  session.flash("flash:message", message);
+  session.flash("flash:level", level);
+  return session;
+};
+
 export async function getSessionFlash(request: Request, headers: Headers) {
   if (!headers) headers = new Headers();
   const session = await getSession(request);
 
   const flash: FlashMessage = {
     level: session.get("flash:level"),
-    text: session.get("flash:text"),
+    message: session.get("flash:message"),
   };
-  if (!flash.text) return { headers };
+  if (!flash.message) return { headers };
 
-  // const headers = { "Set-Cookie": await storage.commitSession(session) };
   headers.append("Set-Cookie", await storage.commitSession(session));
 
   return { flash, headers };

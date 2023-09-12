@@ -1,4 +1,4 @@
-import type { LoaderArgs } from '@remix-run/node';
+import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
@@ -20,7 +20,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const isoCodes = serviceCentres.map(s => s.localities || []).flat();
   const countries = await getCountries({ isoCodes });
 
-  return { serviceCentres, countries };
+  return json({ serviceCentres, countries });
 };
 
 const actions = [

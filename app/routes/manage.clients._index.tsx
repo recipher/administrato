@@ -1,11 +1,19 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import { json, type LoaderArgs } from '@remix-run/node';
+import { requireUser } from '~/auth/auth.server';
 
-export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
+import { manage } from '~/auth/permissions';
 
-export default function Index() {
-  return (
-    <div className="">
-      Clients
-    </div>
-  );
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await requireUser(request);
+  const keys = user.keys.client;
+  // const serviceCentres = await listServiceCentres({ keys });
+
+  // const isoCodes = serviceCentres.map(s => s.localities || []).flat();
+  // const countries = await getCountries({ isoCodes });
+
+  return json({ clients: [] }); //, countries });
+};
+
+export default function Clients() {
+  return null;
 }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import { getSession, storage } from '~/utility/flash.server';
+import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
 import { getTokenizedUser, addSecurityKey, removeSecurityKey, type User } from '~/models/users.server';
 import { listServiceCentresForKeys, type ServiceCentre } from '~/models/service-centres.server';
@@ -59,7 +59,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export async function action({ request }: ActionArgs) {
   const { organization } = await requireUser(request);
 
-  let message, level = Level.Success;
+  let message = "", level = Level.Success;
   const { intent, user, key, entity } = await request.json();
 
   if (intent === 'revoke-authorization') {
@@ -82,10 +82,7 @@ export async function action({ request }: ActionArgs) {
     };
   }
 
-  const session = await getSession(request);
-  session.flash("flash:text", message);
-  session.flash("flash:level", level);
-
+  const session = await setFlashMessage({ request, message, level });
   return redirect("/", {
     headers: { "Set-Cookie": await storage.commitSession(session) },
     status: 200,
@@ -190,32 +187,6 @@ export default function Profile() {
             <div className="flex pt-6">
               <ButtonGroup title="Grant Authorization"
                 buttons={authorizationActions} />
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-lg font-medium leading-7 text-gray-900">Organizations</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-500">Manage organization memberships.</p>
-
-            <ul role="list" className="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
-              {user.organizations.map((organization: any) => (
-                <li key={organization.id} className="group flex justify-between gap-x-6 py-4">
-                  <div>
-                    <span className="font-medium text-md text-gray-900 pr-3">{organization.displayName}</span>
-                  </div>
-                  <div className="hidden group-hover:block">
-                    <button type="button" className="font-medium text-sm text-red-600 hover:text-red-500">
-                      {t('remove')}
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex pt-3">
-              <button type="button" className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500">
-                <span aria-hidden="true">+</span> Join another Organization
-              </button>
             </div>
           </div>
         </div>

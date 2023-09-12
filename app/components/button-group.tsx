@@ -36,12 +36,12 @@ export default function ButtonGroup({ title, buttons }: ButtonGroupProps) {
     <div className="inline-flex rounded-md shadow-sm">
       <button onClick={() => defaultButton.onClick && defaultButton.onClick()}
         type="button"
-        className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-medium text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+        className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-medium text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 focus:outline-none"
       >
         {t(title)}
       </button>
       <Menu as="div" className="relative -ml-px block">
-        <Menu.Button className="relative inline-flex items-center rounded-r-md bg-white px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+        <Menu.Button className="relative inline-flex items-center rounded-r-md bg-white px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 focus:outline-none">
           <span className="sr-only">Open options</span>
           <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
         </Menu.Button>

@@ -1,7 +1,9 @@
-import { forwardRef, Ref, useRef, useState, useImperativeHandle, useEffect } from "react";
-import { useFetcher } from "@remix-run/react";
+import { forwardRef, Ref, useRef, useState, useImperativeHandle, useEffect, Fragment } from "react";
+import { Link, useFetcher } from "@remix-run/react";
 
-import { WalletIcon, PaperClipIcon, IdentificationIcon, ReceiptPercentIcon } from "@heroicons/react/24/outline";
+import { useTranslation } from "react-i18next";
+
+import { WalletIcon, PaperClipIcon, IdentificationIcon, ReceiptPercentIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import Modal, { RefModal } from "../modals/modal";
 import Filter from "../filter";
@@ -9,6 +11,8 @@ import Pagination from "../pagination";
 import List from "../list/basic";
 
 import pluralize from "~/helpers/pluralize";
+import { Menu, Transition } from "@headlessui/react";
+import classnames from "~/helpers/classnames";
 
 const LIMIT = 6;
 
@@ -23,27 +27,69 @@ export const entities = new Map<string, any>([
   [ "provider", { Icon: ReceiptPercentIcon, dataProperty: "providers" }],
 ]);
 
-export const Selector = ({ entity, onSelect }: { entity: string, onSelect: Function }) => {
+const Dropdown = ({ onSelect }: { onSelect: Function }) => {
+  const { t } = useTranslation();
+  
+  const items = Array.from(entities.keys()).map(entity => (
+    { name: entity, onClick: () => onSelect(entity) }
+  ));
+
+  return (
+    <Menu as="div" className="relative">
+      <Menu.Button className="-m-1.5 flex items-center p-1.5 focus:outline-none">
+        <span className="hidden lg:flex lg:items-center">
+          <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />
+        </span>
+      </Menu.Button>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 z-50 mt-2.5 min-w-max origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+          {items.map((item, index) => (
+            <Menu.Item key={index}>
+              {({ active }) => (
+                <div onClick={item.onClick} className={classnames(active ? 'bg-gray-50' : '',
+                  'block pl-3 pr-6 py-1 text-sm leading-6 text-gray-900 cursor-pointer')}>
+                  {t(pluralize(item.name))}
+                </div>
+              )}
+            </Menu.Item>
+          ))}
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
+};
+
+export const Selector = ({ entity, onSelect, onChange }: 
+  { entity: string, onSelect: Function, onChange: Function }) => {
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data == null) {
+    if (fetcher.state === "idle") { //} && fetcher.data == null) {
       fetcher.load(`/manage/${pluralize(entity)}?index`);
     }
-  }, [fetcher]);
+  }, [entity]);
 
   const Select = ({ entity, data }: { entity: string, data: Array<any> }) => {
     const [ offset, setOffset ] = useState(0);
     const [ filteredEntities, setFilteredEntities ] = useState(data);
-    const [ entities, setEntities] = useState(data.slice(0, LIMIT));
 
-    const ensureSize = (items: Array<any>) => {
+    const ensureSize = (items: Array<any> = []) => {
       if (items.length < LIMIT) {
         const empty = [...Array(LIMIT - items.length).keys()].map(_ => ({ id: '', name: '' }));
         return [ ...items, ...empty ];
       }
       return items;
     };
+
+    const [ entities, setEntities] = useState(ensureSize(data?.slice(0, LIMIT)));
 
     const handleFilter = (text: string) => {
       const filtered = !text.length ? data : data
@@ -62,13 +108,16 @@ export const Selector = ({ entity, onSelect }: { entity: string, onSelect: Funct
     
     return (
       <>
-        <Filter entity={entity} onFilter={handleFilter} />
+        <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+          <Filter entity={entity} onFilter={handleFilter} />
+          <Dropdown onSelect={onChange} />
+        </div>   
         <div className="mt-3">
           <List data={entities} onClick={onSelect} />
         </div>
         <Pagination onPage={handlePage}
           entity={entity} offset={offset} limit={LIMIT} 
-          totalItems={filteredEntities.length} />
+          totalItems={filteredEntities?.length || 0} />
       </>
     );
   };
@@ -76,7 +125,7 @@ export const Selector = ({ entity, onSelect }: { entity: string, onSelect: Funct
   type ObjectKey = keyof typeof entities;
   const key = entities.get(entity).dataProperty as ObjectKey;
 
-  return fetcher.data && <Select entity={entity} data={fetcher.data[key]} />;
+  return fetcher.data && <Select entity={entity} data={fetcher.data?.[key]} />;
 };
 
 export const SelectorModal = forwardRef(({ onSelect }: { onSelect: any }, ref: Ref<RefSelectorModal>) => {
@@ -97,8 +146,8 @@ export const SelectorModal = forwardRef(({ onSelect }: { onSelect: any }, ref: R
 
   return (
     <Modal ref={modal}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <Selector entity={entity} onSelect={handleSelect} />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[27rem]">
+        <Selector entity={entity} onSelect={handleSelect} onChange={setEntity} />
       </div>
     </Modal>
   );

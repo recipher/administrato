@@ -14,6 +14,7 @@ export type ButtonProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
   permission?: string;
   disabled?: boolean;
+  submit?: boolean;
 };
 
 export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => {
@@ -26,7 +27,7 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
 
   return (
     <button
-      type="button"
+      type={props.submit === true ? "submit" : "button"}
       onClick={props.onClick}
       className={classnames(classNames.get(type) || "", "inline-flex items-center rounded-md px-3 py-2 text-sm shadow-sm")}
       >

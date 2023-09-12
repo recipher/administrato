@@ -17,8 +17,8 @@ type Props = {
 
 const Item = ({ title, subtitle }: { title: string, subtitle: string }) => (
   <>
-    <div className="flex min-w-0 gap-x-4">
-      <div className="min-w-0 flex-auto min-h-3">
+    <div className="flex min-w-0 items-center gap-x-4 min-h-[2rem]">
+      <div className="min-w-0 flex-auto">
         <p className="text-md font-medium leading-6 text-gray-900">
           {title}
         </p>
@@ -30,7 +30,8 @@ const Item = ({ title, subtitle }: { title: string, subtitle: string }) => (
     <div className="flex shrink-0 items-center gap-x-6">
       <div className="hidden sm:flex sm:flex-col sm:items-end">
       </div>
-      <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+      {title && 
+        <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
     </div>
   </>
 );
@@ -40,7 +41,7 @@ const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey];
 export default function List({ data = [], idKey = "id", nameKey = "name", onClick, buildTo = defaultTo }: Props) {
   return (
     <ul role="list" className="divide-y divide-gray-100">
-      {data.map((item: any, i: number) => (
+      {data?.map((item: any, i: number) => (
         <li key={`${item[idKey]}-${i}`}>
           {onClick
             ? <span className="flex justify-between gap-x-6 py-3 cursor-pointer"

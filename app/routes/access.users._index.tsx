@@ -2,7 +2,7 @@ import { LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import { searchUsers } from '~/models/users.server';
-import { requireUser } from '~/auth/auth.server';
+import { requireUser, User } from '~/auth/auth.server';
 
 import Header from '~/components/header/with-filter';
 import Alert, { Level } from '~/components/alert';
@@ -26,7 +26,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default () => {
-  const { users, search, offset, limit, organization } = useLoaderData();
+  const { users, search, offset, limit } = useLoaderData();
 
   return (
     <>
@@ -34,7 +34,7 @@ export default () => {
 
       {users.length <= 0 && <Alert title={`No users found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
-      <List data={users} />
+      <List data={users} buildTo={({item: user }) => `${user.id}/profile`} />
       <Pagination entity='user' offset={offset} limit={limit} count={users.length} />
     </>
   );
