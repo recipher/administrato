@@ -15,18 +15,8 @@ type Id = {
   id: string;
 };
 
-type Organization = {
+type OrgId = {
   organization?: string;
-};
-
-export const getUser = async ({ id }: Id) => {
-  return toUser(await client.getUser({ id }));
-};
-
-export const getUserRoles = async ({ id, organization }: Id & Organization) => {
-  return organization 
-    ? client.organizations.getMemberRoles({ id: organization,  user_id: id })
-    : client.getUserRoles({ id });
 };
 
 const toUser = ({ user_id: id, name, picture, email }: any) => ({
@@ -36,7 +26,17 @@ const toUser = ({ user_id: id, name, picture, email }: any) => ({
   email,
 });
 
-export const searchUsers = async ({ search, organization }: SearchOptions & Organization, { offset = 0, limit = 20 }: QueryOptions) => {
+export const getUser = async ({ id }: Id) => {
+  return toUser(await client.getUser({ id }));
+};
+
+export const getUserRoles = async ({ id, organization }: Id & OrgId) => {
+  return organization 
+    ? client.organizations.getMemberRoles({ id: organization,  user_id: id })
+    : client.getUserRoles({ id });
+};
+
+export const searchUsers = async ({ search, organization }: SearchOptions & OrgId, { offset = 0, limit = 20 }: QueryOptions) => {
   if (search == null) search = '';
 
   const q = organization 
@@ -60,13 +60,104 @@ export const getPermissions = async ({ id }: Id) => {
   return client.getUserPermissions({ id });
 };
 
+// // Could probably do this in a function
+// export const keyNames = new Map<string, string>([
+//   [ "service-centre", "serviceCentre" ],
+//   [ "legal-entity", "legalEntity" ],
+//   [ "client", "client" ],
+//   [ "provider", "provider" ],
+// ]);
+
+const camelize = (s: string) => s.replace(/-./g, x=>x[1].toUpperCase());
+
+type Org = { id: string, auth0id: string, displayName: string };
+type KeyData = { 
+  entity: string, 
+  organization: Org,
+  key: Array<number> 
+};
+
+const checkUser = (user: any) => {
+  if (user === undefined) throw Error(`User not found`);
+};
+
+const checkOrganizations = (organization: Org, organizations: Array<any>) => {
+  if (organization === undefined) return;
+  if (organizations.map(o => o.id).includes(organization?.auth0id) === false) 
+    throw Error(`User is not a member of ${organization.displayName}`);
+};
+
+const rebuildKeys = (keys: any, orgKey: string, entityKey: string, update: Array<Array<number>>) => {
+  return { 
+    keys: {
+      ...keys,
+      [orgKey]: {
+        ...keys?.[orgKey],
+        [entityKey]: update,
+      }
+    }
+  };
+}
+
+export const addSecurityKey = async ({ id, entity, organization, key }: Id & KeyData) => {
+  const user = await client.getUser({ id });
+
+  checkUser(user);
+  checkOrganizations(organization, await getOrganizations({ id }))
+
+  const orgKey = organization ? organization.auth0id : 'default';
+  const entityKey = camelize(entity);
+  const existing = (user.app_metadata?.keys?.[orgKey]?.[entityKey]) || [];
+
+  const [ start, end ] = key;
+  const update = [ ...existing, key ]
+  // .reduce((keys: Array<Array<number>>, key: Array<number>) => {
+  //   const [ s, e ] = key;
+  //   // return (s == start && e == end) ? keys : [ ...keys, [ s, e ]];
+  // }, []);
+
+  const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
+  
+  return updateMetadata({ id, metadata });
+};
+
+export const removeSecurityKey = async ({ id, entity, organization, key }: Id & KeyData) => {
+  const user = await client.getUser({ id });
+
+  checkUser(user);
+  checkOrganizations(organization, await getOrganizations({ id }));
+
+  const orgKey = organization ? organization.auth0id : 'default';
+  const entityKey = camelize(entity);
+  const existing = (user.app_metadata?.keys?.[orgKey]?.[entityKey]) || [];
+
+  const [ start, end ] = key;
+  const update = existing.reduce((keys: Array<Array<number>>, key: Array<number>) => {
+    const [ s, e ] = key;
+    return (s == start && e == end) ? keys : [ ...keys, [ s, e ]];
+  }, []);
+
+  const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
+  
+  return updateMetadata({ id, metadata });
+};
+
+export const updateMetadata = async ({ id, metadata }: Id & { metadata: any }) => {
+  const user = await client.getUser({ id });
+
+  const { app_metadata: appMetadata } = user;
+  const update = { ...appMetadata, ...metadata };
+
+  return client.updateAppMetadata({ id }, update);
+};
+
 export const updateSettings = async ({ id, settings }: Id & { settings: any }) => {
   const user = await client.getUser({ id });
 
   const { user_metadata: userMetadata } = user;
-  const metadata = { ...userMetadata, ...settings };
+  const update = { ...userMetadata, ...settings };
 
-  return client.updateUserMetadata({ id }, metadata);
+  return client.updateUserMetadata({ id }, update);
 };
 
 export const getTokenizedUser = async ({ id }: Id) => {

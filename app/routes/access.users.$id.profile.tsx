@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { badRequest, notFound } from '~/utility/errors';
 
 import { getSession, storage } from '~/utility/flash.server';
-import { mapProfileToUser } from '~/auth/auth.server';
-import { getTokenizedUser, type User } from '~/models/users.server';
+import { mapProfileToUser, requireUser } from '~/auth/auth.server';
+import { getTokenizedUser, addSecurityKey, removeSecurityKey, type User } from '~/models/users.server';
 import { listServiceCentresForKeys, type ServiceCentre } from '~/models/service-centres.server';
 
 // import { listLegalEntitiesForKeys, type LegalEntity } from '~/models/legal-entities.server';
@@ -20,6 +20,7 @@ import Alert, { Level } from '~/components/alert';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import ButtonGroup, { type ButtonGroupButton } from '~/components/button-group';
+import { useUser } from '~/hooks';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -47,7 +48,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   // const legalEntities = await listLegalEntitiesForKeys({ keys: user?.keys.legalEntity });
   // const providers = await listProvidersForKeys({ keys: user?.keys.provider });
 
-  return { user, authorizables: [
+  return { user, profile, authorizables: [
     ...toAuthorizables('service-centre', serviceCentres),
     // ...toAuthorizables('client', clients),
     // ...toAuthorizables('legal-entity', legalEntities),
@@ -56,20 +57,34 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
-  let message;
-  const { intent, key, entity } = await request.json();
+  const { organization } = await requireUser(request);
+
+  let message, level = Level.Success;
+  const { intent, user, key, entity } = await request.json();
 
   if (intent === 'revoke-authorization') {
-    message = `Authorization Revoked:Authorization was revoked for ${entity.type} ${entity.name}.`;
+    try {
+      await removeSecurityKey({ id: user.id, organization, entity: entity.type, key });
+      message = `Authorization Revoked:Authorization to ${entity.translated} ${entity.name} was revoked from ${user.name}.`;
+    } catch(e: any) {
+      message = `Authorization Revoke Error:${e.message}.`;
+      level = Level.Error;
+    };
   }
 
   if (intent === 'grant-authorization') {
-    message = `Authorization Granted:Authorization was granted for ${entity.type} ${entity.name}.`;
+    try {
+      await addSecurityKey({ id: user.id, organization, entity: entity.type, key });
+      message = `Authorization Granted:Authorization to ${entity.translated} ${entity.name} was granted to ${user.name}.`;
+    } catch(e: any) {
+      message = `Authorization Grant Error:${e.message}`;
+      level = Level.Error;
+    };
   }
 
   const session = await getSession(request);
   session.flash("flash:text", message);
-  session.flash("flash:level", Level.Success);
+  session.flash("flash:level", level);
 
   return redirect("/", {
     headers: { "Set-Cookie": await storage.commitSession(session) },
@@ -89,23 +104,25 @@ export default function Profile() {
   const handleRevoke = (entity: AuthorizableWithType) => {
     setEntity(entity);
     confirm.current?.show(
-      "Revoke this Authorization?", 
+      "Revoke Authorization?", 
       "Yes, Revoke", "Cancel", 
-      `Are you sure you want to remoke authorization for ${t(entity.type)} ${entity.name}?`);
+      `Are you sure you want to revoke authorization to ${t(entity.type)} ${entity.name}?`);
   };
 
   const onConfirmRevoke = () => {
     if (entity === undefined) return;
     submit({ intent: "revoke-authorization", 
+             user: { id: user.id, name: user.name },
              key: [ entity.keyStart, entity.keyEnd ], 
-             entity: { name: entity.name, type: t(entity.type) }}, 
+             entity: { name: entity.name, translated: t(entity.type), type: entity.type }}, 
       { method: "post", encType: "application/json" });
   };
 
   const handleGrant = (type: string, entity: AuthorizableWithType) => {
     submit({ intent: "grant-authorization", 
+             user: { id: user.id, name: user.name },
              key: [ entity.keyStart, entity.keyEnd ], 
-             entity: { name: entity.name, type: t(type) }}, 
+             entity: { name: entity.name, translated: t(type), type }}, 
       { method: "post", encType: "application/json" });
   };
 
@@ -151,7 +168,8 @@ export default function Profile() {
             <h2 className="text-lg font-medium leading-7 text-gray-900">Authorization</h2>
             <p className="mt-1 text-sm leading-6 text-gray-500">Specify system-level entity access.</p>
 
-            <ul role="list" className="mt-6 space-y-3 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
+            {authorizables.length === 0 && <Alert title='No authorizations' level={Level.Warning} />}
+            {authorizables.length > 0 && <ul role="list" className="mt-6 space-y-3 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
               {authorizables.map((authorizable: AuthorizableWithType) => (
                 <li key={authorizable.id} className="group pt-3 sm:flex cursor-pointer">
                   <div className="text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
@@ -167,7 +185,7 @@ export default function Profile() {
                   </div>
                 </li>
               ))}
-            </ul>
+            </ul>}
 
             <div className="flex pt-6">
               <ButtonGroup title="Grant Authorization"

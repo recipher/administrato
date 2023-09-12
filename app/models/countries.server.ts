@@ -31,6 +31,7 @@ export const getCountry = async ({ isoCode }: IsoCodeOptions) => {
 };
 
 export const getCountries = async ({ isoCodes }: IsoCodesOptions) => {
+  if (isoCodes.length === 0) return [];
   const codes = isoCodes.map(code => `'${code}'`).join(',');
   return db.sql<s.localities.SQL, s.localities.Selectable[]>`
     SELECT ${'localities'}.*, p.name AS "parentName" FROM ${'localities'} 
@@ -40,6 +41,7 @@ export const getCountries = async ({ isoCodes }: IsoCodesOptions) => {
 };
 
 export const getRegions = async ({ isoCodes }: IsoCodesOptions) => {
+  if (isoCodes.length === 0) return [];
   const codes = isoCodes.map(code => `'${code}'`).join(',');
   return db.sql<s.localities.SQL, s.localities.Selectable[]>`
     SELECT r.* FROM ${'localities'} 

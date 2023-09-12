@@ -7,39 +7,10 @@ import { List } from '~/components/list';
 import Image from '~/components/image';
 import { ChevronRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Pagination from '../pagination';
+import Filter from '../filter';
 import pluralize from '~/helpers/pluralize';
 
 const LIMIT = 6;
-
-export const Filter = ({ onFilter }: { onFilter: Function }) => {
-  const { t } = useTranslation();
-  const [ text, setText ] = useState('');
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    onFilter(text);
-  };
-
-  return (
-    <form className="relative flex flex-1" onSubmit={handleSubmit}>
-      <label htmlFor="q" className="sr-only">
-        {t('search')}
-      </label>
-      <MagnifyingGlassIcon
-        className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
-        aria-hidden="true"
-      />
-      <input
-        id="q"
-        className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
-        placeholder={t('search')}
-        type="search"
-        name="q"
-        onChange={(e) => setText(e.target.value)}
-      />
-    </form>
-  );
-};
 
 type FlagProps = {
   country: string;
@@ -133,7 +104,7 @@ export const CountriesSearch = ({ onSelect }: { onSelect: Function }) => {
 };
 
 export const CountriesModal = ({ modal, onSelect }: { modal: RefObject<RefModal>, onSelect: Function }) => {
-  const select = (country: Country) => {
+  const handleSelect = (country: Country) => {
     onSelect(country);
     modal.current?.hide();
   };
@@ -141,7 +112,7 @@ export const CountriesModal = ({ modal, onSelect }: { modal: RefObject<RefModal>
   return (
     <Modal ref={modal}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <CountriesSearch onSelect={select} />
+        <CountriesSearch onSelect={handleSelect} />
       </div>
     </Modal>
   );
