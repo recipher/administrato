@@ -12,11 +12,12 @@ import { Organization, mapProfileToUser, requireUser } from '~/auth/auth.server'
 import UserService, { type User } from '~/models/users.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
-import { type RefSelectorModal } from '~/components/manage/selector';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import Button, { ButtonType } from '~/components/button';
 import { Level } from '~/components/toast';
+import { RefModal } from '~/components/modals/modal';
+import { SelectorModal } from '~/components/access/organizations';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -66,14 +67,13 @@ export async function action({ request }: ActionArgs) {
   }
 
   const session = await setFlashMessage({ request, message, level });
-
   return redirect(".", { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
 export default function Organizations() {
   const { t } = useTranslation();
   const { user } = useLoaderData();
-  const modal = useRef<RefSelectorModal>(null);
+  const modal = useRef<RefModal>(null);
   const submit = useSubmit();
   const [ organization, setOrganization ] = useState<Organization>();
 
@@ -96,13 +96,14 @@ export default function Organizations() {
       { method: "post", encType: "application/json" });
   };
 
-  const handleJoin = (organisation: Organization) => {
+  const handleJoin = (organization: Organization) => {
     submit({ intent: "join-organization", 
+             organization,
              user: { id: user.id, name: user.name }},
       { method: "post", encType: "application/json" });
   };
 
-  const showModal = (entity: string) => modal.current?.show(entity);
+  const showModal = () => modal.current?.show();
 
   return (
     <>
@@ -129,12 +130,13 @@ export default function Organizations() {
             </ul>
 
             <div className="flex pt-3">
-              <Button icon={PlusIcon} title={t('Join another Organization')} type={ButtonType.Secondary} />
+              <Button icon={PlusIcon} title={t('Join another Organization')} 
+                type={ButtonType.Secondary} onClick={showModal} />
             </div>
           </div>
         </div>
       </div>
-      {/* <SelectorModal ref={modal} onSelect={handleJoin}/> */}
+      <SelectorModal modal={modal} onSelect={handleJoin} />
       <ConfirmModal ref={confirm} onYes={onConfirmLeave} />
     </>
   );

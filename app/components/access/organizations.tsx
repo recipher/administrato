@@ -1,14 +1,9 @@
 import { useEffect, RefObject, useState } from 'react';
 import { useFetcher } from '@remix-run/react'
-import { type Country } from '~/models/countries.server';
 import Modal, { type RefModal } from '~/components/modals/modal';
 import { Basic as List } from '~/components/list';
-import Image from '~/components/image';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import Pagination from '../pagination';
 import Filter from '../filter';
-import pluralize from '~/helpers/pluralize';
-import classnames from '~/helpers/classnames';
 import { Organization } from '~/auth/auth.server';
 
 const LIMIT = 6;
@@ -27,7 +22,7 @@ export const OrganizationsSearch = ({ onSelect }: { onSelect: Function }) => {
     const [ filteredOrgs, setFilteredOrgs ] = useState(data);
     const [ orgs, setOrgs ] = useState(data.slice(0, LIMIT));
 
-    const ensureSize = (items: Array<Organization>) => {
+    const ensureSize = (items: Array<any>) => {
       const EMPTY = { name: '', id: '' };
       
       if (items.length < LIMIT) {
@@ -56,7 +51,7 @@ export const OrganizationsSearch = ({ onSelect }: { onSelect: Function }) => {
       <>
         <Filter onFilter={handleFilter} />
         <div className="mt-3">
-          <List data={orgs} onClick={onSelect} />
+          <List data={orgs} nameKey="name" onClick={onSelect} />
         </div>
         <Pagination onPage={handlePage}
           entity="organization" offset={offset} limit={LIMIT} 
@@ -68,7 +63,7 @@ export const OrganizationsSearch = ({ onSelect }: { onSelect: Function }) => {
   return fetcher.data && <Search data={fetcher.data.organizations} />;
 };
 
-export const OrganizationsModal = ({ modal, onSelect }: { modal: RefObject<RefModal>, onSelect: Function }) => {
+export const SelectorModal = ({ modal, onSelect }: { modal: RefObject<RefModal>, onSelect: Function }) => {
   const handleSelect = (org: Organization) => {
     onSelect(org);
     modal.current?.hide();

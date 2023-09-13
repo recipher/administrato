@@ -1,6 +1,7 @@
 import { LoaderArgs, json } from '@remix-run/node';
 
 import UserService from '~/models/users.server';
+import OrganizationService from '~/models/organizations.server';
 
 import Header from '~/components/header/with-actions';
 import Alert, { Level } from '~/components/alert';
@@ -11,8 +12,8 @@ import { requireUser } from '~/auth/auth.server';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const u = await requireUser(request);
-  const service = UserService(u);
-  const organizations = await service.getOrganizations({ id: u.id });
+  const service = OrganizationService(); // UserService(u);
+  const organizations = await service.listOrganizations(); // getOrganizations({ id });
 
   return json({ organizations });
 };
