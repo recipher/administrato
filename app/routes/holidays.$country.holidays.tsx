@@ -5,8 +5,8 @@ import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-r
 import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
-import { getCountry } from '~/models/countries.server';
-import { listHolidaysByCountry, syncHolidays, deleteHolidayById, type Holiday } from '~/models/holidays.server';
+import CountryService from '~/models/countries.server';
+import HolidayService, { type Holiday } from '~/models/holidays.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import Alert, { Level } from '~/components/alert';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
@@ -28,14 +28,16 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
-  const country = await getCountry({ isoCode });
+  const countryService = CountryService();
+  const country = await countryService.getCountry({ isoCode });
 
   if (country === undefined) return notFound('Country not found');
 
-  let holidays = await listHolidaysByCountry({ locality: isoCode, year });
+  const holidayService = HolidayService();
+  let holidays = await holidayService.listHolidaysByCountry({ locality: isoCode, year });
 
   if (holidays.length === 0) {
-    const synced = await syncHolidays({ year, locality: isoCode });
+    const synced = await holidayService.syncHolidays({ year, locality: isoCode });
     if (synced !== undefined) holidays = synced;
   }
 
@@ -46,24 +48,23 @@ export async function action({ request }: ActionArgs) {
   let message = "";
   const { intent, year, ...data } = await request.json();
   
+  const service = HolidayService();
+
   if (intent === "remove") {
     const { holiday } = data;
-    await deleteHolidayById(holiday.id);
+    await service.deleteHolidayById(holiday.id);
     message = `Holiday Removed Successfully:${holiday.name}, ${year} has been removed.`;
   };
 
   if (intent === "sync") {
     const { country } = data;
-    await syncHolidays({ year, locality: country.isoCode }, { shouldDelete: true });
+    await service.syncHolidays({ year, locality: country.isoCode }, { shouldDelete: true });
     message = `Synchronization Successful:Holidays for ${country.name}, ${year} have been synchronized.`;
   };
  
   const session = await setFlashMessage({ request, message, level: Level.Success });
-
   return redirect(`?year=${year}`, {
-    headers: { "Set-Cookie": await storage.commitSession(session) },
-    status: 200,
-  });
+    headers: { "Set-Cookie": await storage.commitSession(session) }});
 };
 
 const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);

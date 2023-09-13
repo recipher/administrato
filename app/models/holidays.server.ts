@@ -8,14 +8,6 @@ const holidayAPI = new HolidayAPI({ key });
 
 export type Holiday = s.holidays.Selectable;
 
-export const addHoliday = async (holiday: s.holidays.Insertable) => {
-  const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
-    INSERT INTO ${'holidays'} (${db.cols(holiday)})
-    VALUES (${db.vals(holiday)}) RETURNING *`.run(pool);
-
-  return inserted;
-};
-
 type ListOptions = { 
   year: number;
   locality: string 
@@ -25,45 +17,65 @@ type QueryOptions = {
   shouldDelete?: boolean;
 };
 
-export const deleteHolidayById = async (id: number) => {
-  return db.sql<s.holidays.SQL>`
-    DELETE FROM ${'holidays'} WHERE ${{id}}`
-    .run(pool);
+const service = () => {
+  const addHoliday = async (holiday: s.holidays.Insertable) => {
+    const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+      INSERT INTO ${'holidays'} (${db.cols(holiday)})
+      VALUES (${db.vals(holiday)}) RETURNING *`.run(pool);
+
+    return inserted;
+  };
+
+  const deleteHolidayById = async (id: number) => {
+    return db.sql<s.holidays.SQL>`
+      DELETE FROM ${'holidays'} WHERE ${{id}}`
+      .run(pool);
+  };
+
+  const deleteHolidaysByCountry = async ({ year, locality }: ListOptions) => {
+    return db.sql<s.holidays.SQL>`
+      DELETE FROM ${'holidays'} 
+      WHERE 
+        ${{locality}} AND 
+        ${'entityId'} IS NULL AND 
+        DATE_PART('year', ${'date'}) = ${db.param(year)}`
+      .run(pool);
+  };
+
+  const listHolidaysByCountry = async ({ year, locality }: ListOptions) => {
+    return db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+      SELECT * FROM ${'holidays'} 
+      WHERE 
+        ${{locality}} AND 
+        ${'entityId'} IS NULL AND 
+        DATE_PART('year', ${'date'}) = ${db.param(year)}
+      ORDER BY ${'date'} ASC`.run(pool);
+  };
+
+  const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
+    if (shouldDelete) await deleteHolidaysByCountry({ year, locality });
+
+    const { holidays = [] } = await holidayAPI.holidays({ country: locality, year, public: true });
+
+    if (holidays.length === 0) return;
+
+    await db.insert('holidays', holidays.map(holiday => (
+      { name: holiday.name, 
+        date: new Date(holiday.date), 
+        observed: new Date(holiday.observed), 
+        locality: holiday.country }
+    ))).run(pool);
+
+    return listHolidaysByCountry({ year, locality });
+  };
+
+  return {
+    addHoliday,
+    deleteHolidayById,
+    deleteHolidaysByCountry,
+    listHolidaysByCountry,
+    syncHolidays,
+  };
 };
 
-export const deleteHolidaysByCountry = async ({ year, locality }: ListOptions) => {
-  return db.sql<s.holidays.SQL>`
-    DELETE FROM ${'holidays'} 
-    WHERE 
-      ${{locality}} AND 
-      ${'entityId'} IS NULL AND 
-      DATE_PART('year', ${'date'}) = ${db.param(year)}`
-    .run(pool);
-};
-
-export const listHolidaysByCountry = async ({ year, locality }: ListOptions) => {
-  return db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
-    SELECT * FROM ${'holidays'} 
-    WHERE 
-      ${{locality}} AND 
-      ${'entityId'} IS NULL AND 
-      DATE_PART('year', ${'date'}) = ${db.param(year)}
-    ORDER BY ${'date'} ASC`.run(pool);
-};
-
-export const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
-  if (shouldDelete) await deleteHolidaysByCountry({ year, locality });
-
-  const { holidays = [] } = await holidayAPI.holidays({ country: locality, year, public: true });
-
-  if (holidays.length === 0) return;
-
-  await db.insert('holidays', holidays.map(holiday => (
-    { name: holiday.name, 
-      date: new Date(holiday.date), 
-      observed: new Date(holiday.observed), 
-      locality: holiday.country }
-  ))).run(pool);
-
-  return listHolidaysByCountry({ year, locality });
-};
+export default service;

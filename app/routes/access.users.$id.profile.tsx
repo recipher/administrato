@@ -8,7 +8,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/models/users.server';
-import { listServiceCentresForKeys, type ServiceCentre } from '~/models/service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from '~/models/service-centres.server';
 
 // import { listLegalEntitiesForKeys, type LegalEntity } from '~/models/legal-entities.server';
 // import { listClientsForKeys, type Client } from '~/models/clients.server';
@@ -20,7 +20,6 @@ import Alert, { Level } from '~/components/alert';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import ButtonGroup, { type ButtonGroupButton } from '~/components/button-group';
-import { useUser } from '~/hooks';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -35,6 +34,8 @@ const toAuthorizables = (type: string, authorizables: Array<Authorizable>) => {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const { id } = params;
 
   if (id === undefined) return badRequest();
@@ -44,7 +45,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
-  const serviceCentres = await listServiceCentresForKeys({ keys: user?.keys.serviceCentre });
+  const serviceCentreService = ServiceCentreService(u);
+  const serviceCentres = await serviceCentreService.listServiceCentresForKeys({ keys: user?.keys.serviceCentre });
   // const clients = await listClientsForKeys({ keys: user?.keys.client });
   // const legalEntities = await listLegalEntitiesForKeys({ keys: user?.keys.legalEntity });
   // const providers = await listProvidersForKeys({ keys: user?.keys.provider });

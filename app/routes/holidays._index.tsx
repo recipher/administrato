@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import { searchCountries, countCountries, syncCountries, type Country } from '~/models/countries.server';
+import CountryService, { type Country } from '~/models/countries.server';
 import { useUser } from '~/hooks';
 import Header from '~/components/header/with-filter';
 import Image from '~/components/image';
@@ -12,6 +12,7 @@ import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
 import { List } from '~/components/list';
 import Button, { ButtonType } from '~/components/button';
+import { Flag } from '~/components/countries/countries';
 
 import pluralize from '~/helpers/pluralize';
 import toNumber from '~/helpers/to-number';
@@ -27,22 +28,24 @@ export const loader = async ({ request }: LoaderArgs) => {
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
 
-  const countries = await searchCountries({ search }, { offset, limit, sortDirection: sort });
-  const count = await countCountries({ search });
+  const service = CountryService();
+
+  const countries = await service.searchCountries({ search }, { offset, limit, sortDirection: sort });
+  const count = await service.countCountries({ search });
 
   return json({ countries, count, offset, limit, search });
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const countries = await syncCountries();
+  const service = CountryService();
+  const countries = await service.syncCountries();
 
   return { countries };
 };
 
 const Country = ((country: Country) => (
   <>
-    <Image className="h-12 w-12 flex-none bg-white" fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
-      src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} alt={country.name} />
+    <Flag size={12} country={country.name} isoCode={country.isoCode} />
     <div className="min-w-0 flex-auto">
       <p className="text-md font-semibold leading-6 text-gray-900">
         {country.name}

@@ -2,8 +2,8 @@ import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
-import { getCountry } from '~/models/countries.server';
-import { addHoliday } from '~/models/holidays.server';
+import CountryService from '~/models/countries.server';
+import HolidayService from '~/models/holidays.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import { ValidatedForm as Form, validationError } from 'remix-validated-form';
@@ -27,7 +27,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
-  const country = await getCountry({ isoCode });
+  const service = CountryService();
+  const country = await service.getCountry({ isoCode });
 
   if (country === undefined) return notFound('Country not found');
 
@@ -63,7 +64,8 @@ export async function action({ request, params }: ActionArgs) {
   const { data: { name, date }} = result;
 
   try {
-    await addHoliday({ name, date, locality: isoCode });
+    const service = HolidayService();
+    await service.addHoliday({ name, date, locality: isoCode });
     message = `Holiday Added Successfully:${name} was added to ${year}`;
   } catch(e: any) {
     message = `Holiday Add Error:${e.message}`;

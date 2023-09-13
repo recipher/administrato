@@ -1,7 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import { getCountry, listRegionsByCountry } from '~/models/countries.server';
+import CountryService from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { Basic as List } from '~/components/list';
 
@@ -19,8 +19,9 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
-  const region = await getCountry({ isoCode });
-  const regions = await listRegionsByCountry({ parent: isoCode });
+  const service = CountryService();
+  const region = await service.getCountry({ isoCode });
+  const regions = await service.listRegionsByCountry({ parent: isoCode });
 
   return json({ country: { isoCode }, regions, region });
 };

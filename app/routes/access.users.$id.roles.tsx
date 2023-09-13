@@ -5,7 +5,7 @@ import { Form, useFetcher, useLoaderData } from '@remix-run/react';
 import { badRequest, notFound } from '~/utility/errors';
 
 import UserService, { type User } from '~/models/users.server';
-import { listRoles, type Role } from '~/models/roles.server';
+import RoleService, { type Role } from '~/models/roles.server';
 
 import { Breadcrumb } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';
@@ -40,11 +40,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
   const userService = UserService(u);
+  const roleService = RoleService();
 
   const user = await userService.getUser({ id });
   if (user === undefined) return notFound();
 
-  const roles = await listRoles();
+  const roles = await roleService.listRoles();
   const userRoles = await userService.getUserRoles({ id })
 
   return { user, roles: determineMembership(roles, userRoles), userRoles };

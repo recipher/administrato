@@ -2,8 +2,8 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import { listServiceCentres, type ServiceCentre } from '~/models/service-centres.server';
-import { getCountries, type Country } from '~/models/countries.server';
+import ServiceCentreService, { type ServiceCentre } from '~/models/service-centres.server';
+import CountryService, { type Country } from '~/models/countries.server';
 
 import Header from "~/components/header/with-actions";
 import Alert, { Level } from '~/components/alert';
@@ -14,11 +14,13 @@ import { manage } from '~/auth/permissions';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
-  const keys = user.keys.serviceCentre;
-  const serviceCentres = await listServiceCentres({ keys });
+  
+  const serviceCentreService = ServiceCentreService(user);
+  const serviceCentres = await serviceCentreService.listServiceCentres();
 
   const isoCodes = serviceCentres.map(s => s.localities || []).flat();
-  const countries = await getCountries({ isoCodes });
+  const countryService = CountryService();
+  const countries = await countryService.getCountries({ isoCodes });
 
   return json({ serviceCentres, countries });
 };

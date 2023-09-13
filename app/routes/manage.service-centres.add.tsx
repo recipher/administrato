@@ -8,8 +8,8 @@ import { z } from 'zod';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import { addServiceCentre } from '~/models/service-centres.server';
-import { getCountries, getRegions, type Country } from '~/models/countries.server';
+import ServiceCentreService from '~/models/service-centres.server';
+import CountryService, { type Country } from '~/models/countries.server';
 
 import { Input, Select, Cancel, Submit, 
          Body, Section, Group, Field, Footer } from '~/components/form';
@@ -21,6 +21,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
+import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -41,12 +42,14 @@ export const validator = withZod(
 );
 
 export const action = async ({ request }: ActionArgs) => {
+  const u = await requireUser(request);
   const formData = await request.formData()
 
   if (formData.get('intent') === 'change-codes') {
+    const service = CountryService();
     const codes = String(formData.get('codes')).split(',');
-    const countries = await getCountries({ isoCodes: codes });
-    const regions = await getRegions({ isoCodes: codes });
+    const countries = await service.getCountries({ isoCodes: codes });
+    const regions = await service.getRegions({ isoCodes: codes });
     return json({ codes, regions, countries });
   }
 
@@ -55,7 +58,9 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { data: { localities: { id: codes }, ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
-  const serviceCentre = await addServiceCentre({ localities, ...data });
+  
+  const service = ServiceCentreService(u);
+  const serviceCentre = await service.addServiceCentre({ localities, ...data });
   return redirect('/manage/service-centres');
 };
 

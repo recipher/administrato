@@ -3,7 +3,7 @@ import { type LoaderArgs } from '@remix-run/node';
 import { badRequest, notFound } from '~/utility/errors';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import { getRole, type Role } from '~/models/roles.server';
+import RoleService, { type Role } from '~/models/roles.server';
 
 export const handle = {
   breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>
@@ -15,7 +15,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest();
 
-  const role = await getRole({ id });
+  const service = RoleService();
+  const role = await service.getRole({ id });
 
   if (role === undefined) return notFound();
 

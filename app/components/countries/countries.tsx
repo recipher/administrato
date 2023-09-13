@@ -17,7 +17,7 @@ type FlagProps = {
   size?: number;
 };
 
-const Flag = ({ country, isoCode, size = 12 }: FlagProps) => {
+export const Flag = ({ country, isoCode, size = 12 }: FlagProps) => {
   if (!isoCode) return <div className={`h-${size} w-${size} flex-none bg-white`} />
   return <Image className={`h-${size} w-${size} flex-none bg-white`} fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
     src={`https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`} alt={country} />

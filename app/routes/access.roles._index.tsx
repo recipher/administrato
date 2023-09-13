@@ -1,6 +1,6 @@
 import { LoaderArgs } from '@remix-run/node';
 
-import { listRoles } from '~/models/roles.server';
+import RoleService from '~/models/roles.server';
 
 import Header from '~/components/header/with-actions';
 import Alert, { Level } from '~/components/alert';
@@ -9,7 +9,8 @@ import { useLoaderData } from '@remix-run/react';
 import List from '~/components/list/basic';
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const roles = await listRoles();
+  const service = RoleService();
+  const roles = await service.listRoles();
 
   return { roles };
 };
