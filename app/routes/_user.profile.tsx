@@ -1,14 +1,14 @@
+import { useState } from 'react';
 import { redirect, type ActionArgs } from '@remix-run/node';
 import { useSubmit } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "remix-i18next";
-import { getFixedT } from "i18next";
 
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 import { updateSettings, getTokenizedUser } from '~/models/users.server';
 import { getSession, storage, mapProfileToUser } from '~/auth/auth.server';
-import { getSession as getFlashSession, storage as flash } from '~/utility/flash.server';
+import { getSession as getFlashSession, storage as flash, setFlashMessage } from '~/utility/flash.server';
 
 import Image from '~/components/image';
 import { Level } from '~/components/alert';
@@ -24,7 +24,7 @@ export const handle = {
 };
 
 export async function action({ request }: ActionArgs) {
-  let message, level;
+  let message = "", level = Level.Success;
   const { intent, ...props } = await request.json();
   let { redirectTo = "/profile" } = props;
   
@@ -51,22 +51,20 @@ export async function action({ request }: ActionArgs) {
     redirectTo = `${redirectTo}?lng=${lng}`;
   };
  
-  const session = await getFlashSession(request);
-  session.flash("flash:text", message);
-  session.flash("flash:level", level);
-
+  const session = await setFlashMessage({ request, message, level });
   headers.append("Set-Cookie", await flash.commitSession(session));
   
   return redirect(redirectTo, { headers, status: 302 });
 };
 
 const Languages = () => {
-  const { t, i18n: { getFixedT } } = useTranslation("language");
+  const { t, i18n: { getFixedT }} = useTranslation("language");
   const submit = useSubmit();
   const locale = useLocale();
+  const [ current, setCurrent ] = useState<string | undefined>();
 
   const languages = i18n.supportedLngs
-    .map((lng: string) => lng === 'en' ? { lng, country: 'gb' } : { lng, country: lng });
+    .map((lng: string) => lng === 'en' ? { lng, country: 'us' } : { lng, country: lng });
 
   const setLanguage = ((lng: string) => {
     const t = getFixedT(lng, "language"); // Have to use the new language to translate
@@ -77,12 +75,15 @@ const Languages = () => {
     <ul>
       {languages.map(({ lng, country }) => (
         <li key={lng} className="float-left">
-          <span onClick={() => setLanguage(lng)}>
+          <div onClick={() => setLanguage(lng)} onMouseOver={() => setCurrent(lng)}>
             <Image className={classnames(locale === lng ? "opacity-80" : "grayscale opacity-40",
               "h-8 w-8 flex-none bg-white mr-4 cursor-pointer")}
               alt={t(lng)}
               src={`https://cdn.ipregistry.co/flags/twemoji/${country.toLowerCase()}.svg`} />
-          </span>
+          </div>
+          <div className={classnames(current === lng ? "visible" : "invisible", "text-sm text-gray-600")}>
+            {getFixedT(lng, "language")(lng)}
+          </div>
         </li>
       ))}
     </ul>

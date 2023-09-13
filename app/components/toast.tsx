@@ -18,7 +18,7 @@ export enum Level {
 
 type Props = {
   level?: Level;
-  title: string;
+  title?: string;
   message?: string;
   hideAfter?: number;
 };
@@ -38,7 +38,7 @@ const icons = new Map<Level, any>([
 ]);
 
 export default function Toast({ level = Level.Success, title, message, hideAfter = 10 }: Props) {
-  if (title === undefined) return;
+  if (message === undefined) return;
 
   const [show, setShow] = useState(true);
 
@@ -47,16 +47,16 @@ export default function Toast({ level = Level.Success, title, message, hideAfter
       setShow(false);
     }, hideAfter * 1000);
     return () => clearInterval(intervalId);
-  }, [hideAfter, title, level, show]);
+  }, [hideAfter, message, title, level, show]);
 
   useEffect(() => {
     setShow(true);
-  }, [title, level]);
+  }, [message, title, level]);
 
   const colour = colours.get(level);
   const Icon = icons.get(level);
 
-  if (title.includes(':')) [ title, message ] = title.split(':');
+  if (message.includes(':')) [ title, message ] = message.split(':');
 
   return (
     <>

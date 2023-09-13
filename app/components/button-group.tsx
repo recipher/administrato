@@ -7,14 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import classnames from '~/helpers/classnames';
 
-const items = [
-  { name: 'Save and schedule', href: '#', default: true },
-  { name: 'Save and publish', href: '#' },
-  { name: 'Export PDF', href: '#' },
-];
-
 export type ButtonGroupButton = {
-  name: string,
+  title: string,
   to?: string,
   icon?: any,
   onClick?: Function,
@@ -57,19 +51,19 @@ export default function ButtonGroup({ title, buttons }: ButtonGroupProps) {
           <Menu.Items className="absolute left-0 z-50 -mr-1 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               {buttons.map((button) => (
-                <Menu.Item key={button.name}>
+                <Menu.Item key={button.title}>
                   {({ active }) => {
                     const className = classnames('block px-4 py-2 text-sm cursor-pointer',
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700');
                     return button.onClick
                       ? <div className={className} onClick={() => button.onClick && button.onClick()}>
                           {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />} 
-                          {t(button.name)}
+                          {t(button.title)}
                         </div>
                       : <Link to={button.to || '.'}
                           className={className}>
                           {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />} 
-                          {t(button.name)}
+                          {t(button.title)}
                         </Link>
                   }}
                 </Menu.Item>

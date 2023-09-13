@@ -1,9 +1,10 @@
+import { useContext, useEffect, useState } from 'react';
 import { ActionArgs, json, type LoaderArgs } from '@remix-run/node';
 import { Form, useFetcher, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import { getUser, getUserRoles, type User } from '~/models/users.server';
+import { getUser, getUserRoles, assignRole, removeRole, type User } from '~/models/users.server';
 import { listRoles, type Role } from '~/models/roles.server';
 
 import { Breadcrumb } from '~/layout/breadcrumbs';
@@ -11,9 +12,9 @@ import { requireUser } from '~/auth/auth.server';
 
 import { Toggle } from '~/components/form';
 import { Level } from '~/components/toast';
+import Spinner from '~/components/spinner';
 
 import ToastContext from '~/hooks/use-toast';
-import { useContext, useEffect } from 'react';
 
 import { security } from '~/auth/permissions';
 
@@ -21,6 +22,16 @@ export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/roles`} name="roles" current={current} />
 };
+
+type MemberRole = Role & { isMember: boolean };
+
+const determineMembership = (roles: Array<any>, userRoles: Array<any>) => 
+  roles.map(role => {
+    const ids = userRoles.map((r: Role) => r.id);
+    const isMember = (id: string) => ids.includes(id);
+    return { ...role, isMember: isMember(role.id) };
+  }
+);
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { id } = params;
@@ -34,18 +45,32 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const roles = await listRoles();
   const userRoles = await getUserRoles({ id, organization: u.organization?.auth0id })
-
-  return { user, roles, userRoles };
+    
+  return { user, roles: determineMembership(roles, userRoles), userRoles };
 };
 
 export async function action({ request }: ActionArgs) {
+  const { organization } = await requireUser(request);
+
   let level = Level.Success, message = "";
-  const { role: { id, name: role }, value, user: { id: user, name }} = await request.json();
+  const { role, value, user } = await request.json();
 
   if (value) {
-    message = `Role Assigned:${role} role assigned to ${name}.`;
+    try {
+      await assignRole({ id: user.id, role: role.id, organization });
+      message = `Role Assigned:${role.name} role assigned to ${user.name}.`;
+    } catch(e: any) {
+      message = `Role Assign Error:${e.messsage}`;
+      level = Level.Error;
+    }
   } else {
-    message = `Role Removed:${role} role removed from ${name}.`;
+    try {
+      await removeRole({ id: user.id, role: role.id, organization });
+      message = `Role Removed:${role.name} role removed from ${user.name}.`;
+    } catch(e: any) {
+      message = `Role Remove Error:${e.messsage}`;
+      level = Level.Error;
+    }
   }
 
   return json({ flash: { message, level }});
@@ -55,14 +80,13 @@ export default function Roles() {
   const { createToast } = useContext(ToastContext);
 
   const fetcher = useFetcher();
+  const [ role, setRole ] = useState<string | undefined>();
 
-  const { user, roles, userRoles } = useLoaderData();
-  const ids = userRoles.map((r: Role) => r.id);
-
-  const selected = (id: string) => ids.includes(id);
-
+  const { user, roles } = useLoaderData();
+  
   const handleChange = (id: string, value: boolean) => {
     const name = roles.find((r: Role) => r.id === id)?.description;
+    setRole(id);
     fetcher.submit({ role: { id, name }, value, user }, 
       { method: "POST", encType: "application/json" });
   };
@@ -80,15 +104,16 @@ export default function Roles() {
 
       <Form method="POST" id="edit-user-roles">
         <div className="mt-4 divide-y divide-gray-200 border-b">
-          {roles.map(({ id, description }: Role, i: number) => (
+          {roles.map(({ id, description, isMember }: MemberRole) => (
             <div key={id} className="relative flex items-start">
               <div className="min-w-0 flex-1 text-md leading-6">
                 <label htmlFor={id} className="py-4 block cursor-pointer text-gray-900">
-                  {description}
+                  <span className="mr-3">{description}</span>
+                  {fetcher.state === 'submitting' && role === id && <Spinner />}
                 </label>
               </div>
               <div className="ml-3 my-4 flex h-6 items-center">
-                <Toggle name={id} on={selected(id)} onChange={handleChange} />
+                <Toggle name={id} on={isMember} onChange={handleChange} />
               </div>
             </div>
           ))}

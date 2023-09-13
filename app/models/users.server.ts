@@ -56,17 +56,21 @@ export const getOrganizations = async ({ id }: Id) => {
   return client.users.getUserOrganizations({ id });
 };
 
-export const getPermissions = async ({ id }: Id) => {
-  return client.getUserPermissions({ id });
+export const getUserPermissionsForOrganisation = async (props: Id & OrgId) => {
+  const roles = await getUserRoles(props);
+
+  const permissions = await Promise.all(roles.map(async role =>
+    client.getPermissionsInRole({ id: role.id as string })
+  ));
+
+  return permissions.flat();
 };
 
-// // Could probably do this in a function
-// export const keyNames = new Map<string, string>([
-//   [ "service-centre", "serviceCentre" ],
-//   [ "legal-entity", "legalEntity" ],
-//   [ "client", "client" ],
-//   [ "provider", "provider" ],
-// ]);
+export const getPermissions = async ({ id, organization }: Id & OrgId) => {
+  return organization 
+    ? getUserPermissionsForOrganisation({ id, organization })
+    : client.getUserPermissions({ id });
+};
 
 const camelize = (s: string) => s.replace(/-./g, x=>x[1].toUpperCase());
 
@@ -109,12 +113,12 @@ export const addSecurityKey = async ({ id, entity, organization, key }: Id & Key
   const entityKey = camelize(entity);
   const existing = (user.app_metadata?.keys?.[orgKey]?.[entityKey]) || [];
 
-  const [ start, end ] = key;
-  const update = [ ...existing, key ]
-  // .reduce((keys: Array<Array<number>>, key: Array<number>) => {
-  //   const [ s, e ] = key;
-  //   // return (s == start && e == end) ? keys : [ ...keys, [ s, e ]];
-  // }, []);
+  const update = [ ...existing, key ].reduce((keys: Array<Array<number>>, key: Array<number>) => {
+    const [ start, end ] = key;
+    return (keys.find(([ s, e ]) => s === start && e === end)) 
+      ? keys : 
+      [ ...keys, key ];
+  }, []);
 
   const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
   
@@ -142,6 +146,30 @@ export const removeSecurityKey = async ({ id, entity, organization, key }: Id & 
   return updateMetadata({ id, metadata });
 };
 
+export const assignRole = async({ id, role, organization }: Id & { role: string, organization: Org }) => {
+  const user = await client.getUser({ id });
+
+  checkUser(user);
+  checkOrganizations(organization, await getOrganizations({ id }));
+
+  const roles = { roles: [ role ] };
+  return organization
+    ? client.organizations.addMemberRoles({ id: organization.auth0id, user_id: id }, roles)
+    : client.assignRolestoUser({ id }, roles);
+};
+
+export const removeRole = async({ id, role, organization }: Id & { role: string, organization: Org }) => {
+  const user = await client.getUser({ id });
+
+  checkUser(user);
+  checkOrganizations(organization, await getOrganizations({ id }));
+
+  const roles = { roles: [ role ] };
+  return organization
+    ? client.organizations.removeMemberRoles({ id: organization.auth0id, user_id: id }, roles)
+    : client.removeRolesFromUser({ id }, roles);
+};
+
 export const updateMetadata = async ({ id, metadata }: Id & { metadata: any }) => {
   const user = await client.getUser({ id });
 
@@ -163,9 +191,10 @@ export const updateSettings = async ({ id, settings }: Id & { settings: any }) =
 export const getTokenizedUser = async ({ id }: Id) => {
   const user = await client.getUser({ id });
 
-  const permissions = await getPermissions({ id });
   const organizations = await getOrganizations({ id });
+  const organization = user.user_metadata?.organization; // No way to get orgId
 
+  const permissions = await getPermissions({ id, organization });
   const namespaces = permissions.reduce((ns, perm) =>
     ns.includes(perm.resource_server_identifier as never) 
       ? ns 

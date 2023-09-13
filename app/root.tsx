@@ -17,14 +17,14 @@ import { useChangeLanguage } from "~/hooks";
 import { useTranslation } from "react-i18next";
 import i18next, { i18nCookie } from "~/i18next.server";
 
+import ToastContext from "./hooks/use-toast";
+
 import { auth } from "~/auth/auth.server";
 import { getSessionFlash } from "./utility/flash.server";
 import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
 import Toast from "./components/toast";
 import { NotFound, Error } from "~/pages";
-
-import ToastContext from "./hooks/use-toast";
 
 import stylesheet from "~/tailwind.css";
 
@@ -37,7 +37,7 @@ export const links: LinksFunction = () => [
 ];
 
 export const handle = {
-  i18n: "common"
+  i18n: [ "common", "date" ]
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -56,10 +56,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const App = ({ user, flash, lang, dir, children }: any) => {
-  const [ toast, setToast ] = useState(flash);
+  const [ toast, createToast ] = useState(flash);
 
   useEffect(() => {
-    setToast(flash);
+    createToast(flash);
   }, [flash]);
 
   return (
@@ -72,10 +72,10 @@ const App = ({ user, flash, lang, dir, children }: any) => {
       </head>
       <body className="h-full">
         <Progress />
-        <ToastContext.Provider value={{ createToast: setToast, flash: toast }}>
+        <ToastContext.Provider value={{ toast, createToast }}>
           <Layout user={user}>
             {children}
-            <Toast title={toast?.message} level={toast?.level} />
+            <Toast {...toast} />
           </Layout>
         </ToastContext.Provider>
         <ScrollRestoration />

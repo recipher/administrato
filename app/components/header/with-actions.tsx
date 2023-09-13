@@ -27,7 +27,7 @@ export default function Header({ title, subtitle, tabs = [], actions = [], icon,
         </div>
         <div className="mt-3 flex md:absolute md:right-0 md:top-0 md:mt-0">
           {group
-            ? <ButtonGroup buttons={actions} title='AA' /> 
+            ? <ButtonGroup buttons={actions} title='' /> 
             : <Actions actions={actions} />}
         </div>
       </>

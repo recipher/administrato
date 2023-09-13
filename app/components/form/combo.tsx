@@ -32,7 +32,9 @@ export default function Combo({ name, label, data = [], defaultValue = [] }: Pro
 
   return (
     <div className="mb-6">
+      {/* @ts-ignore */}
       <Combobox as="div" multiple
+        // @ts-ignore
         {...getInputProps({ id: name })}
         value={selected} onChange={setSelected}>
         <Combobox.Label className="block text-sm font-medium leading-6 text-gray-900">

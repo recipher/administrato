@@ -1,11 +1,11 @@
 import type { ReactElement, MutableRefObject } from "react";
 import { useEffect, useRef } from "react";
-import { useTransition } from "@remix-run/react";
+import { useNavigation } from "@remix-run/react";
 
 export function useProgress(): MutableRefObject<HTMLDivElement> {
   const el = useRef<HTMLDivElement>();
   const timeout = useRef<NodeJS.Timeout>();
-  const { location } = useTransition();
+  const { location } = useNavigation();
 
   useEffect(() => {
     const instance = el.current;
@@ -52,12 +52,8 @@ export default function Progress(): ReactElement {
   const progress = useProgress();
 
   return (
-    <div
-      className="fixed top-0 left-0 right-0 flex h-1"
-      style={{ zIndex: 999 }}
-    >
-      <div
-        ref={progress}
+    <div className="z-[999] fixed top-0 left-0 right-0 flex h-1">
+      <div ref={progress}
         className="bg-gradient-to-r from-green-400 via-blue-500 to-pink-500 transition-all ease-out"
       />
     </div>

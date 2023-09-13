@@ -12,6 +12,7 @@ export default {
     },
   },
   safelist: [
+    'fill-indigo-600',
     'bg-red-50',
     'bg-yellow-50',
     'bg-blue-50',

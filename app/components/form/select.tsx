@@ -21,11 +21,13 @@ type Props = {
 
 export default function Select({ name, label, data = [], defaultValue = null }: Props) {
   const { error, getInputProps } = useField(name);
-  const [selected, setSelected] = useState<ItemProps>(defaultValue);
+  const [selected, setSelected] = useState<ItemProps | null>(defaultValue);
 
   return (
     <>
+      {/* @ts-ignore */}
       <Listbox
+        // @ts-ignore
         {...getInputProps({ id: name })}
         value={selected} onChange={setSelected}>
         {({ open }) => (

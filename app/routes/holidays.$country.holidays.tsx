@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { badRequest, notFound } from '~/utility/errors';
 import { getCountry } from '~/models/countries.server';
 import { listHolidaysByCountry, syncHolidays, deleteHolidayById, type Holiday } from '~/models/holidays.server';
-import { getSession, storage } from '~/utility/flash.server';
+import { setFlashMessage, storage } from '~/utility/flash.server';
 import Alert, { Level } from '~/components/alert';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Tabs from '~/components/tabs';
@@ -43,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
-  let message;
+  let message = "";
   const { intent, year, ...data } = await request.json();
   
   if (intent === "remove") {
@@ -58,9 +58,7 @@ export async function action({ request }: ActionArgs) {
     message = `Synchronization Successful:Holidays for ${country.name}, ${year} have been synchronized.`;
   };
  
-  const session = await getSession(request);
-  session.flash("flash:text", message);
-  session.flash("flash:level", Level.Success);
+  const session = await setFlashMessage({ request, message, level: Level.Success });
 
   return redirect(`?year=${year}`, {
     headers: { "Set-Cookie": await storage.commitSession(session) },

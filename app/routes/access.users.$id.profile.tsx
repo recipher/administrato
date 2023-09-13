@@ -126,7 +126,7 @@ export default function Profile() {
   const showModal = (entity: string) => modal.current?.show(entity);
 
   const authorizationActions: Array<ButtonGroupButton> = Array.from(entities.keys()).map(key => (
-    { name: key, onClick: () => showModal(key), Icon: entities.get(key).Icon }
+    { title: key, onClick: () => showModal(key), Icon: entities.get(key).Icon }
   ));
 
   return (

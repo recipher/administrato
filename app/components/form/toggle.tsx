@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Switch } from '@headlessui/react'
 
 import classnames from '~/helpers/classnames';
@@ -16,6 +16,10 @@ export default function Toggle({ name, on = false, onChange }: Props) {
     setEnabled(value);
     onChange && onChange(name, value);
   };
+
+  useEffect(() => {
+    setEnabled(on);
+  }, [on]);
 
   return (
     <Switch
