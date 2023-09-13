@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'remix-validated-form';
-import { format, addMonths } from 'date-fns';
+import { format, addMonths, addDays, lastDayOfMonth, 
+         isSameDay, isSameMonth, isSameYear, isToday } from 'date-fns';
 
 import {
   CalendarDaysIcon,
@@ -11,57 +12,34 @@ import {
 
 import classnames from '~/helpers/classnames';
 
-const dates = [
-  { date: '2021-12-27' },
-  { date: '2021-12-28' },
-  { date: '2021-12-29' },
-  { date: '2021-12-30' },
-  { date: '2021-12-31' },
-  { date: '2022-01-01', isCurrentMonth: true },
-  { date: '2022-01-02', isCurrentMonth: true },
-  { date: '2022-01-03', isCurrentMonth: true },
-  { date: '2022-01-04', isCurrentMonth: true },
-  { date: '2022-01-05', isCurrentMonth: true },
-  { date: '2022-01-06', isCurrentMonth: true },
-  { date: '2022-01-07', isCurrentMonth: true },
-  { date: '2022-01-08', isCurrentMonth: true },
-  { date: '2022-01-09', isCurrentMonth: true },
-  { date: '2022-01-10', isCurrentMonth: true },
-  { date: '2022-01-11', isCurrentMonth: true },
-  { date: '2022-01-12', isCurrentMonth: true, isToday: true },
-  { date: '2022-01-13', isCurrentMonth: true },
-  { date: '2022-01-14', isCurrentMonth: true },
-  { date: '2022-01-15', isCurrentMonth: true },
-  { date: '2022-01-16', isCurrentMonth: true },
-  { date: '2022-01-17', isCurrentMonth: true },
-  { date: '2022-01-18', isCurrentMonth: true },
-  { date: '2022-01-19', isCurrentMonth: true },
-  { date: '2022-01-20', isCurrentMonth: true },
-  { date: '2022-01-21', isCurrentMonth: true },
-  { date: '2022-01-22', isCurrentMonth: true, isSelected: true },
-  { date: '2022-01-23', isCurrentMonth: true },
-  { date: '2022-01-24', isCurrentMonth: true },
-  { date: '2022-01-25', isCurrentMonth: true },
-  { date: '2022-01-26', isCurrentMonth: true },
-  { date: '2022-01-27', isCurrentMonth: true },
-  { date: '2022-01-28', isCurrentMonth: true },
-  { date: '2022-01-29', isCurrentMonth: true },
-  { date: '2022-01-30', isCurrentMonth: true },
-  { date: '2022-01-31', isCurrentMonth: true },
-  { date: '2022-02-01' },
-  { date: '2022-02-02' },
-  { date: '2022-02-03' },
-  { date: '2022-02-04' },
-  { date: '2022-02-05' },
-  { date: '2022-02-06' },
-];
-
 type CalendarProps = {
   date?: Date;
   onSelect: Function;
 };
 
 const DAYS = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
+
+const isSameDate = (d: Date, date: Date) => 
+  isSameYear(d, date) && isSameMonth(d, date) && isSameDay(d, date);
+
+const datesFor = (date: Date, selected: Date) => {
+  const first = new Date(date.getFullYear(), date.getMonth(), 1);
+  const last = lastDayOfMonth(date);
+
+  const toDate = (d: Date) => ({
+    date: d,
+    selected: isSameDate(d, selected),
+    today: isToday(d),
+  });
+
+  const length = first.getDay() === 0 ? 6 : first.getDay() - 1;
+
+  const before = [...Array(length).keys()].reverse().map(day => toDate(addDays(first, (day + 1) * -1)));
+  const during = [...Array(last.getDate()).keys()].map(day => ({ during: true, ...toDate(addDays(first, day)) }));
+  const after = [...Array(7 - last.getDay()).keys()].map(day => toDate(addDays(last, day + 1)));
+
+  return [ ...before, ...during, ...after ].flat();
+};
 
 export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
   const { t } = useTranslation("date");
@@ -70,6 +48,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
 
   const month = format(current, "MMMM");
   const year = format(current, "yyyy");
+  const dates = datesFor(current, date);
 
   const onPrevious = () => setCurrent(addMonths(current, -1));
   const onNext = () => setCurrent(addMonths(current, 1));
@@ -98,37 +77,37 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
             </button>
           </div>
           <div className="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
-            {DAYS.map(d => <div>{t(d).at(0)}</div>)}
+            {DAYS.map(d => <div key={d}>{t(d).at(0)}</div>)}
           </div>
           <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
-            {dates.map((day, dayIdx) => (
+            {dates.map((day, i) => (
               <button
-                key={day.date}
+                key={i}
                 type="button"
-                onClick={() => onSelect(new Date(day.date))}
+                onClick={() => onSelect(day.date)}
                 className={classnames(
                   'py-1 hover:bg-gray-100 focus:z-10',
-                  day.isCurrentMonth ? 'bg-white' : 'bg-gray-50',
-                  (day.isSelected || day.isToday) && 'font-semibold',
-                  day.isSelected && 'text-white',
-                  !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900',
-                  !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400',
-                  day.isToday && !day.isSelected && 'text-indigo-600',
-                  dayIdx === 0 && 'rounded-tl-lg',
-                  dayIdx === 6 && 'rounded-tr-lg',
-                  dayIdx === dates.length - 7 && 'rounded-bl-lg',
-                  dayIdx === dates.length - 1 && 'rounded-br-lg'
+                  day.during ? 'bg-white' : 'bg-gray-50',
+                  (day.selected || day.today) && 'font-semibold',
+                  day.selected && 'text-white',
+                  !day.selected && day.during && !day.today && 'text-gray-900',
+                  !day.selected && !day.during && !day.today && 'text-gray-400',
+                  day.today && !day.selected && 'text-indigo-600',
+                  i === 0 && 'rounded-tl-lg',
+                  i === 6 && 'rounded-tr-lg',
+                  i === dates.length - 7 && 'rounded-bl-lg',
+                  i === dates.length - 1 && 'rounded-br-lg'
                 )}
               >
                 <time
-                  dateTime={day.date}
+                  dateTime={format(day.date, 'yyyy-mm-dd')}
                   className={classnames(
                     'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
-                    day.isSelected && day.isToday && 'bg-indigo-600',
-                    day.isSelected && !day.isToday && 'bg-gray-500'
+                    day.selected && day.today && 'bg-indigo-600',
+                    day.selected && !day.today && 'bg-gray-500'
                   )}
                 >
-                  {day.date.split('-').pop().replace(/^0/, '')}
+                  {day.date.getDate()}
                 </time>
               </button>
             ))}
@@ -146,7 +125,7 @@ type Props = {
   defaultValue?: Date;
 };
 
-export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, defaultValue }: Props) {
+export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, defaultValue = new Date(2023, 9, 5) }: Props) {
   const { error, getInputProps } = useField(name);
 
   const [ open, setOpen ] = useState(false);
