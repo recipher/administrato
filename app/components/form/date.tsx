@@ -20,6 +20,13 @@ type CalendarProps = {
 
 const DAYS = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
 
+type CalendarDate = {
+  date: Date;
+  during?: boolean;
+  selected?: boolean;
+  today?: boolean;
+};
+
 const isSameDate = (d: Date, date: Date) => 
   isSameYear(d, date) && isSameMonth(d, date) && isSameDay(d, date);
 
@@ -39,7 +46,7 @@ const datesFor = (date: Date, selected: Date) => {
   const during = [...Array(last.getDate()).keys()].map(day => ({ during: true, ...toDate(addDays(first, day)) }));
   const after = [...Array(7 - last.getDay()).keys()].map(day => toDate(addDays(last, day + 1)));
 
-  return [ ...before, ...during, ...after ].flat();
+  return [ ...before, ...during, ...after ].flat() as Array<CalendarDate>;
 };
 
 export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
@@ -89,6 +96,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
                 className={classnames(
                   'py-1 hover:bg-gray-100 focus:z-10',
                   day.during ? 'bg-white' : 'bg-gray-50',
+                  // @ts-ignore
                   (day.selected || day.today) && 'font-semibold',
                   day.selected && 'text-white',
                   !day.selected && day.during && !day.today && 'text-gray-900',
@@ -104,6 +112,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
                   dateTime={format(day.date, 'yyyy-mm-dd')}
                   className={classnames(
                     'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
+                    // @ts-ignore
                     day.selected && day.today && 'bg-indigo-600',
                     day.selected && !day.today && 'bg-gray-500'
                   )}

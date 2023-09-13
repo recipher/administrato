@@ -7,4 +7,5 @@ sam.json
 sam.yaml
 .env
 
+/app/scheduler
 /app/styles/tailwind.css

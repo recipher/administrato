@@ -1,5 +1,5 @@
 {
-  "exclude": ["./cypress", "./cypress.config.ts"],
+  "exclude": ["./app/scheduler"],
   "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "zapatos.js"],
   "compilerOptions": {
     "strictNullChecks": true,
