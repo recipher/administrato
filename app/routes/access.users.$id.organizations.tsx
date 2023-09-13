@@ -8,7 +8,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
-import { Organization, mapProfileToUser } from '~/auth/auth.server';
+import { Organization, mapProfileToUser, requireUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/models/users.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
@@ -28,7 +28,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest();
 
-  const service = UserService();
+  const u = await requireUser(request);
+  const service = UserService(u);
   const profile = await service.getTokenizedUser({ id });
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
@@ -37,11 +38,16 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
+  const u = await requireUser(request);
+
   let message = "", level = Level.Success;
   const { intent, user, organization } = await request.json();
 
+  const service = UserService(u);
+
   if (intent === 'leave-organization') {
     try {
+      await service.leaveOrganization({ id: user.id, organization });
       message = `Organization Membership:${user.name} has left ${organization.displayName}.`;
     } catch(e: any) {
       message = `Organization Membership Error:${e.message}.`;
@@ -51,6 +57,7 @@ export async function action({ request }: ActionArgs) {
 
   if (intent === 'join-organization') {
     try {
+      await service.joinOrganization({ id: user.id, organization });
       message = `Organization Membership:${user.name} has joined ${organization.displayName}.`;
     } catch(e: any) {
       message = `Organization Membership Error:${e.message}.`;
@@ -60,7 +67,7 @@ export async function action({ request }: ActionArgs) {
 
   const session = await setFlashMessage({ request, message, level });
 
-  return redirect("/", { headers: { "Set-Cookie": await storage.commitSession(session) } });
+  return redirect(".", { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
 export default function Organizations() {

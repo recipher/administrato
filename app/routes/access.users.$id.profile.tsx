@@ -195,7 +195,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      <SelectorModal ref={modal} onSelect={handleGrant}/>
+      <SelectorModal ref={modal} onSelect={handleGrant} />
       <ConfirmModal ref={confirm} onYes={onConfirmRevoke} />
     </>
   );

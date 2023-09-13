@@ -8,11 +8,11 @@ import { badRequest, notFound } from '~/utility/errors';
 import CountryService, { type Country } from '~/models/countries.server';
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 import Header from '~/components/header/with-actions';
-import Image from '~/components/image';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Flag } from "~/components/countries/countries";
 
 export const handle = {
   breadcrumb: ({ country, parent, current }: { country: Country, parent: Country, current: boolean }) => {
@@ -52,8 +52,7 @@ export default function Holidays() {
   
   const onConfirmSync = () => submit({ intent: "sync", country, year }, { action: `/holidays/${country.isoCode}/holidays?year=${year}`, method: "post", encType: "application/json" });
 
-  const icon = <Image className="h-6 w-6 flex-none bg-white mr-4"
-    src={`https://cdn.ipregistry.co/flags/twemoji/${country.isoCode.toLowerCase()}.svg`} />;
+  const icon = <Flag size={12} country={country.name} isoCode={country.isoCode} />;
 
   const tabs = [
     { name: 'holidays', to: 'holidays' },

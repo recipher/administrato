@@ -3,11 +3,11 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import Header from '~/components/header/with-actions';
-
-import { Breadcrumb } from "~/layout/breadcrumbs";
 import UserService, { type User } from '~/models/users.server';
 import { requireUser } from '~/auth/auth.server';
+
+import Header from '~/components/header/with-actions';
+import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -40,7 +40,7 @@ export default function User() {
 
   return (
     <>
-      <Header title={user.name} subtitle={user.email} tabs={tabs} />
+      <Header title={user.name} subtitle={user.email} icon={user.picture} tabs={tabs} />
       <Outlet />
     </>
   );

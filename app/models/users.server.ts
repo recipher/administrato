@@ -25,11 +25,12 @@ type KeyData = {
 const service = (u?: User) => {
   const organization = u?.organization;
 
-  const toUser = ({ user_id: id, name, picture, email }: any) => ({
+  const toUser = ({ user_id: id, name, picture, email, last_login: lastLogin }: any) => ({
     id,
     name,
     picture,
     email,
+    lastLogin,
   });
 
   const camelize = (s: string) => s.replace(/-./g, x=>x[1].toUpperCase());
@@ -151,10 +152,10 @@ const service = (u?: User) => {
     checkUser(user);
     checkOrganizations(await getOrganizations({ id }), organization);
   
-    const roles = { roles: [ role ] };
+    const roles = [ role ];
     return organization
-      ? client.organizations.addMemberRoles({ id: organization?.auth0id, user_id: id }, roles)
-      : client.assignRolestoUser({ id }, roles);
+      ? client.organizations.addMemberRoles({ id: organization?.auth0id, user_id: id }, { roles })
+      : client.assignRolestoUser({ id }, { roles });
   };
   
   const removeRole = async({ id, role }: Id & { role: string }) => {
@@ -163,10 +164,31 @@ const service = (u?: User) => {
     checkUser(user);
     checkOrganizations(await getOrganizations({ id }), organization);
   
-    const roles = { roles: [ role ] };
+    const roles = [ role ];
     return organization
-      ? client.organizations.removeMemberRoles({ id: organization.auth0id, user_id: id }, roles)
-      : client.removeRolesFromUser({ id }, roles);
+      ? client.organizations.removeMemberRoles({ id: organization.auth0id, user_id: id }, { roles })
+      : client.removeRolesFromUser({ id }, { roles });
+  };
+
+    
+  const joinOrganization = async({ id, organization: org }: Id & { organization: Org }) => {
+    const user = await client.getUser({ id });
+  
+    checkUser(user);
+    checkOrganizations(await getOrganizations({ id }), organization);
+  
+    const members = [ id ];
+    return client.organizations.addMembers({ id: org.auth0id }, { members });
+  };
+  
+  const leaveOrganization = async({ id, organization: org }: Id & { organization: Org }) => {
+    const user = await client.getUser({ id });
+  
+    checkUser(user);
+    checkOrganizations(await getOrganizations({ id }), organization);
+  
+    const members = [ id ];
+    return client.organizations.removeMembers({ id: org.auth0id }, { members });
   };
   
   const updateMetadata = async ({ id, metadata }: Id & { metadata: any }) => {
@@ -229,6 +251,8 @@ const service = (u?: User) => {
     updateSettings,
     assignRole,
     removeRole,
+    joinOrganization,
+    leaveOrganization,
     addSecurityKey,
     removeSecurityKey,
   };

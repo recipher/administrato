@@ -10,7 +10,7 @@ import RoleService, { type Role } from '~/models/roles.server';
 
 export const handle = {
   breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>
-    <Breadcrumb key={role.id} to={`/access/roles/${role.id}`} name={role.name} current={current} />
+    <Breadcrumb key={role.id} to={`/access/roles/${role.id}`} name={role.description} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -35,7 +35,7 @@ export default function User() {
 
   return (
     <>
-      <Header title={role.name} tabs={tabs} />
+      <Header title={role.description} tabs={tabs} />
       <Outlet />
     </>
   );

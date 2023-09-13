@@ -27,7 +27,7 @@ export const entities = new Map<string, any>([
   [ "provider", { Icon: ReceiptPercentIcon, dataProperty: "providers" }],
 ]);
 
-const Dropdown = ({ onSelect }: { onSelect: Function }) => {
+const Dropdown = ({ onSelect, entity }: { onSelect: Function, entity: string }) => {
   const { t } = useTranslation();
   
   const items = Array.from(entities.keys()).map(entity => (
@@ -54,7 +54,9 @@ const Dropdown = ({ onSelect }: { onSelect: Function }) => {
           {items.map((item, index) => (
             <Menu.Item key={index}>
               {({ active }) => (
-                <div onClick={item.onClick} className={classnames(active ? 'bg-gray-50' : '',
+                <div onClick={item.onClick} className={classnames(
+                  active ? 'bg-gray-100' : '',
+                  item.name === entity ? 'bg-indigo-200' : '',
                   'block pl-3 pr-6 py-1 text-sm leading-6 text-gray-900 cursor-pointer')}>
                   {t(pluralize(item.name))}
                 </div>
@@ -67,8 +69,8 @@ const Dropdown = ({ onSelect }: { onSelect: Function }) => {
   );
 };
 
-export const Selector = ({ entity, onSelect, onChange }: 
-  { entity: string, onSelect: Function, onChange: Function }) => {
+export const Selector = ({ entity, onSelect, onChange, allowChange }: 
+  { entity: string, onSelect: Function, onChange: Function, allowChange: boolean }) => {
   const fetcher = useFetcher();
 
   useEffect(() => {
@@ -110,8 +112,8 @@ export const Selector = ({ entity, onSelect, onChange }:
       <>
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
           <Filter entity={entity} onFilter={handleFilter} />
-          <Dropdown onSelect={onChange} />
-        </div>   
+          {allowChange && <Dropdown onSelect={onChange} entity={entity} />}
+        </div>
         <div className="mt-3">
           <List data={entities} onClick={onSelect} />
         </div>
@@ -128,7 +130,8 @@ export const Selector = ({ entity, onSelect, onChange }:
   return fetcher.data && <Select entity={entity} data={fetcher.data?.[key]} />;
 };
 
-export const SelectorModal = forwardRef(({ onSelect }: { onSelect: any }, ref: Ref<RefSelectorModal>) => {
+export const SelectorModal = forwardRef(({ onSelect, allowChange = true }: 
+  { onSelect: any, allowChange?: boolean }, ref: Ref<RefSelectorModal>) => {
   const modal = useRef<RefModal>(null);
   const [entity, setEntity] = useState('');
 
@@ -147,7 +150,7 @@ export const SelectorModal = forwardRef(({ onSelect }: { onSelect: any }, ref: R
   return (
     <Modal ref={modal}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[27rem]">
-        <Selector entity={entity} onSelect={handleSelect} onChange={setEntity} />
+        <Selector entity={entity} onSelect={handleSelect} onChange={setEntity} allowChange={allowChange} />
       </div>
     </Modal>
   );
