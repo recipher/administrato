@@ -63,7 +63,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
 
   return (
     <div>
-      <div className="p-3">
+      <div className="p-3 bg-gray-100">
         <div className="text-center lg:col-start-0 lg:col-end-6 lg:row-start-1">
           <div className="flex items-center text-gray-900">
             <button

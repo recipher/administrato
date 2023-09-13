@@ -7,10 +7,10 @@ module.exports = {
     "@remix-run/eslint-config/jest-testing-library",
     "prettier",
   ],
+  ignorePatterns: ["app/scheduler/*.*"],
   env: {
-    "cypress/globals": true,
   },
-  plugins: ["cypress"],
+  plugins: [],
   // we're using vitest which has a very similar API to jest
   // (so the linting plugins work nicely), but it we have to explicitly
   // set the jest version.

@@ -38,7 +38,7 @@ export default function ServiceCentres() {
 
       {serviceCentres.length === 0 && <Alert title="No service centres" level={Level.Info} />}
       
-      <ul role="list" className="divide-y divide-gray-100">
+      <ul className="divide-y divide-gray-100">
         {serviceCentres.map((serviceCentre: ServiceCentre) => (
           <li key={serviceCentre.id} className="flex justify-between gap-x-6 py-5">
             <div className="flex min-w-0 gap-x-4">

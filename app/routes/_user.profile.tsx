@@ -6,9 +6,9 @@ import { useLocale } from "remix-i18next";
 
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
-import { updateSettings, getTokenizedUser } from '~/models/users.server';
+import UserService from '~/models/users.server';
 import { getSession, storage, mapProfileToUser } from '~/auth/auth.server';
-import { getSession as getFlashSession, storage as flash, setFlashMessage } from '~/utility/flash.server';
+import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 
 import Image from '~/components/image';
 import { Level } from '~/components/alert';
@@ -24,6 +24,8 @@ export const handle = {
 };
 
 export async function action({ request }: ActionArgs) {
+  const service = UserService();
+
   let message = "", level = Level.Success;
   const { intent, ...props } = await request.json();
   let { redirectTo = "/profile" } = props;
@@ -32,14 +34,14 @@ export async function action({ request }: ActionArgs) {
 
   if (intent === "select-organization") {
     const { organization, user: { id }} = props;
-    await updateSettings({ id, settings: { organization: organization.auth0id }});
+    await service.updateSettings({ id, settings: { organization: organization.auth0id }});
     message = !!organization.auth0id 
       ? `Organization Changed:Your organization has been changed to ${organization.displayName}.`
       : `Organization Removed:Your organization has been removed.`;
     level = Level.Success;
 
     const session = await getSession(request.headers.get("Cookie"));
-    const profile = await getTokenizedUser({ id });
+    const profile = await service.getTokenizedUser({ id });
     session.set("user", mapProfileToUser(id, profile));
     headers.append("Set-Cookie", await storage.commitSession(session));
   };

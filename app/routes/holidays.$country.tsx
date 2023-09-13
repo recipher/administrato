@@ -5,8 +5,8 @@ import { PlusIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import { getCountry, Country } from '~/models/countries.server';
-import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
+import { getCountry, type Country } from '~/models/countries.server';
+import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 import Header from '~/components/header/with-actions';
 import Image from '~/components/image';
 import { ButtonType } from '~/components/button';

@@ -6,7 +6,8 @@ import { badRequest, notFound } from '~/utility/errors';
 import Header from '~/components/header/with-actions';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import { getUser, type User } from '~/models/users.server';
+import UserService, { type User } from '~/models/users.server';
+import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -18,7 +19,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest();
 
-  const user = await getUser({ id });
+  const u = await requireUser(request);
+  const service = UserService(u);
+
+  const user = await service.getUser({ id });
 
   if (user === undefined) return notFound();
 

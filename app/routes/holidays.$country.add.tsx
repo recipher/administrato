@@ -11,8 +11,8 @@ import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
-import { Cancel, DatePicker, Input, Submit } from '~/components/form';
-import { Body, Section, Group, Field, Footer } from '~/components/form';
+import { Cancel, DatePicker, Input, Submit,
+         Body, Section, Group, Field, Footer } from '~/components/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { Level } from '~/components/toast';
@@ -73,8 +73,7 @@ export async function action({ request, params }: ActionArgs) {
   const session = await setFlashMessage({ request, message, level });
 
   return redirect(`/holidays/${isoCode}/holidays?year=${year}`, {
-    headers: { "Set-Cookie": await storage.commitSession(session) },
-    status: 200,
+    headers: { "Set-Cookie": await storage.commitSession(session) }
   });
 };
 

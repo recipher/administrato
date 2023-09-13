@@ -1,6 +1,5 @@
 import { createCookieSessionStorage } from "@remix-run/node";
 import { Authenticator } from "remix-auth";
-import type { Auth0Profile } from "remix-auth-auth0";
 import { Auth0Strategy } from "remix-auth-auth0";
 
 import {

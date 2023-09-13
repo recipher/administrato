@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ActionArgs, redirect, json } from '@remix-run/node';
+import { type ActionArgs, redirect, json } from '@remix-run/node';
 import { useActionData, useSubmit } from '@remix-run/react'
 import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
@@ -11,10 +11,10 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { addServiceCentre } from '~/models/service-centres.server';
 import { getCountries, getRegions, type Country } from '~/models/countries.server';
 
-import { Input, Select, Cancel, Submit } from '~/components/form';
-import { Body, Section, Group, Field, Footer } from '~/components/form';
+import { Input, Select, Cancel, Submit, 
+         Body, Section, Group, Field, Footer } from '~/components/form';
 
-import { RefModal } from '~/components/modals/modal';
+import type { RefModal } from '~/components/modals/modal';
 import { CountriesModal } from '~/components/countries/countries';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
@@ -84,7 +84,7 @@ const Add = () => {
 
   useEffect(() => {
     context.validate();  // HACK :)
-  }, [data])
+  }, [data, context])
 
   return (
     <>

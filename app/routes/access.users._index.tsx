@@ -1,8 +1,8 @@
-import { LoaderArgs } from '@remix-run/node';
+import { type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import { searchUsers } from '~/models/users.server';
-import { requireUser, User } from '~/auth/auth.server';
+import UserService from '~/models/users.server';
+import { requireUser } from '~/auth/auth.server';
 
 import Header from '~/components/header/with-filter';
 import Alert, { Level } from '~/components/alert';
@@ -19,8 +19,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   const search = url.searchParams.get("q");
 
   const u = await requireUser(request);
+  const service = UserService(u);
+
   const organization = u.organization?.auth0id;
-  const users = await searchUsers({ search, organization }, { offset, limit: LIMIT });
+  const users = await service.searchUsers({ search }, { offset, limit: LIMIT });
 
   return { users, offset, limit: LIMIT, search, organization };
 };

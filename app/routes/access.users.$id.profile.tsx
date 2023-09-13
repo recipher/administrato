@@ -7,7 +7,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
-import { getTokenizedUser, addSecurityKey, removeSecurityKey, type User } from '~/models/users.server';
+import UserService, { type User } from '~/models/users.server';
 import { listServiceCentresForKeys, type ServiceCentre } from '~/models/service-centres.server';
 
 // import { listLegalEntitiesForKeys, type LegalEntity } from '~/models/legal-entities.server';
@@ -39,7 +39,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest();
 
-  const profile = await getTokenizedUser({ id });
+  const service = UserService();
+  const profile = await service.getTokenizedUser({ id });
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
@@ -57,14 +58,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
-  const { organization } = await requireUser(request);
+  const u = await requireUser(request);
 
+  const service = UserService(u);
   let message = "", level = Level.Success;
   const { intent, user, key, entity } = await request.json();
 
   if (intent === 'revoke-authorization') {
     try {
-      await removeSecurityKey({ id: user.id, organization, entity: entity.type, key });
+      await service.removeSecurityKey({ id: user.id, organization: u.organization, entity: entity.type, key });
       message = `Authorization Revoked:Authorization to ${entity.translated} ${entity.name} was revoked from ${user.name}.`;
     } catch(e: any) {
       message = `Authorization Revoke Error:${e.message}.`;
@@ -74,7 +76,7 @@ export async function action({ request }: ActionArgs) {
 
   if (intent === 'grant-authorization') {
     try {
-      await addSecurityKey({ id: user.id, organization, entity: entity.type, key });
+      await service.addSecurityKey({ id: user.id, organization: u.organization, entity: entity.type, key });
       message = `Authorization Granted:Authorization to ${entity.translated} ${entity.name} was granted to ${user.name}.`;
     } catch(e: any) {
       message = `Authorization Grant Error:${e.message}`;

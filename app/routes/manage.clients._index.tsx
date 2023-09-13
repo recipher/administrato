@@ -1,11 +1,11 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { requireUser } from '~/auth/auth.server';
 
-import { manage } from '~/auth/permissions';
+// import { manage } from '~/auth/permissions';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
-  const keys = user.keys.client;
+  // const keys = user.keys.client;
   // const serviceCentres = await listServiceCentres({ keys });
 
   // const isoCodes = serviceCentres.map(s => s.localities || []).flat();

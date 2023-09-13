@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { ActionArgs, json, type LoaderArgs } from '@remix-run/node';
+import { type ActionArgs, type LoaderArgs, json } from '@remix-run/node';
 import { Form, useFetcher, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import { getUser, getUserRoles, assignRole, removeRole, type User } from '~/models/users.server';
+import UserService, { type User } from '~/models/users.server';
 import { listRoles, type Role } from '~/models/roles.server';
 
 import { Breadcrumb } from '~/layout/breadcrumbs';
@@ -39,25 +39,27 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (id === undefined) return badRequest();
 
   const u = await requireUser(request);
+  const userService = UserService(u);
 
-  const user = await getUser({ id });
+  const user = await userService.getUser({ id });
   if (user === undefined) return notFound();
 
   const roles = await listRoles();
-  const userRoles = await getUserRoles({ id, organization: u.organization?.auth0id })
-    
+  const userRoles = await userService.getUserRoles({ id })
+
   return { user, roles: determineMembership(roles, userRoles), userRoles };
 };
 
 export async function action({ request }: ActionArgs) {
-  const { organization } = await requireUser(request);
+  const u = await requireUser(request);
+  const service = UserService(u);
 
   let level = Level.Success, message = "";
   const { role, value, user } = await request.json();
 
   if (value) {
     try {
-      await assignRole({ id: user.id, role: role.id, organization });
+      await service.assignRole({ id: user.id, role: role.id });
       message = `Role Assigned:${role.name} role assigned to ${user.name}.`;
     } catch(e: any) {
       message = `Role Assign Error:${e.messsage}`;
@@ -65,7 +67,7 @@ export async function action({ request }: ActionArgs) {
     }
   } else {
     try {
-      await removeRole({ id: user.id, role: role.id, organization });
+      await service.removeRole({ id: user.id, role: role.id });
       message = `Role Removed:${role.name} role removed from ${user.name}.`;
     } catch(e: any) {
       message = `Role Remove Error:${e.messsage}`;
@@ -93,7 +95,7 @@ export default function Roles() {
 
   useEffect(() => {
     createToast(fetcher.data?.flash);
-  }, [ fetcher ]);
+  }, [ fetcher, createToast ]);
 
   return (
     <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">

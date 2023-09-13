@@ -9,10 +9,10 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Organization, mapProfileToUser } from '~/auth/auth.server';
-import { getTokenizedUser, type User } from '~/models/users.server';
+import UserService, { type User } from '~/models/users.server';
 
-import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
-import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/selector';
+import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
+import { type RefSelectorModal } from '~/components/manage/selector';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import Button, { ButtonType } from '~/components/button';
@@ -28,7 +28,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest();
 
-  const profile = await getTokenizedUser({ id });
+  const service = UserService();
+  const profile = await service.getTokenizedUser({ id });
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
@@ -59,10 +60,7 @@ export async function action({ request }: ActionArgs) {
 
   const session = await setFlashMessage({ request, message, level });
 
-  return redirect("/", {
-    headers: { "Set-Cookie": await storage.commitSession(session) },
-    status: 200,
-  });
+  return redirect("/", { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
 export default function Organizations() {

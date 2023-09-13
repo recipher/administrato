@@ -1,11 +1,10 @@
 import { useEffect, RefObject, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useFetcher } from '@remix-run/react'
 import { type Country } from '~/models/countries.server';
-import Modal, { RefModal } from '~/components/modals/modal';
+import Modal, { type RefModal } from '~/components/modals/modal';
 import { List } from '~/components/list';
 import Image from '~/components/image';
-import { ChevronRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import Pagination from '../pagination';
 import Filter from '../filter';
 import pluralize from '~/helpers/pluralize';

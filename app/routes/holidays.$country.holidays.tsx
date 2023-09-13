@@ -108,7 +108,7 @@ export default function Holidays() {
 
       <Tabs tabs={tabs} selected={year} onClick={onClick} />
 
-      <ul role="list" className="divide-y divide-gray-100">
+      <ul className="divide-y divide-gray-100">
         {holidays.map((holiday: any) => (
           <li key={holiday.id} className="group flex justify-between gap-x-6 py-3 hover:cursor-pointer">
             <div className="flex min-w-0 gap-x-4">
