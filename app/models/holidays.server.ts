@@ -8,13 +8,12 @@ const holidayAPI = new HolidayAPI({ key });
 
 export type Holiday = s.holidays.Selectable;
 
-const addHoliday = async (holiday: s.localities.Insertable) => {
-  // return db.insert('holidays',
-  //   { name: holiday.name, 
-  //     date: new Date(holiday.date), 
-  //     observed: new Date(holiday.observed), 
-  //     locality: holiday.country }
-  // ).run(pool);
+export const addHoliday = async (holiday: s.holidays.Insertable) => {
+  const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+    INSERT INTO ${'holidays'} (${db.cols(holiday)})
+    VALUES (${db.vals(holiday)}) RETURNING *`.run(pool);
+
+  return inserted;
 };
 
 type ListOptions = { 

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'remix-validated-form';
-import { format, addMonths, addDays, lastDayOfMonth, 
+import { useLocale } from 'remix-i18next';
+import { format, intlFormat, addMonths, addDays, lastDayOfMonth, 
          isSameDay, isSameMonth, isSameYear, isToday } from 'date-fns';
 
 import {
@@ -13,8 +14,8 @@ import {
 import classnames from '~/helpers/classnames';
 
 type CalendarProps = {
-  date?: Date;
-  onSelect: Function;
+  date: Date | undefined;
+  onSelect (d: Date): void;
 };
 
 const DAYS = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
@@ -125,11 +126,13 @@ type Props = {
   defaultValue?: Date;
 };
 
-export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, defaultValue = new Date(2023, 9, 5) }: Props) {
+export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, defaultValue }: Props) {
+  const locale = useLocale();
+
   const { error, getInputProps } = useField(name);
 
   const [ open, setOpen ] = useState(false);
-  const [ date, setDate ] = useState(defaultValue);
+  const [ date, setDate ] = useState<Date | undefined>(defaultValue);
 
   const handleSelect = (d: Date) => {
     setDate(d);
@@ -138,7 +141,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
 
   return (
     <>
-      <div className="mb-6">
+      <div>
         <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
           {label}
         </label>
@@ -147,7 +150,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
             type="text"
             {...getInputProps({ id: name })}
             placeholder={placeholder}
-            value={date?.toLocaleDateString()}
+            value={date && format(date, 'dd MMMM yyyy')}
             className={classnames(
               error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
               "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
