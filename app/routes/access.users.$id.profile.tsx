@@ -9,9 +9,9 @@ import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/models/access/users.server';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
+import ClientService, { type Client } from '~/models/manage/clients.server';
 
 // import { listLegalEntitiesForKeys, type LegalEntity } from '~/models/legal-entities.server';
-// import { listClientsForKeys, type Client } from '~/models/clients.server';
 // import { listProvidersForKeys, type Provider } from '~/models/providers.server';
 
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
@@ -42,18 +42,20 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = UserService();
   const profile = await service.getTokenizedUser({ id });
+  
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
   const serviceCentreService = ServiceCentreService(u);
+  const clientService = ClientService(u);
   const serviceCentres = await serviceCentreService.listServiceCentresForKeys({ keys: user?.keys.serviceCentre });
-  // const clients = await listClientsForKeys({ keys: user?.keys.client });
+  const clients = await clientService.listClientsForKeys({ keys: user?.keys.client });
   // const legalEntities = await listLegalEntitiesForKeys({ keys: user?.keys.legalEntity });
   // const providers = await listProvidersForKeys({ keys: user?.keys.provider });
 
   return { user, profile, authorizables: [
     ...toAuthorizables('service-centre', serviceCentres),
-    // ...toAuthorizables('client', clients),
+    ...toAuthorizables('client', clients),
     // ...toAuthorizables('legal-entity', legalEntities),
     // ...toAuthorizables('provider', providers),
   ]};
@@ -88,8 +90,7 @@ export async function action({ request }: ActionArgs) {
 
   const session = await setFlashMessage({ request, message, level });
   return redirect("/", {
-    headers: { "Set-Cookie": await storage.commitSession(session) },
-    status: 200,
+    headers: { "Set-Cookie": await storage.commitSession(session) }
   });
 };
 

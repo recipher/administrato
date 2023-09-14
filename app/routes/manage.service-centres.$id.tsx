@@ -11,7 +11,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name="info" current={current} />
+    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name={serviceCentre?.name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -34,7 +34,7 @@ export default function ServiceCentre() {
 
   const tabs = [
     { name: 'info', to: 'info' },
-    { name: 'clients', to: 'holidays' },
+    { name: 'clients', to: 'clients' },
     { name: 'legal-entities', to: 'legal-entities' },
     { name: 'providers', to: 'providers' },
     { name: 'holidays', to: 'holidays' },

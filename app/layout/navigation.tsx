@@ -3,13 +3,13 @@ import { NavLink } from '@remix-run/react';
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
   WalletIcon,
-  PaperClipIcon,
+  MapIcon,
   IdentificationIcon,
   GlobeEuropeAfricaIcon,
   KeyIcon,
   Bars3BottomLeftIcon,
   CircleStackIcon,
-  ReceiptPercentIcon,
+  CurrencyYenIcon,
   UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
@@ -36,9 +36,9 @@ export const navigation = [
   { name: 'manage', to: '/manage/legal-entities', icon: CircleStackIcon,
     children: [
       { name: 'legal-entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
-      { name: 'service-centres', to: '/manage/service-centres', icon: PaperClipIcon, permission: manage.read.serviceCentre },
+      { name: 'service-centres', to: '/manage/service-centres', icon: MapIcon, permission: manage.read.serviceCentre },
       { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
-      { name: 'providers', to: '/manage/providers', icon: ReceiptPercentIcon, permission: manage.read.provider },
+      { name: 'providers', to: '/manage/providers', icon: CurrencyYenIcon, permission: manage.read.provider },
     ]
   },
   { name: 'access', to: '/access', icon: KeyIcon,

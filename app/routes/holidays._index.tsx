@@ -7,7 +7,6 @@ import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import CountryService, { type Country } from '~/models/countries.server';
 import { useUser } from '~/hooks';
 import Header from '~/components/header/with-filter';
-import Image from '~/components/image';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
 import { List } from '~/components/list';
@@ -19,7 +18,7 @@ import toNumber from '~/helpers/to-number';
 
 import { scheduler } from '~/auth/permissions';
 
-const LIMIT = 8;
+const LIMIT = 6;
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);

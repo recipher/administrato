@@ -30,12 +30,12 @@ export default function Header({ title, subtitle, tabs = [], actions = [], icon,
             <div>
               <h3 className="text-base font-semibold leading-6 text-gray-900">{title}</h3>
               {subtitle && <p className="text-sm text-gray-500">
-                {subtitle}
+                {t(subtitle)}
               </p>}
             </div>
           </div>
         </div>
-        <div className="ml-4 mt-4 flex flex-shrink-0">
+        <div className="ml-4 flex flex-shrink-0">
           {group
             ? <ButtonGroup buttons={actions} title='' /> 
             : <Actions actions={actions} />}

@@ -16,9 +16,18 @@ export type IdProp = {
   id: number | string;
 };
 
+export type Count = {
+  count: number;
+};
+
 export type SecurityKey = {
   keyStart: number;
   keyEnd: number;
 };
 
 export type SecurityKeys = Array<SecurityKey>;
+
+export type KeyQueryOptions = {
+  keys?: SecurityKeys;
+  isArchived?: boolean;
+} & QueryOptions;

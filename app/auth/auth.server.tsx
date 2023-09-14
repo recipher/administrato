@@ -40,12 +40,19 @@ export type SecurityKey = {
   keyEnd: number;
 };
 
+export type KeySet = {
+  client: Array<SecurityKey>,
+  serviceCentre: Array<SecurityKey>,
+  legalEntity: Array<SecurityKey>,
+  provider: Array<SecurityKey>,
+};
+
 export type Organization = {
   auth0id: string;
   id: string;
   displayName: string;
   name: string;
-  keys: Array<SecurityKey>;
+  keys: KeySet;
 };
 
 export type User = {
@@ -56,7 +63,7 @@ export type User = {
   permissions: Array<string>;
   settings: any;
   organizations: Array<Organization>;
-  keys: Array<SecurityKey>;
+  keys: KeySet,
   defaultKeys: Array<SecurityKey>;
   organization: Organization;
 };

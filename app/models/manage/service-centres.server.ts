@@ -2,19 +2,17 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import type { SecurityKey, SecurityKeys, IdProp, QueryOptions as BaseQueryOptions } from '../types';
+import type { SecurityKey, IdProp, KeyQueryOptions } from '../types';
 
-import { type User } from '../access/users.server';
+import UserService, { type User } from '../access/users.server';
+import toNumber from '~/helpers/to-number';
+
+import { whereKeys, whereExactKeys } from './shared.server';
 
 const keyMax = Number.MAX_SAFE_INTEGER;
 const maxEntities = 50;
 
 export type ServiceCentre = s.serviceCentres.Selectable;
-
-type QueryOptions = {
-  keys?: SecurityKeys;
-  isArchived?: boolean;
-} & BaseQueryOptions;
 
 const service = (u: User) => {
   const getLatest = async () => {
@@ -43,55 +41,45 @@ const service = (u: User) => {
       INSERT INTO ${'serviceCentres'} (${db.cols(withKey)})
       VALUES (${db.vals(withKey)}) RETURNING *`.run(pool);
 
+    if (inserted === undefined) return;
+
+    const start = toNumber(String(inserted.keyStart)),
+          end = toNumber(String(inserted.keyEnd));
+
+    if (start && end) {
+      const userService = UserService(u);
+      await userService.addSecurityKey({ 
+        id: u.id, organization: u.organization, entity: 'service-centre', 
+        key: [ start, end ] });
+    }
+
     return inserted;
   };
 
-  const where = ({ keys, isArchived = false }: QueryOptions) => {
-    let byKeys = db.sql<db.SQL>`${'id'} = 0`;
-
-    if (keys) {
-      for (let i = 0; i < keys?.length; i++) {
-        const { keyStart, keyEnd } = keys[i];
-        byKeys = db.sql<db.SQL>`${byKeys} OR (${db.param(keyStart)} <= ${'keyStart'} AND ${db.param(keyEnd)} >= ${'keyEnd'})`;
-      };
-    }
-    return db.sql<db.SQL>`(${'isArchived'} = ${db.param(isArchived)} AND (${byKeys}))`;
-  };
-
-  const listServiceCentres = async (query: QueryOptions = { isArchived: false }) => {
-    // @ts-ignore
+  const listServiceCentres = async (query: KeyQueryOptions = { isArchived: false }) => {
     const keys = query.keys || u.keys.serviceCentre;
     return await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
-      WHERE ${where({ keys, ...query })}
+      WHERE ${whereKeys({ keys, ...query })}
       `.run(pool);
   };
 
   const getServiceCentre = async ({ id }: IdProp) => {
-    // @ts-ignore
     const keys = u.keys.serviceCentre;
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
-      WHERE ${where({ keys })} AND ${'id'} = ${db.param(id)}
+      WHERE ${whereKeys({ keys })} AND ${'id'} = ${db.param(id)}
       `.run(pool);
-console.log(serviceCentre);
+
     return serviceCentre;
   };
 
   // Required to determine exactly which entities a user has authorization for
-  const listServiceCentresForKeys = async ({ keys }: QueryOptions) => {
-    let query = db.sql<db.SQL>`${'id'} = 0`;
-
-    if (keys) {
-      for (let i = 0; i < keys?.length; i++) {
-        const { keyStart, keyEnd } = keys[i];
-        query = db.sql<db.SQL>`${query} OR (${db.param(keyStart)} = ${'keyStart'} AND ${db.param(keyEnd)} = ${'keyEnd'})`;
-      };
-    }
-
+  const listServiceCentresForKeys = async ({ keys }: KeyQueryOptions) => {
+    if (keys === undefined) return [];
     return await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
-      WHERE ${query}
+      WHERE ${whereExactKeys({ keys })}
       `.run(pool);
   };
 

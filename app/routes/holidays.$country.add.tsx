@@ -22,7 +22,7 @@ export const handle = {
     <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name="add" current={current} />
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const { country: isoCode } = params;
 
   if (isoCode === undefined) return badRequest('Invalid request');

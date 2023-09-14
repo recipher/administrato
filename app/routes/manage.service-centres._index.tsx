@@ -7,8 +7,9 @@ import CountryService, { type Country } from '~/models/countries.server';
 
 import Header from "~/components/header/with-actions";
 import Alert, { Level } from '~/components/alert';
-import Image from '~/components/image';
 import { requireUser } from '~/auth/auth.server';
+
+import { Flags } from '~/components/countries/flag';
 
 import { manage } from '~/auth/permissions';
 
@@ -32,8 +33,6 @@ const actions = [
 export default function ServiceCentres() {
   const { serviceCentres, countries } = useLoaderData();
 
-  const country = (isoCode: string) => countries.find((c: Country) => c.isoCode === isoCode);
-
   return (
     <>
       <Header title="Service Centres" actions={actions} />
@@ -49,21 +48,7 @@ export default function ServiceCentres() {
                   <p className="text-lg font-semibold leading-6 text-gray-900">
                     {serviceCentre.name}
                   </p>
-                  <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                    {serviceCentre.localities?.map(isoCode => {
-                      const locality = country(isoCode);
-                      const code = locality.parent ? locality.parent : isoCode;
-                      return (
-                        <span key={code} className="mr-4">
-                          <span className="mr-2 text-base float-left">
-                            {locality?.name}
-                          </span>
-                          <Image className="h-6 w-6 bg-white float-right"
-                            src={`https://cdn.ipregistry.co/flags/twemoji/${code.toLowerCase()}.svg`} />
-                        </span>
-                      );
-                    })}
-                  </p>
+                  <Flags localities={serviceCentre.localities} countries={countries} />
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-x-6">

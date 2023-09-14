@@ -1,9 +1,9 @@
 import { forwardRef, Ref, useRef, useState, useImperativeHandle, useEffect, Fragment } from "react";
-import { Link, useFetcher } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 
 import { useTranslation } from "react-i18next";
 
-import { WalletIcon, PaperClipIcon, IdentificationIcon, ReceiptPercentIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { MapIcon, WalletIcon, CurrencyYenIcon, IdentificationIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 import Modal, { RefModal } from "../modals/modal";
 import Filter from "../filter";
@@ -21,10 +21,10 @@ export interface RefSelectorModal {
 };
 
 export const entities = new Map<string, any>([
-  [ "service-centre", { Icon: PaperClipIcon, dataProperty: "serviceCentres" }],
+  [ "service-centre", { Icon: MapIcon, dataProperty: "serviceCentres" }],
   [ "legal-entity", { Icon: WalletIcon, dataProperty: "legalEntities" }],
   [ "client", { Icon: IdentificationIcon, dataProperty: "clients" }],
-  [ "provider", { Icon: ReceiptPercentIcon, dataProperty: "providers" }],
+  [ "provider", { Icon: CurrencyYenIcon, dataProperty: "providers" }],
 ]);
 
 const Dropdown = ({ onSelect, entity }: { onSelect: Function, entity: string }) => {

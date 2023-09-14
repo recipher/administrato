@@ -21,7 +21,7 @@ export default function Tabs({ tabs }: Props) {
 
   return (
     <>
-      <div className="mt-4">
+      <div className="mt-3">
         <div className="sm:hidden">
           <label htmlFor="current-tab" className="sr-only">
             Select a tab
