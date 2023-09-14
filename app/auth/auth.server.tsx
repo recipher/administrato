@@ -19,6 +19,13 @@ const DOMAINS = new Map<string, string>(
   [ "manage", "scheduler", "security" ].map(d => [ `${d}.${DOMAIN}`, d ])
 );
 
+enum Right {
+  read = 1,
+  create = 2,
+  edit = 4,
+  delete = 8,
+};
+
 export const storage = createCookieSessionStorage({
   cookie: {
     name: "_remix_session",
@@ -115,7 +122,7 @@ const mapPermissions = (profile: any) => {
   DOMAINS.forEach((name: string, domain: string) => {
     const key = `https://${domain}/permissions` as ObjectKey;
     const perms = profile && profile[key] as Array<string>;
-    if (perms) permissions = [ ...permissions, ...perms.map((p: any) => `${name}:${p}`) ];
+    if (perms) permissions = [ ...permissions, ...perms.map((p: string) => `${name}:${p}`) ];
   });
   return permissions;
 };

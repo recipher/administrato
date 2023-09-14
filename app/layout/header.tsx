@@ -60,7 +60,7 @@ export default function Header({ user }: Props) {
   const { pathname: redirectTo } = useLocation();
   const modal = useRef<RefModal>(null);
 
-  const select = (organization: Organization) => {
+  const handleSelectOrganization = (organization: Organization) => {
     modal.current?.hide();
     submit(
       { intent: "select-organization", organization, user, redirectTo }, 
@@ -144,7 +144,7 @@ export default function Header({ user }: Props) {
           </Menu>
         </div>
       </div>
-      <OrganizationModal modal={modal} user={user} onSelect={select} />
+      <OrganizationModal modal={modal} user={user} onSelect={handleSelectOrganization} />
     </>
   );
 }

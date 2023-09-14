@@ -10,7 +10,7 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-import { whereKeys, whereExactKeys } from './shared.server';
+import { whereKeys, whereExactKeys, extractKeys } from './shared.server';
 
 export type Client = s.clients.Selectable;
 
@@ -64,7 +64,7 @@ const service = (u: User) => {
   };
 
   const listClients = async (query: KeyQueryOptions = { isArchived: false }) => {
-    const keys = query.keys || [ ...u.keys.serviceCentre, ...u.keys.client ];
+    const keys = query.keys || extractKeys(u, "serviceCentre", "client"); 
     return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT * FROM ${'clients'}
       WHERE ${whereKeys({ keys, ...query })}
@@ -78,7 +78,7 @@ const service = (u: User) => {
     `;
 
   const countClients = async ({ search }: SearchOptions) => {
-    const keys = [ ...u.keys.serviceCentre, ...u.keys.client ];
+    const keys = extractKeys(u, "serviceCentre", "client");
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT COUNT(${'id'}) AS count FROM ${'clients'}
       WHERE ${'parentId'} IS NULL ${searchQuery({ search })} AND ${whereKeys({ keys })}
@@ -89,8 +89,7 @@ const service = (u: User) => {
   };
 
   const searchClients = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
-    const keys = [ ...u.keys.serviceCentre, ...u.keys.client ];
-
+    const keys = extractKeys(u, "serviceCentre", "client");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
@@ -106,7 +105,7 @@ const service = (u: User) => {
   };
 
   const getClient = async ({ id }: IdProp) => {
-    const keys = [ ...u.keys.serviceCentre, ...u.keys.client ];
+    const keys = extractKeys(u, "serviceCentre", "client");
     const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT * FROM ${'clients'}
       WHERE ${whereKeys({ keys })} AND ${'id'} = ${db.param(id)}

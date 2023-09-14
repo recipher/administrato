@@ -1,6 +1,7 @@
 import * as db from 'zapatos/db';
 
 import { type KeyQueryOptions } from '../types';
+import { type User } from '../access/users.server';
 
 export const whereKeys = ({ keys, isArchived = false }: KeyQueryOptions) => {
   let byKeys = db.sql<db.SQL>`${'id'} = 0`; // Ensure nothing is returned with no keys
@@ -25,4 +26,8 @@ export const whereExactKeys = ({ keys }: KeyQueryOptions) => {
   }
 
   return query;
-}
+};
+
+export const extractKeys = (u: User, ...sets: Array<"serviceCentre" | "client" | "provider" | "legalEntity">) =>
+  sets.map(set => u.keys[set] || []).flat();
+
