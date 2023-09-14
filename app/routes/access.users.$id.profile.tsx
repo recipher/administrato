@@ -42,7 +42,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = UserService();
   const profile = await service.getTokenizedUser({ id });
-  
+
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
@@ -89,7 +89,7 @@ export async function action({ request }: ActionArgs) {
   }
 
   const session = await setFlashMessage({ request, message, level });
-  return redirect("/", {
+  return redirect(".", {
     headers: { "Set-Cookie": await storage.commitSession(session) }
   });
 };

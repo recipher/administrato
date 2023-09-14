@@ -22,12 +22,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
+  // const serviceCentreId = url.searchParams.get("service-centre");
 
   const u = await requireUser(request);
   
   const clientService = ClientService(u);
-  const clients = await clientService.searchClients({ search }, { offset, limit, sortDirection: sort });
-  const count = await clientService.countClients({ search });
+  const { clients, metadata: { count }} = 
+    await clientService.searchClients({ search }, { offset, limit, sortDirection: sort });
 
   const isoCodes = clients.map(s => s.localities || []).flat();
   const countryService = CountryService();

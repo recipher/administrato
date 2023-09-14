@@ -74,9 +74,8 @@ export const Selector = ({ entity, onSelect, onChange, allowChange }:
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.state === "idle") { //} && fetcher.data == null) {
+    if (fetcher.state === "idle")
       fetcher.load(`/manage/${pluralize(entity)}?index`);
-    }
   }, [entity]);
 
   const Select = ({ entity, data }: { entity: string, data: Array<any> }) => {

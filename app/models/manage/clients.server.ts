@@ -12,9 +12,6 @@ import { type User } from '../access/users.server';
 
 import { whereKeys, whereExactKeys } from './shared.server';
 
-const keyMax = Number.MAX_SAFE_INTEGER;
-const maxEntities = 50;
-
 export type Client = s.clients.Selectable;
 
 type SearchOptions = {
@@ -42,7 +39,9 @@ const service = (u: User) => {
     const parent = client.parentId
       ? await getClient({ id: client.parentId as number })
       : await service.getServiceCentre({ id: client.serviceCentreId as number })
-    
+ 
+    const maxEntities = client.parentId ? 100 : 100000;
+
     const latest = await getLatest(client);
 
     if (parent === undefined) throw new Error('Error generating security key');
@@ -78,20 +77,6 @@ const service = (u: User) => {
         LOWER(${'clients'}.${'name'}) LIKE LOWER('${db.raw(search)}%')
     `;
 
-  const searchClients = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
-    const keys = [ ...u.keys.serviceCentre, ...u.keys.client ];
-
-    if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
-
-    return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT * FROM ${'clients'}
-      WHERE ${'parentId'} IS NULL ${searchQuery({ search })} AND ${whereKeys({ keys })}
-      ORDER BY ${'clients'}.${'name'} ${db.raw(sortDirection)}
-      OFFSET ${db.param(offset)}
-      LIMIT ${db.param(limit)}
-    `.run(pool);
-  };
-
   const countClients = async ({ search }: SearchOptions) => {
     const keys = [ ...u.keys.serviceCentre, ...u.keys.client ];
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
@@ -101,6 +86,23 @@ const service = (u: User) => {
 
     const { count } = item as unknown as Count;
     return count;
+  };
+
+  const searchClients = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+    const keys = [ ...u.keys.serviceCentre, ...u.keys.client ];
+
+    if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
+
+    const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
+      SELECT * FROM ${'clients'}
+      WHERE ${'parentId'} IS NULL ${searchQuery({ search })} AND ${whereKeys({ keys })}
+      ORDER BY ${'clients'}.${'name'} ${db.raw(sortDirection)}
+      OFFSET ${db.param(offset)}
+      LIMIT ${db.param(limit)}
+      `.run(pool);
+    const count = await countClients({ search });
+
+    return { clients, metadata: { count }};
   };
 
   const getClient = async ({ id }: IdProp) => {
@@ -116,8 +118,8 @@ const service = (u: User) => {
   // Required to determine exactly which entities a user has authorization for
   const listClientsForKeys = async ({ keys }: KeyQueryOptions) => {
     if (keys === undefined) return [];
-    return await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT * FROM ${'serviceCentres'}
+    return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
+      SELECT * FROM ${'clients'}
       WHERE ${whereExactKeys({ keys })}
       `.run(pool);
   };

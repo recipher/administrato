@@ -29,8 +29,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const service = CountryService();
 
-  const countries = await service.searchCountries({ search }, { offset, limit, sortDirection: sort });
-  const count = await service.countCountries({ search });
+  const { countries, metadata: { count }} = await service.searchCountries({ search }, { offset, limit, sortDirection: sort });
 
   return json({ countries, count, offset, limit, search });
 };

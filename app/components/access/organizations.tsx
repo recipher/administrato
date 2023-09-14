@@ -20,10 +20,9 @@ export const OrganizationsSearch = ({ onSelect }: { onSelect: Function }) => {
   const Search = ({ data }: { data: Array<Organization> }) => {
     const [ offset, setOffset ] = useState(0);
     const [ filteredOrgs, setFilteredOrgs ] = useState(data);
-    const [ orgs, setOrgs ] = useState(data.slice(0, LIMIT));
 
     const ensureSize = (items: Array<any>) => {
-      const EMPTY = { name: '', id: '' };
+      const EMPTY = { displayName: '', id: '' };
       
       if (items.length < LIMIT) {
         const empty = [...Array(LIMIT - items.length).keys()].map(_ => EMPTY);
@@ -31,6 +30,8 @@ export const OrganizationsSearch = ({ onSelect }: { onSelect: Function }) => {
       }
       return items;
     };
+
+    const [ orgs, setOrgs ] = useState(ensureSize(data.slice(0, LIMIT)));
 
     const handleFilter = (text: string) => {
       const filtered = !text.length ? data : data
@@ -51,7 +52,7 @@ export const OrganizationsSearch = ({ onSelect }: { onSelect: Function }) => {
       <>
         <Filter onFilter={handleFilter} />
         <div className="mt-3">
-          <List data={orgs} nameKey="name" onClick={onSelect} />
+          <List data={orgs} nameKey="displayName" onClick={onSelect} />
         </div>
         <Pagination onPage={handlePage}
           entity="organization" offset={offset} limit={LIMIT} 
