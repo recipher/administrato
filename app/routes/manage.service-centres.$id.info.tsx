@@ -1,13 +1,14 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
-
-import { badRequest, notFound } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import { useLoaderData } from '@remix-run/react';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
-import Header from '~/components/header/with-actions';
+import Alert, { Level } from '~/components/alert';
+import { Basic as List } from '~/components/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+
+import { notFound, badRequest } from '~/utility/errors';
+import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
@@ -29,26 +30,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ serviceCentre });
 };
 
-export default function ServiceCentre() {
+const Info = () => {
   const { serviceCentre } = useLoaderData();
 
-  const tabs = [
-    { name: 'info', to: 'info' },
-    { name: 'clients', to: 'holidays' },
-    { name: 'legal-entities', to: 'legal-entities' },
-    { name: 'providers', to: 'providers' },
-    { name: 'holidays', to: 'holidays' },
-  ];
-  
-  // const actions = [
-  //   { title: "sync", icon: ArrowPathIcon, type: ButtonType.Secondary, onClick: sync },
-  //   { title: "add-holiday", to: "add", icon: PlusIcon },
-  // ];
-
   return (
-    <>
-      <Header title={serviceCentre.name} tabs={tabs} />
-      <Outlet />
-    </>
+    <div>Hello</div>
   );
 };
+
+export default Info;

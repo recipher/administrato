@@ -1,7 +1,7 @@
 import { type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import UserService from '~/models/users.server';
+import UserService from '~/models/access/users.server';
 import { requireUser } from '~/auth/auth.server';
 
 import Header from '~/components/header/with-filter';

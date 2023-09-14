@@ -9,7 +9,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Organization, mapProfileToUser, requireUser } from '~/auth/auth.server';
-import UserService, { type User } from '~/models/users.server';
+import UserService, { type User } from '~/models/access/users.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
@@ -18,6 +18,7 @@ import Button, { ButtonType } from '~/components/button';
 import { Level } from '~/components/toast';
 import { RefModal } from '~/components/modals/modal';
 import { SelectorModal } from '~/components/access/organizations';
+import Alert from '~/components/alert';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -113,6 +114,8 @@ export default function Organizations() {
             <h2 className="text-lg font-medium leading-7 text-gray-900">Organizations</h2>
             <p className="mt-1 text-sm leading-6 text-gray-500">Manage organization memberships.</p>
 
+            {user.organizations.length <= 0 && <Alert title='No organization memberships' level={Level.Info} />}
+
             <ul role="list" className="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
               {user.organizations.map((organization: any) => (
                 <li key={organization.id} className="group flex justify-between gap-x-6 py-4 cursor-pointer">
@@ -130,7 +133,7 @@ export default function Organizations() {
             </ul>
 
             <div className="flex pt-3">
-              <Button icon={PlusIcon} title={t('Join another Organization')} 
+              <Button icon={PlusIcon} title={t('Join an Organization')} 
                 type={ButtonType.Secondary} onClick={showModal} />
             </div>
           </div>

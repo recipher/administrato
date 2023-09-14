@@ -3,7 +3,7 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import UserService, { type User } from '~/models/users.server';
+import UserService, { type User } from '~/models/access/users.server';
 import { requireUser } from '~/auth/auth.server';
 
 import Header from '~/components/header/with-actions';

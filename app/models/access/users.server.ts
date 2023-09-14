@@ -2,10 +2,12 @@ import client from './auth0.server';
 
 const { DOMAIN: ns } = process.env;
 
-import { type QueryOptions, type SearchOptions } from './types';
+import { type QueryOptions, type SearchOptions } from '../types';
 
 import { type User } from '~/auth/auth.server';
 export { type User };
+
+import { type Org } from './organizations.server';
 
 type Id = {
   id: string;
@@ -15,7 +17,6 @@ type OrgId = {
   organization?: string;
 };
 
-type Org = { id: string, auth0id: string, displayName: string };
 type KeyData = { 
   entity: string, 
   organization: Org,

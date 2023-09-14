@@ -5,7 +5,7 @@ import pool from './db.server';
 
 import { type QueryOptions, type SearchOptions, ASC, DESC } from './types';
 
-import { type User } from './users.server';
+import { type User } from './access/users.server';
 
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });

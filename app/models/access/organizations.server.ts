@@ -6,13 +6,23 @@ type Id = {
   id: string;
 };
 
+export type Org = { id: string, auth0id: string, displayName: string };
+
 const service = () => {
+
+  const toOrganization = ({ id: auth0id, name, display_name: displayName, metadata: { id }}: any) => ({
+    id,
+    name,
+    displayName,
+    auth0id,
+  });
+
   const getOrganization = async ({ id }: Id) => {
-    return client.organizations.getByID({ id });
+    return toOrganization(await client.organizations.getByID({ id }));
   };
 
   const listOrganizations = async () => {
-    return client.organizations.getAll();  
+    return (await client.organizations.getAll()).map(toOrganization);  
   };
 
   return { getOrganization, listOrganizations };

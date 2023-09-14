@@ -1,7 +1,7 @@
 import { LoaderArgs, json } from '@remix-run/node';
 
-import UserService from '~/models/users.server';
-import OrganizationService from '~/models/organizations.server';
+import UserService from '~/models/access/users.server';
+import OrganizationService from '~/models/access/organizations.server';
 
 import Header from '~/components/header/with-actions';
 import Alert, { Level } from '~/components/alert';
@@ -27,7 +27,7 @@ export default () => {
 
       {organizations.length <= 0 && <Alert title='No organizations found' level={Level.Warning} />}
 
-      <List data={organizations} nameKey='displayName' />
+      <List data={organizations} nameKey='displayName' idKey='auth0id' />
     </>
   );
 }

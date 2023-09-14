@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import ServiceCentreService from '~/models/service-centres.server';
+import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import { Input, Select, Cancel, Submit, 
@@ -89,7 +89,7 @@ const Add = () => {
 
   useEffect(() => {
     context.validate();  // HACK :)
-  }, [data, context])
+  }, [data])
 
   return (
     <>
@@ -116,17 +116,17 @@ const Add = () => {
             </Field>
 
             {data?.codes?.map((code: string) => {
-                const country = findCountry(code);
-                const regions = findRegions(code);
-                return (
-                  <Field key={code}>
-                    <Select 
-                      label='Select Country or a Region'
-                      name="localities" 
-                      defaultValue={country}
-                      data={[ country ].concat(regions)} />
-                  </Field>
-                )})}
+              const country = findCountry(code);
+              const regions = findRegions(code);
+              return (
+                <Field key={code}>
+                  <Select 
+                    label='Select Country or a Region'
+                    name="localities" 
+                    defaultValue={country}
+                    data={[ country ].concat(regions)} />
+                </Field>
+              )})}
           </Group>
         </Body>
         <Footer>

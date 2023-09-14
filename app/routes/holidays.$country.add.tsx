@@ -3,7 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 import CountryService from '~/models/countries.server';
-import HolidayService from '~/models/holidays.server';
+import HolidayService from '~/models/scheduler/holidays.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import { ValidatedForm as Form, validationError } from 'remix-validated-form';
@@ -73,7 +73,6 @@ export async function action({ request, params }: ActionArgs) {
   }
 
   const session = await setFlashMessage({ request, message, level });
-
   return redirect(`/holidays/${isoCode}/holidays?year=${year}`, {
     headers: { "Set-Cookie": await storage.commitSession(session) }
   });

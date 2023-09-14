@@ -6,7 +6,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import Header from '~/components/header/with-actions';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import RoleService, { type Role } from '~/models/roles.server';
+import RoleService, { type Role } from '~/models/access/roles.server';
 
 export const handle = {
   breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>

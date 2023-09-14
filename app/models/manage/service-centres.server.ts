@@ -1,20 +1,13 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
-import pool from './db.server';
+import pool from '../db.server';
 
-import { type QueryOptions as BaseQueryOptions } from './types';
+import type { SecurityKey, SecurityKeys, IdProp, QueryOptions as BaseQueryOptions } from '../types';
 
-import { type User } from './users.server';
+import { type User } from '../access/users.server';
 
 const keyMax = Number.MAX_SAFE_INTEGER;
 const maxEntities = 50;
-
-export type SecurityKey = {
-  keyStart: number;
-  keyEnd: number;
-};
-
-export type SecurityKeys = Array<SecurityKey>;
 
 export type ServiceCentre = s.serviceCentres.Selectable;
 
@@ -62,7 +55,7 @@ const service = (u: User) => {
         byKeys = db.sql<db.SQL>`${byKeys} OR (${db.param(keyStart)} <= ${'keyStart'} AND ${db.param(keyEnd)} >= ${'keyEnd'})`;
       };
     }
-    return db.sql<db.SQL>`${'isArchived'} = ${db.param(isArchived)} AND (${byKeys})`;
+    return db.sql<db.SQL>`(${'isArchived'} = ${db.param(isArchived)} AND (${byKeys}))`;
   };
 
   const listServiceCentres = async (query: QueryOptions = { isArchived: false }) => {
@@ -72,6 +65,17 @@ const service = (u: User) => {
       SELECT * FROM ${'serviceCentres'}
       WHERE ${where({ keys, ...query })}
       `.run(pool);
+  };
+
+  const getServiceCentre = async ({ id }: IdProp) => {
+    // @ts-ignore
+    const keys = u.keys.serviceCentre;
+    const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+      SELECT * FROM ${'serviceCentres'}
+      WHERE ${where({ keys })} AND ${'id'} = ${db.param(id)}
+      `.run(pool);
+console.log(serviceCentre);
+    return serviceCentre;
   };
 
   // Required to determine exactly which entities a user has authorization for
@@ -93,6 +97,7 @@ const service = (u: User) => {
 
   return {
     addServiceCentre,
+    getServiceCentre,
     listServiceCentres,
     listServiceCentresForKeys
   };

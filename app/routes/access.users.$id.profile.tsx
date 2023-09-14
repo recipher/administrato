@@ -7,8 +7,8 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
-import UserService, { type User } from '~/models/users.server';
-import ServiceCentreService, { type ServiceCentre } from '~/models/service-centres.server';
+import UserService, { type User } from '~/models/access/users.server';
+import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 
 // import { listLegalEntitiesForKeys, type LegalEntity } from '~/models/legal-entities.server';
 // import { listClientsForKeys, type Client } from '~/models/clients.server';

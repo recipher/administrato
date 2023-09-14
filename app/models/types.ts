@@ -11,3 +11,14 @@ export type SearchOptions = {
 
 export const ASC = 'asc'
 export const DESC = 'desc';
+
+export type IdProp = {
+  id: number | string;
+};
+
+export type SecurityKey = {
+  keyStart: number;
+  keyEnd: number;
+};
+
+export type SecurityKeys = Array<SecurityKey>;

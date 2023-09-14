@@ -1,8 +1,8 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import ServiceCentreService, { type ServiceCentre } from '~/models/service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import Header from "~/components/header/with-actions";
@@ -42,32 +42,34 @@ export default function ServiceCentres() {
       
       <ul className="divide-y divide-gray-100">
         {serviceCentres.map((serviceCentre: ServiceCentre) => (
-          <li key={serviceCentre.id} className="flex justify-between gap-x-6 py-5">
-            <div className="flex min-w-0 gap-x-4">
-              <div className="min-w-0 flex-auto">
-                <p className="text-lg font-semibold leading-6 text-gray-900">
-                  {serviceCentre.name}
-                </p>
-                <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                  {serviceCentre.localities?.map(isoCode => {
-                    const locality = country(isoCode);
-                    const code = locality.parent ? locality.parent : isoCode;
-                    return (
-                      <span key={code} className="mr-4">
-                        <span className="mr-2 text-base float-left">
-                          {locality?.name}
+          <Link key={serviceCentre.id} to={`${serviceCentre.id}/info`}>
+            <li className="flex justify-between gap-x-6 py-5">
+              <div className="flex min-w-0 gap-x-4">
+                <div className="min-w-0 flex-auto">
+                  <p className="text-lg font-semibold leading-6 text-gray-900">
+                    {serviceCentre.name}
+                  </p>
+                  <p className="mt-1 flex text-xs leading-5 text-gray-500">
+                    {serviceCentre.localities?.map(isoCode => {
+                      const locality = country(isoCode);
+                      const code = locality.parent ? locality.parent : isoCode;
+                      return (
+                        <span key={code} className="mr-4">
+                          <span className="mr-2 text-base float-left">
+                            {locality?.name}
+                          </span>
+                          <Image className="h-6 w-6 bg-white float-right"
+                            src={`https://cdn.ipregistry.co/flags/twemoji/${code.toLowerCase()}.svg`} />
                         </span>
-                        <Image className="h-6 w-6 bg-white float-right"
-                          src={`https://cdn.ipregistry.co/flags/twemoji/${code.toLowerCase()}.svg`} />
-                      </span>
-                    );
-                  })}
-                </p>
+                      );
+                    })}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex shrink-0 items-center gap-x-6">
-            </div>
-          </li>
+              <div className="flex shrink-0 items-center gap-x-6">
+              </div>
+            </li>
+          </Link>
         ))}
       </ul>
     </>

@@ -4,8 +4,8 @@ import { Form, useFetcher, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import UserService, { type User } from '~/models/users.server';
-import RoleService, { type Role } from '~/models/roles.server';
+import UserService, { type User } from '~/models/access/users.server';
+import RoleService, { type Role } from '~/models/access/roles.server';
 
 import { Breadcrumb } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';

@@ -1,7 +1,7 @@
 import { HolidayAPI } from 'holidayapi';
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
-import pool from './db.server';
+import pool from '../db.server';
 
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });

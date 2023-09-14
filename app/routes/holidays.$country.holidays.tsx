@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
 import CountryService from '~/models/countries.server';
-import HolidayService, { type Holiday } from '~/models/holidays.server';
+import HolidayService, { type Holiday } from '~/models/scheduler/holidays.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import Alert, { Level } from '~/components/alert';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";

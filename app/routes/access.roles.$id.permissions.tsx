@@ -3,14 +3,14 @@ import { type LoaderArgs } from '@remix-run/node';
 import { badRequest, notFound } from '~/utility/errors';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import RoleService, { type Role } from '~/models/roles.server';
+import RoleService, { type Role } from '~/models/access/roles.server';
 
 export const handle = {
   breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>
     <Breadcrumb key={role.id} to={`/access/roles/${role.id}/permissions`} name="permissions" current={current} />
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const { id } = params;
 
   if (id === undefined) return badRequest();

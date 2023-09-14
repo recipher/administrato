@@ -11,7 +11,7 @@ import {
   NODE_ENV,
 } from "./settings.server";
 
-const isDevelopment = NODE_ENV === "development";
+// const isDevelopment = NODE_ENV === "development";
 const isProduction = NODE_ENV === "production";
 
 const DOMAIN = "recipher.co.uk";
