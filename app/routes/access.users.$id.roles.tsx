@@ -48,7 +48,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const roles = await roleService.listRoles();
   const userRoles = await userService.getUserRoles({ id })
 
-  return { user, roles: determineMembership(roles, userRoles), userRoles };
+  return { user, roles: determineMembership(roles, userRoles) };
 };
 
 export async function action({ request }: ActionArgs) {

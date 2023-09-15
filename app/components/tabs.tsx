@@ -12,15 +12,15 @@ type Props = {
   onClick: Function;
 };
 
-const Tabs = ({ tabs, selected, onClick }: Props) => (
+const Tabs = ({ tabs, selected, onClick }: Props) => { return (
   <div className="border-b border-gray-200">
     <nav className="-mb-px flex space-x-8" aria-label="Tabs">
       {tabs.map((tab) => (
         <div
           key={tab.name}
-          onClick={() => onClick(tab.name || tab.value)}
+          onClick={() => onClick(tab.value || tab.name)}
           className={classnames(
-            tab.value || tab.name == selected
+            (tab.value || tab.name) == selected
               ? 'border-indigo-500 text-indigo-600'
               : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
             'flex whitespace-nowrap border-b-2 pt-4 pb-2 text-md hover:cursor-pointer'
@@ -42,7 +42,7 @@ const Tabs = ({ tabs, selected, onClick }: Props) => (
       ))}
     </nav>
   </div>
-);
+)};
 
 export default ({ tabs, selected, onClick }: Props) => {
   if (tabs === undefined || tabs.length === 0) return;

@@ -19,7 +19,7 @@ import i18next, { i18nCookie } from "~/i18next.server";
 
 import ToastContext from "./hooks/use-toast";
 
-import { auth } from "~/auth/auth.server";
+import { authenticate } from "~/auth/auth.server";
 import { getSessionFlash } from "./utility/flash.server";
 import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
@@ -44,7 +44,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const headers = new Headers();
 
   const locale = await i18next.getLocale(request);
-  const user = await auth.authenticate("auth0", request);
+  const user = await authenticate("auth0", request);
   // console.log(JSON.stringify(user, null, 2));
   
   const { flash } = await getSessionFlash(request, headers);

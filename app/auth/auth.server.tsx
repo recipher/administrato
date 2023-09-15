@@ -26,22 +26,6 @@ enum Right {
   delete = 8,
 };
 
-export const storage = createCookieSessionStorage({
-  cookie: {
-    name: "_remix_session",
-    sameSite: "lax",
-    path: "/",
-    httpOnly: true,
-    secrets: [SESSION_SECRET],
-    secure: isProduction,
-  },
-});
-
-export const auth = new Authenticator<any>(storage);
-
-export const requireUser = async (request: Request) =>
-  auth.isAuthenticated(request, { failureRedirect: "/" });
-
 export type SecurityKey = {
   keyStart: number;
   keyEnd: number;
@@ -115,6 +99,39 @@ const mapOrganizations = (profile: any) => {
   }));
 };
 
+const compact = (permissions?: Array<string>) => {
+  return permissions?.reduce((namespaces: Array<string>, permission: string) => {
+    const [ ns, _, entity ] = permission.split(":");
+    return namespaces.includes(`${ns}:${entity}`) ? namespaces : [ `${ns}:${entity}`, ...namespaces ];
+  }, []).map((namespace: string) => {
+    const rights = permissions.filter(permission => {
+      const [ ns, _, entity ] = permission.split(":");
+      return `${ns}:${entity}` === namespace;
+    }).map(permission => {
+      const [ _, right ] = permission.split(":");
+      return Object.values(Right)[Object.keys(Right).indexOf(right)] as number;
+    }).reduce((rights: number, right: number) => rights + right, 0);
+
+    return `${namespace}:${rights}`;
+  });
+};
+
+const expand = (permissions: Array<string>) => {
+  return permissions.map((permission: string) => {
+    const [ ns, entity, right ] = permission.split(':');
+
+    return Object.values(Right).filter(r => !isNaN(Number(r))).map((r: any) => {
+      const bit = parseInt(r);
+      return (parseInt(right) & bit) === bit ? bit : 0;
+    }).map((r: number) => {
+      const right = r === 0 ? undefined : Object.keys(Right)[Object.values(Right).indexOf(r)];
+      if (right !== undefined) return `${ns}:${right}:${entity}`;
+    });
+  }).flat().reduce((permissions: Array<string>, permission) => 
+    permission === undefined ? permissions : [ permission, ...permissions ],
+  []);
+};
+
 const mapPermissions = (profile: any) => {
   if (profile === undefined) return;
   type ObjectKey = keyof typeof profile;
@@ -124,8 +141,12 @@ const mapPermissions = (profile: any) => {
     const perms = profile && profile[key] as Array<string>;
     if (perms) permissions = [ ...permissions, ...perms.map((p: string) => `${name}:${p}`) ];
   });
-  return permissions;
+
+  return compact(permissions);
 };
+
+export const fromCookie = (user: User) => 
+  ({ ...user, permissions: expand(user.permissions) });
 
 export const mapProfileToUser = (id: string | undefined, profile: any) => {
   if (id === undefined) return;
@@ -142,6 +163,29 @@ export const mapProfileToUser = (id: string | undefined, profile: any) => {
     keys = organization?.keys === undefined ? defaultKeys : organization.keys;
 
   return { id, name, email, picture, settings, permissions, organizations, organization, keys, defaultKeys };
+};
+
+export const storage = createCookieSessionStorage({
+  cookie: {
+    name: "_remix_session",
+    sameSite: "lax",
+    path: "/",
+    httpOnly: true,
+    secrets: [SESSION_SECRET],
+    secure: isProduction,
+  },
+});
+
+export const auth = new Authenticator<any>(storage);
+
+export const requireUser = async (request: Request) => {
+  const user = await auth.isAuthenticated(request, { failureRedirect: "/denied" });
+  return fromCookie(user);
+};
+
+export const authenticate = async (strategy: string, request: Request) => {
+  const user = await auth.authenticate("auth0", request);
+  return fromCookie(user);
 };
 
 const auth0Strategy = new Auth0Strategy(
