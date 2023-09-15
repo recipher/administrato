@@ -40,7 +40,7 @@ const service = (u: User) => {
       ? await getClient({ id: client.parentId as number })
       : await service.getServiceCentre({ id: client.serviceCentreId as number })
  
-    const maxEntities = client.parentId ? 100 : 100000;
+    const maxEntities = client.parentId ? 100 : 100000; // Move to constants
 
     const latest = await getLatest(client);
 

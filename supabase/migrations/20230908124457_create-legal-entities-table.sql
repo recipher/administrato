@@ -6,7 +6,7 @@ create table
     frequency text null default 'monthly'::text,
     "targetDay" text null default 'last'::text,
     "serviceCentreId" bigint not null,
-    "providerId" bigint not null,
+    "providerId" bigint null,
     "clientId" bigint null,
     "isArchived" boolean null default false,
     "keyStart" bigint null,
@@ -17,3 +17,4 @@ create table
     constraint legalEntities_providerId_fkey foreign key ("providerId") references providers (id),
     constraint legalEntities_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id)
   ) tablespace pg_default;
+alter table public."legalEntities" ENABLE ROW LEVEL SECURITY;

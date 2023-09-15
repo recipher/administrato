@@ -8,9 +8,11 @@ import UserService, { type User } from '../access/users.server';
 import toNumber from '~/helpers/to-number';
 
 import { whereKeys, whereExactKeys } from './shared.server';
+import ServiceCentre from '~/routes/manage.service-centres.$id';
 
-const keyMax = Number.MAX_SAFE_INTEGER;
-const maxEntities = 50;
+const KEY_MIN = 0;
+const KEY_MAX = Number.MAX_SAFE_INTEGER;
+const MAX_ENTITIES = 50;
 
 export type ServiceCentre = s.serviceCentres.Selectable;
 
@@ -28,7 +30,7 @@ const service = (u: User) => {
   const generateKey = async (): Promise<SecurityKey> => {
     const latest = await getLatest();
     const keyStart = Number(latest?.keyEnd ? Number(latest.keyEnd) + 1 : 0);
-    const keyEnd = keyStart + Number(Math.round(keyMax / maxEntities));
+    const keyEnd = keyStart + Number(Math.round(KEY_MAX / MAX_ENTITIES));
 
     return { keyStart, keyEnd };
   };
@@ -56,12 +58,28 @@ const service = (u: User) => {
     return inserted;
   };
 
-  const listServiceCentres = async (query: KeyQueryOptions = { isArchived: false }) => {
+  const checkForFullAccess = (keys: Array<SecurityKey>, serviceCentres: Array<ServiceCentre>) => {
+    return (keys.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
+      ? [ { id: 0 as unknown as db.Int8String, 
+            name: "Full Authorization", 
+            localities: [], 
+            keyStart: KEY_MIN as unknown as db.Int8String, 
+            keyEnd: KEY_MAX as unknown as db.Int8String, 
+            createdAt: new Date(), 
+            isArchived: false }, ...serviceCentres ]
+      : serviceCentres;
+  }
+
+  type AllowFullAccess = { allowFullAccess: boolean };
+
+  const listServiceCentres = async (query: KeyQueryOptions & AllowFullAccess = { isArchived: false, allowFullAccess: false }) => {
     const keys = query.keys || u.keys.serviceCentre;
-    return await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+    const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
       WHERE ${whereKeys({ keys, ...query })}
       `.run(pool);
+
+    return query.allowFullAccess ? checkForFullAccess(keys, serviceCentres) : serviceCentres;
   };
 
   const getServiceCentre = async ({ id }: IdProp) => {
@@ -77,10 +95,12 @@ const service = (u: User) => {
   // Required to determine exactly which entities a user has authorization for
   const listServiceCentresForKeys = async ({ keys }: KeyQueryOptions) => {
     if (keys === undefined) return [];
-    return await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+    const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
       WHERE ${whereExactKeys({ keys })}
       `.run(pool);
+
+    return checkForFullAccess(keys, serviceCentres);    
   };
 
   return {

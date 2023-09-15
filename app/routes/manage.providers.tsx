@@ -2,10 +2,15 @@ import { Outlet } from "@remix-run/react";
 import { CurrencyYenIcon } from "@heroicons/react/24/outline";
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import withAuthorization from "~/auth/with-authorization";
+
+import { manage } from '~/auth/permissions';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
     <Breadcrumb Icon={CurrencyYenIcon} to='/manage/providers' name="providers" current={current} />
 };
 
-export default () => <Outlet/>;
+const Providers = () => <Outlet />;
+
+export default withAuthorization(manage.read.provider)(Providers);

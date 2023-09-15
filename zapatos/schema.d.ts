@@ -624,9 +624,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.providerId**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      providerId: db.Int8String;
+      providerId: db.Int8String | null;
       /**
       * **legalEntities.clientId**
       * - `int8` in database
@@ -698,9 +698,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.providerId**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      providerId: number;
+      providerId: number | null;
       /**
       * **legalEntities.clientId**
       * - `int8` in database
@@ -772,7 +772,7 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.providerId**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -846,9 +846,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.providerId**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      providerId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.clientId**
       * - `int8` in database
@@ -920,9 +920,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.providerId**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.clientId**
       * - `int8` in database
@@ -1416,6 +1416,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities: string[] | null;
+      /**
+      * **providers.serviceCentreId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      serviceCentreId: db.Int8String | null;
     }
     export interface JSONSelectable {
       /**
@@ -1460,6 +1466,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities: string[] | null;
+      /**
+      * **providers.serviceCentreId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      serviceCentreId: number | null;
     }
     export interface Whereable {
       /**
@@ -1504,6 +1516,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **providers.serviceCentreId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1548,6 +1566,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **providers.serviceCentreId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1592,6 +1616,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **providers.serviceCentreId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'providers_pkey';
     export type Column = keyof Selectable;

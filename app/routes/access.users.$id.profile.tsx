@@ -10,9 +10,8 @@ import { mapProfileToUser, requireUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/models/access/users.server';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import ClientService, { type Client } from '~/models/manage/clients.server';
-
-// import { listLegalEntitiesForKeys, type LegalEntity } from '~/models/legal-entities.server';
-// import { listProvidersForKeys, type Provider } from '~/models/providers.server';
+import LegalEntityService, { type LegalEntity } from '~/models/manage/legal-entities.server';
+import ProviderService, { type Provider } from '~/models/manage/providers.server';
 
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/selector';
@@ -48,16 +47,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const serviceCentreService = ServiceCentreService(u);
   const clientService = ClientService(u);
+  const legalEntityService = LegalEntityService(u);
+  const providerService = ProviderService(u);
   const serviceCentres = await serviceCentreService.listServiceCentresForKeys({ keys: user?.keys.serviceCentre });
   const clients = await clientService.listClientsForKeys({ keys: user?.keys.client });
-  // const legalEntities = await listLegalEntitiesForKeys({ keys: user?.keys.legalEntity });
-  // const providers = await listProvidersForKeys({ keys: user?.keys.provider });
+  const legalEntities = await legalEntityService.listLegalEntitiesForKeys({ keys: user?.keys.legalEntity });
+  const providers = await providerService.listProvidersForKeys({ keys: user?.keys.provider });
 
   return { user, profile, authorizables: [
     ...toAuthorizables('service-centre', serviceCentres),
     ...toAuthorizables('client', clients),
-    // ...toAuthorizables('legal-entity', legalEntities),
-    // ...toAuthorizables('provider', providers),
+    ...toAuthorizables('legal-entity', legalEntities),
+    ...toAuthorizables('provider', providers),
   ]};
 };
 

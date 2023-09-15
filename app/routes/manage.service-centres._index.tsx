@@ -3,7 +3,7 @@ import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
-import CountryService, { type Country } from '~/models/countries.server';
+import CountryService from '~/models/countries.server';
 
 import Header from "~/components/header/with-actions";
 import Alert, { Level } from '~/components/alert';
@@ -14,10 +14,13 @@ import { Flags } from '~/components/countries/flag';
 import { manage } from '~/auth/permissions';
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const url = new URL(request.url);
+  const allowFullAccess = !!url.searchParams.get("full");
+
   const user = await requireUser(request);
   
   const serviceCentreService = ServiceCentreService(user);
-  const serviceCentres = await serviceCentreService.listServiceCentres();
+  const serviceCentres = await serviceCentreService.listServiceCentres({ allowFullAccess });
 
   const isoCodes = serviceCentres.map(s => s.localities || []).flat();
   const countryService = CountryService();

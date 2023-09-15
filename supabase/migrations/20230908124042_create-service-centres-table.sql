@@ -9,3 +9,4 @@ create table
     localities text[] null,
     constraint service_centres_pkey primary key (id)
   ) tablespace pg_default;
+alter table public."serviceCentres" ENABLE ROW LEVEL SECURITY;

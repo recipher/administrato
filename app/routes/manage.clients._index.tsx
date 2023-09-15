@@ -38,7 +38,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const actions = [
-  { title: "add-client", to: "add", icon: PlusIcon } //, permission: manage.create.client },
+  { title: "add-client", to: "add", icon: PlusIcon, permission: manage.create.client },
 ];
 
 export default function Clients() {
@@ -46,7 +46,8 @@ export default function Clients() {
 
   return (
     <>
-      <Header title="Clients" actions={actions} />
+      <Header title="clients" actions={actions} />
+      {/* <Header title='holidays' filterTitle='Search countries' filterParam='q' allowSort={true} /> */}
 
       {count <= 0 && <Alert title={`No clients found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
