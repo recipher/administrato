@@ -51,22 +51,36 @@ export const action = async ({ request }: ActionArgs) => {
   const u = await requireUser(request);
   const formData = await request.formData()
 
-  const validator = withZod(schema.refine(
-    async (data) => {
-      if (data.identifier === undefined || data.identifier === "") return true;
-      const service = ServiceCentreService(u);
-      const serviceCentre = await service.getServiceCentre({ id: data.identifier }, { bypassKeyCheck: true });
-      return serviceCentre === undefined;
-    },
-    { message: "This idenfifier is in use", path: [ "identifier" ] }
-  ));
-
   if (formData.get('intent') === 'change-codes') {
     const codes = String(formData.get('codes')).split(',');
     const countries = await countryService.getCountries({ isoCodes: codes });
     const regions = await countryService.getRegions({ isoCodes: codes });
     return json({ codes, regions, countries });
   }
+
+  const validator = withZod(schema.superRefine(
+    async (data, ctx) => {
+      const service = ServiceCentreService(u);
+      if (data.identifier) {
+        const serviceCentre = await service.getServiceCentre({ id: data.identifier }, { bypassKeyCheck: true });
+        if (serviceCentre !== undefined) 
+          ctx.addIssue({
+            message: "This identifier is already in use",
+            path: [ "identifier" ],
+            code: z.ZodIssueCode.custom,
+          });
+      }
+        if (data.name) {
+          const serviceCentre = await service.getServiceCentreByName({ name: data.name }, { bypassKeyCheck: true });
+          if (serviceCentre !== undefined) 
+            ctx.addIssue({
+              message: "This name is already in use",
+              path: [ "name" ],
+              code: z.ZodIssueCode.custom,
+            });
+        }
+      }
+  ));
 
   const result = await validator.validate(formData);
   if (result.error) { 
@@ -127,11 +141,12 @@ const Add = () => {
           <Section heading='New Service Centre' explanation='Please enter the new service centre details.' />
           <Group>
             <Field>
-              <Input label="Service Centre Name" name="name" placeholder="e.g. Scotland" />
+              <UniqueInput label="Service Centre Name" name="name" placeholder="e.g. Scotland"
+                checkUrl="/manage/service-centres/name" property="serviceCentre" message="This name is already in use" />
             </Field>
             <Field span={3}>
               <UniqueInput label="Identifier" name="identifier" 
-                checkUrl="/manage/service-centres" property="serviceCentre" message="This identifier is in use"
+                checkUrl="/manage/service-centres" property="serviceCentre" message="This identifier is already in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
             <Field span={3}>

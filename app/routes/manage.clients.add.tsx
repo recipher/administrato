@@ -51,7 +51,7 @@ z.setErrorMap((issue, ctx) => {
   return { message: ctx.defaultError };
 });
 
-export const validator = withZod(
+const schema = 
   zfd.formData({
     name: z
       .string()
@@ -70,29 +70,61 @@ export const validator = withZod(
           .string()
           .transform(id => parseInt(id))
       }).required()
-  })
-);
+  });
+
+export const clientValidator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
+  const countryService = CountryService();
+
   const u = await requireUser(request);
   const formData = await request.formData()
 
   if (formData.get('intent') === 'change-codes') {
-    const service = CountryService();
     const codes = String(formData.get('codes')).split(',');
-    const countries = await service.getCountries({ isoCodes: codes });
-    const regions = await service.getRegions({ isoCodes: codes });
+    const countries = await countryService.getCountries({ isoCodes: codes });
+    const regions = await countryService.getRegions({ isoCodes: codes });
     return json({ codes, regions, countries });
   }
 
+  const validator = withZod(schema.superRefine(
+    async (data, ctx) => {
+      const service = ClientService(u);
+      if (data.identifier) {
+        const client = await service.getClient({ id: data.identifier }, { bypassKeyCheck: true });
+        if (client !== undefined) 
+          ctx.addIssue({
+            message: "This identifier is already in use",
+            path: [ "identifier" ],
+            code: z.ZodIssueCode.custom,
+          });
+      }
+        if (data.name) {
+          const client = await service.getClientByName({ name: data.name }, { bypassKeyCheck: true });
+          if (client !== undefined) 
+            ctx.addIssue({
+              message: "This name is already in use",
+              path: [ "name" ],
+              code: z.ZodIssueCode.custom,
+            });
+        }
+      }
+  ));
+
   const result = await validator.validate(formData);
-  if (result.error) return validationError(result.error);
+  if (result.error) { 
+    const codes = [ result.submittedData.localities.isoCode ].flat();
+    const countries = await countryService.getCountries({ isoCodes: codes });
+    const regions = await countryService.getRegions({ isoCodes: codes });
+    return { ...validationError(result.error), codes, countries, regions };
+  }
 
   const { data: { serviceCentre: { id: serviceCentreId }, localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = ClientService(u);
   const client = await service.addClient({ localities, serviceCentreId, identifier, ...data });
+  
   return redirect('/manage/clients');
 };
 
@@ -133,15 +165,18 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={validator} id="add-client">
+      <Form method="post" validator={clientValidator} id="add-client">
         <Body>
           <Section heading='New Client' explanation='Please enter the new client details.' />
           <Group>
-          <Field>
-              <Input label="Client Name" name="name" placeholder="e.g. Widget Inc" />
+            <Field>
+              <UniqueInput label="Client Name" name="name" placeholder="e.g. Widget Inc"
+                checkUrl="/manage/clients/name" property="client" message="This name is already in use" />
             </Field>
             <Field span={3}>
-              <Input label="Identifier" name="identifier" disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
+              <UniqueInput label="Identifier" name="identifier" 
+                checkUrl="/manage/clients" property="client" message="This identifier is already in use"
+                disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
             <Field span={3}>
               <div className="pt-9">

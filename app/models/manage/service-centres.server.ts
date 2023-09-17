@@ -89,7 +89,7 @@ const service = (u: User) => {
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
-        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param((id as string).toLowerCase())})
+        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);
 
     return serviceCentre;
