@@ -10,7 +10,7 @@ import refreshUser from '~/auth/refresh.server';
 import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
-import Header from '~/components/header/basic';
+import Header from '~/components/header';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { ButtonType } from '~/components/button';

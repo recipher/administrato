@@ -14,41 +14,42 @@ import Image from '../image';
 import Sort from './sort';
 import classnames from '~/helpers/classnames';
 
-type TitleProps = {
+export type TitleProps = {
   title: string;
   subtitle?: string | undefined;
   icon?: ReactNode | string | undefined;
 };
-type FilterProps = {
-  filterTitle?: string;
-  filterParam?: string;
+export type FilterProps = {
+  filterTitle?: string | undefined;
+  filterParam?: string | undefined;
   allowSort?: boolean;
 };
-type AdditionalFilterOptions = {
+export type AdditionalFilterOptions = {
   name: string;
   value: string;
 };
-type AdditionalFilterProps = {
+export type AdditionalFilterProps = {
   title: string;
   filters: Array<AdditionalFilterOptions>;
   filterParam: string;
   selected: string;
 };
-type ButtonsProps = {
+export type ButtonsProps = {
   actions?: ActionsProps;
   group?: boolean;
+  title?: string | undefined;
 };
-type Props = {
+export type Props = {
   additionalFilters?: AdditionalFilterProps;
   tabs?: TabsProps;
-} & TitleProps & FilterProps  & ButtonsProps;
+} & TitleProps & FilterProps & ButtonsProps;
 
-const Title = ({ title, subtitle, icon }: TitleProps) => {
+export const Title = ({ title, subtitle, icon }: TitleProps) => {
   const { t } = useTranslation();
   return (
     <>
-      {icon && <div className="mr-4 flex-shrink-0">{icon}</div>}
-      <div className="h-6">
+      {icon && <div className="mr-4 mt-2 flex-shrink-0">{icon}</div>}
+      <div className="h-8">
         <h3 className="text-lg font-semibold leading-6 text-gray-900">{t(title)}</h3>
         {subtitle && <p className="text-sm text-gray-500">
           {t(subtitle)}
@@ -56,9 +57,9 @@ const Title = ({ title, subtitle, icon }: TitleProps) => {
       </div>
     </>
   );
-}
+};
 
-const AdditionalFilter = ({ title, filters, filterParam, selected }: AdditionalFilterProps) => {
+export const AdditionalFilter = ({ title, filters, filterParam, selected }: AdditionalFilterProps) => {
   const [ searchParams ] = useSearchParams();
   const navigate = useNavigate();
 
@@ -76,7 +77,7 @@ const AdditionalFilter = ({ title, filters, filterParam, selected }: AdditionalF
   return (
     <Menu as="div" className="relative inline-block text-left focus:outline-none">
       <div>
-        <Menu.Button className="group inline-flex justify-center text-md font-medium text-gray-700 hover:text-gray-900 focus:outline-none">
+        <Menu.Button className="group inline-flex justify-center text-md text-gray-700 hover:text-gray-900 focus:outline-none">
           {title}
           {selectedName && <span className="font-semibold ml-2">{selectedName}</span>}
           <ChevronDownIcon
@@ -120,7 +121,7 @@ const AdditionalFilter = ({ title, filters, filterParam, selected }: AdditionalF
   );
 }
 
-const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalFilters }: FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined }) => {
+export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalFilters }: FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -153,13 +154,13 @@ const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalF
       </div>
     </>
   );
-}
+};
 
-const Buttons = ({ actions = [], group = false }: ButtonsProps) => {
+export const Buttons = ({ actions = [], group = false, title = '' }: ButtonsProps) => {
   return group
-    ? <ButtonGroup buttons={actions} title='' /> 
+    ? <ButtonGroup buttons={actions} title={title} /> 
     : <Actions actions={actions} />
-}
+};
 
 export default function Header({ title, subtitle, icon, tabs = [], actions = [], additionalFilters,
   filterTitle, filterParam = 'q', allowSort = true, group = false }: Props) {

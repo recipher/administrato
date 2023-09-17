@@ -135,7 +135,7 @@ export default function Permissions() {
     <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">
       <h2 className="text-lg font-medium leading-7 text-gray-900">Select Permissions</h2>
       <p className="mt-1 text-sm leading-6 text-gray-500">
-        Permissions grants the user access to functionality, where they have membership of this role.
+        Permissions grant the user access to functionality, where they have membership of this role.
       </p>
 
       <Tabs tabs={namespaces.map((value: string) => ({ name: t(value), value }))} selected={namespace} onClick={handleClick} />

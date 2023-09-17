@@ -5,7 +5,7 @@ import { requireUser } from '~/auth/auth.server';
 
 import ClientService from '~/models/manage/clients.server';
 import { useLoaderData, Outlet } from '@remix-run/react';
-import Header from '~/components/header/basic';
+import Header from '~/components/header';
 import { Breadcrumb } from '~/layout/breadcrumbs';
 
 export const handle = {

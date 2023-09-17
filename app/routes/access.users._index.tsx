@@ -4,7 +4,7 @@ import { useLoaderData } from '@remix-run/react';
 import UserService from '~/models/access/users.server';
 import { requireUser } from '~/auth/auth.server';
 
-import Header from '~/components/header/advanced';
+import Header from '~/components/header/basic-with-filter';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
 import toNumber from '~/helpers/to-number';

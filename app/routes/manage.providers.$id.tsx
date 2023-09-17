@@ -6,7 +6,7 @@ import { requireUser } from '~/auth/auth.server';
 
 import ProviderService from '~/models/manage/providers.server';
 
-import Header from '~/components/header/basic';
+import Header from '~/components/header';
 import { Breadcrumb } from '~/layout/breadcrumbs';
 
 export const handle = {

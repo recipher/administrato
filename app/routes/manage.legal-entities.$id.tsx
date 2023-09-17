@@ -5,7 +5,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
-import Header from '~/components/header/basic';
+import Header from '~/components/header';
 import { Breadcrumb } from '~/layout/breadcrumbs';
 
 export const handle = {
