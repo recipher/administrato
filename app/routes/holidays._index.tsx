@@ -1,5 +1,5 @@
 import { json, type ActionArgs, type LoaderArgs } from '@remix-run/node';
-import { Form, Link, useLoaderData } from '@remix-run/react';
+import { Form, Link, useLoaderData, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
@@ -66,25 +66,24 @@ const Context = (country: Country) => (
 
 export default function Countries() {
   const { t } = useTranslation();
+  const submit = useSubmit();
   const user = useUser();
   const { countries, count, offset, limit, search } = useLoaderData();
 
-  const hasPermission = (p: string) => user.permissions.includes(p);
+  const actions = [
+    { title: "sync", icon: ArrowPathIcon, type: ButtonType.Secondary, 
+      onClick: () => submit({ intent: "sync" }, { method: "post" }), 
+      permission: scheduler.create.holiday },
+  ];
 
   return (
     <>
-      <Header title='holidays' filterTitle='Search countries' filterParam='q' allowSort={true} />
+      <Header title='holidays' actions={actions} filterTitle='Search countries' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No countries found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
       <List data={countries} idKey="isoCode" renderItem={Country} renderContext={Context} />
       <Pagination entity='country' totalItems={count} offset={offset} limit={limit} />
-
-      {hasPermission(scheduler.create.holiday) &&<div className="pt-6 flex border-t border-gray-900/10  items-center justify-start gap-x-6">
-        <Form method="post">
-          <Button icon={ArrowPathIcon} title={t('sync')} type={ButtonType.Secondary} submit={true} />
-        </Form>
-      </div>}
     </>
   );
 }
