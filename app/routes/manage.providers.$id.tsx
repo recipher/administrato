@@ -1,9 +1,18 @@
 import { json, type LoaderArgs } from '@remix-run/node';
+import { Outlet, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import ProviderService from '~/models/manage/providers.server';
+
+import Header from '~/components/header/basic';
+import { Breadcrumb } from '~/layout/breadcrumbs';
+
+export const handle = {
+  breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/providers/${provider?.id}`} name={provider?.name} current={current} />
+};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { id } = params;
@@ -22,4 +31,19 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ provider });
 };
 
-export default () => null;
+export default function Provider() {
+  const { provider } = useLoaderData();
+
+  const tabs = [
+    { name: 'info', to: 'info' },
+    { name: 'legal-entities', to: 'legal-entities' },
+    { name: 'holidays', to: 'holidays' },
+  ];
+
+  return (
+    <>
+      <Header title={provider.name} tabs={tabs} />
+      <Outlet />
+    </>
+  );
+};

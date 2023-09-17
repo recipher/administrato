@@ -1,7 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import ProviderService from '~/models/manage/providers.server';
 import Alert, { Level } from '~/components/alert';
 import { Basic as List } from '~/components/list';
 
@@ -11,8 +11,8 @@ import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
-  breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/holidays`} name="holidays" current={current} />
+  breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/providers/${provider?.id}/legal-entities`} name="legal-entities" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -22,20 +22,20 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = LegalEntityService(u);
-  const legalEntity = await service.getLegalEntity({ id });
+  const service = ProviderService(u);
+  const provider = await service.getProvider({ id });
 
-  if (legalEntity === undefined) return notFound('Legal entity not found');
+  if (provider === undefined) return notFound('Provider not found');
 
-  return json({ legalEntity });
+  return json({ provider });
 };
 
-const Schedules = () => {
-  const { legalEntity } = useLoaderData();
+const Info = () => {
+  const { provider } = useLoaderData();
 
   return (
     <div></div>
   );
 };
 
-export default Schedules;
+export default Info;

@@ -1,9 +1,17 @@
 import { json, type LoaderArgs } from '@remix-run/node';
+import { useLoaderData, Outlet } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
+import Header from '~/components/header/basic';
+import { Breadcrumb } from '~/layout/breadcrumbs';
+
+export const handle = {
+  breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}`} name={legalEntity?.name} current={current} />
+};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { id } = params;
@@ -22,4 +30,21 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ legalEntity });
 };
 
-export default () => null;
+export default function Provider() {
+  const { legalEntity } = useLoaderData();
+
+  const tabs = [
+    { name: 'info', to: 'info' },
+    { name: 'workers', to: 'workers' },
+    { name: 'milestones', to: 'milestones' },
+    { name: 'schedules', to: 'schedules' },
+    { name: 'holidays', to: 'holidays' },
+  ];
+
+  return (
+    <>
+      <Header title={legalEntity.name} tabs={tabs} />
+      <Outlet />
+    </>
+  );
+};

@@ -12,7 +12,7 @@ import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/holidays`} name="holidays" current={current} />
+    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/workers`} name="workers" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -30,7 +30,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ legalEntity });
 };
 
-const Schedules = () => {
+const Workers = () => {
   const { legalEntity } = useLoaderData();
 
   return (
@@ -38,4 +38,4 @@ const Schedules = () => {
   );
 };
 
-export default Schedules;
+export default Workers;

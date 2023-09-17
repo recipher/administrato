@@ -41,11 +41,6 @@ export default function ServiceCentre() {
     { name: 'providers', to: 'providers' },
     { name: 'holidays', to: 'holidays' },
   ];
-  
-  // const actions = [
-  //   { title: "sync", icon: ArrowPathIcon, type: ButtonType.Secondary, onClick: sync },
-  //   { title: "add-holiday", to: "add", icon: PlusIcon },
-  // ];
 
   return (
     <>

@@ -34,7 +34,7 @@ const Info = () => {
   const { serviceCentre } = useLoaderData();
 
   return (
-    <div>Hello</div>
+    <div></div>
   );
 };
 

@@ -35,6 +35,9 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           placeholder={placeholder}
           value={value}
           {...getInputProps({ id: name })}
+          autoCorrect="off"
+          autoCapitalize="off"
+          autoComplete="off"
           className={classnames(
             error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
             disabled ? "text-gray-400 bg-gray-100" : "",
