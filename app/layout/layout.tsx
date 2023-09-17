@@ -11,14 +11,18 @@ import Help from './help';
 
 import { User } from '~/auth/auth.server';
 import { Slideover } from '~/components/modals';
+import { useHelp } from '~/hooks';
 
 type Props = { user: User };
 
 export default function Layout({ user, children }: PropsWithChildren<Props>) {
   const { t } = useTranslation();
+  const helps = useHelp();
   const [ sidebarOpen, setSidebarOpen ] = useState(false)
   const [ helpOpen, setHelpOpen ] = useState(false)
-
+  const [ activeHelp, setActiveHelp ] = useState((helps.find(help => {
+    return help.current;
+  }) || helps.at(helps.length-1))?.identifier || "app")
   const breadcrumbs = useBreadcrumbs();
 
   const handleClickHelp = () => setHelpOpen(true);
@@ -28,7 +32,7 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
       <div>
         <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
         <Slideover open={helpOpen} onClose={() => setHelpOpen(false)} title="help">
-          <Help />
+          <Help helps={helps} active={activeHelp} onChangeHelp={setActiveHelp} />
         </Slideover>
         
         <div className="lg:pl-72">

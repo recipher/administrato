@@ -3,6 +3,7 @@ import { Outlet } from "@remix-run/react";
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
+  help: "manage",
   breadcrumb: ({ current }: { current: boolean }) => 
     <Breadcrumb to='/manage' name="manage" current={current} />
 };

@@ -37,7 +37,8 @@ export const links: LinksFunction = () => [
 ];
 
 export const handle = {
-  i18n: [ "common", "date" ]
+  i18n: [ "common", "date" ],
+  help: "app",
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

@@ -1,7 +1,9 @@
-import Root from './root.mdx';
+import App from './app.mdx';
+import Manage from './manage.mdx';
 
-const helps = new Map<string, any>([
-  [ "root", Root ],
+const content = new Map<string, any>([
+  [ "app", App ],
+  [ "manage", Manage ],
 ]);
 
-export default helps;
+export default content;
