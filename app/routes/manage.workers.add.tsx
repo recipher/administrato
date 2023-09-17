@@ -7,6 +7,8 @@ import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
 import WorkerService from '~/models/manage/workers.server';
+import { type Client } from '~/models/manage/clients.server';
+import { type LegalEntity } from '~/models/manage/legal-entities.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -16,7 +18,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
-import { Input, Select, Cancel, Submit,
+import { Input, Select, Cancel, Submit, Hidden,
   Body, Section, Group, Field, Footer } from '~/components/form';
 import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
 import Button, { ButtonType } from '~/components/button';
@@ -37,12 +39,13 @@ const schema = zfd.formData({
   firstName: z
     .string()
     .nonempty("First name is required"),
-  lastName: z
+    lastName: z
     .string()
     .nonempty("Last name is required"),
-  identifier: z
-    .string()
-    .optional(),
+  legalEntityId: z
+    .number(),
+  clientId: z
+    .number(),
   locality: z
     .object({
       id: z.string()
@@ -68,7 +71,12 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Add = () => {
-  const { countries } = useLoaderData();console.log(countries);
+  const { countries } = useLoaderData();
+
+  const [ client, setClient ] = useState("Select a Client");
+  const [ clientId, setClientId ] = useState<number>();
+  const [ legalEntity, setLegalEntity ] = useState("Select a Legal Entity");
+  const [ legalEntityId, setLegalEntityId ] = useState<number>();
 
   const clientModal = useRef<RefSelectorModal>(null);
   const legalEntityModal = useRef<RefSelectorModal>(null);
@@ -81,8 +89,14 @@ const Add = () => {
   const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
 
-  const handleSelectClient = () => {};
-  const handleSelectLegalEntity = () => {};
+  const handleSelectClient = (type: string, client: Client) => { 
+    setClient(client.name);
+    setClientId(client.id); 
+  };
+  const handleSelectLegalEntity = (type: string, legalEntity: LegalEntity) => { 
+    setLegalEntity(legalEntity.name);
+    setLegalEntityId(legalEntity.id);
+  };
 
   return (
     <>
@@ -100,15 +114,15 @@ const Add = () => {
           <Section heading='Select Legal Entity and Client' explanation='Search by clicking the buttons.' />
           <Group>
             <Field span={3}>
-              <Input label="Client" name="clientId" />
-              <Button title="Select a Client" 
+              <Hidden label="Client" name="clientId" value={clientId} />
+              <Button title={client} 
                 icon={IdentificationIcon} 
                 type={ButtonType.Secondary} 
                 onClick={showClientModal} />
             </Field>
             <Field span={3}>
-              <Input label="Legal Entity" name="legalEntityId" />
-              <Button title="Select a Legal Entity" 
+              <Hidden label="Legal Entity" name="legalEntityId" value={legalEntityId} />
+              <Button title={legalEntity} 
                 icon={WalletIcon} 
                 type={ButtonType.Secondary} 
                 onClick={showLegalEntityModal} />

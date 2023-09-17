@@ -128,7 +128,7 @@ const Add = () => {
 
   useEffect(() => {
     context.validate();  // HACK :)
-  }, [data])
+  }, [data]);
 
   const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
     setAutoGenerateIdentifier(e.currentTarget.checked);

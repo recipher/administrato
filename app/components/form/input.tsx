@@ -22,7 +22,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
   }, [focus, error]);
 
   return (
-    <div className="mb-6">
+    <div className="mb-3">
       <label htmlFor={name} className={classnames(
         disabled ? "text-gray-400" : "text-gray-900",
         "block text-sm font-medium leading-6")}>
