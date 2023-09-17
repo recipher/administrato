@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json, type LoaderArgs } from '@remix-run/node';
 import { useActionData, useLoaderData, useSubmit } from '@remix-run/react'
 import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
@@ -12,7 +12,7 @@ import ClientService from '~/models/manage/clients.server';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
-import { Input, Select, Cancel, Submit, 
+import { Input, Select, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
@@ -57,6 +57,9 @@ export const validator = withZod(
       .string()
       .nonempty("Client name is required")
       .min(3, "Client name must be at least 3 characters long"),
+    identifier: z
+      .string()
+      .optional(),
     localities: z
       .object({
         id: z.string().or(z.array(z.string()))
@@ -85,16 +88,18 @@ export const action = async ({ request }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { serviceCentre: { id: serviceCentreId }, localities: { id: codes }, ...data } } = result;
+  const { data: { serviceCentre: { id: serviceCentreId }, localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = ClientService(u);
-  const client = await service.addClient({ localities, serviceCentreId, ...data });
+  const client = await service.addClient({ localities, serviceCentreId, identifier, ...data });
   return redirect('/manage/clients');
 };
 
 const Add = () => {
   const { serviceCentres, serviceCentre } = useLoaderData();
+
+  const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
   const data = useActionData();
   const submit = useSubmit();
@@ -122,14 +127,26 @@ const Add = () => {
     context.validate();  // HACK :)
   }, [data])
 
+  const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
+    setAutoGenerateIdentifier(e.currentTarget.checked);
+  };
+
   return (
     <>
       <Form method="post" validator={validator} id="add-client">
         <Body>
           <Section heading='New Client' explanation='Please enter the new client details.' />
           <Group>
-            <Field>
+          <Field>
               <Input label="Client Name" name="name" placeholder="e.g. Widget Inc" />
+            </Field>
+            <Field span={3}>
+              <Input label="Identifier" name="identifier" disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
+            </Field>
+            <Field span={3}>
+              <div className="pt-9">
+                <Checkbox label="Auto-generate?" name="auto" checked={autoGenerateIdentifier} onChange={handleAutoGenerate} />
+              </div>
             </Field>
             <Field>
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />

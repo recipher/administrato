@@ -11,6 +11,8 @@ import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Organization, mapProfileToUser, requireUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/models/access/users.server';
 
+import { useUser } from '~/hooks';
+
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
@@ -19,6 +21,8 @@ import { Level } from '~/components/toast';
 import { RefModal } from '~/components/modals/modal';
 import { SelectorModal } from '~/components/access/organizations';
 import Alert from '~/components/alert';
+
+import { security } from '~/auth/permissions';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -72,6 +76,8 @@ export async function action({ request }: ActionArgs) {
 };
 
 export default function Organizations() {
+  const u = useUser();
+
   const { t } = useTranslation();
   const { user } = useLoaderData();
   const modal = useRef<RefModal>(null);
@@ -79,6 +85,8 @@ export default function Organizations() {
   const [ organization, setOrganization ] = useState<Organization>();
 
   const confirm = useRef<RefConfirmModal>(null);
+
+  const hasPermission = (p: string) => u.permissions.includes(p);
 
   const handleLeave = (organization: Organization) => {
     setOrganization(organization);
@@ -122,20 +130,20 @@ export default function Organizations() {
                   <div>
                     <span className="font-medium text-md text-gray-900 pr-3">{organization.displayName}</span>
                   </div>
-                  <div className="hidden group-hover:block">
+                  {hasPermission(security.edit.user) && <div className="hidden group-hover:block">
                     <button onClick={() => handleLeave(organization)}
                       type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
                       {t('revoke')}
                     </button>
-                  </div>
+                  </div>}
                 </li>
               ))}
             </ul>
 
-            <div className="flex pt-3">
+            {hasPermission(security.edit.user) && <div className="flex pt-3">
               <Button icon={PlusIcon} title={t('Join an Organization')} 
                 type={ButtonType.Secondary} onClick={showModal} />
-            </div>
+            </div>}
           </div>
         </div>
       </div>

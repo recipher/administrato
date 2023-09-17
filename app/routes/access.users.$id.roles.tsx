@@ -7,6 +7,8 @@ import { badRequest, notFound } from '~/utility/errors';
 import UserService, { type User } from '~/models/access/users.server';
 import RoleService, { type Role } from '~/models/access/roles.server';
 
+import { useUser } from '~/hooks';
+
 import { Breadcrumb } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';
 
@@ -80,6 +82,8 @@ export async function action({ request }: ActionArgs) {
 };
 
 export default function Roles() {
+  const u = useUser();
+
   const { createToast } = useContext(ToastContext);
 
   const fetcher = useFetcher();
@@ -87,6 +91,8 @@ export default function Roles() {
 
   const { user, roles } = useLoaderData();
   
+  const hasPermission = (p: string) => u.permissions.includes(p);
+
   const handleChange = (id: string, value: boolean) => {
     const name = roles.find((r: Role) => r.id === id)?.description;
     setRole(id);
@@ -116,7 +122,7 @@ export default function Roles() {
                 </label>
               </div>
               <div className="ml-3 my-4 flex h-6 items-center">
-                <Toggle name={id} on={isMember} onChange={handleChange} />
+                <Toggle name={id} on={isMember} onChange={handleChange} disabled={!hasPermission(security.edit.user)} />
               </div>
             </div>
           ))}

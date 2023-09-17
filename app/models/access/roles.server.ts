@@ -7,7 +7,7 @@ const DOMAIN = "recipher.co.uk";
 export const namespaces = new Map<string, string>([
   [ "manage", "64f893f993949d17ae4c1a8a" ],
   [ "schedule", "64f89364211d8e5230ce4583" ],
-  [ "access", "64f9b4d5303b1e64829c27a9" ],  
+  [ "security", "64f9b4d5303b1e64829c27a9" ],  
 ]);
 
 export type Role = {

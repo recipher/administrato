@@ -29,7 +29,7 @@ export default function Tabs({ tabs }: Props) {
           <select
             id="current-tab"
             name="current-tab"
-            className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+            className="block w-full rounded-md border-0 mb-3 py-1.5 pl-3 pr-10 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
             defaultValue={tabs.find((tab) => false)?.name}
             onChange={e => navigate(e.target.value)}
           >

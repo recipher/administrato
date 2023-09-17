@@ -1,8 +1,8 @@
-import { Fragment, RefObject, useRef } from 'react';
+import { Fragment, MouseEventHandler, RefObject, useRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { Form, Link, useLocation, useSubmit } from '@remix-run/react';
 import {
-  BellIcon,
+  BellIcon, QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
 import { 
   ChevronDownIcon, 
@@ -54,7 +54,7 @@ export const Search = () => {
   );
 }
 
-export default function Header({ user }: Props) {
+export default function Header({ user, onClickHelp }: Props & { onClickHelp: MouseEventHandler<HTMLDivElement> }) {
   const { t } = useTranslation();
   const submit = useSubmit();
   const { pathname: redirectTo } = useLocation();
@@ -86,6 +86,15 @@ export default function Header({ user }: Props) {
             <span className="sr-only">View Notifications</span>
             <BellIcon className="h-6 w-6" aria-hidden="true" />
           </Link>
+
+          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
+        </div>
+
+        <div className="flex items-center gap-x-4 lg:gap-x-6">
+          <div onClick={onClickHelp} className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 cursor-pointer">
+            <span className="sr-only">Open Help</span>
+            <QuestionMarkCircleIcon className="h-6 w-6" aria-hidden="true" />
+          </div>
 
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
         </div>

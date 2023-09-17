@@ -7,11 +7,13 @@ import classnames from '~/helpers/classnames';
 type Props = {
   name: string;
   label: string;
+  value?: string;
   focus?: boolean;
-  placeholder?: string
+  disabled?: boolean;
+  placeholder?: string;
 };
 
-export default function Input({ name, label, focus = false, placeholder }: Props) {
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder }: Props) {
   const { error, getInputProps } = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,16 +23,22 @@ export default function Input({ name, label, focus = false, placeholder }: Props
 
   return (
     <div className="mb-6">
-      <label htmlFor={name} className="block text-sm font-medium leading-6 text-gray-900">
+      <label htmlFor={name} className={classnames(
+        disabled ? "text-gray-400" : "text-gray-900",
+        "block text-sm font-medium leading-6")}>
         {label}
       </label>
       <div className="relative mt-2 rounded-md shadow-sm">
         <input
           ref={inputRef} 
+          disabled={disabled}
           placeholder={placeholder}
+          value={value}
           {...getInputProps({ id: name })}
           className={classnames(
-            error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
+            error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
+            disabled ? "text-gray-400 bg-gray-100" : "",
+            !error && !disabled ? "text-gray-900 bg-white": "",
             "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
         />
         {error && <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">

@@ -87,7 +87,7 @@ export default function Holidays() {
   const qs = searchParams.toString() || '';
   const params = new URLSearchParams(qs);
 
-  const onClick = (year: string ) => {
+  const handleClick = (year: string ) => {
     params.set("year", year);
     navigate(`?${params.toString()}`);
   };
@@ -107,7 +107,7 @@ export default function Holidays() {
     <>
       {holidays.length === 0 && <Alert level={Level.Info} title={`No holidays for ${country.name}`} />}
 
-      <Tabs tabs={tabs} selected={year} onClick={onClick} />
+      <Tabs tabs={tabs} selected={year} onClick={handleClick} />
 
       <ul className="divide-y divide-gray-100">
         {holidays.map((holiday: any) => (

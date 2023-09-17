@@ -7,8 +7,7 @@ import type { SecurityKey, IdProp, KeyQueryOptions } from '../types';
 import UserService, { type User } from '../access/users.server';
 import toNumber from '~/helpers/to-number';
 
-import { whereKeys, whereExactKeys } from './shared.server';
-import ServiceCentre from '~/routes/manage.service-centres.$id';
+import { whereKeys, whereExactKeys, generateIdentifier } from './shared.server';
 
 const KEY_MIN = 0;
 const KEY_MAX = Number.MAX_SAFE_INTEGER;
@@ -37,7 +36,7 @@ const service = (u: User) => {
 
   const addServiceCentre = async (serviceCentre: s.serviceCentres.Insertable) => {
     const key = await generateKey();
-    const withKey = { ...serviceCentre, ...key };
+    const withKey = { ...serviceCentre, ...key, identifier: generateIdentifier(serviceCentre) };
 
     const [inserted] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       INSERT INTO ${'serviceCentres'} (${db.cols(withKey)})
@@ -62,6 +61,7 @@ const service = (u: User) => {
     return (keys.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
       ? [ { id: 0 as unknown as db.Int8String, 
             name: "Full Authorization", 
+            identifier: "full-authorization",
             localities: [], 
             keyStart: KEY_MIN as unknown as db.Int8String, 
             keyEnd: KEY_MAX as unknown as db.Int8String, 
@@ -84,9 +84,12 @@ const service = (u: User) => {
 
   const getServiceCentre = async ({ id }: IdProp) => {
     const keys = u.keys.serviceCentre;
+    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
+
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
-      WHERE ${whereKeys({ keys })} AND ${'id'} = ${db.param(id)}
+      WHERE ${whereKeys({ keys })} AND 
+        (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
       `.run(pool);
 
     return serviceCentre;

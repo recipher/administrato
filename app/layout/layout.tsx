@@ -9,20 +9,27 @@ import Header from './header';
 import Sidebar from './sidebar';
 
 import { User } from '~/auth/auth.server';
+import { Slideover } from '~/components/modals';
 
 type Props = { user: User };
 
 export default function Layout({ user, children }: PropsWithChildren<Props>) {
   const { t } = useTranslation();
   const [ sidebarOpen, setSidebarOpen ] = useState(false)
+  const [ helpOpen, setHelpOpen ] = useState(false)
 
   const breadcrumbs = useBreadcrumbs();
+
+  const handleClickHelp = () => setHelpOpen(true);
 
   return (
     <>
       <div>
         <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-
+        <Slideover open={helpOpen} onClose={() => setHelpOpen(false)} title="help">
+          Hello
+        </Slideover>
+        
         <div className="lg:pl-72">
           <div className="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
             <div className="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none">
@@ -38,7 +45,7 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
               {/* Separator */}
               <div className="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
 
-              <Header user={user} />
+              <Header user={user} onClickHelp={handleClickHelp} />
             </div>
           </div>
 

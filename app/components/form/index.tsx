@@ -1,4 +1,5 @@
 export { default as Cancel } from './cancel';
+export { default as Checkbox } from './checkbox';
 export { default as Combo } from './combo';
 export { default as DatePicker, Calendar } from './date';
 export { default as Input } from './input';

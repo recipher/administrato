@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json } from '@remix-run/node';
 import { useActionData, useSubmit } from '@remix-run/react'
 import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
@@ -11,7 +11,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
-import { Input, Select, Cancel, Submit, 
+import { Input, Select, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
@@ -34,6 +34,9 @@ export const validator = withZod(
       .string()
       .nonempty("Service centre name is required")
       .min(3, "Service centre name must be at least 3 characters long"),
+    identifier: z
+      .string()
+      .optional(),
     localities: z
       .object({
         id: z.string().or(z.array(z.string()))
@@ -56,17 +59,19 @@ export const action = async ({ request }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { localities: { id: codes }, ...data } } = result;
+  const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
   
   const service = ServiceCentreService(u);
-  const serviceCentre = await service.addServiceCentre({ localities, ...data });
+  const serviceCentre = await service.addServiceCentre({ localities, identifier, ...data });
   return redirect('/manage/service-centres');
 };
 
 const Add = () => {
   const data = useActionData();
   const submit = useSubmit();
+
+  const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
   const context = useFormContext("add-service-centre");
   const modal = useRef<RefModal>(null);
@@ -91,6 +96,10 @@ const Add = () => {
     context.validate();  // HACK :)
   }, [data])
 
+  const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
+    setAutoGenerateIdentifier(e.currentTarget.checked);
+  };
+
   return (
     <>
       <Form method="post" validator={validator} id="add-service-centre">
@@ -99,6 +108,14 @@ const Add = () => {
           <Group>
             <Field>
               <Input label="Service Centre Name" name="name" placeholder="e.g. Scotland" />
+            </Field>
+            <Field span={3}>
+              <Input label="Identifier" name="identifier" disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
+            </Field>
+            <Field span={3}>
+              <div className="pt-9">
+                <Checkbox label="Auto-generate?" name="auto" checked={autoGenerateIdentifier} onChange={handleAutoGenerate} />
+              </div>
             </Field>
           </Group>
           <Section heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />

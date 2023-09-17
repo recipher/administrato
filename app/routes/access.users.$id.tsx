@@ -34,6 +34,7 @@ export default function User() {
 
   const tabs = [
     { name: 'profile', to: 'profile' },
+    { name: 'authorizations', to: 'authorizations' },
     { name: 'roles', to: 'roles' },
     { name: 'organizations', to: 'organizations' },
   ];

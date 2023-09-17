@@ -4,12 +4,13 @@ import { Switch } from '@headlessui/react'
 import classnames from '~/helpers/classnames';
 
 type Props = {
-  name: string,
-  on?: boolean,
-  onChange?: Function
+  name: string;
+  on?: boolean;
+  disabled?: boolean;
+  onChange?: Function;
 };
 
-export default function Toggle({ name, on = false, onChange }: Props) {
+export default function Toggle({ name, on = false, disabled = false, onChange }: Props) {
   const [enabled, setEnabled] = useState(on);
 
   const handleChange = (value: boolean) => {
@@ -24,6 +25,7 @@ export default function Toggle({ name, on = false, onChange }: Props) {
   return (
     <Switch
       checked={enabled}
+      disabled={disabled}
       onChange={handleChange}
       name={name}
       id={name}

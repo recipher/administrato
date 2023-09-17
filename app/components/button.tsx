@@ -12,7 +12,6 @@ export type ButtonProps = {
   type?: ButtonType;
   icon?: any;
   onClick?: MouseEventHandler<HTMLButtonElement>;
-  permission?: string;
   disabled?: boolean;
   submit?: boolean;
 };

@@ -1,5 +1,5 @@
 import { Disclosure } from '@headlessui/react';
-import { NavLink } from '@remix-run/react';
+import { NavLink, useMatches } from '@remix-run/react';
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
   WalletIcon,
@@ -33,7 +33,7 @@ export const navigation = [
   { name: 'schedules', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule },
   { name: 'holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon, permission: scheduler.read.holiday },
   { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
-  { name: 'manage', to: '/manage/legal-entities', icon: CircleStackIcon,
+  { name: 'manage', to: '/manage', icon: CircleStackIcon,
     children: [
       { name: 'legal-entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
       { name: 'service-centres', to: '/manage/service-centres', icon: MapIcon, permission: manage.read.serviceCentre },
@@ -50,6 +50,7 @@ export const navigation = [
 ];
 
 export default function Navigation() {
+  const matches = useMatches();
   const { t } = useTranslation();
   const user = useOptionalUser();
 
@@ -59,7 +60,14 @@ export default function Navigation() {
       return user?.permissions.includes(permission);
     });
   };
-    
+
+  const isActive = (items: Array<NavItem>) => {
+    const pathnames = matches.map(match => match.pathname);
+    return items.reduce((isActive: boolean, item: NavItem) => {
+      return isActive ? isActive : pathnames.includes(item.to);
+    }, false);
+  };
+
   return (
     <nav className="flex flex-1 flex-col">
       <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -79,7 +87,7 @@ export default function Navigation() {
                     {t(item.name)}
                   </NavLink>
                 ) : (
-                  <Disclosure as="div">
+                  <Disclosure as="div" defaultOpen={isActive(item.children)}>
                     {({ open }) => (
                       <>
                         {filter(item.children as Array<NavItem>).length > 0 && <Disclosure.Button

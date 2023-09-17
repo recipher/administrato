@@ -10,7 +10,7 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-import { whereKeys, whereExactKeys, extractKeys } from './shared.server';
+import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
 
 export type Provider = s.providers.Selectable;
 
@@ -48,7 +48,7 @@ const service = (u: User) => {
 
   const addProvider = async (provider: s.providers.Insertable) => {
     const key = await generateKey(provider);
-    const withKey = { ...provider, ...key };
+    const withKey = { ...provider, ...key, identifier: generateIdentifier(provider) };
 
     const [inserted] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       INSERT INTO ${'providers'} (${db.cols(withKey)})
@@ -98,9 +98,12 @@ const service = (u: User) => {
 
   const getProvider = async ({ id }: IdProp) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
+    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
+
     const [ client ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
-      WHERE ${whereKeys({ keys })} AND ${'id'} = ${db.param(id)}
+      WHERE ${whereKeys({ keys })} AND  
+        (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
       `.run(pool);
 
     return client;

@@ -1,4 +1,5 @@
 import * as db from 'zapatos/db';
+import * as s from 'zapatos/schema';
 
 import { type KeyQueryOptions } from '../types';
 import { type User } from '../access/users.server';
@@ -31,3 +32,13 @@ export const whereExactKeys = ({ keys }: KeyQueryOptions) => {
 export const extractKeys = (u: User, ...sets: Array<"serviceCentre" | "client" | "provider" | "legalEntity">) =>
   sets.map(set => u.keys[set] || []).flat();
 
+type EntityWithNameAndIdentifier = 
+  s.serviceCentres.Insertable | s.clients.Insertable | s.legalEntities.Insertable | s.providers.Insertable;
+
+export const generateIdentifier = ({ name, identifier }: EntityWithNameAndIdentifier) =>
+  identifier !== "" && identifier != null
+    ? identifier
+    : (name as string)
+        .replace(/([a-z])([A-Z])/g, "$1-$2")
+        .replace(/[\s_]+/g, '-')
+        .toLowerCase();

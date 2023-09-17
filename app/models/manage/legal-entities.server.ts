@@ -10,7 +10,7 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-import { whereKeys, whereExactKeys, extractKeys } from './shared.server';
+import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
 
 export type LegalEntity = s.legalEntities.Selectable;
 
@@ -48,7 +48,7 @@ const service = (u: User) => {
 
   const addLegalEntity = async (legalEntity: s.legalEntities.Insertable) => {
     const key = await generateKey(legalEntity);
-    const withKey = { ...legalEntity, ...key };
+    const withKey = { ...legalEntity, ...key, identifier: generateIdentifier(legalEntity) };
 
     const [inserted] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       INSERT INTO ${'legalEntities'} (${db.cols(withKey)})
@@ -98,9 +98,12 @@ const service = (u: User) => {
 
   const getLegalEntity = async ({ id }: IdProp) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
+    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
+
     const [ client ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT * FROM ${'legalEntities'}
-      WHERE ${whereKeys({ keys })} AND ${'id'} = ${db.param(id)}
+      WHERE ${whereKeys({ keys })} AND  
+        (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
       `.run(pool);
 
     return client;

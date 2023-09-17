@@ -44,6 +44,11 @@ const determineMembership = (permissions: Array<any>, rolePermissions: Array<any
   }
 );
 
+const sortPermissions = (left: MemberPermission, right: MemberPermission) => {
+  return left.right.localeCompare(right.right) || 
+    left.entity.localeCompare(right.entity);
+};
+
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { id } = params;
 
@@ -64,7 +69,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const rolePermissions = await service.getRolePermissions({ id })
 
   return json({ role, namespace, namespaces: Array.from(namespaces.keys()),
-    permissions: determineMembership(permissions, rolePermissions) });
+    permissions: determineMembership(permissions, rolePermissions)
+      .sort(sortPermissions)
+   });
 };
 
 export async function action({ request }: ActionArgs) {

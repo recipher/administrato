@@ -1,66 +1,42 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import { Fragment, PropsWithChildren, useState } from 'react'
+import { Fragment, PropsWithChildren, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { LinkIcon, PlusIcon, QuestionMarkCircleIcon } from '@heroicons/react/20/solid'
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 
-const team = [
-  {
-    name: 'Tom Cook',
-    email: 'tom.cook@example.com',
-    href: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Whitney Francis',
-    email: 'whitney.francis@example.com',
-    href: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Leonard Krasner',
-    email: 'leonard.krasner@example.com',
-    href: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Floyd Miles',
-    email: 'floyd.miles@example.com',
-    href: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-  {
-    name: 'Emily Selman',
-    email: 'emily.selman@example.com',
-    href: '#',
-    imageUrl:
-      'https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-]
+type Props = { 
+  open: boolean;
+  title: string;
+  onClose: Function;
+};
 
-export default function Example({ open, children }: PropsWithChildren<{ open: boolean }>) {
-  const [o, setOpen] = useState(open);
+export default function Slideover({ open, title, onClose, children }: PropsWithChildren<Props>) {
+  const { t } = useTranslation();
+  const [opened, setOpened] = useState(open);
+
+  useEffect(() => {
+    setOpened(open);
+  }, [ open ]);
+
+  const handleClose = () => {
+    setOpened(false);
+    onClose();
+  };
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="section" className="relative z-50" onClose={setOpen}>
+    <Transition.Root show={opened} as={Fragment}>
+      <Dialog as="section" className="relative z-50" onClose={handleClose}>
+        <Transition.Child
+          as={Fragment}
+          enter="ease-in-out duration-500"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in-out duration-500"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-50 transition-opacity" />
+        </Transition.Child>
+
         <div className="fixed inset-0" />
 
         <div className="fixed inset-0 overflow-hidden">
@@ -75,56 +51,28 @@ export default function Example({ open, children }: PropsWithChildren<{ open: bo
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                  <form className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                    <div className="flex-1">
-                      {/* Header */}
-                      <div className="bg-gray-50 px-4 py-6 sm:px-6">
-                        <div className="flex items-start justify-between space-x-3">
-                          <div className="space-y-1">
-                            <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                              New project
-                            </Dialog.Title>
-                            <p className="text-sm text-gray-500">
-                              Get started by filling in the information below to create your new project.
-                            </p>
-                          </div>
-                          <div className="flex h-7 items-center">
-                            <button
-                              type="button"
-                              className="relative text-gray-400 hover:text-gray-500"
-                              onClick={() => setOpen(false)}
-                            >
-                              <span className="absolute -inset-2.5" />
-                              <span className="sr-only">Close panel</span>
-                              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      {children}
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="flex-shrink-0 border-t border-gray-200 px-4 py-5 sm:px-6">
-                      <div className="flex justify-end space-x-3">
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                    <div className="px-4 sm:px-6">
+                    <div className="flex items-start justify-between">
+                      <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
+                        {t(title)}
+                      </Dialog.Title>
+                      <div className="ml-3 flex h-7 items-center">
                         <button
                           type="button"
-                          className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                          onClick={() => setOpen(false)}
+                          className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
+                          onClick={handleClose}
                         >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          className="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                          Create
-                        </button>
+                            <span className="absolute -inset-2.5" />
+                            <span className="sr-only">Close panel</span>
+                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </form>
+                    <div className="relative mt-6 flex-1 px-4 sm:px-6">{children}</div>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
