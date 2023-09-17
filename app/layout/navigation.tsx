@@ -12,6 +12,7 @@ import {
   CurrencyYenIcon,
   UserCircleIcon,
   UsersIcon,
+  CubeIcon,
 } from '@heroicons/react/24/outline';
 import { CalendarDaysIcon } from '@heroicons/react/20/solid';
 
@@ -39,6 +40,7 @@ export const navigation = [
       { name: 'service-centres', to: '/manage/service-centres', icon: MapIcon, permission: manage.read.serviceCentre },
       { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
       { name: 'providers', to: '/manage/providers', icon: CurrencyYenIcon, permission: manage.read.provider },
+      { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker },
     ]
   },
   { name: 'access', to: '/access', icon: KeyIcon,

@@ -7,6 +7,7 @@ import useBreadcrumbs from '~/hooks/use-breadcrumbs';
 import Breadcrumbs from './breadcrumbs';
 import Header from './header';
 import Sidebar from './sidebar';
+import Help from './help';
 
 import { User } from '~/auth/auth.server';
 import { Slideover } from '~/components/modals';
@@ -27,7 +28,7 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
       <div>
         <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
         <Slideover open={helpOpen} onClose={() => setHelpOpen(false)} title="help">
-          Hello
+          <Help />
         </Slideover>
         
         <div className="lg:pl-72">
