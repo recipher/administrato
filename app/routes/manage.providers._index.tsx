@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import ProviderService, { type Provider } from '~/models/manage/providers.server';
 import CountryService from '~/models/countries.server';
 
-import Header from "~/components/header/with-actions";
+import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';
 import { requireUser } from '~/auth/auth.server';
 
@@ -46,8 +46,7 @@ export default function Providers() {
 
   return (
     <>
-      <Header title="providers" actions={actions} />
-      {/* <Header title='holidays' filterTitle='Search countries' filterParam='q' allowSort={true} /> */}
+      <Header title="providers" actions={actions} filterTitle='Search providers' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No providers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 

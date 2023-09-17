@@ -10,7 +10,7 @@ import refreshUser from '~/auth/refresh.server';
 import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
-import Header from '~/components/header/with-actions';
+import Header from '~/components/header/basic';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { ButtonType } from '~/components/button';
@@ -55,7 +55,7 @@ export async function action({ request }: ActionArgs) {
     // headers.append("Set-Cookie", await storage.commitSession(session));
 
     await refreshUser({ id, request, headers });
-    
+
     message = `Stop Impersonation:You are now logged in as ${name}.`;
     level = Level.Success;
   }

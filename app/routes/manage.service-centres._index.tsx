@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import CountryService from '~/models/countries.server';
 
-import Header from "~/components/header/with-actions";
+import { Basic as Header } from "~/components/header";
 import Alert, { Level } from '~/components/alert';
 import { requireUser } from '~/auth/auth.server';
 

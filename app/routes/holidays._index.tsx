@@ -6,7 +6,7 @@ import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import CountryService, { type Country } from '~/models/countries.server';
 import { useUser } from '~/hooks';
-import Header from '~/components/header/with-filter';
+import Header from '~/components/header/advanced';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
 import { List } from '~/components/list';

@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import ClientService, { type Client } from '~/models/manage/clients.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
-import Header from "~/components/header/with-actions";
+import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';
 import { requireUser } from '~/auth/auth.server';
 
@@ -46,8 +46,7 @@ export default function Clients() {
 
   return (
     <>
-      <Header title="clients" actions={actions} />
-      {/* <Header title='holidays' filterTitle='Search countries' filterParam='q' allowSort={true} /> */}
+      <Header title="clients" actions={actions} filterTitle='Search clients' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No clients found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 

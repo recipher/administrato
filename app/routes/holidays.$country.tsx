@@ -7,7 +7,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import CountryService, { type Country } from '~/models/countries.server';
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
-import Header from '~/components/header/with-actions';
+import Header from '~/components/header/basic';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
@@ -16,12 +16,12 @@ import { Flag } from "~/components/countries/countries";
 
 export const handle = {
   breadcrumb: ({ country, parent, current }: { country: Country, parent: Country, current: boolean }) => {
-      const crumb = <Breadcrumb key={country.isoCode} to={`/holidays/${country?.isoCode}`} name={country?.name } current={current} />;
-      
-      return !parent ? crumb : [ 
-        <Breadcrumb key={parent.isoCode} to={`/holidays/${parent?.isoCode}`} name={parent?.name} />,
-        <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name="regions" />,
-        crumb ];
+    const crumb = <Breadcrumb key={country.isoCode} to={`/holidays/${country?.isoCode}`} name={country?.name } current={current} />;
+    
+    return !parent ? crumb : [ 
+      <Breadcrumb key={parent.isoCode} to={`/holidays/${parent?.isoCode}`} name={parent?.name} />,
+      <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name="regions" />,
+      crumb ];
   }
 };
 

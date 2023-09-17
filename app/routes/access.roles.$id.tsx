@@ -3,7 +3,7 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import Header from '~/components/header/with-actions';
+import Header from '~/components/header/basic';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import RoleService, { type Role } from '~/models/access/roles.server';

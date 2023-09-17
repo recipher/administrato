@@ -67,13 +67,13 @@ const service = (u: User) => {
 
   const searchQuery = ({ search }: SearchOptions) =>
     search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER('${db.raw(search)}%') AND `;
+      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER('${db.raw(search)}%') AND`;
 
   const countLegalEntities = async ({ search }: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
     const [ item ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT COUNT(${'id'}) AS count FROM ${'legalEntities'}
-      WHERE ${whereKeys({ keys })} ${searchQuery({ search })} 
+      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
     `.run(pool);
 
     const { count } = item as unknown as Count;
@@ -86,7 +86,7 @@ const service = (u: User) => {
 
     const legalEntities = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT * FROM ${'legalEntities'}
-      WHERE ${whereKeys({ keys })} ${searchQuery({ search })} 
+      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
       ORDER BY ${'legalEntities'}.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}

@@ -3,7 +3,7 @@ import { LoaderArgs, json } from '@remix-run/node';
 import UserService from '~/models/access/users.server';
 import OrganizationService from '~/models/access/organizations.server';
 
-import Header from '~/components/header/with-actions';
+import Header from '~/components/header/basic';
 import Alert, { Level } from '~/components/alert';
 
 import { useLoaderData } from '@remix-run/react';

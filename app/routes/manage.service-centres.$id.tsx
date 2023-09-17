@@ -5,7 +5,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
-import Header from '~/components/header/with-actions';
+import Header from '~/components/header/basic';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 

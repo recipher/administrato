@@ -1,2 +1,5 @@
-export { default as ActionsHeader } from './with-actions';
-export { default as FilteredHeader } from './with-filter';
+import { default as Header } from './advanced';
+export { default as Basic } from './basic';
+export { default as Advanced } from './advanced';
+
+export default Header;

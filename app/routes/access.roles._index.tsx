@@ -2,7 +2,7 @@ import { LoaderArgs } from '@remix-run/node';
 
 import RoleService from '~/models/access/roles.server';
 
-import Header from '~/components/header/with-actions';
+import Header from '~/components/header/basic';
 import Alert, { Level } from '~/components/alert';
 
 import { useLoaderData } from '@remix-run/react';

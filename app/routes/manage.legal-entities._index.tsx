@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import LegalEntityService, { type LegalEntity } from '~/models/manage/legal-entities.server';
 import CountryService from '~/models/countries.server';
 
-import Header from "~/components/header/with-actions";
+import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';
 import { requireUser } from '~/auth/auth.server';
 
@@ -46,7 +46,7 @@ export default function LegalEntities() {
 
   return (
     <>
-      <Header title="legal-entities" actions={actions} />
+      <Header title="legal-entities" actions={actions} filterTitle='Search legal entities' filterParam='q' allowSort={true} />
       {/* <Header title='holidays' filterTitle='Search countries' filterParam='q' allowSort={true} /> */}
 
       {count <= 0 && <Alert title={`No legal entities found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}

@@ -73,7 +73,7 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
     const [ item ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT COUNT(${'id'}) AS count FROM ${'providers'}
-      WHERE ${whereKeys({ keys })} ${searchQuery({ search })} 
+      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
     `.run(pool);
 
     const { count } = item as unknown as Count;
@@ -86,7 +86,7 @@ const service = (u: User) => {
 
     const providers = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
-      WHERE ${whereKeys({ keys })} ${searchQuery({ search })} 
+      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
       ORDER BY ${'providers'}.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
