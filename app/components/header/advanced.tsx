@@ -75,7 +75,7 @@ export const AdditionalFilter = ({ title, filters, filterParam, selected }: Addi
   };
 
   return (
-    <Menu as="div" className="relative inline-block text-left focus:outline-none">
+    <Menu as="div" className="mr-6 relative inline-block text-left focus:outline-none">
       <div>
         <Menu.Button className="group inline-flex justify-center text-md text-gray-700 hover:text-gray-900 focus:outline-none">
           {title}
@@ -96,7 +96,7 @@ export const AdditionalFilter = ({ title, filters, filterParam, selected }: Addi
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute left-0 z-10 mt-1 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
             {filters.map((filter) => (
               <Menu.Item key={filter.name}>
@@ -184,14 +184,14 @@ export default function Header({ title, subtitle, icon, tabs = [], actions = [],
           {actions.length > 0 && filterTitle && <Buttons actions={actions} group={group} />}
         </div>
       </div>
-      <div className="-ml-4 mt-1 flex flex-wrap items-center justify-between sm:flex-nowrap">
+      <div className="-ml-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
         <div className="ml-4 mt-4">
           <div className="flex items-center">
             {tabs.length > 0 && <Tabs tabs={tabs} />}
             {additionalFilters && <AdditionalFilter {...additionalFilters} />}
           </div>
         </div>
-        <div className="ml-4 mt-2 flex flex-shrink-0">
+        <div className="ml-4 mt-1 flex flex-shrink-0">
           {!filterTitle && actions.length > 0 && <Buttons actions={actions} group={group} />}
           {filterTitle && <Filter filter={filter} sort={sort} filterParam={filterParam} 
                             filterTitle={filterTitle} allowSort={allowSort} additionalFilters={additionalFilters} />}

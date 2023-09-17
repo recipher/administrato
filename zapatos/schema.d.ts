@@ -2565,6 +2565,30 @@ declare module 'zapatos/schema' {
       */
       isArchived: boolean | null;
       /**
+      * **workers.clientKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyStart: db.Int8String;
+      /**
+      * **workers.clientKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyEnd: db.Int8String;
+      /**
+      * **workers.legalEntityKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyStart: db.Int8String;
+      /**
+      * **workers.legalEntityKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyEnd: db.Int8String;
+      /**
       * **workers.locality**
       * - `text` in database
       * - Nullable, no default
@@ -2620,6 +2644,30 @@ declare module 'zapatos/schema' {
       * - Nullable, default: `false`
       */
       isArchived: boolean | null;
+      /**
+      * **workers.clientKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyStart: number;
+      /**
+      * **workers.clientKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyEnd: number;
+      /**
+      * **workers.legalEntityKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyStart: number;
+      /**
+      * **workers.legalEntityKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyEnd: number;
       /**
       * **workers.locality**
       * - `text` in database
@@ -2677,6 +2725,30 @@ declare module 'zapatos/schema' {
       */
       isArchived?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **workers.clientKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **workers.clientKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **workers.legalEntityKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **workers.legalEntityKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **workers.locality**
       * - `text` in database
       * - Nullable, no default
@@ -2733,6 +2805,30 @@ declare module 'zapatos/schema' {
       */
       isArchived?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **workers.clientKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyStart: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      /**
+      * **workers.clientKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyEnd: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      /**
+      * **workers.legalEntityKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyStart: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      /**
+      * **workers.legalEntityKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyEnd: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      /**
       * **workers.locality**
       * - `text` in database
       * - Nullable, no default
@@ -2788,6 +2884,30 @@ declare module 'zapatos/schema' {
       * - Nullable, default: `false`
       */
       isArchived?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **workers.clientKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      /**
+      * **workers.clientKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      clientKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      /**
+      * **workers.legalEntityKeyStart**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      /**
+      * **workers.legalEntityKeyEnd**
+      * - `int8` in database
+      * - `NOT NULL`, no default
+      */
+      legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
       /**
       * **workers.locality**
       * - `text` in database

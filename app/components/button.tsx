@@ -31,7 +31,8 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
       onClick={props.onClick}
       className={classnames(classNames.get(type) || "", "inline-flex items-center rounded-md px-3 py-2 text-sm shadow-sm")}
       >
-      {props.icon && <props.icon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />}
+      {props.icon && 
+        <props.icon className={classnames(type === ButtonType.Primary ? "text-white" : "text-gray-500", "-ml-0.5 mr-1.5 h-5 w-5")} aria-hidden="true" />}
       {t(title)}
     </button>
   );

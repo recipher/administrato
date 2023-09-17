@@ -40,7 +40,7 @@ export default function ServiceCentres() {
     <>
       <Header title="Service Centres" actions={actions} />
 
-      {serviceCentres.length === 0 && <Alert title="No service centres" level={Level.Info} />}
+      {serviceCentres.length === 0 && <Alert title="No service centres found" level={Level.Warning} />}
       
       <ul className="divide-y divide-gray-100">
         {serviceCentres.map((serviceCentre: ServiceCentre) => (

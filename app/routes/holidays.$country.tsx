@@ -7,7 +7,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import CountryService, { type Country } from '~/models/countries.server';
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
-import Header from '~/components/header/basic-with-actions';
+import Header from '~/components/header';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 

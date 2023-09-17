@@ -81,7 +81,7 @@ export default function Navigation() {
                   <NavLink
                     to={item.to}
                     className={({ isActive, isPending }) => classnames(
-                      isActive ? 'bg-gray-100' : 'hover:bg-gray-50',
+                      isActive ? 'bg-indigo-100 text-indigo-800' : 'hover:bg-indigo-50',
                       'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold text-gray-700'
                     )}
                   >
@@ -93,7 +93,7 @@ export default function Navigation() {
                     {({ open }) => (
                       <>
                         {filter(item.children as Array<NavItem>).length > 0 && <Disclosure.Button
-                          className='flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-gray-700 hover:bg-gray-50'
+                          className='flex items-center w-full text-left rounded-md p-2 gap-x-3 text-sm leading-6 font-semibold text-gray-700 hover:bg-indigo-50'
                         >
                           <item.icon className="h-6 w-6 shrink-0 text-gray-400" aria-hidden="true" />
                           {t(item.name)}
@@ -110,7 +110,7 @@ export default function Navigation() {
                             <li key={subItem.name}>
                               <Disclosure.Button as="div">
                                 <NavLink to={subItem.to} className={({ isActive, isPending }) => classnames(
-                                  isActive ? 'bg-gray-100' : 'hover:bg-gray-50',
+                                  isActive ? 'bg-indigo-100 text-indigo-800' : 'hover:bg-indigo-50',
                                   'block rounded-md my-1 py-2 pr-2 pl-9 text-sm leading-6 text-gray-700'
                                 )}>
                                   {t(subItem.name)}

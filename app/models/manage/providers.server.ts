@@ -104,13 +104,13 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
-    const [ client ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
+    const [ provider ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
         (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);
 
-    return client;
+    return provider;
   };
 
   const getProviderByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
