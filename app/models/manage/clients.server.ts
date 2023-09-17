@@ -15,7 +15,7 @@ import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './sh
 export type Client = s.clients.Selectable;
 
 type SearchOptions = {
-  serviceCentreId?: number;
+  serviceCentreId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -71,35 +71,39 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search }: SearchOptions) =>
-    search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-      AND
-        LOWER(${'clients'}.${'name'}) LIKE LOWER('${db.raw(search)}%')
-    `;
+  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
+    const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
+      AND 
+        LOWER(${'clients'}.${'name'}) LIKE LOWER('${db.raw(search)}%')`;
 
-  const countClients = async ({ search }: SearchOptions) => {
+    return serviceCentreId === undefined ? name
+      : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+  };
+
+  const countClients = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "client");
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT COUNT(${'id'}) AS count FROM ${'clients'}
-      WHERE ${'parentId'} IS NULL ${searchQuery({ search })} AND ${whereKeys({ keys })}
+      WHERE ${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
     `.run(pool);
 
     const { count } = item as unknown as Count;
     return count;
   };
 
-  const searchClients = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  const searchClients = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
     const keys = extractKeys(u, "serviceCentre", "client");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT * FROM ${'clients'}
-      WHERE ${'parentId'} IS NULL ${searchQuery({ search })} AND ${whereKeys({ keys })}
-      ORDER BY ${'clients'}.${'name'} ${db.raw(sortDirection)}
+      WHERE ${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
+      ORDER BY ${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
-    const count = await countClients({ search });
+
+    const count = await countClients(search);
 
     return { clients, metadata: { count }};
   };

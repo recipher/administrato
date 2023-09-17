@@ -2,6 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
+import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import ProviderService, { type Provider } from '~/models/manage/providers.server';
 import CountryService from '~/models/countries.server';
 
@@ -22,19 +23,22 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-  // const serviceCentreId = url.searchParams.get("service-centre");
+  const serviceCentreId = toNumber(url.searchParams.get("service-centre") as string);
 
   const u = await requireUser(request);
   
+  const serviceCentreService = ServiceCentreService(u);
+  const serviceCentres = await serviceCentreService.listServiceCentres();
+
   const service = ProviderService(u);
   const { providers, metadata: { count }} = 
-    await service.searchProviders({ search }, { offset, limit, sortDirection: sort });
+    await service.searchProviders({ search, serviceCentreId }, { offset, limit, sortDirection: sort });
 
   const isoCodes = providers.map(s => s.localities || []).flat();
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
 
-  return json({ providers, countries, count, offset, limit, search });
+  return json({ providers, countries, count, offset, limit, search, serviceCentres, serviceCentreId });
 };
 
 const actions = [
@@ -42,11 +46,19 @@ const actions = [
 ];
 
 export default function Providers() {
-  const { providers, countries, count, offset, limit, search } = useLoaderData();
+  const { providers, countries, count, offset, limit, search, serviceCentres, serviceCentreId } = useLoaderData();
 
+  const filter = {
+    title: "Select Service Centre",
+    filterParam: "service-centre",
+    selected: serviceCentreId,
+    filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
+  };
+  
   return (
     <>
-      <Header title="providers" actions={actions} filterTitle='Search providers' filterParam='q' allowSort={true} />
+      <Header title="providers" actions={actions} additionalFilters={filter}
+        filterTitle='Search providers' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No providers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 

@@ -48,6 +48,9 @@ export const Search = () => {
         className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
         placeholder={t('search')}
         type="search"
+        autoCorrect="off"
+        autoCapitalize="off"
+        autoComplete="off"
         name="q"
       />
     </Form>
@@ -61,7 +64,6 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
   const modal = useRef<RefModal>(null);
 
   const handleStopImpersonation = () => {
-    console.log(user);
     if (user.impersonator === undefined) return;
     submit(
       { intent: "unimpersonate", user: user.impersonator }, 

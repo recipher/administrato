@@ -15,7 +15,7 @@ import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './sh
 export type LegalEntity = s.legalEntities.Selectable;
 
 type SearchOptions = {
-  serviceCentreId?: number;
+  serviceCentreId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -65,33 +65,37 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search }: SearchOptions) =>
-    search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER('${db.raw(search)}%') AND`;
+  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
+    const name = search == null ? db.sql<db.SQL>`${'name'} IS NOT NULL` : db.sql<db.SQL>`
+      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER('${db.raw(search)}%')`;
 
-  const countLegalEntities = async ({ search }: SearchOptions) => {
+    return serviceCentreId === undefined ? name
+      : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+  };
+
+  const countLegalEntities = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
     const [ item ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT COUNT(${'id'}) AS count FROM ${'legalEntities'}
-      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
     `.run(pool);
 
     const { count } = item as unknown as Count;
     return count;
   };
 
-  const searchLegalEntities = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  const searchLegalEntities = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const legalEntities = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT * FROM ${'legalEntities'}
-      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
       ORDER BY ${'legalEntities'}.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
-    const count = await countLegalEntities({ search });
+    const count = await countLegalEntities(search);
 
     return { legalEntities, metadata: { count }};
   };

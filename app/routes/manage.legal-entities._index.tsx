@@ -2,6 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
+import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import LegalEntityService, { type LegalEntity } from '~/models/manage/legal-entities.server';
 import CountryService from '~/models/countries.server';
 
@@ -22,19 +23,22 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-  // const serviceCentreId = url.searchParams.get("service-centre");
+  const serviceCentreId = toNumber(url.searchParams.get("service-centre") as string);
 
   const u = await requireUser(request);
-  
+
+  const serviceCentreService = ServiceCentreService(u);
+  const serviceCentres = await serviceCentreService.listServiceCentres();
+
   const service = LegalEntityService(u);
   const { legalEntities, metadata: { count }} = 
-    await service.searchLegalEntities({ search }, { offset, limit, sortDirection: sort });
+    await service.searchLegalEntities({ search, serviceCentreId }, { offset, limit, sortDirection: sort });
 
   const isoCodes = legalEntities.map(s => s.localities || []).flat();
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
 
-  return json({ legalEntities, countries, count, offset, limit, search });
+  return json({ legalEntities, countries, count, offset, limit, search, serviceCentres, serviceCentreId });
 };
 
 const actions = [
@@ -42,12 +46,19 @@ const actions = [
 ];
 
 export default function LegalEntities() {
-  const { legalEntities, countries, count, offset, limit, search } = useLoaderData();
+  const { legalEntities, countries, count, offset, limit, search, serviceCentres, serviceCentreId } = useLoaderData();
 
+  const filter = {
+    title: "Select Service Centre",
+    filterParam: "service-centre",
+    selected: serviceCentreId,
+    filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
+  };
+  
   return (
     <>
-      <Header title="legal-entities" actions={actions} filterTitle='Search legal entities' filterParam='q' allowSort={true} />
-      {/* <Header title='holidays' filterTitle='Search countries' filterParam='q' allowSort={true} /> */}
+      <Header title="legal-entities" actions={actions} additionalFilters={filter}
+        filterTitle='Search legal entities' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No legal entities found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 

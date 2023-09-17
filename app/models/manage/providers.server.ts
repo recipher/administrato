@@ -15,7 +15,7 @@ import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './sh
 export type Provider = s.providers.Selectable;
 
 type SearchOptions = {
-  serviceCentreId?: number;
+  serviceCentreId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -65,33 +65,37 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search }: SearchOptions) =>
-    search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-      LOWER(${'providers'}.${'name'}) LIKE LOWER('${db.raw(search)}%') AND `;
+  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
+    const name = search == null ? db.sql<db.SQL>`${'name'} IS NOT NULL` : db.sql<db.SQL>`
+      LOWER(${'providers'}.${'name'}) LIKE LOWER('${db.raw(search)}%')`;
 
-  const countProviders = async ({ search }: SearchOptions) => {
+    return serviceCentreId === undefined ? name
+      : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+  };
+
+  const countProviders = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
     const [ item ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT COUNT(${'id'}) AS count FROM ${'providers'}
-      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
     `.run(pool);
 
     const { count } = item as unknown as Count;
     return count;
   };
 
-  const searchProviders = async ({ search }: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  const searchProviders = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
     const keys = extractKeys(u, "serviceCentre", "provider");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const providers = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
-      WHERE ${searchQuery({ search })} ${whereKeys({ keys })}  
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
       ORDER BY ${'providers'}.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
-    const count = await countProviders({ search });
+    const count = await countProviders(search);
 
     return { providers, metadata: { count }};
   };

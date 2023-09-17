@@ -9,7 +9,7 @@ export default ({ entity = '', onFilter }: { entity?: string, onFilter: Function
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    onFilter(text);
+    if (text) onFilter(text);
   };
 
   return (
@@ -25,6 +25,9 @@ export default ({ entity = '', onFilter }: { entity?: string, onFilter: Function
         id="q"
         className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
         placeholder={`${t('search')} ${entity && t(pluralize(entity))}`}
+        autoComplete="off"
+        autoCapitalize="off"
+        autoCorrect="off"
         type="search"
         name="q"
         onChange={(e) => setText(e.target.value)}

@@ -2268,9 +2268,9 @@ declare module 'zapatos/schema' {
       /**
       * **serviceCentres.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name: string | null;
+      name: string;
       /**
       * **serviceCentres.identifier**
       * - `text` in database
@@ -2318,9 +2318,9 @@ declare module 'zapatos/schema' {
       /**
       * **serviceCentres.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name: string | null;
+      name: string;
       /**
       * **serviceCentres.identifier**
       * - `text` in database
@@ -2368,7 +2368,7 @@ declare module 'zapatos/schema' {
       /**
       * **serviceCentres.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -2418,9 +2418,9 @@ declare module 'zapatos/schema' {
       /**
       * **serviceCentres.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      name: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **serviceCentres.identifier**
       * - `text` in database
@@ -2468,9 +2468,9 @@ declare module 'zapatos/schema' {
       /**
       * **serviceCentres.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **serviceCentres.identifier**
       * - `text` in database

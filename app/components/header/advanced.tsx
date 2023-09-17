@@ -1,7 +1,10 @@
-import { ReactNode } from 'react';
-import { Form, useSearchParams } from '@remix-run/react';
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { Fragment, ReactNode } from 'react';
+import { Form, useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
+
+import { Menu, Transition } from '@headlessui/react';
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 import Tabs, { TabsProps } from '../navigation-tabs';
 import Actions, { ActionsProps } from '../actions';
@@ -21,13 +24,24 @@ type FilterProps = {
   filterParam?: string;
   allowSort?: boolean;
 };
+type AdditionalFilterOptions = {
+  name: string;
+  value: string;
+};
+type AdditionalFilterProps = {
+  title: string;
+  filters: Array<AdditionalFilterOptions>;
+  filterParam: string;
+  selected: string;
+};
 type ButtonsProps = {
   actions?: ActionsProps;
   group?: boolean;
 };
 type Props = {
-  tabs?: TabsProps,
-} & TitleProps & FilterProps & ButtonsProps;
+  additionalFilters?: AdditionalFilterProps;
+  tabs?: TabsProps;
+} & TitleProps & FilterProps  & ButtonsProps;
 
 const Title = ({ title, subtitle, icon }: TitleProps) => {
   const { t } = useTranslation();
@@ -44,7 +58,69 @@ const Title = ({ title, subtitle, icon }: TitleProps) => {
   );
 }
 
-const Filter = ({ filterTitle, filterParam, allowSort, sort, filter }: FilterProps & { sort: string | null, filter: string }) => {
+const AdditionalFilter = ({ title, filters, filterParam, selected }: AdditionalFilterProps) => {
+  const [ searchParams ] = useSearchParams();
+  const navigate = useNavigate();
+
+  if (filters.length === 0) return null;
+
+  const selectedName = selected && filters.find(({ value }) => value == selected)?.name;
+
+  const navigateTo = (value: any) => {
+    const qs = searchParams.toString() || '';
+    const params = new URLSearchParams(qs);
+    params.set(filterParam, value);
+    navigate(`?${params.toString()}`);
+  };
+
+  return (
+    <Menu as="div" className="relative inline-block text-left focus-outline:none">
+      <div>
+        <Menu.Button className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 focus-outline:none">
+          {title}
+          {selectedName && <span className="font-semibold ml-2">{selectedName}</span>}
+          <ChevronDownIcon
+            className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+            aria-hidden="true"
+          />
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="py-1">
+            {filters.map((filter) => (
+              <Menu.Item key={filter.name}>
+                {({ active }) => (
+                  <div
+                    onClick={() => navigateTo(filter.value || filter.name)}
+                    className={classnames(
+                      filter.value == selected ? 'font-medium text-gray-900' : 'text-gray-500',
+                      active ? 'bg-gray-100' : '',
+                      'block px-4 py-2 text-sm cursor-pointer'
+                    )}
+                  >
+                    {filter.name}
+                  </div>
+                )}
+              </Menu.Item>
+            ))}
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
+}
+
+const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalFilters }: FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined }) => {
   const { t } = useTranslation();
   return (
     <>
@@ -65,9 +141,12 @@ const Filter = ({ filterTitle, filterParam, allowSort, sort, filter }: FilterPro
               placeholder={filterTitle}
               autoComplete="off"
               autoCapitalize="off"
+              autoCorrect="off"
               defaultValue={filter}
             />
             <input type="submit" hidden />
+            {additionalFilters && 
+              <input type="hidden" name={additionalFilters.filterParam} value={additionalFilters.selected} />}
           </Form>
         </div>
         {allowSort && <Sort sort={sort} />}
@@ -82,7 +161,7 @@ const Buttons = ({ actions = [], group = false }: ButtonsProps) => {
     : <Actions actions={actions} />
 }
 
-export default function Header({ title, subtitle, icon, tabs = [], actions = [],
+export default function Header({ title, subtitle, icon, tabs = [], actions = [], additionalFilters,
   filterTitle, filterParam = 'q', allowSort = true, group = false }: Props) {
 
   const [ searchParams ] = useSearchParams();
@@ -107,12 +186,14 @@ export default function Header({ title, subtitle, icon, tabs = [], actions = [],
       <div className="-ml-4 mt-1 flex flex-wrap items-center justify-between sm:flex-nowrap">
         <div className="ml-4 mt-4">
           <div className="flex items-center">
-            <Tabs tabs={tabs} />
+            {tabs.length > 0 && <Tabs tabs={tabs} />}
+            {additionalFilters && <AdditionalFilter {...additionalFilters} />}
           </div>
         </div>
         <div className="ml-4 mt-2 flex flex-shrink-0">
           {!filterTitle && actions.length > 0 && <Buttons actions={actions} group={group} />}
-          {filterTitle && <Filter filter={filter} sort={sort} filterParam={filterParam} filterTitle={filterTitle} allowSort={allowSort} />}
+          {filterTitle && <Filter filter={filter} sort={sort} filterParam={filterParam} 
+                            filterTitle={filterTitle} allowSort={allowSort} additionalFilters={additionalFilters} />}
         </div>
       </div>
     </div>
