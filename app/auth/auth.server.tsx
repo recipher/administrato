@@ -163,7 +163,18 @@ export const mapProfileToUser = (id: string | undefined, profile: any) => {
     organization = organizations?.find(o => o.auth0id === settings?.organization || orgId),
     keys = organization?.keys === undefined ? defaultKeys : organization.keys;
 
-  return { id, name, email, picture, settings, permissions, organizations, organization, keys, defaultKeys };
+  return { 
+    id, 
+    name, 
+    email, 
+    picture, 
+    settings, 
+    permissions, 
+    organizations: organizations?.map(o => ({ ...o, keys: undefined })), 
+    organization, 
+    keys, 
+    defaultKeys 
+  };
 };
 
 export const storage = createCookieSessionStorage({

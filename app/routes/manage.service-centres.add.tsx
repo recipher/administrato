@@ -22,49 +22,69 @@ import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
 import { requireUser } from '~/auth/auth.server';
+import refreshUser from '~/auth/refresh.server';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
     <Breadcrumb to='/manage/service-centres/add' name="add-service-centre" current={current} />
 };
 
-export const validator = withZod(
-  zfd.formData({
-    name: z
-      .string()
-      .nonempty("Service centre name is required")
-      .min(3, "Service centre name must be at least 3 characters long"),
-    identifier: z
-      .string()
-      .optional(),
-    localities: z
-      .object({
-        id: z.string().or(z.array(z.string()))
-      })
-  })
-);
+const schema = zfd.formData({
+  name: z
+    .string()
+    .nonempty("Service centre name is required")
+    .min(3, "Service centre name must be at least 3 characters long"),
+  identifier: z
+    .string()
+    .optional(),
+  localities: z
+    .object({
+      id: z.string().or(z.array(z.string()))
+    })
+});
+
+const clientValidator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
+  const countryService = CountryService();
+
   const u = await requireUser(request);
   const formData = await request.formData()
 
+  const validator = withZod(schema.refine(
+    async (data) => {
+      if (data.identifier === undefined || data.identifier === "") return true;
+      const service = ServiceCentreService(u);
+      const serviceCentre = await service.getServiceCentre({ id: data.identifier }, { bypassKeyCheck: true });
+      return serviceCentre === undefined;
+    },
+    { message: "This idenfifier is in use", path: [ "identifier" ] }
+  ));
+
   if (formData.get('intent') === 'change-codes') {
-    const service = CountryService();
     const codes = String(formData.get('codes')).split(',');
-    const countries = await service.getCountries({ isoCodes: codes });
-    const regions = await service.getRegions({ isoCodes: codes });
+    const countries = await countryService.getCountries({ isoCodes: codes });
+    const regions = await countryService.getRegions({ isoCodes: codes });
     return json({ codes, regions, countries });
   }
 
   const result = await validator.validate(formData);
-  if (result.error) return validationError(result.error);
+  if (result.error) { 
+    const codes = [ result.submittedData.localities.isoCode ].flat();
+    const countries = await countryService.getCountries({ isoCodes: codes });
+    const regions = await countryService.getRegions({ isoCodes: codes });
+    return { ...validationError(result.error), codes, countries, regions };
+  }
 
   const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
   
   const service = ServiceCentreService(u);
   const serviceCentre = await service.addServiceCentre({ localities, identifier, ...data });
-  return redirect('/manage/service-centres');
+  
+  const headers = await refreshUser({ id: u.id, request });
+  
+  return redirect('/manage/service-centres', { headers });
 };
 
 const Add = () => {
@@ -102,7 +122,7 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={validator} id="add-service-centre">
+      <Form method="post" validator={clientValidator} id="add-service-centre">
         <Body>
           <Section heading='New Service Centre' explanation='Please enter the new service centre details.' />
           <Group>
@@ -111,7 +131,7 @@ const Add = () => {
             </Field>
             <Field span={3}>
               <UniqueInput label="Identifier" name="identifier" 
-                checkUrl="/manage/service-centres/name/" property="serviceCentre"
+                checkUrl="/manage/service-centres" property="serviceCentre" message="This identifier is in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
             <Field span={3}>

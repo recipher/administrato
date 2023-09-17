@@ -113,14 +113,14 @@ const service = (u?: User) => {
     const orgKey = organization ? organization.auth0id : 'default';
     const entityKey = camelize(entity);
     const existing = (user.app_metadata?.keys?.[orgKey]?.[entityKey]) || [];
-  
+
     const update = [ ...existing, key ].reduce((keys: Array<Array<number>>, key: Array<number>) => {
       const [ start, end ] = key;
       return (keys.find(([ s, e ]) => s === start && e === end)) 
         ? keys : 
         [ ...keys, key ];
     }, []);
-  
+  console.log(update)
     const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
     
     return updateMetadata({ id, metadata });

@@ -103,7 +103,7 @@ const service = (u: User) => {
     const [ client ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
-        (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
+        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param((id as string).toLowerCase())})
       `.run(pool);
 
     return client;

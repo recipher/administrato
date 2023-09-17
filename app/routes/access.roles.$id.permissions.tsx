@@ -84,7 +84,7 @@ export async function action({ request }: ActionArgs) {
     try {
       await service.assignPermission({ id: role.id, permission, namespace });
       message = `Permission Assigned:${description} assigned to role ${role.description}.`;
-    } catch(e: any) {console.log(e)
+    } catch(e: any) {
       message = `Permission Assign Error:${e.messsage}`;
       level = Level.Error;
     }
@@ -92,7 +92,7 @@ export async function action({ request }: ActionArgs) {
     try {
       await service.assignPermission({ id: role.id, permission, namespace });
       message = `Permission Removed:${description} removed from role ${role.description}.`;
-    } catch(e: any) {console.log(e)
+    } catch(e: any) {
       message = `Permission Remove Error:${e.messsage}`;
       level = Level.Error;
     }

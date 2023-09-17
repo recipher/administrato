@@ -47,7 +47,7 @@ const service = (u: User) => {
     const start = toNumber(String(inserted.keyStart)),
           end = toNumber(String(inserted.keyEnd));
 
-    if (start && end) {
+    if (start !== undefined && end !== undefined) {
       const userService = UserService(u);
       await userService.addSecurityKey({ 
         id: u.id, organization: u.organization, entity: 'service-centre', 
@@ -89,7 +89,7 @@ const service = (u: User) => {
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
-        (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
+        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param((id as string).toLowerCase())})
       `.run(pool);
 
     return serviceCentre;

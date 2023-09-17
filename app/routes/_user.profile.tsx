@@ -8,8 +8,8 @@ import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 import UserService from '~/models/access/users.server';
 import { getSession, storage, mapProfileToUser } from '~/auth/auth.server';
+import refreshUser from '~/auth/refresh.server';
 import { storage as flash, setFlashMessage } from '~/utility/flash.server';
-// import { auth } from '~/auth/auth.server';
 
 import Image from '~/components/image';
 import { Level } from '~/components/alert';
@@ -41,11 +41,12 @@ export async function action({ request }: ActionArgs) {
       : `Organization Removed:Your organization has been removed.`;
     level = Level.Success;
 
-    const session = await getSession(request.headers.get("Cookie"));
-    const profile = await service.getTokenizedUser({ id });
-    session.set("user", mapProfileToUser(id, profile));
-    headers.append("Set-Cookie", await storage.commitSession(session));
-    // await auth.authenticate("auth0", request);
+    // const session = await getSession(request.headers.get("Cookie"));
+    // const profile = await service.getTokenizedUser({ id });
+    // session.set("user", mapProfileToUser(id, profile));
+    // headers.append("Set-Cookie", await storage.commitSession(session));
+
+    await refreshUser({ id, request, headers });
   };
  
   if (intent === "set-language") {
