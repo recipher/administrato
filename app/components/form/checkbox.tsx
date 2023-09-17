@@ -27,7 +27,7 @@ export default function Checkbox ({ checked = false, name, label, onChange = nul
         />
       </div>
       <div className="ml-3 text-sm leading-6">
-        <label htmlFor={name} className="font-medium text-gray-900">
+        <label htmlFor={name} className="font-medium text-gray-900 cursor-pointer">
           {label}
         </label>
       </div>

@@ -12,7 +12,7 @@ import LegalEntityService from '~/models/manage/legal-entities.server';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
-import { Input, Select, Cancel, Submit, Checkbox,
+import { Input, UniqueInput, Select, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';

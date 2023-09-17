@@ -5,7 +5,7 @@ import pool from '../db.server';
 import ServiceCentreService from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
-  QueryOptions, IdProp, KeyQueryOptions } from '../types';
+  QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
 import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
@@ -104,14 +104,25 @@ const service = (u: User) => {
     return { clients, metadata: { count }};
   };
 
-  const getClient = async ({ id }: IdProp) => {
+  const getClient = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = extractKeys(u, "serviceCentre", "client");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT * FROM ${'clients'}
-      WHERE ${whereKeys({ keys })} AND 
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
+      `.run(pool);
+
+    return client;
+  };
+
+  const getClientByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
+    const keys = u.keys.client;
+
+    const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
+      SELECT * FROM ${'clients'}
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
       `.run(pool);
 
     return client;
@@ -129,6 +140,7 @@ const service = (u: User) => {
   return {
     addClient,
     getClient,
+    getClientByName,
     searchClients,
     countClients,
     listClients,

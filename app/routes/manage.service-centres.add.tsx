@@ -11,7 +11,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
-import { Input, Select, Cancel, Submit, Checkbox,
+import { Input, UniqueInput, Select, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
@@ -110,7 +110,9 @@ const Add = () => {
               <Input label="Service Centre Name" name="name" placeholder="e.g. Scotland" />
             </Field>
             <Field span={3}>
-              <Input label="Identifier" name="identifier" disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
+              <UniqueInput label="Identifier" name="identifier" 
+                checkUrl="/manage/service-centres/name/" property="serviceCentre"
+                disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
             <Field span={3}>
               <div className="pt-9">

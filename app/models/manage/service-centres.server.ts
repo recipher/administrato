@@ -2,7 +2,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import type { SecurityKey, IdProp, KeyQueryOptions } from '../types';
+import type { SecurityKey, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
 
 import UserService, { type User } from '../access/users.server';
 import toNumber from '~/helpers/to-number';
@@ -82,14 +82,25 @@ const service = (u: User) => {
     return query.allowFullAccess ? checkForFullAccess(keys, serviceCentres) : serviceCentres;
   };
 
-  const getServiceCentre = async ({ id }: IdProp) => {
+  const getServiceCentre = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = u.keys.serviceCentre;
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT * FROM ${'serviceCentres'}
-      WHERE ${whereKeys({ keys })} AND 
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
+      `.run(pool);
+
+    return serviceCentre;
+  };
+
+  const getServiceCentreByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
+    const keys = u.keys.serviceCentre;
+
+    const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+      SELECT * FROM ${'serviceCentres'}
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
       `.run(pool);
 
     return serviceCentre;
@@ -109,6 +120,7 @@ const service = (u: User) => {
   return {
     addServiceCentre,
     getServiceCentre,
+    getServiceCentreByName,
     listServiceCentres,
     listServiceCentresForKeys
   };

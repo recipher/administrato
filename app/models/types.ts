@@ -16,6 +16,10 @@ export type IdProp = {
   id: number | string;
 };
 
+export type NameProp = {
+  name: string;
+};
+
 export type Count = {
   count: number;
 };
@@ -27,7 +31,9 @@ export type SecurityKey = {
 
 export type SecurityKeys = Array<SecurityKey>;
 
+export type BypassKeyCheck = { bypassKeyCheck?: boolean };
+
 export type KeyQueryOptions = {
   keys?: SecurityKeys;
   isArchived?: boolean;
-} & QueryOptions;
+} & QueryOptions & BypassKeyCheck;

@@ -82,7 +82,7 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
   const userNavigation = [
     { name: 'my-profile', to: '/profile' },
     { name: 'select-organization', onClick: showOrganizationModal },
-    { name: 'unimpersonate', onClick: () => handleStopImpersonation(), hidden: user.impersonator === undefined },
+    { name: 'unimpersonate', onClick: () => handleStopImpersonation(), hidden: user?.impersonator === undefined },
     { name: 'signout', to: '/logout' },
   ];  
 

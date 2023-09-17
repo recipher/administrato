@@ -19,12 +19,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest('Invalid request');
 
+  const bypassKeyCheck = !!new URL(request.url).searchParams.get("bypass");
+
   const u = await requireUser(request);
 
   const service = ServiceCentreService(u);
-  const serviceCentre = await service.getServiceCentre({ id });
+  const serviceCentre = await service.getServiceCentre({ id }, { bypassKeyCheck });
 
-  if (serviceCentre === undefined) return notFound('Service centre not found');
+  if (serviceCentre === undefined && !bypassKeyCheck) return notFound('Service centre not found');
 
   return json({ serviceCentre });
 };

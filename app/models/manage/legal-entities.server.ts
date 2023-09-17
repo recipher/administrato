@@ -5,7 +5,7 @@ import pool from '../db.server';
 import ServiceCentreService from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
-  QueryOptions, IdProp, KeyQueryOptions } from '../types';
+  QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
 import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
@@ -96,17 +96,28 @@ const service = (u: User) => {
     return { legalEntities, metadata: { count }};
   };
 
-  const getLegalEntity = async ({ id }: IdProp) => {
+  const getLegalEntity = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ client ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT * FROM ${'legalEntities'}
-      WHERE ${whereKeys({ keys })} AND  
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
         (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
       `.run(pool);
 
     return client;
+  };
+
+  const getLegalEntityByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
+    const keys = u.keys.legalEntity;
+
+    const [ legalEntity ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
+      SELECT * FROM ${'legalEntities'}
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
+      `.run(pool);
+
+    return legalEntity;
   };
 
   // Required to determine exactly which entities a user has authorization for
@@ -121,6 +132,7 @@ const service = (u: User) => {
   return {
     addLegalEntity,
     getLegalEntity,
+    getLegalEntityByName,
     searchLegalEntities,
     countLegalEntities,
     listLegalEntities,

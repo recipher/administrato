@@ -5,7 +5,7 @@ import pool from '../db.server';
 import ServiceCentreService from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
-  QueryOptions, IdProp, KeyQueryOptions } from '../types';
+  QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
 import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
@@ -96,17 +96,28 @@ const service = (u: User) => {
     return { providers, metadata: { count }};
   };
 
-  const getProvider = async ({ id }: IdProp) => {
+  const getProvider = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ client ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
-      WHERE ${whereKeys({ keys })} AND  
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
         (${'id'} = ${db.param(numericId)} OR ${'identifier'} = ${db.param(id)})
       `.run(pool);
 
     return client;
+  };
+
+  const getProviderByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
+    const keys = u.keys.provider;
+
+    const [ provider ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
+      SELECT * FROM ${'providers'}
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
+      `.run(pool);
+
+    return provider;
   };
 
   // Required to determine exactly which entities a user has authorization for
@@ -121,6 +132,7 @@ const service = (u: User) => {
   return {
     addProvider,
     getProvider,
+    getProviderByName,
     searchProviders,
     countProviders,
     listProviders,
