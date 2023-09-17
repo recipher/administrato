@@ -52,6 +52,8 @@
   "remove": "Remove",
   "revoke": "Revoke",
   "sync": "Sync",
+  "impersonate": "Impersonate",
+  "unimpersonate": "Cancel Impersonation",
   "sort": "Sort",
   "read": "Read",
   "create": "Create",

@@ -57,6 +57,7 @@ export type User = {
   keys: KeySet,
   defaultKeys: Array<SecurityKey>;
   organization: Organization;
+  impersonator?: { id: string; name: string };
 };
 
 const mapKeys = (profile: any, organisation: string) => {

@@ -53,6 +53,8 @@
   "revoke": "Revocar",
   "sync": "Sincronizar",
   "sort": "Clasificar",
+  "impersonate": "Personificar",
+  "unimpersonate": "Detener la Suplantación",
   "read": "Leer",
   "create": "Crear",
   "edit": "Editar",

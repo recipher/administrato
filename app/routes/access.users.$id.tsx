@@ -1,13 +1,19 @@
-import { json, type LoaderArgs } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
+import { useRef } from 'react';
+import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
+import { Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
 import UserService, { type User } from '~/models/access/users.server';
-import { requireUser } from '~/auth/auth.server';
+import { getSession, storage, mapProfileToUser, requireUser } from '~/auth/auth.server';
+import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 
+import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 import Header from '~/components/header/with-actions';
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { UserCircleIcon } from '@heroicons/react/24/outline';
+import { ButtonType } from '~/components/button';
+import { Level } from '~/components/toast';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -29,8 +35,57 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ user });
 }
 
+export async function action({ request }: ActionArgs) {
+  const u = await requireUser(request);
+  const service = UserService();
+
+  let message = "", level = Level.Success;
+  const { intent, ...props } = await request.json();
+  let { redirectTo = "/profile" } = props;
+  
+  const headers = new Headers();
+
+  if (intent === "unimpersonate") {
+    const { user: { id, name }} = props;
+
+    const session = await getSession(request.headers.get("Cookie"));
+    const profile = await service.getTokenizedUser({ id });
+    session.set("user", mapProfileToUser(id, profile));
+    headers.append("Set-Cookie", await storage.commitSession(session));
+
+    message = `Stop Impersonation:You are now logged in as ${name}.`;
+    level = Level.Success;
+  }
+
+  if (intent === "impersonate") {
+    const { user: { id, name }} = props;
+
+    const session = await getSession(request.headers.get("Cookie"));
+    const profile = await service.getTokenizedUser({ id });
+    const impersonation = { ...mapProfileToUser(id, profile), impersonator: { id: u.id, name: u.name }};
+
+    session.set("user", impersonation);
+    headers.append("Set-Cookie", await storage.commitSession(session));
+
+    message = `Impersonation Successful:You are now logged in as ${name}.`;
+    level = Level.Success;
+  };
+ 
+  const session = await setFlashMessage({ request, message, level });
+  headers.append("Set-Cookie", await flash.commitSession(session));
+  
+  return redirect(redirectTo, { headers, status: 302 });
+};
+
 export default function User() {
+  const submit = useSubmit();
+  const confirm = useRef<RefConfirmModal>(null);
   const { user } = useLoaderData();
+
+  const impersonate = () =>
+    confirm.current?.show("Impersonate this User?", "Yes, Impersonate", "Cancel", `Are you sure you want to impersonate ${user.name}?`);
+  
+  const onConfirmImpersonate = () => submit({ intent: "impersonate", user }, { action: `/access/users/${user.id}`, method: "post", encType: "application/json" });
 
   const tabs = [
     { name: 'profile', to: 'profile' },
@@ -39,10 +94,15 @@ export default function User() {
     { name: 'organizations', to: 'organizations' },
   ];
 
+  const actions = [
+    { title: "impersonate", icon: UserCircleIcon, type: ButtonType.Secondary, onClick: impersonate },
+  ];
+
   return (
     <>
-      <Header title={user.name} subtitle={user.email} icon={user.picture} tabs={tabs} />
+      <Header title={user.name} subtitle={user.email} icon={user.picture} tabs={tabs} actions={actions} />
       <Outlet />
+      <ConfirmModal ref={confirm} onYes={onConfirmImpersonate} />
     </>
   );
 };

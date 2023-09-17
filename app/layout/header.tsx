@@ -60,6 +60,15 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
   const { pathname: redirectTo } = useLocation();
   const modal = useRef<RefModal>(null);
 
+  const handleStopImpersonation = () => {
+    console.log(user);
+    if (user.impersonator === undefined) return;
+    submit(
+      { intent: "unimpersonate", user: user.impersonator }, 
+      { action: `/access/users/${user.impersonator.id}`, method: "post", encType: "application/json" }
+    );
+  };
+
   const handleSelectOrganization = (organization: Organization) => {
     modal.current?.hide();
     submit(
@@ -73,8 +82,9 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
   const userNavigation = [
     { name: 'my-profile', to: '/profile' },
     { name: 'select-organization', onClick: showOrganizationModal },
+    { name: 'unimpersonate', onClick: () => handleStopImpersonation(), hidden: user.impersonator === undefined },
     { name: 'signout', to: '/logout' },
-  ];
+  ];  
 
   return (
     <>
@@ -133,7 +143,7 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="absolute right-0 z-[999] mt-2.5 min-w-max origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                {userNavigation.map((item) => (
+                {userNavigation.filter(({ hidden }) => !hidden).map((item) => (
                   <Menu.Item key={item.name}>
                     {({ active }) => (
                       item.onClick
