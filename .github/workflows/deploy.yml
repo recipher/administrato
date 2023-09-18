@@ -80,7 +80,7 @@ jobs:
       # - name: ⚡ Run vitest
       #   run: npm run test -- --coverage
 
-  deploy:
+  deploy: 
     # needs: [lint, typecheck, vitest]
     runs-on: ubuntu-latest
     environment: Production
