@@ -116,9 +116,9 @@ jobs:
       - name: 🚀 Staging Deploy
         if: github.ref == 'refs/heads/dev'
         run: |
+          arc env -e staging --add ARC_APP_SECRET ${{ secrets.ARC_APP_SECRET }}
           arc env -e staging --add NODE_ENV staging
           arc env -e staging --add SESSION_SECRET ${{ secrets.SESSION_SECRET }}
-          arc env -e staging --add ARC_APP_SECRET ${{ secrets.ARC_APP_SECRET }}
           arc env -e staging --add AUTH0_DOMAIN ${{ vars.AUTH0_DOMAIN }}
           arc env -e staging --add AUTH0_CLIENT_ID ${{ secrets.AUTH0_CLIENT_ID }}
           arc env -e staging --add AUTH0_CLIENT_SECRET ${{ secrets.AUTH0_CLIENT_SECRET }}
@@ -137,9 +137,9 @@ jobs:
       - name: 🚀 Production Deploy
         if: github.ref == 'refs/heads/main'
         run: |
+          arc env -e production --add ARC_APP_SECRET ${{ secrets.ARC_APP_SECRET }}
           arc env -e production --add NODE_ENV production
           arc env -e production --add SESSION_SECRET ${{ secrets.SESSION_SECRET }}
-          arc env -e production --add ARC_APP_SECRET ${{ secrets.ARC_APP_SECRET }}
           arc env -e production --add AUTH0_DOMAIN ${{ vars.AUTH0_DOMAIN }}
           arc env -e production --add AUTH0_CLIENT_ID ${{ secrets.AUTH0_CLIENT_ID }}
           arc env -e production --add AUTH0_CLIENT_SECRET ${{ secrets.AUTH0_CLIENT_SECRET }}
