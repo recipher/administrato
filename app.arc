@@ -13,5 +13,3 @@ timeout 20
 
 @static
 
-@tables
-

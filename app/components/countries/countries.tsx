@@ -14,7 +14,7 @@ const LIMIT = 6;
 
 type FlagProps = {
   country: string | undefined;
-  isoCode: string;
+  isoCode: string | null;
   size?: number;
   className?: string;
 };
