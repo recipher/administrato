@@ -3,10 +3,13 @@ import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 import WorkerService, { type Worker } from '~/models/manage/workers.server';
+import CountryService, { type Country } from '~/models/countries.server';
 
 import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';
 import { requireUser } from '~/auth/auth.server';
+
+import { Flags } from '~/components/countries/flag';
 
 import { manage } from '~/auth/permissions';
 import toNumber from '~/helpers/to-number';
@@ -29,7 +32,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   const { workers, metadata: { count }} = 
     await service.searchWorkers({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
 
-  return json({ workers, count, offset, limit, search, clientId, legalEntityId });
+
+  const isoCodes = workers.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
+  const countryService = CountryService();
+  const countries = await countryService.getCountries({ isoCodes });
+  
+  return json({ workers, count, offset, limit, search, clientId, legalEntityId, countries });
 };
 
 const actions = [
@@ -37,7 +45,7 @@ const actions = [
 ];
 
 export default function Providers() {
-  const { workers, count, offset, limit, search } = useLoaderData();
+  const { workers, count, offset, limit, search, countries } = useLoaderData();
   
   return (
     <>
@@ -55,9 +63,16 @@ export default function Providers() {
                   <p className="text-lg font-semibold leading-6 text-gray-900">
                     {worker.firstName} {worker.lastName}
                   </p>
+                  {worker.locality && <Flags localities={[worker.locality]} countries={countries} />}
                 </div>
               </div>
-              <div className="flex shrink-0 items-center gap-x-6">
+              <div className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
+                <p className="text-sm leading-6 text-gray-900">
+                  {worker.client}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-gray-500">
+                  {worker.legalEntity}
+                </p>
               </div>
             </li>
           </Link>

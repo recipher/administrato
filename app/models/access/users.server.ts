@@ -23,15 +23,25 @@ type KeyData = {
   key: Array<number> 
 };
 
+export type BasicUser = {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+  lastLogin: Date;
+  settings: any;
+};
+
 const service = (u?: User) => {
   const organization = u?.organization;
 
-  const toUser = ({ user_id: id, name, picture, email, last_login: lastLogin }: any) => ({
+  const toUser = ({ user_id: id, name, picture, email, last_login: lastLogin, user_metadata: settings }: any) => ({
     id,
     name,
     picture,
     email,
-    lastLogin,
+    lastLogin: new Date(lastLogin),
+    settings,
   });
 
   const camelize = (s: string) => s.replace(/-./g, x=>x[1].toUpperCase());
@@ -120,7 +130,7 @@ const service = (u?: User) => {
         ? keys : 
         [ ...keys, key ];
     }, []);
-  console.log(update)
+  
     const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
     
     return updateMetadata({ id, metadata });

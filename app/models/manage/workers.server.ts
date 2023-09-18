@@ -20,7 +20,7 @@ export type WorkerSecurityKey = {
 
 import { whereExactKeys, extractKeys } from './shared.server';
 
-export type Worker = s.workers.Selectable;
+export type Worker = s.workers.Selectable & { legalEntity: string, client: string };
 
 type SearchOptions = {
   clientId?: number | undefined;
@@ -36,7 +36,7 @@ const generateIdentifier = ({ firstName, lastName, identifier }: s.workers.Inser
         .toLowerCase();
 
 export const whereClientKeys = ({ keys }: KeyQueryOptions) => {
-  let byKeys = db.sql<db.SQL>`${'id'} = 0`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} = 0`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
@@ -48,7 +48,7 @@ export const whereClientKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
-  let byKeys = db.sql<db.SQL>`${'id'} = 0`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} = 0`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
@@ -131,10 +131,10 @@ const service = (u: User) => {
       (LOWER(${'workers'}.${'firstName'}) LIKE LOWER('${db.raw(search)}%') OR
        LOWER(${'workers'}.${'lastName'}) LIKE LOWER('${db.raw(search)}%'))`;
 
-    const client = clientId === undefined ? db.sql<db.SQL>`${'clientId'} IS NOT NULL`
-      : db.sql<db.SQL>`${'clientId'} = ${db.param(clientId)}`;
+    const client = clientId === undefined ? db.sql<db.SQL>`${'workers'}.${'clientId'} IS NOT NULL`
+      : db.sql<db.SQL>`${'workers'}.${'clientId'} = ${db.param(clientId)}`;
     const legalEntity = legalEntityId === undefined ? db.sql<db.SQL>`${'legalEntityId'} IS NOT NULL`
-      : db.sql<db.SQL>`${'legalEntityId'} = ${db.param(legalEntityId)}`;
+      : db.sql<db.SQL>`${'workers'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
 
     return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity}`;    
   };
@@ -143,7 +143,7 @@ const service = (u: User) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     const [ item ] = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT COUNT(${'id'}) AS count FROM ${'workers'}
+      SELECT COUNT(${'workers'}.${'id'}) AS count FROM ${'workers'}
       WHERE 
         ${searchQuery(search)} AND 
         ${whereClientKeys({ keys: clientKeys })} AND 
@@ -159,8 +159,10 @@ const service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const workers = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT * FROM ${'workers'}
+    const workers = await db.sql<s.workers.SQL | s.legalEntities.SQL | s.clients.SQL, s.workers.Selectable[]>`
+      SELECT ${'workers'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'workers'}
+      LEFT JOIN ${'legalEntities'} AS le ON ${'workers'}.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
       WHERE 
         ${searchQuery(search)} AND 
         ${whereClientKeys({ keys: clientKeys })} AND 

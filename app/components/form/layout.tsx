@@ -11,10 +11,10 @@ export const Body = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export const Section = ({ heading, explanation }: { heading: string, explanation: string }) => {
+export const Section = ({ heading, explanation, size = "lg" }: { heading: string, explanation?: string, size?: string }) => {
   return (
     <div>
-      <h2 className="text-lg font-semibold leading-7 text-gray-900">
+      <h2 className={`text-${size} font-semibold leading-7 text-gray-900`}>
         {heading}
       </h2>
       <p className="mt-1 text-sm leading-6 text-gray-600">

@@ -43,9 +43,9 @@ const schema = zfd.formData({
     .string()
     .nonempty("Last name is required"),
   legalEntityId: z
-    .number(),
+    .string(),
   clientId: z
-    .number(),
+    .string(),
   locality: z
     .object({
       id: z.string()
@@ -55,7 +55,7 @@ const schema = zfd.formData({
 const validator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
-    const u = await requireUser(request);
+  const u = await requireUser(request);
   const formData = await request.formData()
 
   const result = await validator.validate(formData);
@@ -66,7 +66,7 @@ export const action = async ({ request }: ActionArgs) => {
   const service = WorkerService(u);
   // @ts-ignore
   const worker = await service.addWorker({ locality: isoCode, identifier: "", ...data });
-    
+  
   return redirect('/manage/workers');
 };
 
@@ -111,7 +111,7 @@ const Add = () => {
               <Input label="Last Name" name="lastName" />
             </Field>
           </Group>
-          <Section heading='Select Legal Entity and Client' explanation='Search by clicking the buttons.' />
+          <Section heading='Select Legal Entity and Client' explanation='Search by clicking the buttons.' size="md" />
           <Group>
             <Field span={3}>
               <Hidden label="Client" name="clientId" value={clientId} />
@@ -128,12 +128,12 @@ const Add = () => {
                 onClick={showLegalEntityModal} />
             </Field>
           </Group>
-          <Section heading='Specify Country' explanation='Enter the country to which the worker is associated.' />
+          <Section heading='Specify Country' explanation='Enter the country to which the worker is associated.' size="md" />
           <Group>
             <Field span={3}>
               <Select 
                 label='Select Country'
-                name="localities" 
+                name="locality" 
                 data={withFlag} />
             </Field>
           </Group>

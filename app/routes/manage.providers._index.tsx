@@ -75,6 +75,9 @@ export default function Providers() {
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-x-6">
+                <span className="text-sm text-gray-800">
+                  {serviceCentres.find((sc: ServiceCentre) => sc.id === provider.serviceCentreId)?.name}
+                </span>
               </div>
             </li>
           </Link>

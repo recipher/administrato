@@ -187,7 +187,7 @@ const Add = () => {
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />
             </Field>
           </Group>
-          <Section heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
+          <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
           <Group>
             <Field>
               <Button title="Select a Country" 
