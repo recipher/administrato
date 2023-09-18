@@ -83,6 +83,7 @@ jobs:
   deploy:
     # needs: [lint, typecheck, vitest]
     runs-on: ubuntu-latest
+    environment: Production
 
     steps:
       - name: ⬇️ Checkout repo
@@ -112,27 +113,6 @@ jobs:
 
       - name: 🛠 Install Arc
         run: npm i -g @architect/architect
-
-      - name: 🚀 Staging Deploy
-        if: github.ref == 'refs/heads/dev'
-        run: |
-          arc env -e staging --add ARC_APP_SECRET ${{ secrets.ARC_APP_SECRET }}
-          arc env -e staging --add NODE_ENV staging
-          arc env -e staging --add SESSION_SECRET ${{ secrets.SESSION_SECRET }}
-          arc env -e staging --add AUTH0_DOMAIN ${{ vars.AUTH0_DOMAIN }}
-          arc env -e staging --add AUTH0_CLIENT_ID ${{ secrets.AUTH0_CLIENT_ID }}
-          arc env -e staging --add AUTH0_CLIENT_SECRET ${{ secrets.AUTH0_CLIENT_SECRET }}
-          arc env -e staging --add AUTH0_CALLBACK_URL ${{ vars.AUTH0_CALLBACK_URL }}
-          arc env -e staging --add AUTH0_MANAGEMENT_CLIENT_ID ${{ secrets.AUTH0_MANAGEMENT_CLIENT_ID }}
-          arc env -e staging --add AUTH0_MANAGEMENT_CLIENT_SECRET ${{ secrets.AUTH0_MANAGEMENT_CLIENT_SECRET }}
-          arc env -e staging --add DOMAIN ${{ vars.DOMAIN }}
-          arc env -e staging --add HOLIDAY_API_KEY ${{ secrets.HOLIDAY_API_KEY }}
-          arc env -e staging --add DATABASE_URL ${{ secrets.DATABASE_URL }}
-          arc deploy --staging --prune
-        env:
-          CI: true
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: 🚀 Production Deploy
         if: github.ref == 'refs/heads/main'
