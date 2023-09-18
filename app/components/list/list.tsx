@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { Link } from '@remix-run/react';
 
 import classnames from '~/helpers/classnames';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 type Props = {
   data?: Array<any>,
@@ -9,6 +10,38 @@ type Props = {
   onClick?: Function;
   renderItem(item: any): ReactNode,
   renderContext(item: any): ReactNode,
+};
+
+export const ListItem = ({ image, data, sub }: { data: any, sub: any, image?: ReactNode }) => {
+  return (
+    <>
+      {image}
+      <div className="min-w-0 flex-auto">
+        <p className="text-md font-semibold leading-6 text-gray-900">
+          {data}
+        </p>
+        <p className="mt-1 flex text-xs leading-5 text-gray-500">
+          {sub}
+        </p>
+      </div>
+    </>
+  );
+};
+
+export const ListContext = ({ data, sub, chevron = true }: { data: any, sub: any, chevron?: boolean }) => {
+  return (
+    <>
+      <div className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
+        <p className="text-sm leading-6 text-gray-900">
+          {data}
+        </p>
+        <p className="mt-1 text-xs leading-5 text-gray-500">
+          {sub}
+        </p>
+      </div>
+      {chevron && <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
+    </>
+  );
 };
 
 export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext }: Props) {

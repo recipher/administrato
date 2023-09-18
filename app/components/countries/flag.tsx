@@ -3,12 +3,12 @@ import { Flag } from './countries';
 import { type Country } from '~/models/countries.server';
 
 type Props = {
-  localities: Array<string> | null;
+  localities: Array<string | null> | null;
   countries?: Array<Country>;
 };
 
 export const Flags = ({ localities, countries }: Props) => {
-  if (localities === null) return;
+  if (localities === null || localities.length === 0 || localities?.at(0) == null) return;
 
   const country = (isoCode: string) => countries?.find((c: Country) => c.isoCode === isoCode);
 
