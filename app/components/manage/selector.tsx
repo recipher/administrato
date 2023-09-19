@@ -135,7 +135,7 @@ export const SelectorModal = forwardRef(({ onSelect, allowChange = true }:
   const [entity, setEntity] = useState('');
 
   const handleSelect = (item: any) => {
-    onSelect(entity, item);
+    onSelect(item, entity);
     modal.current?.hide();
   };
 

@@ -19,7 +19,7 @@ import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
 import { Input, Select, Cancel, Submit, Hidden,
-  Body, Section, Group, Field, Footer } from '~/components/form';
+  Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
 import Button, { ButtonType } from '~/components/button';
 
@@ -89,11 +89,11 @@ const Add = () => {
   const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
 
-  const handleSelectClient = (type: string, client: Client) => { 
+  const handleSelectClient = (client: Client) => { 
     setClient(client.name);
     setClientId(client.id); 
   };
-  const handleSelectLegalEntity = (type: string, legalEntity: LegalEntity) => { 
+  const handleSelectLegalEntity = (legalEntity: LegalEntity) => { 
     setLegalEntity(legalEntity.name);
     setLegalEntityId(legalEntity.id);
   };
@@ -114,21 +114,15 @@ const Add = () => {
           <Section heading='Select Legal Entity and Client' explanation='Search by clicking the buttons.' size="md" />
           <Group>
             <Field span={3}>
-              <Hidden label="Client" name="clientId" value={clientId} />
-              <Button title={client} 
-                icon={IdentificationIcon} 
-                type={ButtonType.Secondary} 
-                onClick={showClientModal} />
+              <Lookup label="Client" name="clientId" onClick={showClientModal} 
+                icon={IdentificationIcon} text={client} value={clientId} />
             </Field>
             <Field span={3}>
-              <Hidden label="Legal Entity" name="legalEntityId" value={legalEntityId} />
-              <Button title={legalEntity} 
-                icon={WalletIcon} 
-                type={ButtonType.Secondary} 
-                onClick={showLegalEntityModal} />
+              <Lookup label="Legal Entity" name="legalEntityId" onClick={showLegalEntityModal} 
+                icon={WalletIcon} text={legalEntity} value={legalEntityId} />
             </Field>
           </Group>
-          <Section heading='Specify Country' explanation='Enter the country to which the worker is associated.' size="md" />
+          <Section heading='Specify Country' explanation='Enter the country where the worker resides.' size="md" />
           <Group>
             <Field span={3}>
               <Select 

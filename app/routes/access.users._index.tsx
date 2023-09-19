@@ -11,9 +11,8 @@ import { requireUser } from '~/auth/auth.server';
 import Header from '~/components/header/basic-with-filter';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
-import Tooltip from '~/components/tooltip';
 import Image from '~/components/image';
-import { List } from '~/components/list';
+import { List, ListContext, ListItem } from '~/components/list';
 import toNumber from '~/helpers/to-number';
 
 const LIMIT = 20;
@@ -32,35 +31,15 @@ export const loader = async ({ request }: LoaderArgs) => {
   return { users, offset, limit: LIMIT, search, organization };
 };
 
-const User = ((user: User) => (
-  <>
-    <Image className="h-12 w-12 rounded-md" src={user.picture} />
-    <div className="min-w-0 flex-auto">
-      <p className="text-md font-semibold leading-6 text-gray-900">
-        {user.name}
-      </p>
-      <p className="mt-1 flex text-xs leading-5 text-gray-500">
-        {user.email}
-      </p>
-    </div>
-  </>
-));
+const User = (user: User) => 
+  <ListItem data={user.name} sub={user.email} image={<Image className="h-12 w-12 rounded-md" src={user.picture} />} />
 
 const Context = (user: User) => {
-  const locale = useLocale();
   const now = new Date();
   const lastLogin = new Date(user.lastLogin);
-  return (
-    <>
-      <div className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
-        <p className="text-sm leading-6 text-gray-900">{user.settings?.role}</p>
-        <p className="mt-1 text-xs leading-5 text-gray-500">
-          Last seen <time dateTime={lastLogin.toISOString()}>{intlFormatDistance(lastLogin, now)}</time>
-        </p>
-      </div>
-      <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-    </>
-  );
+  return <ListContext data={user.settings?.role}
+            sub={<>{'Last seen '}<time dateTime={lastLogin.toISOString()}>
+              {intlFormatDistance(lastLogin, now)}</time></>} />
 };
 
 export default () => {

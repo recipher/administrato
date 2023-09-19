@@ -20,7 +20,7 @@ export const ListItem = ({ image, data, sub }: { data: any, sub: any, image?: Re
         <p className="text-md font-semibold leading-6 text-gray-900">
           {data}
         </p>
-        <p className="mt-1 flex text-xs leading-5 text-gray-500">
+        <p className="mt-1 flex text-sm leading-5 text-gray-500">
           {sub}
         </p>
       </div>

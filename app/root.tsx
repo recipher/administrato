@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { cssBundleHref } from "@remix-run/css-bundle";
-import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import { json, V2_MetaFunction, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import {
   isRouteErrorResponse,
   Links,
@@ -27,6 +27,10 @@ import Toast from "./components/toast";
 import { NotFound, Error } from "~/pages";
 
 import stylesheet from "~/tailwind.css";
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: "Scheduler" }];
+};
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },

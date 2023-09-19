@@ -106,7 +106,7 @@ export default function User() {
 
   return (
     <>
-      <Header title={user.name} subtitle={user.email} icon={user.picture} tabs={tabs} actions={actions} />
+      <Header title={user.name} subtitle={user.email} icon={user.picture} tabs={tabs} actions={actions} allowSort={false} />
       <Outlet />
       <ConfirmModal ref={confirm} onYes={onConfirmImpersonate} />
     </>

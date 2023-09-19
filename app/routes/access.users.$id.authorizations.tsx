@@ -128,7 +128,7 @@ export default function Profile() {
       { method: "post", encType: "application/json" });
   };
 
-  const handleGrant = (type: string, entity: AuthorizableWithType) => {
+  const handleGrant = (entity: AuthorizableWithType, type: string) => {
     submit({ intent: "grant-authorization", 
              user: { id: user.id, name: user.name },
              key: [ entity.keyStart, entity.keyEnd ], 
