@@ -2,13 +2,21 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
+import ClientService, { Client } from '~/models/manage/clients.server';
+import CountryService from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
+import { List, ListItem, ListContext } from '~/components/list';
+import Pagination from '~/components/pagination';
+import { Filter } from '~/components/header/advanced';
+import { Flags } from '~/components/countries/flag';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
+import toNumber from '~/helpers/to-number';
+
+const LIMIT = 6;
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
@@ -16,6 +24,12 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const url = new URL(request.url);
+  const offset = toNumber(url.searchParams.get("offset") as string);
+  const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
+  const search = url.searchParams.get("q");
+  const sort = url.searchParams.get("sort");
+
   const { id } = params;
 
   if (id === undefined) return badRequest('Invalid request');
@@ -27,14 +41,38 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (serviceCentre === undefined) return notFound('Service centre not found');
 
-  return json({ serviceCentre });
+  const clientService = ClientService(u);
+  const { clients, metadata: { count }} = 
+    await clientService.searchClients({ search, serviceCentreId: toNumber(id) }, { offset, limit, sortDirection: sort });
+
+  const isoCodes = clients.map(c => c.localities || []).flat();
+  const countryService = CountryService();
+  const countries = await countryService.getCountries({ isoCodes });
+  
+  return json({ serviceCentre, clients, count, offset, limit, search, sort, countries });
 };
 
 const Clients = () => {
-  const { serviceCentre } = useLoaderData();
+  const { serviceCentre, clients, count, offset, limit, search, sort, countries } = useLoaderData();
 
+  const Context = (worker: Client) =>
+    <ListContext chevron={true} />;
+
+  const Item = (client: Client) =>
+    <ListItem data={client.name} sub={<Flags localities={client.localities} countries={countries} />} />
+  
   return (
-    <div></div>
+    <>
+      <div className="flex">
+        <div className="flex-grow pt-6">
+          <Filter filterTitle='Search clients' filterParam='q' allowSort={true} sort={sort} filter={search} />
+        </div>
+      </div>
+
+      {count <= 0 && <Alert title={`No clients found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
+      <List data={clients} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/clients/${props.item.id}/info`} />
+      <Pagination entity='client' totalItems={count} offset={offset} limit={limit} />
+    </>
   );
 };
 

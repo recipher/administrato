@@ -12,7 +12,7 @@ import Navigation from './navigation';
 export const Logo = () => {
   const { t } = useTranslation();
   return (
-    <Link to="/" className="flex h-16 shrink-0 items-center">
+    <Link to="/start" className="flex h-16 shrink-0 items-center">
       <GlobeAmericasIcon className="h-8 w-auto text-indigo-400" />
       <h2 className="pl-1 font-semibold">{t("app")}</h2>
     </Link>

@@ -60,7 +60,7 @@ export const action = async ({ request }: ActionArgs) => {
   const u = await requireUser(request);
   const formData = await request.formData()
 
-  const result = await validator.validate(formData);console.log(result)
+  const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
   const { data: { locality: { id: isoCode }, ...data } } = result;

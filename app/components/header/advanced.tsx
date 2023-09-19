@@ -75,7 +75,7 @@ export const AdditionalFilter = ({ title, filters, filterParam, selected }: Addi
   };
 
   return (
-    <Menu as="div" className="mr-6 relative inline-block text-left focus:outline-none">
+    <Menu as="div" className="mr-6 mb-2 relative inline-block text-left focus:outline-none">
       <div>
         <Menu.Button className="group inline-flex justify-center text-md text-gray-700 hover:text-gray-900 focus:outline-none">
           {title}
@@ -124,7 +124,7 @@ export const AdditionalFilter = ({ title, filters, filterParam, selected }: Addi
 export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalFilters }: FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined }) => {
   const { t } = useTranslation();
   return (
-    <>
+    <div className="w-[34rem]">
       <label htmlFor="search" className="sr-only">
         {t('search')}
       </label>
@@ -152,7 +152,7 @@ export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, addi
         </div>
         {allowSort && <Sort sort={sort} />}
       </div>
-    </>
+    </div>
   );
 };
 
