@@ -39,6 +39,7 @@ export default function ServiceCentre() {
     { name: 'clients', to: 'clients' },
     { name: 'legal-entities', to: 'legal-entities' },
     { name: 'providers', to: 'providers' },
+    { name: 'locations', to: 'locations' },
     { name: 'holidays', to: 'holidays' },
   ];
 

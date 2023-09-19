@@ -43,9 +43,11 @@ const schema = zfd.formData({
     .string()
     .nonempty("Last name is required"),
   legalEntityId: z
-    .string(),
+    .string()
+    .nonempty("The legal entity is required"),
   clientId: z
-    .string(),
+    .string()
+    .nonempty("The client is required"),
   locality: z
     .object({
       id: z.string()
@@ -58,7 +60,7 @@ export const action = async ({ request }: ActionArgs) => {
   const u = await requireUser(request);
   const formData = await request.formData()
 
-  const result = await validator.validate(formData);
+  const result = await validator.validate(formData);console.log(result)
   if (result.error) return validationError(result.error);
 
   const { data: { locality: { id: isoCode }, ...data } } = result;
@@ -100,7 +102,7 @@ const Add = () => {
               <Input label="Last Name" name="lastName" />
             </Field>
           </Group>
-          <Section heading='' explanation='' size="md" />
+          <Section size="md" />
           <Group>
             <Field span={3}>
               <Lookup label="Client" name="clientId" onClick={showClientModal} 

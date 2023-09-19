@@ -29,7 +29,6 @@ export default function Lookup({ name, label, value, placeholder, ...props }: Pr
       </label>
       <div className="relative mt-2 rounded-md shadow-sm">
         <input
-          disabled={true}
           value={value?.id}
           name={name}
           type="hidden"

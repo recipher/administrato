@@ -36,6 +36,8 @@
   "provider": "Provider",
   "add-provider": "Add Provider",
   "info": "Information",
+  "location": "Location",
+  "locations": "Locations",
   "access": "Access",
   "security": "Access",
   "role": "Role",

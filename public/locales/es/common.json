@@ -36,6 +36,8 @@
   "provider": "Proveedora",
   "add-provider": "Agregar Proveedor",
   "info": "Información",
+  "location": "Ubicación",
+  "locations": "Ubicaciones",
   "access": "Acceso",
   "security": "Acceso",
   "role": "Role",

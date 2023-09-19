@@ -36,6 +36,7 @@ export default function Provider() {
   const tabs = [
     { name: 'info', to: 'info' },
     { name: 'workers', to: 'workers' },
+    { name: 'locations', to: 'locations' },
     { name: 'milestones', to: 'milestones' },
     { name: 'schedules', to: 'schedules' },
     { name: 'holidays', to: 'holidays' },

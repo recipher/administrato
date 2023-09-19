@@ -34,6 +34,7 @@ export default function ServiceCentre() {
 
   const tabs = [
     { name: 'info', to: 'info' },
+    { name: 'location', to: 'location' },
   ];
 
   return (

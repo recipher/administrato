@@ -181,10 +181,12 @@ const service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
-    const [ worker ] = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT * FROM ${'workers'}
+    const [ worker ] = await db.sql<s.workers.SQL | s.legalEntities.SQL | s.clients.SQL, s.workers.Selectable[]>`
+      SELECT ${'workers'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'workers'}
+      LEFT JOIN ${'legalEntities'} AS le ON ${'workers'}.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
       WHERE 
-        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())}) AND
+        (${'workers'}.${'id'} = ${db.param(numericId)} OR LOWER(${'workers'}.${'identifier'}) = ${db.param(id.toString().toLowerCase())}) AND
         ${whereClientKeys({ keys: clientKeys })} AND 
         ${whereLegalEntityKeys({ keys: legalEntityKeys })} 
       `.run(pool);

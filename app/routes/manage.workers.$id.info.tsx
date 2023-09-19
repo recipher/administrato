@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import WorkerService from '~/models/manage/workers.server';
@@ -41,11 +41,21 @@ const Info = () => {
       <Layout>
         <Heading heading={t('info')} explanation={`Manage ${name}'s information.`} />
         <Section>
-          <Field title="Worker Name">
+        <Field title="Worker Name">
             <p className="text-gray-900">{name}</p>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
+          </Field>
+          <Field title="Client">
+            <p className="text-gray-900">
+            <Link to={`/manage/clients/${worker.clientId}/info`}>{worker.client}</Link>
+            </p>
+          </Field>
+          <Field title="Legal Entity">
+            <p className="text-gray-900">
+              <Link to={`/manage/legal-entities/${worker.legalEntityId}/info`}>{worker.legalEntity}</Link>
+            </p>
           </Field>
         </Section>
       </Layout>

@@ -30,13 +30,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ client });
 };
 
-
 export default function Client() {
   const { client } = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
     { name: 'workers', to: 'workers' },
+    { name: 'locations', to: 'locations' },
     { name: 'holidays', to: 'holidays' },
   ];
 
