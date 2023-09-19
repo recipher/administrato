@@ -50,11 +50,6 @@ export async function action({ request }: ActionArgs) {
   if (intent === "unimpersonate") {
     const { user: { id, name }} = props;
 
-    // const session = await getSession(request.headers.get("Cookie"));
-    // const profile = await service.getTokenizedUser({ id });
-    // session.set("user", mapProfileToUser(id, profile));
-    // headers.append("Set-Cookie", await storage.commitSession(session));
-
     await refreshUser({ id, request, headers });
 
     message = `Stop Impersonation:You are now logged in as ${name}.`;

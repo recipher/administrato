@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import { useField } from "remix-validated-form";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
+import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
 
 type Props = {
@@ -48,9 +49,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />
         </div>}
       </div>
-      {error && <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>
-        {error}
-      </p>}
+      <ErrorMessage name={name} error={error} />
     </div>
   );
 };

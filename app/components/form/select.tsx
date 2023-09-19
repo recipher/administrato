@@ -1,9 +1,10 @@
 import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+import { useField } from 'remix-validated-form';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
+import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
-import { useField } from 'remix-validated-form';
 
 type ItemProps = {
   id: string;
@@ -104,9 +105,7 @@ export default function Select({ name, label, data = [], defaultValue = null }: 
           </>
         )}
       </Listbox>
-      {error && <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>
-        {error}
-      </p>}
+      <ErrorMessage name={name} error={error} />
     </>
   )
 }

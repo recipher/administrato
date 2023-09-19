@@ -73,11 +73,9 @@ export const action = async ({ request }: ActionArgs) => {
 const Add = () => {
   const { countries } = useLoaderData();
 
-  const [ client, setClient ] = useState("Select a Client");
-  const [ clientId, setClientId ] = useState<number>();
-  const [ legalEntity, setLegalEntity ] = useState("Select a Legal Entity");
-  const [ legalEntityId, setLegalEntityId ] = useState<number>();
-
+  const [ client, setClient ] = useState<Client>();
+  const [ legalEntity, setLegalEntity ] = useState<LegalEntity>();
+  
   const clientModal = useRef<RefSelectorModal>(null);
   const legalEntityModal = useRef<RefSelectorModal>(null);
 
@@ -88,15 +86,6 @@ const Add = () => {
 
   const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
-
-  const handleSelectClient = (client: Client) => { 
-    setClient(client.name);
-    setClientId(client.id); 
-  };
-  const handleSelectLegalEntity = (legalEntity: LegalEntity) => { 
-    setLegalEntity(legalEntity.name);
-    setLegalEntityId(legalEntity.id);
-  };
 
   return (
     <>
@@ -111,15 +100,15 @@ const Add = () => {
               <Input label="Last Name" name="lastName" />
             </Field>
           </Group>
-          <Section heading='Select Legal Entity and Client' explanation='Search by clicking the buttons.' size="md" />
+          <Section heading='' explanation='' size="md" />
           <Group>
             <Field span={3}>
               <Lookup label="Client" name="clientId" onClick={showClientModal} 
-                icon={IdentificationIcon} text={client} value={clientId} />
+                icon={IdentificationIcon} value={client} placeholder="Select a Client" />
             </Field>
             <Field span={3}>
               <Lookup label="Legal Entity" name="legalEntityId" onClick={showLegalEntityModal} 
-                icon={WalletIcon} text={legalEntity} value={legalEntityId} />
+                icon={WalletIcon} value={legalEntity} placeholder="Select a Legal Entity" />
             </Field>
           </Group>
           <Section heading='Specify Country' explanation='Enter the country where the worker resides.' size="md" />
@@ -137,8 +126,8 @@ const Add = () => {
           <Submit text="Save" submitting="Saving..." permission={manage.create.worker} />
         </Footer>
       </Form>
-      <SelectorModal ref={clientModal} onSelect={handleSelectClient} allowChange={false} />
-      <SelectorModal ref={legalEntityModal} onSelect={handleSelectLegalEntity} allowChange={false} />
+      <SelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
+      <SelectorModal ref={legalEntityModal} onSelect={setLegalEntity} allowChange={false} />
     </>
   );
 }

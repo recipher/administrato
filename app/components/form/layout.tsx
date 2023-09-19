@@ -11,7 +11,7 @@ export const Body = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export const Section = ({ heading, explanation, size = "lg" }: { heading: string, explanation?: string, size?: string }) => {
+export const Section = ({ heading, explanation, size = "lg" }: { heading?: string, explanation?: string, size?: string }) => {
   return (
     <div>
       <h2 className={`text-${size} font-semibold leading-7 text-gray-900`}>

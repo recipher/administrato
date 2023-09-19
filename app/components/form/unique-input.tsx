@@ -5,6 +5,7 @@ import { useDebounce } from "use-debounce";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
+import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
 
 type Props = {
@@ -79,12 +80,8 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           <CheckCircleIcon className="h-5 w-5 text-green-500" aria-hidden="true" />
         </div>}
       </div>
-      {error && <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>
-        {error}
-      </p>}
-      {exists && <p className="mt-2 text-sm text-red-600" id={`${name}-exists`}>
-        {exists}
-      </p>}
+      <ErrorMessage name={name} error={error} />
+      <ErrorMessage name={name} error={exists} type="exists" />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'remix-validated-form';
 import { useLocale } from 'remix-i18next';
-import { format, intlFormat, addMonths, addDays, lastDayOfMonth, 
+import { format, addMonths, addDays, lastDayOfMonth, 
          isSameDay, isSameMonth, isSameYear, isToday } from 'date-fns';
 
 import {
@@ -11,6 +11,7 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/20/solid'
 
+import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
 
 type CalendarProps = {
@@ -174,9 +175,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
           </div>
         </div>
       </div>
-      {error && <p className="mt-2 text-sm text-red-600" id={`${name}-error`}>
-        {error}
-      </p>}
+      <ErrorMessage name={name} error={error} />
     </>
   );
 }

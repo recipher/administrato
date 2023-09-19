@@ -10,7 +10,7 @@ type Props = {
 export const Flags = ({ localities, countries }: Props) => {
   if (localities === null || localities.length === 0 || localities?.at(0) == null) return;
 
-  const country = (isoCode: string) => countries?.find((c: Country) => c.isoCode === isoCode);
+  const country = (isoCode: string | null) => countries?.find((c: Country) => c.isoCode === isoCode);
 
   return (
     <p className="mt-1 flex text-xs leading-5 text-gray-500">
