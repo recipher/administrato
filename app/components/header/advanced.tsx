@@ -121,10 +121,11 @@ export const AdditionalFilter = ({ title, filters, filterParam, selected }: Addi
   );
 }
 
-export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalFilters }: FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined }) => {
+export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, additionalFilters, className = "" }: 
+  FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined, className?: string }) => {
   const { t } = useTranslation();
   return (
-    <div className="w-[34rem]">
+    <div className={classnames(className, "w-[34rem]")}>
       <label htmlFor="search" className="sr-only">
         {t('search')}
       </label>

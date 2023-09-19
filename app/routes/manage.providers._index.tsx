@@ -14,6 +14,7 @@ import { manage } from '~/auth/permissions';
 import { Flags } from '~/components/countries/flag';
 import toNumber from '~/helpers/to-number';
 import Pagination from '~/components/pagination';
+import { List, ListItem, ListContext } from '~/components/list';
 
 const LIMIT = 6;
 
@@ -54,6 +55,12 @@ export default function Providers() {
     selected: serviceCentreId,
     filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
   };
+
+  const Context = (provider: Provider) =>
+    <ListContext data={serviceCentres.find((sc: ServiceCentre) => sc.id === provider.serviceCentreId)?.name} chevron={false} />;
+
+  const Item = (provider: Provider) =>
+    <ListItem data={provider.name} sub={<Flags localities={provider.localities} countries={countries} />} />
   
   return (
     <>
@@ -62,27 +69,7 @@ export default function Providers() {
 
       {count <= 0 && <Alert title={`No providers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
-      <ul className="divide-y divide-gray-100">
-        {providers.map((provider: Provider) => (
-          <Link key={provider.id} to={`${provider.id}/info`}>
-            <li className="flex justify-between gap-x-6 py-5">
-              <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto">
-                  <p className="text-lg font-semibold leading-6 text-gray-900">
-                    {provider.name}
-                  </p>
-                  <Flags localities={provider.localities} countries={countries} />
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-x-6">
-                <span className="text-sm text-gray-800">
-                  {serviceCentres.find((sc: ServiceCentre) => sc.id === provider.serviceCentreId)?.name}
-                </span>
-              </div>
-            </li>
-          </Link>
-        ))}
-      </ul>
+      <List data={providers} renderItem={Item} renderContext={Context} />
       <Pagination entity='provider' totalItems={count} offset={offset} limit={limit} />
     </>
   );

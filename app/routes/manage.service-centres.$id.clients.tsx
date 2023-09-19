@@ -63,11 +63,7 @@ const Clients = () => {
   
   return (
     <>
-      <div className="flex">
-        <div className="flex-grow pt-6">
-          <Filter filterTitle='Search clients' filterParam='q' allowSort={true} sort={sort} filter={search} />
-        </div>
-      </div>
+      <Filter className="pt-6" filterTitle='Search clients' filterParam='q' allowSort={true} sort={sort} filter={search} />
 
       {count <= 0 && <Alert title={`No clients found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
       <List data={clients} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/clients/${props.item.id}/info`} />

@@ -48,14 +48,10 @@ const Info = () => {
             </button>
           </Field>
           <Field title="Client">
-            <p className="text-gray-900">
-            <Link to={`/manage/clients/${worker.clientId}/info`}>{worker.client}</Link>
-            </p>
+            <Link className="text-indigo-900" to={`/manage/clients/${worker.clientId}/info`}>{worker.client}</Link>
           </Field>
           <Field title="Legal Entity">
-            <p className="text-gray-900">
-              <Link to={`/manage/legal-entities/${worker.legalEntityId}/info`}>{worker.legalEntity}</Link>
-            </p>
+            <Link className="text-indigo-900" to={`/manage/legal-entities/${worker.legalEntityId}/info`}>{worker.legalEntity}</Link>
           </Field>
         </Section>
       </Layout>

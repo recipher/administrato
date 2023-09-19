@@ -66,7 +66,7 @@ const service = (u: User) => {
   const listClients = async (query: KeyQueryOptions = { isArchived: false }) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "client"); 
     return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT * FROM ${'clients'}
+      SELECT main.* FROM ${'clients'} AS main
       WHERE ${whereKeys({ keys, ...query })}
       `.run(pool);
   };
@@ -74,17 +74,17 @@ const service = (u: User) => {
   const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
       AND 
-        LOWER(${'clients'}.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+        LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
     return serviceCentreId === undefined ? name
-      : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countClients = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "client");
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT COUNT(${'id'}) AS count FROM ${'clients'}
-      WHERE ${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
+      SELECT COUNT(main.${'id'}) AS count FROM ${'clients'} AS main
+      WHERE main.${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
     `.run(pool);
 
     const { count } = item as unknown as Count;
@@ -96,9 +96,9 @@ const service = (u: User) => {
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT * FROM ${'clients'}
-      WHERE ${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
-      ORDER BY ${'name'} ${db.raw(sortDirection)}
+      SELECT main.* FROM ${'clients'} AS main
+      WHERE main.${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
+      ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
@@ -113,9 +113,9 @@ const service = (u: User) => {
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT * FROM ${'clients'}
+      SELECT main.* FROM ${'clients'} AS main
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
-        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+        (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);
 
     return client;
@@ -125,8 +125,8 @@ const service = (u: User) => {
     const keys = u.keys.client;
 
     const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT * FROM ${'clients'}
-      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
+      SELECT main.* FROM ${'clients'} AS main
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(main.${'name'}) = ${db.param(name.toLowerCase())}
       `.run(pool);
 
     return client;
@@ -136,7 +136,7 @@ const service = (u: User) => {
   const listClientsForKeys = async ({ keys }: KeyQueryOptions) => {
     if (keys === undefined) return [];
     return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT * FROM ${'clients'}
+      SELECT main.* FROM ${'clients'} AS main
       WHERE ${whereExactKeys({ keys })}
       `.run(pool);
   };

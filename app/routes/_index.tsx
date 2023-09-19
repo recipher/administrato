@@ -1,20 +1,8 @@
-import type { V2_MetaFunction } from "@remix-run/node";
-import { GlobeAmericasIcon } from "@heroicons/react/24/outline";
-import { useUser } from "~/hooks";
+import type { LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
-export const meta: V2_MetaFunction = () => [{ title: "Scheduler" }];
-
-import { Breadcrumb } from "~/layout/breadcrumbs";
-import { useTranslation } from "react-i18next";
-
-export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to="/" name="home" current={current} Icon={GlobeAmericasIcon} />
+export const loader: LoaderFunction = async ({ request }) => {
+  return redirect("/start");
 };
 
-export default function Index() {
-  const user = useUser();
-  const { t } = useTranslation();
-
-  return <div>{t("welcome")} {user.name}</div>;
-}
+export default () => null;

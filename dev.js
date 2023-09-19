@@ -5,3 +5,4 @@ process.env.ARC_TABLES_PORT = process.env.ARC_TABLES_PORT ?? 5555;
 const arc = require("@architect/architect");
 
 void arc();
+

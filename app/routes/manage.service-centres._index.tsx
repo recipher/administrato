@@ -10,6 +10,7 @@ import Alert, { Level } from '~/components/alert';
 import { requireUser } from '~/auth/auth.server';
 
 import { Flags } from '~/components/countries/flag';
+import { List, ListItem, ListContext } from '~/components/list';
 
 import { manage } from '~/auth/permissions';
 
@@ -36,30 +37,18 @@ const actions = [
 export default function ServiceCentres() {
   const { serviceCentres, countries } = useLoaderData();
 
+  const Context = (serviceCentre: ServiceCentre) =>
+    <ListContext chevron={true} />;
+
+  const Item = (serviceCentre: ServiceCentre) =>
+    <ListItem data={serviceCentre.name} sub={<Flags localities={serviceCentre.localities} countries={countries} />} />
+
   return (
     <>
       <Header title="Service Centres" actions={actions} />
 
       {serviceCentres.length === 0 && <Alert title="No service centres found" level={Level.Warning} />}
-      
-      <ul className="divide-y divide-gray-100">
-        {serviceCentres.map((serviceCentre: ServiceCentre) => (
-          <Link key={serviceCentre.id} to={`${serviceCentre.id}/info`}>
-            <li className="flex justify-between gap-x-6 py-5">
-              <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto">
-                  <p className="text-lg font-semibold leading-6 text-gray-900">
-                    {serviceCentre.name}
-                  </p>
-                  <Flags localities={serviceCentre.localities} countries={countries} />
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-x-6">
-              </div>
-            </li>
-          </Link>
-        ))}
-      </ul>
+      <List data={serviceCentres} renderItem={Item} renderContext={Context} />
     </>
   );
 }

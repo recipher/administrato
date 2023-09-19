@@ -12,7 +12,7 @@ import { type User } from '../access/users.server';
 
 import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
 
-export type LegalEntity = s.legalEntities.Selectable;
+export type LegalEntity = s.legalEntities.Selectable & { provider: string };
 
 type SearchOptions = {
   serviceCentreId?: number | undefined;
@@ -59,24 +59,27 @@ const service = (u: User) => {
 
   const listLegalEntities = async (query: KeyQueryOptions = { isArchived: false }) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "legalEntity"); 
-    return await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
-      SELECT * FROM ${'legalEntities'}
+    
+    return await db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider FROM ${'legalEntities'} AS main
+      LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       WHERE ${whereKeys({ keys, ...query })}
       `.run(pool);
   };
 
   const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
-    const name = search == null ? db.sql<db.SQL>`${'name'} IS NOT NULL` : db.sql<db.SQL>`
-      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+    const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
+      LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
     return serviceCentreId === undefined ? name
-      : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countLegalEntities = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
+    
     const [ item ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
-      SELECT COUNT(${'id'}) AS count FROM ${'legalEntities'}
+      SELECT COUNT(main.${'id'}) AS count FROM ${'legalEntities'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
     `.run(pool);
 
@@ -88,10 +91,11 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const legalEntities = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
-      SELECT * FROM ${'legalEntities'}
-      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
-      ORDER BY ${'legalEntities'}.${'name'} ${db.raw(sortDirection)}
+    const legalEntities = await db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider FROM ${'legalEntities'} AS main
+      LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
+      ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
@@ -104,10 +108,11 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
-    const [ client ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
-      SELECT * FROM ${'legalEntities'}
+    const [ client ] = await db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider FROM ${'legalEntities'} AS main
+      LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
-        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+      (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);
 
     return client;
@@ -117,8 +122,8 @@ const service = (u: User) => {
     const keys = u.keys.legalEntity;
 
     const [ legalEntity ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
-      SELECT * FROM ${'legalEntities'}
-      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
+      SELECT main.* FROM ${'legalEntities'} AS main
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(main.${'name'}) = ${db.param(name.toLowerCase())}
       `.run(pool);
 
     return legalEntity;
@@ -128,7 +133,7 @@ const service = (u: User) => {
   const listLegalEntitiesForKeys = async ({ keys }: KeyQueryOptions) => {
     if (keys === undefined) return [];
     return await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
-      SELECT * FROM ${'legalEntities'}
+      SELECT main.* FROM ${'legalEntities'} AS main
       WHERE ${whereExactKeys({ keys })}
       `.run(pool);
   };

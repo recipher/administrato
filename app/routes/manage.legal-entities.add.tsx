@@ -6,23 +6,26 @@ import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { IdentificationIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
+import { type Provider } from '~/models/manage/providers.server';
 
-import { Input, UniqueInput, Select, Cancel, Submit, Checkbox,
-         Body, Section, Group, Field, Footer } from '~/components/form';
+import { requireUser } from '~/auth/auth.server';
+
+import { UniqueInput, Select, Cancel, Submit, Checkbox,
+         Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
 import { CountriesModal } from '~/components/countries/countries';
+import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
-import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -69,8 +72,11 @@ const schema =
         id: z
           .string()
           .transform(id => parseInt(id))
-      }).required()
-  });
+      }).required(),
+    providerId: z
+      .string()
+      .nonempty("The provider is required"),
+    });
 
 export const clientValidator = withZod(schema);
 
@@ -123,7 +129,8 @@ export const action = async ({ request }: ActionArgs) => {
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = LegalEntityService(u);
-  const provider = await service.addLegalEntity({ localities, serviceCentreId, identifier, ...data });
+  // @ts-ignore
+  const legalEntity = await service.addLegalEntity({ localities, serviceCentreId, identifier, ...data });
   
   return redirect('/manage/legal-entities');
 };
@@ -132,12 +139,17 @@ const Add = () => {
   const { serviceCentres, serviceCentre } = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
+  const [ provider, setProvider ] = useState<Provider>();
 
   const data = useActionData();
   const submit = useSubmit();
 
   const context = useFormContext("add-legal-entity");
   const modal = useRef<RefModal>(null);
+
+  const providerModal = useRef<RefSelectorModal>(null);
+
+  const showProviderModal = () => providerModal.current?.show('provider');
 
   const findRegions = (code: string) => 
     data?.regions?.filter((r: Country) => r.parent === code)
@@ -187,7 +199,14 @@ const Add = () => {
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />
             </Field>
           </Group>
-          <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
+          <Section size="md" />
+          <Group>
+            <Field span={3}>
+              <Lookup label="Provider" name="providerId" onClick={showProviderModal} 
+                icon={IdentificationIcon} value={provider} placeholder="Select a Provider" />
+            </Field>
+          </Group>
+           <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
           <Group>
             <Field>
               <Button title="Select a Country" 
@@ -221,6 +240,7 @@ const Add = () => {
         </Footer>
       </Form>
       <CountriesModal modal={modal} onSelect={selectCountry} />
+      <SelectorModal ref={providerModal} onSelect={setProvider} allowChange={false} />
     </>
   );
 }

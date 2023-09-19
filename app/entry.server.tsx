@@ -11,8 +11,6 @@ import Backend from "i18next-fs-backend";
 import i18n from "./i18n"; // your i18n configuration file
 import { resolve } from "node:path";
 
-import * as fs from 'fs';
-
 const ABORT_DELAY = 5000;
 
 export default async function handleRequest(

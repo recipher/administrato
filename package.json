@@ -9,7 +9,8 @@
     "dev:remix": "remix watch",
     "format": "prettier --write .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
-    "test": "playwright test",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "npx playwright install chromium --with-deps",
     "typecheck": "tsc",
     "validate": "run-p \"test -- --run\" lint typecheck test",
     "zapatos": "node -r dotenv/config zapatos.js"
@@ -99,6 +100,8 @@
     "vitest": "^0.32.2"
   },
   "engines": {
-    "node": ">=14"
-  }
+    "node": ">=18"
+  },
+  "module": "es2022",
+  "target": "es2017"
 }

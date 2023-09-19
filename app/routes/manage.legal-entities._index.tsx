@@ -12,8 +12,9 @@ import { requireUser } from '~/auth/auth.server';
 
 import { manage } from '~/auth/permissions';
 import { Flags } from '~/components/countries/flag';
-import toNumber from '~/helpers/to-number';
 import Pagination from '~/components/pagination';
+import { List, ListItem, ListContext } from '~/components/list';
+import toNumber from '~/helpers/to-number';
 
 const LIMIT = 6;
 
@@ -55,34 +56,19 @@ export default function LegalEntities() {
     filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
   };
   
+  const Context = (legalEntity: LegalEntity) =>
+    <ListContext data={serviceCentres.find((sc: ServiceCentre) => sc.id === legalEntity.serviceCentreId)?.name} chevron={false} />;
+
+  const Item = (legalEntity: LegalEntity) =>
+    <ListItem data={legalEntity.name} sub={<Flags localities={legalEntity.localities} countries={countries} />} />
+
   return (
     <>
       <Header title="legal-entities" actions={actions} additionalFilters={filter}
         filterTitle='Search legal entities' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No legal entities found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
-
-      <ul className="divide-y divide-gray-100">
-        {legalEntities.map((legalEntity: LegalEntity) => (
-          <Link key={legalEntity.id} to={`${legalEntity.id}/info`}>
-            <li className="flex justify-between gap-x-6 py-5">
-              <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto">
-                  <p className="text-lg font-semibold leading-6 text-gray-900">
-                    {legalEntity.name}
-                  </p>
-                  <Flags localities={legalEntity.localities} countries={countries} />
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-x-6">
-                <span className="text-sm text-gray-800">
-                  {serviceCentres.find((sc: ServiceCentre) => sc.id === legalEntity.serviceCentreId)?.name}
-                </span>
-              </div>
-            </li>
-          </Link>
-        ))}
-      </ul>
+      <List data={legalEntities} renderItem={Item} renderContext={Context} />
       <Pagination entity='legal-entity' totalItems={count} offset={offset} limit={limit} />
     </>
   );

@@ -63,11 +63,7 @@ const Providers = () => {
   
   return (
     <>
-      <div className="flex">
-        <div className="flex-grow pt-6">
-          <Filter filterTitle='Search legal entities' filterParam='q' allowSort={true} sort={sort} filter={search} />
-        </div>
-      </div>
+      <Filter className="pt-6" filterTitle='Search legal entities' filterParam='q' allowSort={true} sort={sort} filter={search} />
 
       {count <= 0 && <Alert title={`No providers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
       <List data={providers} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/providers/${props.item.id}/info`} />

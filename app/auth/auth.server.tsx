@@ -196,7 +196,7 @@ export const requireUser = async (request: Request) => {
 };
 
 export const authenticate = async (strategy: string, request: Request) => {
-  const user = await auth.authenticate("auth0", request);
+  const user = await auth.authenticate(strategy, request);
   return fromCookie(user);
 };
 

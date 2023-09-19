@@ -60,23 +60,23 @@ const service = (u: User) => {
   const listProviders = async (query: KeyQueryOptions = { isArchived: false }) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "provider"); 
     return await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT * FROM ${'providers'}
+      SELECT main.* FROM ${'providers'} AS main
       WHERE ${whereKeys({ keys, ...query })}
       `.run(pool);
   };
 
   const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
-    const name = search == null ? db.sql<db.SQL>`${'name'} IS NOT NULL` : db.sql<db.SQL>`
-      LOWER(${'providers'}.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+    const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
+      LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
     return serviceCentreId === undefined ? name
-      : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countProviders = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
     const [ item ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT COUNT(${'id'}) AS count FROM ${'providers'}
+      SELECT COUNT(main.${'id'}) AS count FROM ${'providers'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
     `.run(pool);
 
@@ -89,9 +89,9 @@ const service = (u: User) => {
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const providers = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT * FROM ${'providers'}
+      SELECT main.* FROM ${'providers'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
-      ORDER BY ${'providers'}.${'name'} ${db.raw(sortDirection)}
+      ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
@@ -105,9 +105,9 @@ const service = (u: User) => {
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ provider ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT * FROM ${'providers'}
+      SELECT main.* FROM ${'providers'} AS main
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
-        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+        (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);
 
     return provider;
@@ -117,8 +117,8 @@ const service = (u: User) => {
     const keys = u.keys.provider;
 
     const [ provider ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT * FROM ${'providers'}
-      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
+      SELECT main.* FROM ${'providers'} AS main
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(main.${'name'}) = ${db.param(name.toLowerCase())}
       `.run(pool);
 
     return provider;
@@ -128,7 +128,7 @@ const service = (u: User) => {
   const listProvidersForKeys = async ({ keys }: KeyQueryOptions) => {
     if (keys === undefined) return [];
     return await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT * FROM ${'providers'}
+      SELECT main.* FROM ${'providers'} AS main
       WHERE ${whereExactKeys({ keys })}
       `.run(pool);
   };

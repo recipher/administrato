@@ -45,14 +45,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export default function Holidays() {
   const submit = useSubmit();
   const confirm = useRef<RefConfirmModal>(null);
-  const { country, year } = useLoaderData();
+  const { country, parent, year } = useLoaderData();
 
   const sync = () =>
     confirm.current?.show("Synchronize Holidays?", "Yes, Synchronize", "Cancel", `Are you sure you want to synchronize holidays for ${country.name}, ${year}?`);
   
   const onConfirmSync = () => submit({ intent: "sync", country, year }, { action: `/holidays/${country.isoCode}/holidays?year=${year}`, method: "post", encType: "application/json" });
 
-  const icon = <Flag size={12} country={country.name} isoCode={country.isoCode} />;
+  const icon = <Flag size={12} country={(parent || country).name} isoCode={(parent || country).isoCode} />;
 
   const tabs = [
     { name: 'holidays', to: 'holidays' },
@@ -65,9 +65,11 @@ export default function Holidays() {
     { title: "add-holiday", to: "add", icon: PlusIcon },
   ];
 
+  const subtitle = parent ? `${parent.name} ${country.isoCode}` : country.isoCode;
+
   return (
     <>
-      <Header title={country.name} subtitle={country.isoCode} actions={actions} tabs={tabs} icon={icon} />
+      <Header title={country.name} subtitle={subtitle} actions={actions} tabs={tabs} icon={icon} />
       <Outlet />
       <ConfirmModal ref={confirm} onYes={onConfirmSync} />
     </>

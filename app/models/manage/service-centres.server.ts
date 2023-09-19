@@ -75,7 +75,7 @@ const service = (u: User) => {
   const listServiceCentres = async (query: KeyQueryOptions & AllowFullAccess = { isArchived: false, allowFullAccess: false }) => {
     const keys = query.keys || u.keys.serviceCentre;
     const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT * FROM ${'serviceCentres'}
+      SELECT main.* FROM ${'serviceCentres'} AS main
       WHERE ${whereKeys({ keys, ...query })}
       `.run(pool);
 
@@ -87,9 +87,9 @@ const service = (u: User) => {
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT * FROM ${'serviceCentres'}
+      SELECT main.* FROM ${'serviceCentres'} AS main
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
-        (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+        (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);
 
     return serviceCentre;
@@ -99,8 +99,8 @@ const service = (u: User) => {
     const keys = u.keys.serviceCentre;
 
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT * FROM ${'serviceCentres'}
-      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(${'name'}) = ${db.param(name.toLowerCase())}
+      SELECT main.* FROM ${'serviceCentres'} AS main
+      WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(main.${'name'}) = ${db.param(name.toLowerCase())}
       `.run(pool);
 
     return serviceCentre;
@@ -110,7 +110,7 @@ const service = (u: User) => {
   const listServiceCentresForKeys = async ({ keys }: KeyQueryOptions) => {
     if (keys === undefined) return [];
     const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT * FROM ${'serviceCentres'}
+      SELECT main.* FROM ${'serviceCentres'} AS main
       WHERE ${whereExactKeys({ keys })}
       `.run(pool);
 

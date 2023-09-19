@@ -14,6 +14,7 @@ import { manage } from '~/auth/permissions';
 import { Flags } from '~/components/countries/flag';
 import toNumber from '~/helpers/to-number';
 import Pagination from '~/components/pagination';
+import { List, ListItem, ListContext } from '~/components/list';
 
 const LIMIT = 6;
 
@@ -54,7 +55,13 @@ export default function Clients() {
     selected: serviceCentreId,
     filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
   };
-  
+
+  const Context = (client: Client) =>
+    <ListContext data={serviceCentres.find((sc: ServiceCentre) => sc.id === client.serviceCentreId)?.name} chevron={false} />;
+
+  const Item = (client: Client) =>
+    <ListItem data={client.name} sub={<Flags localities={client.localities} countries={countries} />} />
+
   return (
     <>
       <Header title="clients" actions={actions} additionalFilters={filter}
@@ -62,27 +69,7 @@ export default function Clients() {
 
       {count <= 0 && <Alert title={`No clients found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
-      <ul className="divide-y divide-gray-100">
-        {clients.map((client: Client) => (
-          <Link key={client.id} to={`${client.id}/info`}>
-            <li className="flex justify-between gap-x-6 py-5">
-              <div className="flex min-w-0 gap-x-4">
-                <div className="min-w-0 flex-auto">
-                  <p className="text-lg font-semibold leading-6 text-gray-900">
-                    {client.name}
-                  </p>
-                  <Flags localities={client.localities} countries={countries} />
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-x-6">
-                <span className="text-sm text-gray-800">
-                  {serviceCentres.find((sc: ServiceCentre) => sc.id === client.serviceCentreId)?.name}
-                </span>
-              </div>
-            </li>
-          </Link>
-        ))}
-      </ul>
+      <List data={clients} renderItem={Item} renderContext={Context} />
       <Pagination entity='client' totalItems={count} offset={offset} limit={limit} />
     </>
   );

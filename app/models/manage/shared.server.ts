@@ -5,28 +5,28 @@ import { type KeyQueryOptions } from '../types';
 import { type User } from '../access/users.server';
 
 export const whereKeys = ({ keys, isArchived = false, bypassKeyCheck = false }: KeyQueryOptions) => {
-  const byIsArchived = db.sql<db.SQL>`${'isArchived'} = ${db.param(isArchived)}`;
+  const byIsArchived = db.sql<db.SQL>`main.${'isArchived'} = ${db.param(isArchived)}`;
 
   if (bypassKeyCheck === true) return byIsArchived;
 
-  let byKeys = db.sql<db.SQL>`${'id'} = 0`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`main.${'id'} = 0`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
       const { keyStart, keyEnd } = keys[i];
-      byKeys = db.sql<db.SQL>`${byKeys} OR (${db.param(keyStart)} <= ${'keyStart'} AND ${db.param(keyEnd)} >= ${'keyEnd'})`;
+      byKeys = db.sql<db.SQL>`${byKeys} OR (${db.param(keyStart)} <= main.${'keyStart'} AND ${db.param(keyEnd)} >= main.${'keyEnd'})`;
     };
   }
   return db.sql<db.SQL>`(${byIsArchived} AND (${byKeys}))`;
 };
 
 export const whereExactKeys = ({ keys }: KeyQueryOptions) => {
-  let query = db.sql<db.SQL>`${'id'} = 0`;
+  let query = db.sql<db.SQL>`main.${'id'} = 0`;
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
       const { keyStart, keyEnd } = keys[i];
-      query = db.sql<db.SQL>`${query} OR (${db.param(keyStart)} = ${'keyStart'} AND ${db.param(keyEnd)} = ${'keyEnd'})`;
+      query = db.sql<db.SQL>`${query} OR (${db.param(keyStart)} = main.${'keyStart'} AND ${db.param(keyEnd)} = main.${'keyEnd'})`;
     };
   }
 
