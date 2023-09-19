@@ -1,11 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -31,11 +31,25 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Info = () => {
+  const { t } = useTranslation();
   const { legalEntity } = useLoaderData();
 
   return (
-    <div></div>
+    <>
+      <Layout>
+        <Heading heading={t('info')} explanation={`Manage ${legalEntity.name}'s information.`} />
+        <Section>
+          <Field title="Legal Entity Name">
+            <p className="text-gray-900">{legalEntity.name}</p>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>
+        </Section>
+      </Layout>
+    </>
   );
 };
+
 
 export default Info;

@@ -15,6 +15,7 @@ import { requireUser } from '~/auth/auth.server';
 import { Toggle } from '~/components/form';
 import { Level } from '~/components/toast';
 import Spinner from '~/components/spinner';
+import { Layout, Heading } from '~/components/info/info';
 
 import ToastContext from '~/hooks/use-toast';
 
@@ -105,11 +106,8 @@ export default function Roles() {
   }, [ fetcher, createToast ]);
 
   return (
-    <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">
-      <h2 className="text-lg font-medium leading-7 text-gray-900">Select Role Membership</h2>
-      <p className="mt-1 text-sm leading-6 text-gray-500">
-        Role memberships determine permissions, which grants the user access to functionality.
-      </p>
+    <Layout>
+      <Heading heading="Select Role Membership" explanation="Role memberships determine permissions, which grants the user access to functionality." />
 
       <Form method="POST" id="edit-user-roles">
         <div className="mt-4 divide-y divide-gray-200 border-b">
@@ -128,6 +126,6 @@ export default function Roles() {
           ))}
         </div>
       </Form>
-    </div>
+    </Layout>
   );
 };

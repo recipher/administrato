@@ -1,14 +1,14 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
+import { requireUser } from '~/auth/auth.server';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
@@ -31,11 +31,25 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Info = () => {
+  const { t } = useTranslation();
   const { serviceCentre } = useLoaderData();
 
   return (
-    <div></div>
+    <>
+      <Layout>
+        <Heading heading={t('info')} explanation={`Manage ${serviceCentre.name}'s information.`} />
+        <Section>
+          <Field title="Service Centre Name">
+            <p className="text-gray-900">{serviceCentre.name}</p>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>
+        </Section>
+      </Layout>
+    </>
   );
 };
+
 
 export default Info;

@@ -186,7 +186,7 @@ const service = (u: User) => {
       WHERE 
         (${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())}) AND
         ${whereClientKeys({ keys: clientKeys })} AND 
-        ${whereLegalEntityKeys({ keys: legalEntityKeys })} AND 
+        ${whereLegalEntityKeys({ keys: legalEntityKeys })} 
       `.run(pool);
 
     return worker;

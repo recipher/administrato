@@ -21,6 +21,7 @@ import Alert, { Level } from '~/components/alert';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import ButtonGroup, { type ButtonGroupButton } from '~/components/button-group';
+import { Layout, Heading } from '~/components/info/info';
 
 import { security } from '~/auth/permissions';
 
@@ -144,38 +145,33 @@ export default function Profile() {
 
   return (
     <>
-      <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">
-        <div className="mx-auto max-w-2xl space-y-8 sm:space-y-12 lg:mx-0 lg:max-w-none">
-          <div>
-            <h2 className="text-lg font-medium leading-7 text-gray-900">Authorization</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-500">Specify system-level entity access.</p>
+      <Layout>
+        <Heading heading="Authorization" explanation="Manage organization memberships." />
 
-            {authorizables.length === 0 && <Alert title='No authorizations' level={Level.Warning} />}
-            {authorizables.length > 0 && <ul role="list" className="mt-6 space-y-3 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
-              {authorizables.map((authorizable: AuthorizableWithType) => (
-                <li key={authorizable.id} className="group pt-3 sm:flex cursor-pointer">
-                  <div className="text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    {/* {authorizable.Icon && <authorizable.Icon className="inline -ml-0.5 mr-1.5 h-4 w-4 text-gray-400" aria-hidden="true" />} */}
-                    {t(authorizable.type)}
-                  </div>
-                  {hasPermission(security.edit.user) && <div className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900 font-medium">{authorizable.name}</div>
-                    <button onClick={() => handleRevoke(authorizable)}
-                      type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
-                      {t('revoke')}
-                    </button>
-                  </div>}
-                </li>
-              ))}
-            </ul>}
+        {authorizables.length === 0 && <Alert title='No authorizations' level={Level.Warning} />}
+        {authorizables.length > 0 && <ul role="list" className="mt-6 space-y-3 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
+          {authorizables.map((authorizable: AuthorizableWithType) => (
+            <li key={authorizable.id} className="group pt-3 sm:flex cursor-pointer">
+              <div className="text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                {/* {authorizable.Icon && <authorizable.Icon className="inline -ml-0.5 mr-1.5 h-4 w-4 text-gray-400" aria-hidden="true" />} */}
+                {t(authorizable.type)}
+              </div>
+              {hasPermission(security.edit.user) && <div className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
+                <div className="text-gray-900 font-medium">{authorizable.name}</div>
+                <button onClick={() => handleRevoke(authorizable)}
+                  type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
+                  {t('revoke')}
+                </button>
+              </div>}
+            </li>
+          ))}
+        </ul>}
 
-            {hasPermission(security.edit.user) && <div className="flex pt-6">
-              <ButtonGroup title="Grant Authorization"
-                buttons={authorizationActions} />
-            </div>}
-          </div>
-        </div>
-      </div>
+        {hasPermission(security.edit.user) && <div className="flex pt-6">
+          <ButtonGroup title="Grant Authorization"
+            buttons={authorizationActions} />
+        </div>}
+      </Layout>
       <SelectorModal ref={modal} onSelect={handleGrant} />
       <ConfirmModal ref={confirm} onYes={onConfirmRevoke} />
     </>

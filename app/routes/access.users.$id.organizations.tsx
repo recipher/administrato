@@ -21,6 +21,7 @@ import { Level } from '~/components/toast';
 import { RefModal } from '~/components/modals/modal';
 import { SelectorModal } from '~/components/access/organizations';
 import Alert from '~/components/alert';
+import { Layout, Heading } from '~/components/info/info';
 
 import { security } from '~/auth/permissions';
 
@@ -116,37 +117,32 @@ export default function Organizations() {
 
   return (
     <>
-      <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">
-        <div className="mx-auto max-w-2xl space-y-8 sm:space-y-12 lg:mx-0 lg:max-w-none">
-          <div>
-            <h2 className="text-lg font-medium leading-7 text-gray-900">Organizations</h2>
-            <p className="mt-1 text-sm leading-6 text-gray-500">Manage organization memberships.</p>
+      <Layout>
+        <Heading heading="Organizations" explanation="Manage organization memberships." />
 
-            {user.organizations.length <= 0 && <Alert title='No organization memberships' level={Level.Info} />}
+        {user.organizations.length <= 0 && <Alert title='No organization memberships' level={Level.Info} />}
 
-            <ul role="list" className="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
-              {user.organizations.map((organization: any) => (
-                <li key={organization.id} className="group flex justify-between gap-x-6 py-4 cursor-pointer">
-                  <div>
-                    <span className="font-medium text-md text-gray-900 pr-3">{organization.displayName}</span>
-                  </div>
-                  {hasPermission(security.edit.user) && <div className="hidden group-hover:block">
-                    <button onClick={() => handleLeave(organization)}
-                      type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
-                      {t('revoke')}
-                    </button>
-                  </div>}
-                </li>
-              ))}
-            </ul>
+        <ul role="list" className="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
+          {user.organizations.map((organization: any) => (
+            <li key={organization.id} className="group flex justify-between gap-x-6 py-4 cursor-pointer">
+              <div>
+                <span className="font-medium text-md text-gray-900 pr-3">{organization.displayName}</span>
+              </div>
+              {hasPermission(security.edit.user) && <div className="hidden group-hover:block">
+                <button onClick={() => handleLeave(organization)}
+                  type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
+                  {t('revoke')}
+                </button>
+              </div>}
+            </li>
+          ))}
+        </ul>
 
-            {hasPermission(security.edit.user) && <div className="flex pt-3">
-              <Button icon={PlusIcon} title={t('Join an Organization')} 
-                type={ButtonType.Secondary} onClick={showModal} />
-            </div>}
-          </div>
-        </div>
-      </div>
+        {hasPermission(security.edit.user) && <div className="flex pt-3">
+          <Button icon={PlusIcon} title={t('Join an Organization')} 
+            type={ButtonType.Secondary} onClick={showModal} />
+        </div>}
+      </Layout>
       <SelectorModal modal={modal} onSelect={handleJoin} />
       <ConfirmModal ref={confirm} onYes={onConfirmLeave} />
     </>

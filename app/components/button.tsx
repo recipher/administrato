@@ -22,12 +22,12 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
 
   const classNames = new Map([
     [ ButtonType.Primary, "bg-indigo-600 font-medium text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" ],
-    [ ButtonType.Secondary, "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50" ],
+    [ ButtonType.Secondary, "bg-white ring-1 ring-inset ring-gray-300 hover:bg-gray-50" ],
   ]);
 
   const disabledClassNames = new Map([
     [ ButtonType.Primary, "bg-indigo-300 hover:bg-indigo-300" ],
-    [ ButtonType.Secondary, "bg-white text-gray-300 hover:bg-white" ],
+    [ ButtonType.Secondary, "bg-white text-gray-400 hover:bg-white" ],
   ]);
 
   return (
@@ -39,7 +39,7 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
         props.disabled ?  disabledClassNames.get(type) || "" : "")}
       >
       {props.icon && 
-        <props.icon className={classnames(type === ButtonType.Primary ? "text-white" : "text-gray-500", "-ml-0.5 mr-1.5 h-5 w-5",
+        <props.icon className={classnames(type === ButtonType.Primary ? "text-white" : "", "-ml-0.5 mr-1.5 h-5 w-5",
           props.disabled ?  disabledClassNames.get(type) || "" : "")} aria-hidden="true" />}
       {t(title)}
     </button>

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { type ActionArgs, type LoaderArgs, json } from '@remix-run/node';
 import { Form, useFetcher, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
 
@@ -9,15 +10,16 @@ import RoleService, { type Role, namespaces } from '~/models/access/roles.server
 import { Breadcrumb } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';
 
+import ToastContext from '~/hooks/use-toast';
+
 import { Toggle } from '~/components/form';
 import { Level } from '~/components/toast';
 import Spinner from '~/components/spinner';
 import Tabs from '~/components/tabs';
 
-import ToastContext from '~/hooks/use-toast';
+import { Layout, Heading } from '~/components/info/info';
 
 import { security } from '~/auth/permissions';
-import { useTranslation } from 'react-i18next';
 
 export const handle = {
   breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>
@@ -132,11 +134,8 @@ export default function Permissions() {
   }, [ fetcher, createToast ]);
 
   return (
-    <div className="px-4 py-4 sm:px-6 lg:flex-auto lg:px-0 lg:py-4">
-      <h2 className="text-lg font-medium leading-7 text-gray-900">Select Permissions</h2>
-      <p className="mt-1 text-sm leading-6 text-gray-500">
-        Permissions grant the user access to functionality, where they have membership of this role.
-      </p>
+    <Layout>
+      <Heading heading="Select Permissions" explanation="Permissions grant the user access to functionality, where they have membership of this role." />
 
       <Tabs tabs={namespaces.map((value: string) => ({ name: t(value), value }))} selected={namespace} onClick={handleClick} />
 
@@ -157,7 +156,7 @@ export default function Permissions() {
           ))}
         </div>
       </Form>
-    </div>
+    </Layout>
   );
 };
 

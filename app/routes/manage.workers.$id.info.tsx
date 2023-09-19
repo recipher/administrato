@@ -2,17 +2,17 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import ClientService from '~/models/manage/clients.server';
-import { Layout, Heading, Section, Field } from '~/components/info/info';
+import WorkerService from '~/models/manage/workers.server';
+import { requireUser } from '~/auth/auth.server';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/clients/${client?.id}/info`} name="info" current={current} />
+  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name="info" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -22,25 +22,27 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = ClientService(u);
-  const client = await service.getClient({ id });
+  const service = WorkerService(u);
+  const worker = await service.getWorker({ id });
 
-  if (client === undefined) return notFound('Client not found');
+  if (worker === undefined) return notFound('Worker not found');
 
-  return json({ client });
+  return json({ worker });
 };
 
 const Info = () => {
   const { t } = useTranslation();
-  const { client } = useLoaderData();
+  const { worker } = useLoaderData();
+
+  const name = `${worker.firstName} ${worker.lastName}`;
 
   return (
     <>
       <Layout>
-        <Heading heading={t('info')} explanation={`Manage ${client.name}'s information.`} />
+        <Heading heading={t('info')} explanation={`Manage ${name}'s information.`} />
         <Section>
-          <Field title="Client Name">
-            <p className="text-gray-900">{client.name}</p>
+          <Field title="Worker Name">
+            <p className="text-gray-900">{name}</p>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
@@ -50,5 +52,6 @@ const Info = () => {
     </>
   );
 };
+
 
 export default Info;
