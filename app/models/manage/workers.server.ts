@@ -128,8 +128,8 @@ const service = (u: User) => {
 
   const searchQuery = ({ search, clientId, legalEntityId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`${'lastName'} IS NOT NULL` : db.sql<db.SQL>`
-      (LOWER(${'workers'}.${'firstName'}) LIKE LOWER('${db.raw(search)}%') OR
-       LOWER(${'workers'}.${'lastName'}) LIKE LOWER('${db.raw(search)}%'))`;
+      (LOWER(${'workers'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
+       LOWER(${'workers'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
 
     const client = clientId === undefined ? db.sql<db.SQL>`${'workers'}.${'clientId'} IS NOT NULL`
       : db.sql<db.SQL>`${'workers'}.${'clientId'} = ${db.param(clientId)}`;

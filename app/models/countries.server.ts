@@ -61,8 +61,8 @@ const service = (u?: User) => {
   const searchQuery = ({ search }: SearchOptions) => 
     search == null ? db.sql<db.SQL, any>`` : db.sql<db.SQL, any>`
       AND
-        (LOWER(${'name'}) LIKE LOWER('${db.raw(search)}%') OR
-        LOWER(${'isoCode'}) LIKE LOWER('${db.raw(search)}%'))
+        (LOWER(${'localities'}.${'name'}) LIKE LOWER(${db.param(`${search}%`)}) OR
+        LOWER(${'localities'}.${'isoCode'}) LIKE LOWER(${db.param(`${search}%`)}))
     `;
 
   const countCountries = async ({ search }: SearchOptions) => {

@@ -67,7 +67,7 @@ const service = (u: User) => {
 
   const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`${'name'} IS NOT NULL` : db.sql<db.SQL>`
-      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER('${db.raw(search)}%')`;
+      LOWER(${'legalEntities'}.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
     return serviceCentreId === undefined ? name
       : db.sql<db.SQL>`${name} AND ${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 

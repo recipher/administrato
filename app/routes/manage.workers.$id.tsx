@@ -11,7 +11,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
   breadcrumb: ({ worker, current }: { worker: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name={worker?.name} current={current} />
+    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name={`${worker?.firstName} ${worker?.lastName}`} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
