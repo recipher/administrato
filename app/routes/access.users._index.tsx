@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 const User = ((user: User) => (
   <>
-    <Image className="h-12 w-12" src={user.picture} />
+    <Image className="h-12 w-12 rounded-md" src={user.picture} />
     <div className="min-w-0 flex-auto">
       <p className="text-md font-semibold leading-6 text-gray-900">
         {user.name}
@@ -52,12 +52,12 @@ const Context = (user: User) => {
   const lastLogin = new Date(user.lastLogin);
   return (
     <>
-      <Link to={`${user.id}/profile`} className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
+      <div className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
         <p className="text-sm leading-6 text-gray-900">{user.settings?.role}</p>
         <p className="mt-1 text-xs leading-5 text-gray-500">
           Last seen <time dateTime={lastLogin.toISOString()}>{intlFormatDistance(lastLogin, now)}</time>
         </p>
-      </Link>
+      </div>
       <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
     </>
   );

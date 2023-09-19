@@ -56,8 +56,8 @@ const Dropdown = ({ onSelect, entity }: { onSelect: Function, entity: string }) 
               {({ active }) => (
                 <div onClick={item.onClick} className={classnames(
                   active ? 'bg-gray-100' : '',
-                  item.name === entity ? 'bg-indigo-200' : '',
-                  'block pl-3 pr-6 py-1 text-sm leading-6 text-gray-900 cursor-pointer')}>
+                  item.name === entity ? 'font-medium text-gray-900' : 'text-gray-500',
+                  'block pl-3 pr-6 py-1 text-sm leading-6 cursor-pointer')}>
                   {t(pluralize(item.name))}
                 </div>
               )}

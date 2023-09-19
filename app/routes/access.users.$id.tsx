@@ -15,6 +15,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { ButtonType } from '~/components/button';
 import { Level } from '~/components/toast';
+import { useUser } from '~/hooks';
 
 export const handle = {
   breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
@@ -81,6 +82,7 @@ export async function action({ request }: ActionArgs) {
 };
 
 export default function User() {
+  const u = useUser();
   const submit = useSubmit();
   const confirm = useRef<RefConfirmModal>(null);
   const { user } = useLoaderData();
@@ -98,7 +100,8 @@ export default function User() {
   ];
 
   const actions = [
-    { title: "impersonate", icon: UserCircleIcon, type: ButtonType.Secondary, onClick: impersonate },
+    { title: "impersonate", icon: UserCircleIcon, type: ButtonType.Secondary, 
+      onClick: impersonate, disabled: u.id === user.id },
   ];
 
   return (

@@ -25,14 +25,22 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
     [ ButtonType.Secondary, "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50" ],
   ]);
 
+  const disabledClassNames = new Map([
+    [ ButtonType.Primary, "bg-indigo-300 hover:bg-indigo-300" ],
+    [ ButtonType.Secondary, "bg-white text-gray-300 hover:bg-white" ],
+  ]);
+
   return (
     <button
       type={props.submit === true ? "submit" : "button"}
+      disabled={props.disabled}
       onClick={props.onClick}
-      className={classnames(classNames.get(type) || "", "inline-flex items-center rounded-md px-3 py-2 text-sm shadow-sm")}
+      className={classnames(props.disabled ?  disabledClassNames.get(type) || "" : "",
+        classNames.get(type) || "", "inline-flex items-center rounded-md px-3 py-2 text-sm shadow-sm")}
       >
       {props.icon && 
-        <props.icon className={classnames(type === ButtonType.Primary ? "text-white" : "text-gray-500", "-ml-0.5 mr-1.5 h-5 w-5")} aria-hidden="true" />}
+        <props.icon className={classnames(props.disabled ?  disabledClassNames.get(type) || "" : "",
+          type === ButtonType.Primary ? "text-white" : "text-gray-500", "-ml-0.5 mr-1.5 h-5 w-5")} aria-hidden="true" />}
       {t(title)}
     </button>
   );
