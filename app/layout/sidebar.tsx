@@ -67,7 +67,7 @@ export default function Sidebar({ open = false, setOpen }: { open: boolean, setO
                   <div className="flex h-16 shrink-0 items-center">
                     <Logo />
                   </div>
-                  <Navigation />
+                  <Navigation onSelect={() => setOpen(false)} />
                 </div>
               </Dialog.Panel>
             </Transition.Child>

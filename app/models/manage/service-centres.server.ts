@@ -19,7 +19,7 @@ const service = (u: User) => {
   const getLatest = async () => {
     const [ latest ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
     SELECT * FROM ${'serviceCentres'}
-    WHERE ${'keyEnd'} IS NOT NULL
+    WHERE ${'keyEnd'} IS NOT NULL AND ${'parentId'} IS NULL
     ORDER BY ${'keyEnd'} DESC
     LIMIT 1
     `.run(pool);
@@ -63,12 +63,13 @@ const service = (u: User) => {
             name: "Full Authorization", 
             identifier: "full-authorization",
             localities: [], 
+            parentId: null,
             keyStart: KEY_MIN as unknown as db.Int8String, 
             keyEnd: KEY_MAX as unknown as db.Int8String, 
             createdAt: new Date(), 
             isArchived: false }, ...serviceCentres ]
       : serviceCentres;
-  }
+  };
 
   type AllowFullAccess = { allowFullAccess: boolean };
 

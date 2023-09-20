@@ -13,7 +13,7 @@ import classnames from '~/helpers/classnames';
 const LIMIT = 6;
 
 type FlagProps = {
-  country: string | undefined;
+  country?: string | undefined;
   isoCode: string | null;
   size?: number;
   className?: string;

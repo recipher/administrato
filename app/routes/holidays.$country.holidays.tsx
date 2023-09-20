@@ -12,6 +12,8 @@ import Alert, { Level } from '~/components/alert';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Tabs from '~/components/tabs';
 import toNumber from '~/helpers/to-number';
+import { List, ListItem, ListContext } from '~/components/list';
+import HolidayList from '~/components/holidays/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { useLocale } from 'remix-i18next';
@@ -70,6 +72,11 @@ export async function action({ request }: ActionArgs) {
 const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);
 
 export default function Holidays() {
+
+  const { holidays, country, year } = useLoaderData();
+
+  return <HolidayList holidays={holidays} country={country} year={year} />
+
   const locale = useLocale();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -78,7 +85,7 @@ export default function Holidays() {
   const confirm = useRef<RefConfirmModal>(null);
   const [ holiday, setHoliday ] = useState<Holiday>();
   
-  const { holidays, country, year } = useLoaderData();
+  // const { holidays, country, year } = useLoaderData();
 
   const tabs = years(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
@@ -103,40 +110,30 @@ export default function Holidays() {
       { method: "post", encType: "application/json" });  
   };
 
+  const Item = (holiday: Holiday) =>
+    <ListItem data={holiday.name} sub={intlFormat(new Date(holiday.date), { year: 'numeric', month: 'long', day: 'numeric' }, { locale })} />
+
+  const Context = (holiday: Holiday) => 
+    <ListContext data={
+      <div className="hidden group-hover:block">
+        <button
+          type="button"
+          onClick={() => remove(holiday)}
+          className="inline-flex items-center gap-x-1.5 font-medium text-sm text-red-600 hover:text-red-500"
+        >
+          {t('remove')}
+        </button>
+      </div>
+    } chevron={false} />
+
+  const noOp = () => null;
+
   return (
     <>
       {holidays.length === 0 && <Alert level={Level.Info} title={`No holidays for ${country.name}`} />}
 
       <Tabs tabs={tabs} selected={year} onClick={handleClick} />
-
-      <ul className="divide-y divide-gray-100">
-        {holidays.map((holiday: any) => (
-          <li key={holiday.id} className="group flex justify-between gap-x-6 py-3 hover:cursor-pointer">
-            <div className="flex min-w-0 gap-x-4">
-              <div className="min-w-0 flex-auto">
-                <p className="text-md font-semibold leading-6 text-gray-900">
-                  {holiday.name}
-                </p>
-                <p className="mt-1 flex text-xs leading-5 text-gray-500">
-                  {intlFormat(new Date(holiday.date),
-                    { year: 'numeric', month: 'long', day: 'numeric' }, { locale })}
-                </p>
-              </div>
-            </div>
-            <div className="flex shrink-0 items-center gap-x-6">
-              <div className="hidden group-hover:block">
-                <button
-                  type="button"
-                  onClick={() => remove(holiday)}
-                  className="inline-flex items-center gap-x-1.5 font-medium text-sm text-red-600 hover:text-red-500"
-                >
-                  {t('remove')}
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <List data={holidays} onClick={noOp} renderItem={Item} renderContext={Context} />
       <ConfirmModal ref={confirm} onYes={onConfirmRemove} />
     </>
   );

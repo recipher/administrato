@@ -51,7 +51,9 @@ export const navigation = [
   },
 ];
 
-export default function Navigation() {
+const noOp = () => null!
+
+export default function Navigation({ onSelect = noOp }: { onSelect?: Function }) {
   const matches = useMatches();
   const { t } = useTranslation();
   const user = useOptionalUser();
@@ -78,7 +80,7 @@ export default function Navigation() {
             {filter(navigation as Array<NavItem>).map((item) => (
               <li key={item.name}>
                 {!item.children ? (
-                  <NavLink
+                  <NavLink onClick={() => onSelect()}
                     to={item.to}
                     className={({ isActive, isPending }) => classnames(
                       isActive ? 'bg-indigo-100 text-indigo-800' : 'hover:bg-indigo-50',
@@ -109,7 +111,8 @@ export default function Navigation() {
                           {filter(item.children as Array<NavItem>)?.map((subItem) => (
                             <li key={subItem.name}>
                               <Disclosure.Button as="div">
-                                <NavLink to={subItem.to} className={({ isActive, isPending }) => classnames(
+                                <NavLink onClick={() => onSelect()}
+                                  to={subItem.to} className={({ isActive, isPending }) => classnames(
                                   isActive ? 'bg-indigo-100 text-indigo-800' : 'hover:bg-indigo-50',
                                   'block rounded-md my-1 py-2 pr-2 pl-9 text-sm leading-6 text-gray-700'
                                 )}>

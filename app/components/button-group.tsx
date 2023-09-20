@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Link } from '@remix-run/react';
+import { Link, useNavigate } from '@remix-run/react';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
@@ -15,24 +15,30 @@ export type ButtonGroupButton = {
   default?: boolean | undefined,
 };
 export type ButtonGroupProps = {
-  title: string;
+  title?: string | undefined;
   buttons: Array<ButtonGroupButton>
 };
 
-export default function ButtonGroup({ title, buttons }: ButtonGroupProps) {
+const noOp = () => null!
+
+export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const defaultButton = buttons.find(b => b.default === true) || buttons.at(0);
 
   if (!defaultButton) return;
 
+  const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(defaultButton.to || "/") : noOp;
+
   return (
     <div className="inline-flex rounded-md shadow-sm">
-      <button onClick={() => defaultButton.onClick && defaultButton.onClick()}
+      <button onClick={() => onClick()}
         type="button"
         className="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-medium text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 focus:outline-none"
       >
-        {t(title)}
+        {defaultButton.icon && <defaultButton.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />} 
+        {t(title || defaultButton.title)}
       </button>
       <Menu as="div" className="relative -ml-px block">
         <Menu.Button className="relative inline-flex items-center rounded-r-md bg-white px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 focus:outline-none">
@@ -48,7 +54,7 @@ export default function ButtonGroup({ title, buttons }: ButtonGroupProps) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute left-0 z-50 -mr-1 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 z-50 -mr-1 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               {buttons.map((button) => (
                 <Menu.Item key={button.title}>
@@ -57,12 +63,12 @@ export default function ButtonGroup({ title, buttons }: ButtonGroupProps) {
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700');
                     return button.onClick
                       ? <div className={className} onClick={() => button.onClick && button.onClick()}>
-                          {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />} 
+                          {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}
                         </div>
                       : <Link to={button.to || '.'}
                           className={className}>
-                          {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />} 
+                          {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}
                         </Link>
                   }}

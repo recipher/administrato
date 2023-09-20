@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 import Button, { type ButtonProps } from './button';
 import { useUser } from "~/hooks";
 
-type Action = ButtonProps & { to?: string };
+type Action = ButtonProps & { to?: string, default?: boolean };
 export type ActionsProps = Array<Action>;
 
 type Props = {

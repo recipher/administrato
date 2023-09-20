@@ -365,17 +365,17 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
-      * **holidays.entityId**
-      * - `int8` in database
-      * - Nullable, no default
+      * **holidays.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      entityId: db.Int8String | null;
+      locality: string;
       /**
       * **holidays.date**
       * - `date` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      date: Date | null;
+      date: Date;
       /**
       * **holidays.observed**
       * - `date` in database
@@ -385,9 +385,9 @@ declare module 'zapatos/schema' {
       /**
       * **holidays.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name: string | null;
+      name: string;
       /**
       * **holidays.entity**
       * - `text` in database
@@ -395,11 +395,17 @@ declare module 'zapatos/schema' {
       */
       entity: string | null;
       /**
-      * **holidays.locality**
-      * - `text` in database
+      * **holidays.entityId**
+      * - `int8` in database
       * - Nullable, no default
       */
-      locality: string | null;
+      entityId: db.Int8String | null;
+      /**
+      * **holidays.isRemoved**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isRemoved: boolean | null;
     }
     export interface JSONSelectable {
       /**
@@ -415,17 +421,17 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
-      * **holidays.entityId**
-      * - `int8` in database
-      * - Nullable, no default
+      * **holidays.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      entityId: number | null;
+      locality: string;
       /**
       * **holidays.date**
       * - `date` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      date: db.DateString | null;
+      date: db.DateString;
       /**
       * **holidays.observed**
       * - `date` in database
@@ -435,9 +441,9 @@ declare module 'zapatos/schema' {
       /**
       * **holidays.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name: string | null;
+      name: string;
       /**
       * **holidays.entity**
       * - `text` in database
@@ -445,11 +451,17 @@ declare module 'zapatos/schema' {
       */
       entity: string | null;
       /**
-      * **holidays.locality**
-      * - `text` in database
+      * **holidays.entityId**
+      * - `int8` in database
       * - Nullable, no default
       */
-      locality: string | null;
+      entityId: number | null;
+      /**
+      * **holidays.isRemoved**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isRemoved: boolean | null;
     }
     export interface Whereable {
       /**
@@ -465,15 +477,15 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **holidays.entityId**
-      * - `int8` in database
-      * - Nullable, no default
+      * **holidays.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      locality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.date**
       * - `date` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -485,7 +497,7 @@ declare module 'zapatos/schema' {
       /**
       * **holidays.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -495,11 +507,17 @@ declare module 'zapatos/schema' {
       */
       entity?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **holidays.locality**
-      * - `text` in database
+      * **holidays.entityId**
+      * - `int8` in database
       * - Nullable, no default
       */
-      locality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **holidays.isRemoved**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isRemoved?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -515,17 +533,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-      * **holidays.entityId**
-      * - `int8` in database
-      * - Nullable, no default
+      * **holidays.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      locality: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **holidays.date**
       * - `date` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment;
+      date: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment;
       /**
       * **holidays.observed**
       * - `date` in database
@@ -535,9 +553,9 @@ declare module 'zapatos/schema' {
       /**
       * **holidays.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      name: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **holidays.entity**
       * - `text` in database
@@ -545,11 +563,17 @@ declare module 'zapatos/schema' {
       */
       entity?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **holidays.locality**
-      * - `text` in database
+      * **holidays.entityId**
+      * - `int8` in database
       * - Nullable, no default
       */
-      locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **holidays.isRemoved**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isRemoved?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -565,17 +589,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-      * **holidays.entityId**
-      * - `int8` in database
-      * - Nullable, no default
+      * **holidays.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      locality?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **holidays.date**
       * - `date` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | null | db.DefaultType | db.SQLFragment>;
+      date?: (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment | db.SQLFragment<any, (db.DateString | Date) | db.Parameter<(db.DateString | Date)> | db.SQLFragment>;
       /**
       * **holidays.observed**
       * - `date` in database
@@ -585,9 +609,9 @@ declare module 'zapatos/schema' {
       /**
       * **holidays.name**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      name?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **holidays.entity**
       * - `text` in database
@@ -595,11 +619,17 @@ declare module 'zapatos/schema' {
       */
       entity?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **holidays.locality**
-      * - `text` in database
+      * **holidays.entityId**
+      * - `int8` in database
       * - Nullable, no default
       */
-      locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **holidays.isRemoved**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isRemoved?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'holiday_pkey';
     export type Column = keyof Selectable;
@@ -2278,6 +2308,12 @@ declare module 'zapatos/schema' {
       */
       identifier: string;
       /**
+      * **serviceCentres.parentId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parentId: db.Int8String | null;
+      /**
       * **serviceCentres.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -2327,6 +2363,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string;
+      /**
+      * **serviceCentres.parentId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parentId: number | null;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database
@@ -2378,6 +2420,12 @@ declare module 'zapatos/schema' {
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **serviceCentres.parentId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **serviceCentres.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -2428,6 +2476,12 @@ declare module 'zapatos/schema' {
       */
       identifier: string | db.Parameter<string> | db.SQLFragment;
       /**
+      * **serviceCentres.parentId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **serviceCentres.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -2477,6 +2531,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **serviceCentres.parentId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database

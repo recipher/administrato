@@ -4,10 +4,12 @@ create table
     "createdAt" timestamp with time zone not null default now(),
     name text not null,
     identifier text not null,
+    "parentId" bigint null,
     "isArchived" boolean null default false,
     "keyStart" bigint null,
     "keyEnd" bigint null,
     localities text[] null,
-    constraint service_centres_pkey primary key (id)
+    constraint service_centres_pkey primary key (id),
+    constraint service_centres_parentId_fkey foreign key ("parentId") references "serviceCentres" (id) on delete cascade
   ) tablespace pg_default;
 alter table public."serviceCentres" ENABLE ROW LEVEL SECURITY;

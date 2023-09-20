@@ -10,7 +10,12 @@ export type Holiday = s.holidays.Selectable;
 
 type ListOptions = { 
   year: number;
-  locality: string 
+  locality: string;
+};
+
+type EntityOptions = {
+  entity: string;
+  entityId: number;
 };
 
 type QueryOptions = { 
@@ -52,6 +57,22 @@ const service = () => {
       ORDER BY ${'date'} ASC`.run(pool);
   };
 
+  const listHolidaysByCountryForEntity = async ({ year, locality, entity, entityId }: ListOptions & EntityOptions) => {
+    const holidays = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+      SELECT * FROM ${'holidays'} 
+      WHERE 
+        ${{locality}} AND 
+        ${'entityId'} IS NULL AND 
+        DATE_PART('year', ${'date'}) = ${db.param(year)}
+      UNION ALL
+      SELECT * from ${'holidays'}
+      WHERE 
+        ${{locality}} AND 
+        ${{entity}} AND ${{entityId}} AND
+        DATE_PART('year', ${'date'}) = ${db.param(year)}
+      ORDER BY ${'date'} ASC`.run(pool);
+  };
+
   const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
     if (shouldDelete) await deleteHolidaysByCountry({ year, locality });
 
@@ -74,6 +95,7 @@ const service = () => {
     deleteHolidayById,
     deleteHolidaysByCountry,
     listHolidaysByCountry,
+    listHolidaysByCountryForEntity,
     syncHolidays,
   };
 };

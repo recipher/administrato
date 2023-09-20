@@ -30,11 +30,11 @@ export const handle = {
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name="profile" current={current} />
 };
 
-type Authorizable = ServiceCentre;
+type Authorizable = LegalEntity | Client | Provider | ServiceCentre;
 type AuthorizableWithType = Authorizable & { type: string, Icon?: any };
 
 const toAuthorizables = (type: string, authorizables: Array<Authorizable>) => {
-  return authorizables.map(a => ({ ...a, type, Icon: entities.get(type).Icon }));
+  return authorizables.map(auth => ({ ...auth, type, Icon: entities.get(type).Icon }));
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -16,7 +16,7 @@ import classnames from '~/helpers/classnames';
 
 export type TitleProps = {
   title: string;
-  subtitle?: string | undefined;
+  subtitle?:  string | undefined;
   icon?: ReactNode | string | undefined;
 };
 export type FilterProps = {
@@ -50,7 +50,10 @@ export const Title = ({ title, subtitle, icon }: TitleProps) => {
     <>
       {icon && <div className="mr-4 mt-2 flex-shrink-0">{icon}</div>}
       <div className="h-8">
-        <h3 className="text-lg font-semibold leading-6 text-gray-900">{t(title)}</h3>
+        <h3 className={classnames(icon && !subtitle ? "pt-2": "", 
+              "text-lg font-semibold leading-6 text-gray-900")}>
+          {t(title)}
+        </h3>
         {subtitle && <p className="text-sm text-gray-500">
           {t(subtitle)}
         </p>}
@@ -125,7 +128,7 @@ export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, addi
   FilterProps & { sort: string | null, filter: string, additionalFilters?: AdditionalFilterProps | undefined, className?: string }) => {
   const { t } = useTranslation();
   return (
-    <div className={classnames(className, "w-[34rem]")}>
+    <div className={classnames(className, "max-w-[34rem]")}>
       <label htmlFor="search" className="sr-only">
         {t('search')}
       </label>
@@ -157,7 +160,7 @@ export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, addi
   );
 };
 
-export const Buttons = ({ actions = [], group = false, title = '' }: ButtonsProps) => {
+export const Buttons = ({ actions = [], group = false, title }: ButtonsProps) => {
   return group
     ? <ButtonGroup buttons={actions} title={title} /> 
     : <Actions actions={actions} />
@@ -181,8 +184,8 @@ export default function Header({ title, subtitle, icon, tabs = [], actions = [],
             <Title title={title} subtitle={subtitle} icon={icon} />
           </div>
         </div>
-        <div className="ml-4 flex flex-shrink-0">
-          {actions.length > 0 && filterTitle && <Buttons actions={actions} group={group} />}
+        <div className="ml-4 flex flex-shrink-0 pt-3">
+          {actions.length > 0 && <Buttons actions={actions} group={group} />}
         </div>
       </div>
       <div className="-ml-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
@@ -193,7 +196,7 @@ export default function Header({ title, subtitle, icon, tabs = [], actions = [],
           </div>
         </div>
         <div className="ml-4 mt-1 flex flex-shrink-0">
-          {!filterTitle && actions.length > 0 && <Buttons actions={actions} group={group} />}
+          {/* {!filterTitle && actions.length > 0 && <Buttons actions={actions} group={group} />} */}
           {filterTitle && <Filter filter={filter} sort={sort} filterParam={filterParam} 
                             filterTitle={filterTitle} allowSort={allowSort} additionalFilters={additionalFilters} />}
         </div>

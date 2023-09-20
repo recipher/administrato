@@ -38,7 +38,7 @@ export default function Alert({ level = Level.Success, title, message }: Props) 
   const Icon = icons.get(level);
 
   return (
-    <div className={classnames(`bg-${colour}-50 border-${colour}-400`, "border-l-4 p-4 my-4")}>
+    <div className={classnames(`bg-${colour}-50 border-${colour}-400`, "border-l-4 p-4 mt-6 mb-4")}>
       <div className="flex">
         <div className="flex-shrink-0">
           <Icon className={classnames(`text-${colour}-400`, "h-5 w-5")} aria-hidden="true" />
