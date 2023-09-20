@@ -16,13 +16,16 @@ import { Cancel, DatePicker, Input, Submit,
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { Level } from '~/components/toast';
+import toNumber from '~/helpers/to-number';
 
 export const handle = {
   breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
     <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name="add" current={current} />
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const url = new URL(request.url);
+  const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
   const { country: isoCode } = params;
 
   if (isoCode === undefined) return badRequest('Invalid request');
@@ -32,7 +35,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   if (country === undefined) return notFound('Country not found');
 
-  return { country };
+  return { country, year };
 };
 
 export const validator = withZod(
@@ -79,7 +82,10 @@ export async function action({ request, params }: ActionArgs) {
 };
 
 export default function Add() {
-  const { country } = useLoaderData();
+  const { country, year } = useLoaderData();
+
+  const date = new Date();
+  date.setFullYear(year);
 
   return (
     <Form method="post" validator={validator} id="add-service-centre" className="mt-5">
@@ -90,7 +96,7 @@ export default function Add() {
             <Input label="Holiday Name" name="name" placeholder="e.g. Christmas Day" />
           </Field>
           <Field>
-            <DatePicker label="Holiday Date" placeholder="e.g. 25/12/2023" />
+            <DatePicker label="Holiday Date" placeholder="e.g. 25/12/2023" defaultValue={date}  />
           </Field>
         </Group>
       </Body>

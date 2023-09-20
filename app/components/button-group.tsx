@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Link, useNavigate } from '@remix-run/react';
+import { Link, useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { Menu, Transition } from '@headlessui/react';
@@ -7,6 +7,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 import Button, { ButtonType } from './button';
 import classnames from '~/helpers/classnames';
+import buildTo from '~/helpers/build-to';
 
 export type ButtonGroupButton = {
   title: string,
@@ -23,6 +24,7 @@ export type ButtonGroupProps = {
 const noOp = () => null!
 
 export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
+  const [ searchParams ] = useSearchParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -32,7 +34,7 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
 
   if (buttons.length === 1) return <Button {...defaultButton} type={ButtonType.Secondary} />
 
-  const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(defaultButton.to || "/") : noOp;
+  const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(buildTo(defaultButton.to, searchParams)) : noOp;
 
   return (
     <div className="inline-flex rounded-md shadow-sm">
@@ -63,13 +65,13 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
                 <Menu.Item key={button.title}>
                   {({ active }) => {
                     const className = classnames('block px-4 py-2 text-sm cursor-pointer',
-                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700');
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700');
                     return button.onClick
                       ? <div className={className} onClick={() => button.onClick && button.onClick()}>
                           {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}
                         </div>
-                      : <Link to={button.to || '.'}
+                      : <Link to={buildTo(button.to, searchParams)}
                           className={className}>
                           {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}

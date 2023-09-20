@@ -132,7 +132,7 @@ export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, addi
       <label htmlFor="search" className="sr-only">
         {t('search')}
       </label>
-      <div className="flex rounded-md shadow-sm mb-3">
+      <div className="flex rounded-md shadow-sm my-3">
         <div className="relative flex-grow focus-within:z-10">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />

@@ -24,6 +24,7 @@ export default function Holidays({ holidays, country, year }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const submit = useSubmit();
+  const [ searchParams ] = useSearchParams();
 
   const confirm = useRef<RefConfirmModal>(null);
   const [ holiday, setHoliday ] = useState<Holiday>();
@@ -31,13 +32,9 @@ export default function Holidays({ holidays, country, year }: Props) {
   const tabs = years(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
 
-  const [ searchParams ] = useSearchParams();
-  const qs = searchParams.toString() || '';
-  const params = new URLSearchParams(qs);
-
   const handleClick = (year: string ) => {
-    params.set("year", year);
-    navigate(`?${params.toString()}`);
+    searchParams.set("year", year);
+    navigate(`?${searchParams.toString()}`);
   };
 
   const remove = (holiday: Holiday) => {

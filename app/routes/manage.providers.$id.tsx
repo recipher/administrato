@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
+import { Outlet, useLoaderData, useSearchParams } from '@remix-run/react';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 
@@ -36,7 +36,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Provider() {
-  const { provider: { id, name } } = useLoaderData();
+  const [ searchParams ] = useSearchParams();
+  const { provider: { id, name, localities }} = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -45,8 +46,10 @@ export default function Provider() {
     { name: 'holidays', to: 'holidays' },
   ];
 
+  const locality = searchParams.get("locality") || localities.at(0);
+
   const actions = [
-    { title: 'add-holiday', to: `/manage/service-centres/${id}/add`, default: true, icon: PlusIcon, permission: manage.edit.provider },
+    { title: 'add-holiday', to: `/holidays/${locality}/add?entity=provider&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.provider },
   ];
 
   return (

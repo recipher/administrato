@@ -1,6 +1,7 @@
-import { useNavigate } from '@remix-run/react';
+import { useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import classnames from '~/helpers/classnames';
+import buildTo from '~/helpers/build-to';
 
 export enum ButtonType {
   Secondary,
@@ -21,7 +22,8 @@ export type ButtonProps = {
 export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const [ searchParams ] = useSearchParams();
+  
   const classNames = new Map([
     [ ButtonType.Primary, "bg-indigo-600 font-medium text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" ],
     [ ButtonType.Secondary, "bg-white ring-1 ring-inset ring-gray-300 hover:bg-gray-50" ],
@@ -34,7 +36,7 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
 
   const handleClick = (e: any) => {
     if (props.onClick) return props.onClick(e);
-    if (props.to) return navigate(props.to);
+    if (props.to) return navigate(buildTo(props.to, searchParams));
   };
 
   return (

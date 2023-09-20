@@ -1,9 +1,6 @@
 import { intlFormatDistance } from 'date-fns';
 import { type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
-import { useLocale } from 'remix-i18next';
-
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useLoaderData } from '@remix-run/react';
 
 import UserService, { type BasicUser as User } from '~/models/access/users.server';
 import { requireUser } from '~/auth/auth.server';

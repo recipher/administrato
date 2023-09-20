@@ -72,7 +72,9 @@ const service = () => {
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
 
-    console.log(holidays);
+    // console.log(holidays);
+
+    // reduce
 
     return holidays;
   };

@@ -133,16 +133,17 @@ type Props = {
   label?: string;
   name?: string;
   placeholder?: string;
+  value?: Date;
   defaultValue?: Date;
 };
 
-export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, defaultValue }: Props) {
+export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, value, defaultValue }: Props) {
   const locale = useLocale();
 
   const { error, getInputProps } = useField(name);
 
   const [ open, setOpen ] = useState(false);
-  const [ date, setDate ] = useState<Date | undefined>(defaultValue);
+  const [ date, setDate ] = useState<Date | undefined>(value);
 
   const handleSelect = (d: Date) => {
     setDate(d);
@@ -171,7 +172,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
         </div>
         <div className={classnames(open ? "block" : "hidden", "absolute")}>
           <div className="z-10 w-[24rem] mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-            <Calendar date={date} onSelect={handleSelect} />
+            <Calendar date={date || defaultValue} onSelect={handleSelect} />
           </div>
         </div>
       </div>

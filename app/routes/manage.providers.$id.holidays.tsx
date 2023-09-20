@@ -64,12 +64,10 @@ const Holidays = () => {
 
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
-  const qs = searchParams.toString() || '';
-  const params = new URLSearchParams(qs);
 
   const handleClick = (locality: string ) => {
-    params.set("locality", locality);
-    navigate(`?${params.toString()}`);
+    searchParams.set("locality", locality);
+    navigate(`?${searchParams.toString()}`);
   };
   
   return (
