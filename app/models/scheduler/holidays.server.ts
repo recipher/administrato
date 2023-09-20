@@ -71,6 +71,10 @@ const service = () => {
         ${{entity}} AND ${{entityId}} AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
+
+    console.log(holidays);
+
+    return holidays;
   };
 
   const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {

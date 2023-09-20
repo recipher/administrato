@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import { useNavigate } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import classnames from '~/helpers/classnames';
 
@@ -11,14 +11,16 @@ export type ButtonProps = {
   title: string;
   type?: ButtonType;
   icon?: any;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  onClick?: Function;
   permission?: string;
   disabled?: boolean;
   submit?: boolean;
+  to?: string;
 };
 
 export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const classNames = new Map([
     [ ButtonType.Primary, "bg-indigo-600 font-medium text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" ],
@@ -30,11 +32,16 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
     [ ButtonType.Secondary, "bg-white text-gray-400 hover:bg-white" ],
   ]);
 
+  const handleClick = (e: any) => {
+    if (props.onClick) return props.onClick(e);
+    if (props.to) return navigate(props.to);
+  };
+
   return (
     <button
       type={props.submit === true ? "submit" : "button"}
       disabled={props.disabled}
-      onClick={props.onClick}
+      onClick={handleClick}
       className={classnames(classNames.get(type) || "", "inline-flex items-center rounded-md px-3 py-2 text-sm shadow-sm",
         props.disabled ?  disabledClassNames.get(type) || "" : "")}
       >

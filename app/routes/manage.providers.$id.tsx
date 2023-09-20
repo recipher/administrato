@@ -1,6 +1,8 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 
+import { PlusIcon } from '@heroicons/react/24/outline';
+
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
@@ -8,6 +10,8 @@ import ProviderService from '~/models/manage/providers.server';
 
 import Header from '~/components/header';
 import { Breadcrumb } from '~/layout/breadcrumbs';
+
+import { manage } from '~/auth/permissions';
 
 export const handle = {
   breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
@@ -32,7 +36,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Provider() {
-  const { provider } = useLoaderData();
+  const { provider: { id, name } } = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -41,9 +45,13 @@ export default function Provider() {
     { name: 'holidays', to: 'holidays' },
   ];
 
+  const actions = [
+    { title: 'add-holiday', to: `/manage/service-centres/${id}/add`, default: true, icon: PlusIcon, permission: manage.edit.provider },
+  ];
+
   return (
     <>
-      <Header title={provider.name} tabs={tabs} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} />
       <Outlet />
     </>
   );

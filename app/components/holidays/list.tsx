@@ -71,9 +71,10 @@ export default function Holidays({ holidays, country, year }: Props) {
 
   return (
     <>
+      <Tabs tabs={tabs} selected={year.toString()} onClick={handleClick} />
+
       {holidays.length === 0 && <Alert level={Level.Info} title={`No holidays for ${country.name}`} />}
 
-      <Tabs tabs={tabs} selected={year.toString()} onClick={handleClick} />
       <List data={holidays} onClick={noOp} renderItem={Item} renderContext={Context} />
       <ConfirmModal ref={confirm} onYes={onConfirmRemove} />
     </>

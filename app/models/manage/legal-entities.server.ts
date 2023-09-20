@@ -16,6 +16,7 @@ export type LegalEntity = s.legalEntities.Selectable & { provider: string };
 
 type SearchOptions = {
   serviceCentreId?: number | undefined;
+  providerId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -67,12 +68,16 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId, providerId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return serviceCentreId === undefined ? name
-      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    const serviceCentre = serviceCentreId === undefined ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
+      : db.sql<db.SQL>`main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`;
+    const provider = providerId === undefined ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
+      : db.sql<db.SQL>`main.${'providerId'} = ${db.param(providerId)}`;
+
+    return db.sql<db.SQL>`${name} AND ${serviceCentre} AND ${provider}`;    
   };
 
   const countLegalEntities = async (search: SearchOptions) => {

@@ -1,21 +1,19 @@
-import { intlFormat } from 'date-fns';
-import { useRef, useState } from 'react';
-import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
-import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
-import { useTranslation } from 'react-i18next';
+import { json, type LoaderArgs } from '@remix-run/node';
+import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
-import ProviderService from '~/models/manage/providers.server';
-import HolidayService, { type Holiday } from '~/models/scheduler/holidays.server';
-import { setFlashMessage, storage } from '~/utility/flash.server';
-import Alert, { Level } from '~/components/alert';
-import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
-import Tabs from '~/components/tabs';
-import toNumber from '~/helpers/to-number';
-import { List, ListItem, ListContext } from '~/components/list';
 
+import ProviderService from '~/models/manage/providers.server';
+import CountryService, { Country } from '~/models/countries.server';
+import HolidayService from '~/models/scheduler/holidays.server';
+
+import { requireUser } from '~/auth/auth.server';
+
+import HolidayList from '~/components/holidays/list';
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import { useLocale } from 'remix-i18next';
+
+import toNumber from '~/helpers/to-number';
+import Tabs from '~/components/tabs';
 
 export const handle = {
   breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
@@ -23,7 +21,11 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { id } = params;
+  const url = new URL(request.url);
+  const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
+  const isoCode = url.searchParams.get("locality");
+
+  const id = toNumber(params.id as string);
 
   if (id === undefined) return badRequest('Invalid request');
 
@@ -33,39 +35,49 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const provider = await service.getProvider({ id });
 
   if (provider === undefined) return notFound('Provider not found');
+  if (!provider.localities?.length) return badRequest('Invalid provider data');
 
-  return json({ provider });
+  const countryService = CountryService();
+  const countries = await countryService.getCountries({ isoCodes: provider.localities });
+
+  const locality = (isoCode == null || provider.localities.includes(isoCode) === false)
+    ? provider.localities?.at(0) : isoCode; 
+
+  if (locality === undefined) return badRequest('Invalid provider data');
+
+  const holidayService = HolidayService();
+  let holidays = await holidayService.listHolidaysByCountryForEntity({ locality, year, entity: 'provider', entityId: id });
+
+  if (holidays.length === 0) {
+    const synced = await holidayService.syncHolidays({ year, locality });
+    if (synced !== undefined) holidays = synced;
+  }
+
+  return json({ provider, holidays, countries, locality, year });
 };
 
 const Holidays = () => {
-  const { provider } = useLoaderData();
+  const { provider, holidays, countries, locality, year } = useLoaderData();
 
-  const Item = (holiday: Holiday) =>
-    <ListItem data={holiday.name} sub={intlFormat(new Date(holiday.date), { year: 'numeric', month: 'long', day: 'numeric' }, { locale })} />
+  const tabs = countries.map((country: Country) => 
+    ({ name: country.name, value: country.isoCode }));
 
-  const Context = (holiday: Holiday) => 
-    <ListContext data={
-      <div className="hidden group-hover:block">
-        <button
-          type="button"
-          onClick={() => remove(holiday)}
-          className="inline-flex items-center gap-x-1.5 font-medium text-sm text-red-600 hover:text-red-500"
-        >
-          {t('remove')}
-        </button>
-      </div>
-    } chevron={false} />
+  const navigate = useNavigate();
+  const [ searchParams ] = useSearchParams();
+  const qs = searchParams.toString() || '';
+  const params = new URLSearchParams(qs);
 
-  const noOp = () => null;
-
+  const handleClick = (locality: string ) => {
+    params.set("locality", locality);
+    navigate(`?${params.toString()}`);
+  };
+  
   return (
     <>
-      {holidays.length === 0 && <Alert level={Level.Info} title={`No holidays for ${country.name}`} />}
-
-      {/* <Tabs tabs={tabs} selected={year} onClick={handleClick} /> */}
-      <List data={holidays} onClick={noOp} renderItem={Item} renderContext={Context} />
-      {/* <ConfirmModal ref={confirm} onYes={onConfirmRemove} /> */}
+      <Tabs tabs={tabs} selected={locality} onClick={handleClick} />
+      <HolidayList holidays={holidays} country={locality} year={year} />
     </>
-  );};
+  );
+};
 
 export default Holidays;

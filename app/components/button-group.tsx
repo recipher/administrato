@@ -1,10 +1,11 @@
 import { Fragment } from 'react';
 import { Link, useNavigate } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
+
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
-import { useTranslation } from 'react-i18next';
-
+import Button, { ButtonType } from './button';
 import classnames from '~/helpers/classnames';
 
 export type ButtonGroupButton = {
@@ -28,6 +29,8 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
   const defaultButton = buttons.find(b => b.default === true) || buttons.at(0);
 
   if (!defaultButton) return;
+
+  if (buttons.length === 1) return <Button {...defaultButton} type={ButtonType.Secondary} />
 
   const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(defaultButton.to || "/") : noOp;
 
