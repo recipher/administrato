@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from '@remix-run/node';
+import { ActionArgs, json, redirect, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
@@ -8,12 +8,14 @@ import CountryService, { Country } from '~/models/countries.server';
 import HolidayService from '~/models/scheduler/holidays.server';
 
 import { requireUser } from '~/auth/auth.server';
+import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import HolidayList from '~/components/holidays/list';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
 import toNumber from '~/helpers/to-number';
 import Tabs from '~/components/tabs';
+import { Level } from '~/components/toast';
 
 export const handle = {
   breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
@@ -56,6 +58,29 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ provider, holidays, countries, locality, year });
 };
 
+export async function action({ request }: ActionArgs) {
+  let message = "";
+  const { intent, year, ...data } = await request.json();
+  
+  const service = HolidayService();
+
+  if (intent === "remove") {
+    const { holiday, entity: { id: entityId, type: entity }} = data;
+    await service.deleteHolidayById(holiday.id, { entity, entityId });
+    message = `Holiday Removed Successfully:${holiday.name}, ${year} has been removed.`;
+  };
+
+  if (intent === "reinstate") {
+    const { holiday, entity: { id: entityId, type: entity }} = data;
+    await service.reinstateHolidayById(holiday.id, { entity, entityId });
+    message = `Holiday Reinstated Successfully:${holiday.name}, ${year} has been reinstated.`;
+  };
+ 
+  const session = await setFlashMessage({ request, message, level: Level.Success });
+  return redirect(`?year=${year}`, {
+    headers: { "Set-Cookie": await storage.commitSession(session) }});
+};
+
 const Holidays = () => {
   const { provider, holidays, countries, locality, year } = useLoaderData();
 
@@ -73,7 +98,7 @@ const Holidays = () => {
   return (
     <>
       <Tabs tabs={tabs} selected={locality} onClick={handleClick} />
-      <HolidayList holidays={holidays} country={locality} year={year} />
+      <HolidayList holidays={holidays} country={locality} year={year} entity={provider} entityType="provider" />
     </>
   );
 };

@@ -11,15 +11,17 @@ import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Tabs from '~/components/tabs';
 import { List, ListItem, ListContext } from '~/components/list';
 
-const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);
+import classnames from '~/helpers/classnames';
 
 type Props = {
   holidays: Array<Holiday>;
   country: Country;
   year: number;
-}
+  entity?: any;
+  entityType?: string;
+};
 
-export default function Holidays({ holidays, country, year }: Props) {
+export default function Holidays({ holidays, country, year, entity, entityType }: Props) {
   const locale = useLocale();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -28,13 +30,20 @@ export default function Holidays({ holidays, country, year }: Props) {
 
   const confirm = useRef<RefConfirmModal>(null);
   const [ holiday, setHoliday ] = useState<Holiday>();
-  
+
+  const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);
+
   const tabs = years(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
 
   const handleClick = (year: string ) => {
     searchParams.set("year", year);
     navigate(`?${searchParams.toString()}`);
+  };
+
+  const reinstate = (holiday: Holiday) => {
+    submit({ intent: "reinstate", holiday: { id: holiday.id, name: holiday.name }, entity: { ...entity, type: entityType }, year }, 
+      { method: "post", encType: "application/json" });  
   };
 
   const remove = (holiday: Holiday) => {
@@ -44,22 +53,31 @@ export default function Holidays({ holidays, country, year }: Props) {
 
   const onConfirmRemove = () => {
     if (holiday === undefined) return;
-    submit({ intent: "remove", holiday: { id: holiday.id, name: holiday.name }, year }, 
+    submit({ intent: "remove", holiday: { id: holiday.id, name: holiday.name }, entity: { ...entity, type: entityType }, year }, 
       { method: "post", encType: "application/json" });  
   };
 
   const Item = (holiday: Holiday) =>
-    <ListItem data={holiday.name} sub={intlFormat(new Date(holiday.date), { year: 'numeric', month: 'long', day: 'numeric' }, { locale })} />
-
+    <>
+      <div className={classnames(holiday.isRemoved ? "opacity-25" : "", "min-w-0 flex-auto")}>
+        <p className={classnames(holiday.entity ? "text-gray-1000" : entity ? "text-gray-500" : "text-gray-900", "text-md font-semibold leading-6")}>
+          {holiday.name}
+        </p>
+        <p className={classnames(holiday.entity ? "text-gray-800" : entity ? "text-gray-400" : "text-gray-600", "mt-1 flex text-sm leading-5")}>
+          {intlFormat(new Date(holiday.date), { year: 'numeric', month: 'long', day: 'numeric' }, { locale })}
+        </p>
+      </div>
+    </>;
+  
   const Context = (holiday: Holiday) => 
     <ListContext data={
       <div className="hidden group-hover:block">
         <button
           type="button"
-          onClick={() => remove(holiday)}
+          onClick={() => holiday.isRemoved ? reinstate(holiday) : remove(holiday)}
           className="inline-flex items-center gap-x-1.5 font-medium text-sm text-red-600 hover:text-red-500"
         >
-          {t('remove')}
+          {holiday.isRemoved ? t('reinstate') : t('remove')}
         </button>
       </div>
     } chevron={false} />

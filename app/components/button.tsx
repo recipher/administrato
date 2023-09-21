@@ -23,7 +23,7 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
-  
+
   const classNames = new Map([
     [ ButtonType.Primary, "bg-indigo-600 font-medium text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" ],
     [ ButtonType.Secondary, "bg-white ring-1 ring-inset ring-gray-300 hover:bg-gray-50" ],
@@ -36,7 +36,7 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
 
   const handleClick = (e: any) => {
     if (props.onClick) return props.onClick(e);
-    if (props.to) return navigate(buildTo(props.to, searchParams));
+    if (props.to) return navigate(buildTo(searchParams, props.to));
   };
 
   return (

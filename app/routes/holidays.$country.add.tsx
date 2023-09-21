@@ -17,6 +17,7 @@ import { Cancel, DatePicker, Input, Submit,
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { Level } from '~/components/toast';
 import toNumber from '~/helpers/to-number';
+import pluralize from '~/helpers/pluralize';
 
 export const handle = {
   breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
@@ -51,6 +52,10 @@ export const validator = withZod(
 );
 
 export async function action({ request, params }: ActionArgs) {
+  const url = new URL(request.url);
+  const entity = url.searchParams.get("entity") || null;
+  const entityId = toNumber(url.searchParams.get("entity-id") as string) || null;
+
   const { country: isoCode } = params;
 
   if (isoCode === undefined) return badRequest('Invalid request');
@@ -68,7 +73,7 @@ export async function action({ request, params }: ActionArgs) {
 
   try {
     const service = HolidayService();
-    await service.addHoliday({ name, date, locality: isoCode });
+    await service.addHoliday({ name, date, locality: isoCode, entity, entityId });
     message = `Holiday Added Successfully:${name} was added to ${year}`;
   } catch(e: any) {
     message = `Holiday Add Error:${e.message}`;
@@ -76,7 +81,11 @@ export async function action({ request, params }: ActionArgs) {
   }
 
   const session = await setFlashMessage({ request, message, level });
-  return redirect(`/holidays/${isoCode}/holidays?year=${year}`, {
+
+  const redirectTo = entity
+    ? `/manage/${pluralize(entity)}/${entityId}/holidays?year=${year}`
+    : `/holidays/${isoCode}/holidays?year=${year}`;
+  return redirect(redirectTo, {
     headers: { "Set-Cookie": await storage.commitSession(session) }
   });
 };

@@ -34,7 +34,7 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
 
   if (buttons.length === 1) return <Button {...defaultButton} type={ButtonType.Secondary} />
 
-  const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(buildTo(defaultButton.to, searchParams)) : noOp;
+  const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(buildTo(searchParams, defaultButton.to)) : noOp;
 
   return (
     <div className="inline-flex rounded-md shadow-sm">
@@ -71,7 +71,7 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
                           {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}
                         </div>
-                      : <Link to={buildTo(button.to, searchParams)}
+                      : <Link to={buildTo(searchParams, button.to)}
                           className={className}>
                           {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}

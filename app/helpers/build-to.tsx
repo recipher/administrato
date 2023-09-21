@@ -1,6 +1,4 @@
-import { useSearchParams } from "@remix-run/react";
-
-export default (to?: string | undefined, searchParams: URLSearchParams) => {
+export default (searchParams: URLSearchParams, to?: string | undefined, ) => {
   if (to === undefined) return ".";
   const [ path, qs = "" ] = to.split("?");      
   const urlSearchParams = new URLSearchParams(qs);

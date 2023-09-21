@@ -18,11 +18,11 @@ type Props = {
   buildTo?(props: ToProps): string;
 };
 
-export const ListItem = ({ image, data, sub }: { data: any, sub?: any, image?: ReactNode }) => {
+export const ListItem = ({ className = "", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode }) => {
   return (
     <>
       {image}
-      <div className="min-w-0 flex-auto">
+      <div className={classnames(className, "min-w-0 flex-auto")}>
         <p className="text-md font-semibold leading-6 text-gray-900">
           {data}
         </p>

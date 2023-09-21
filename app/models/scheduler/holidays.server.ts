@@ -18,6 +18,11 @@ type EntityOptions = {
   entityId: number;
 };
 
+type OptionalEntityOptions = {
+  entity: string | null;
+  entityId: number | null;
+};
+
 type QueryOptions = { 
   shouldDelete?: boolean;
 };
@@ -31,10 +36,15 @@ const service = () => {
     return inserted;
   };
 
-  const deleteHolidayById = async (id: number) => {
-    return db.sql<s.holidays.SQL>`
-      DELETE FROM ${'holidays'} WHERE ${{id}}`
-      .run(pool);
+  const deleteHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
+    return entity
+      ? db.update("holidays", { ...entity, isRemoved: true }, { id }).run(pool)
+      : db.sql<s.holidays.SQL>`DELETE FROM ${'holidays'} WHERE ${{id}}`.run(pool);
+  };
+
+  const reinstateHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
+    return entity &&
+      db.update("holidays", { ...entity, isRemoved: false }, { id }).run(pool)
   };
 
   const deleteHolidaysByCountry = async ({ year, locality }: ListOptions) => {
@@ -72,9 +82,8 @@ const service = () => {
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
 
-    // console.log(holidays);
-
-    // reduce
+    // reduce?
+    // console.log(holidays)
 
     return holidays;
   };
@@ -99,6 +108,7 @@ const service = () => {
   return {
     addHoliday,
     deleteHolidayById,
+    reinstateHolidayById,
     deleteHolidaysByCountry,
     listHolidaysByCountry,
     listHolidaysByCountryForEntity,
