@@ -3,6 +3,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+import { isSameDay, isSameMonth, isSameYear } from 'date-fns';
+
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
@@ -27,6 +29,9 @@ type QueryOptions = {
   shouldDelete?: boolean;
 };
 
+const isSameDate = (left: Date, right: Date) =>
+  isSameDay(left, right) && isSameMonth(left, right) && isSameYear(left, right);
+ 
 const service = () => {
   const addHoliday = async (holiday: s.holidays.Insertable) => {
     const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
@@ -36,15 +41,31 @@ const service = () => {
     return inserted;
   };
 
-  const deleteHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
-    return entity
-      ? db.update("holidays", { ...entity, isRemoved: true }, { id }).run(pool)
-      : db.sql<s.holidays.SQL>`DELETE FROM ${'holidays'} WHERE ${{id}}`.run(pool);
+  const getHolidayById = async ({ id }: { id: number }) => {
+    const [ holiday ] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+      SELECT * FROM ${'holidays'} 
+      WHERE ${{id}}`.run(pool);
+    return holiday;
   };
 
-  const reinstateHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
-    return entity &&
-      db.update("holidays", { ...entity, isRemoved: false }, { id }).run(pool)
+  const deleteHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
+    if (entity) {
+      const { name, date, locality, ...holiday } = await getHolidayById({ id });
+
+      if (!holiday.entity) {
+        return addHoliday({ name, date, locality, isRemoved: true, ...entity });
+      }
+    }
+    return db.sql<s.holidays.SQL>`DELETE FROM ${'holidays'} WHERE ${{id}}`.run(pool);
+  };
+
+  const reinstateHolidayById = async (id: number, entity: EntityOptions) => {
+    if (entity) {
+      const holiday = await getHolidayById({ id });
+      if (holiday.entity) {
+        return db.sql<s.holidays.SQL>`DELETE FROM ${'holidays'} WHERE ${{id}}`.run(pool);
+      }
+    }
   };
 
   const deleteHolidaysByCountry = async ({ year, locality }: ListOptions) => {
@@ -82,10 +103,13 @@ const service = () => {
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
 
-    // reduce?
-    // console.log(holidays)
-
-    return holidays;
+    return holidays.reduce((holidays: Array<Holiday>, holiday: Holiday) => {
+      const existing = holidays.find(h => isSameDate(h.date, holiday.date));
+      if (existing) {
+        return (existing.entity) ? holidays : [ ...holidays.filter(h => h.id !== existing.id), holiday ];
+      }
+      return [ ...holidays, holiday ]; 
+    }, []);
   };
 
   const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
@@ -110,6 +134,7 @@ const service = () => {
     deleteHolidayById,
     reinstateHolidayById,
     deleteHolidaysByCountry,
+    getHolidayById,
     listHolidaysByCountry,
     listHolidaysByCountryForEntity,
     syncHolidays,
