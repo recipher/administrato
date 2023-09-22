@@ -1,10 +1,20 @@
+import { useRef, useState } from 'react';
 import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
+
+import { CurrencyYenIcon, IdentificationIcon, WalletIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 import CountryService from '~/models/countries.server';
 import HolidayService from '~/models/scheduler/holidays.server';
+import ProviderService, { Provider } from '~/models/manage/providers.server';
+import ClientService, { Client } from '~/models/manage/clients.server';
+import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
+import ServiceCentreService, { ServiceCentre } from '~/models/manage/service-centres.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
+
+import { requireUser } from '~/auth/auth.server';
 
 import { ValidatedForm as Form, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
@@ -12,7 +22,7 @@ import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
 import { Cancel, DatePicker, Input, Submit,
-         Body, Section, Group, Field, Footer } from '~/components/form';
+         Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { Level } from '~/components/toast';
@@ -25,9 +35,13 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
   const { country: isoCode } = params;
+
+  const entityType = url.searchParams.get("entity") || null;
+  const entityId = toNumber(url.searchParams.get("entity-id") as string) || null;
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
@@ -36,7 +50,25 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (country === undefined) return notFound('Country not found');
 
-  return { country, year };
+  let entity;
+  if (entityId) {
+    switch(entityType) {
+      case "client":
+        entity = await (ClientService(u)).getClient({ id: entityId });
+        break;
+      case "legal-entity":
+        entity = await (LegalEntityService(u)).getLegalEntity({ id: entityId });
+        break;
+      case "provider":
+        entity = await (ProviderService(u)).getProvider({ id: entityId });
+        break;
+      case "service-centre":
+        entity = await (ServiceCentreService(u)).getServiceCentre({ id: entityId });
+        break;
+    }
+  }
+
+  return { country, year, entityType, entity };
 };
 
 export const validator = withZod(
@@ -47,14 +79,17 @@ export const validator = withZod(
     date: z
       .string()
       .nonempty('Holiday date is required')
-      .transform(date => new Date(date))
+      .transform(date => new Date(date)),
+    entityId: z
+      .coerce.number()
+      .optional()
     })
 );
 
 export async function action({ request, params }: ActionArgs) {
   const url = new URL(request.url);
   const entity = url.searchParams.get("entity") || null;
-  const entityId = toNumber(url.searchParams.get("entity-id") as string) || null;
+  // const entityId = toNumber(url.searchParams.get("entity-id") as string) || null;
 
   const { country: isoCode } = params;
 
@@ -62,18 +97,18 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const result = await validator.validate(formData);
+  const result = await validator.validate(formData);console.log(result);
   if (result.error) return validationError(result.error);
 
   const year = result.data.date.getFullYear();
 
   let message = "", level = Level.Success;
 
-  const { data: { name, date }} = result;
+  const { data: { name, date, entityId }} = result;
 
   try {
     const service = HolidayService();
-    await service.addHoliday({ name, date, locality: isoCode, entity, entityId });
+    await service.addHoliday({ name, date, locality: isoCode, entity, entityId: entityId || null });
     message = `Holiday Added Successfully:${name} was added to ${year}`;
   } catch(e: any) {
     message = `Holiday Add Error:${e.message}`;
@@ -91,28 +126,51 @@ export async function action({ request, params }: ActionArgs) {
 };
 
 export default function Add() {
-  const { country, year } = useLoaderData();
+  const { t } = useTranslation();
+  const { country, year, entity, entityType } = useLoaderData();
 
   const date = new Date();
   date.setFullYear(year);
 
+  const noOp = () => null!
+  
+  const icons = new Map<string, any>([
+    [ "service-centre", MapIcon ],
+    [ "client", IdentificationIcon ],
+    [ "legal-entity", WalletIcon ],
+    [ "provider", CurrencyYenIcon ],
+  ]);
+
+  const icon = entityType && icons.get(entityType);
+
   return (
-    <Form method="post" validator={validator} id="add-service-centre" className="mt-5">
-      <Body>
-        <Section heading={`New Holiday for ${country.name}`} explanation='Please enter the holiday information.' />
-        <Group>
-          <Field>                
-            <Input label="Holiday Name" name="name" placeholder="e.g. Christmas Day" />
-          </Field>
-          <Field>
-            <DatePicker label="Holiday Date" placeholder="e.g. 25/12/2023" defaultValue={date}  />
-          </Field>
-        </Group>
-      </Body>
-      <Footer>
-        <Cancel />
-        <Submit text="Save" submitting="Saving..." permission="manage:create:service-centre" />
-      </Footer>
-    </Form>
+    <>
+      <Form method="post" validator={validator} id="add-service-centre" className="mt-5">
+        <Body>
+          <Section heading={`New Holiday for ${country.name}`} explanation='Please enter the holiday information.' />
+          <Group>
+            <Field>                
+              <Input label="Holiday Name" name="name" placeholder="e.g. Christmas Day" />
+            </Field>
+            <Field>
+              <DatePicker label="Holiday Date" placeholder="e.g. 25/12/2023" defaultValue={date}  />
+            </Field>
+          </Group>
+          {entity && <>
+            <Section size="md" heading={`Selected ${t(entityType)}`} explanation={`You are adding this holiday specifically for this ${t(entityType)}.`} />
+              <Group>
+                <Field span={3}>
+                  <Lookup label={t(entityType)} name="entityId" onClick={noOp} 
+                    icon={icon} value={entity} placeholder={`Selected ${t(entityType)}`} />
+                </Field>
+              </Group>
+            </>}
+        </Body>
+        <Footer>
+          <Cancel />
+          <Submit text="Save" submitting="Saving..." permission="manage:create:service-centre" />
+        </Footer>
+      </Form>
+    </>
   );
 }

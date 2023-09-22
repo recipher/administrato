@@ -63,7 +63,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
   const onNext = () => setCurrent(addMonths(current, 1));
 
   return (
-    <div>
+    <div className="z-10">
       <div className="p-3 bg-gray-100">
         <div className="text-center lg:col-start-0 lg:col-end-6 lg:row-start-1">
           <div className="flex items-center text-gray-900">
