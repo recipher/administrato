@@ -51,7 +51,6 @@ const service = () => {
   const deleteHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
     if (entity) {
       const { name, date, locality, ...holiday } = await getHolidayById({ id });
-
       if (!holiday.entity) {
         return addHoliday({ name, date, locality, isRemoved: true, ...entity });
       }
@@ -84,6 +83,29 @@ const service = () => {
       WHERE 
         ${{locality}} AND 
         ${'entityId'} IS NULL AND 
+        DATE_PART('year', ${'date'}) = ${db.param(year)}
+      ORDER BY ${'date'} ASC`.run(pool);
+  };
+
+  type customHolidaysSQL = 
+    s.holidays.SQL | s.providers.SQL | s.clients.SQL | s.legalEntities.SQL | s.serviceCentres.SQL;
+
+  const listCustomHolidaysByCountry = async ({ year, locality }: ListOptions) => {
+    return db.sql<customHolidaysSQL, s.holidays.Selectable[]>`
+      SELECT 
+        ${'holidays'}.*, 
+        ${'clients'}.${'name'} AS client,
+        ${'providers'}.${'name'} AS provider,
+        ${'legalEntities'}.${'name'} AS "legalEntity",
+        ${'serviceCentres'}.${'name'} AS "serviceCentre"
+      FROM ${'holidays'} 
+      LEFT JOIN ${'clients'} ON ${'entityId'} = ${'clients'}.${'id'} AND ${'entity'} = 'client'
+      LEFT JOIN ${'providers'} ON ${'entityId'} = ${'providers'}.${'id'} AND ${'entity'} = 'provider'
+      LEFT JOIN ${'legalEntities'} ON ${'entityId'} = ${'legalEntities'}.${'id'} AND ${'entity'} = 'legal-entity'
+      LEFT JOIN ${'serviceCentres'} ON ${'entityId'} = ${'serviceCentres'}.${'id'} AND ${'entity'} = 'service-centre'
+      WHERE 
+        ${{locality}} AND 
+        ${'entityId'} IS NOT NULL AND 
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
   };
@@ -136,6 +158,7 @@ const service = () => {
     deleteHolidaysByCountry,
     getHolidayById,
     listHolidaysByCountry,
+    listCustomHolidaysByCountry,
     listHolidaysByCountryForEntity,
     syncHolidays,
   };
