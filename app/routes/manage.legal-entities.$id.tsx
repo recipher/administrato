@@ -1,5 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData, Outlet } from '@remix-run/react';
+import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
+
+import { PlusIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -7,6 +9,8 @@ import { requireUser } from '~/auth/auth.server';
 import LegalEntityService from '~/models/manage/legal-entities.server';
 import Header from '~/components/header';
 import { Breadcrumb } from '~/layout/breadcrumbs';
+
+import { manage } from '~/auth/permissions';
 
 export const handle = {
   breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
@@ -31,7 +35,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Provider() {
-  const { legalEntity } = useLoaderData();
+  const [ searchParams ] = useSearchParams();
+  const { legalEntity: { id, name, localities } } = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -42,9 +47,14 @@ export default function Provider() {
     { name: 'holidays', to: 'holidays' },
   ];
 
+  const locality = searchParams.get("locality") || localities.at(0);
+  const actions = [
+    { title: 'add-holiday', to: `/holidays/${locality}/add?entity=legal-entity&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.legalEntity },
+  ];
+
   return (
     <>
-      <Header title={legalEntity.name} tabs={tabs} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} />
       <Outlet />
     </>
   );

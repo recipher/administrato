@@ -1,7 +1,7 @@
 import { intlFormat } from 'date-fns';
 import { useRef, useState } from 'react';
 import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
-import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
+import { Link, useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
@@ -14,6 +14,7 @@ import toNumber from '~/helpers/to-number';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { useLocale } from 'remix-i18next';
+import pluralize from '~/helpers/pluralize';
 
 export const handle = {
   breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
@@ -71,9 +72,12 @@ export default function Holidays() {
     return "";
   };
 
+  const name = (holiday: any) => 
+    holiday.client || holiday.provider || holiday.serviceCentre || holiday.legalEntity
+
   const Context = (holiday: any) =>
     <ListContext chevron={false} sub={t(entity(holiday))} data={
-      holiday.client || holiday.provider || holiday.serviceCentre || holiday.legalEntity} />
+      <Link to={`/manage/${pluralize(entity(holiday))}/${holiday.entityId}/info`}>{name(holiday)}</Link>} />
 
   return (
     <>

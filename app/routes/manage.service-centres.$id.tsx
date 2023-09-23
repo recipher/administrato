@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Outlet, useLoaderData } from '@remix-run/react';
+import { Outlet, useLoaderData, useSearchParams } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
@@ -35,7 +35,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function ServiceCentre() {
-  const { serviceCentre: { id, name, localities } } = useLoaderData();
+  const [ searchParams ] = useSearchParams();
+  const { serviceCentre: { id, name, localities }} = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -47,15 +48,18 @@ export default function ServiceCentre() {
     { name: 'holidays', to: 'holidays' },
   ];
 
+
+  const locality = searchParams.get("locality") || localities.at(0);
   const actions = [
     { title: 'add-group', to: `/manage/service-centres/${id}/add`, default: true, icon: PlusIcon, permission: manage.edit.serviceCentre },
     { title: 'add-client', to: `/manage/clients/add?service-centre=${id}`, permission: manage.create.client },
     { title: 'add-legal-entity', to: `/manage/legal-entities/add?service-centre=${id}`, permission: manage.create.legalEntity },
+    { title: 'add-holiday', to: `/holidays/${locality}/add?entity=service-centre&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.serviceCentre },
   ];
 
   return (
     <>
-      <Header title={name} icon={<Flag isoCode={localities.at(0)} />}  tabs={tabs} actions={actions} group={true} />
+      <Header title={name} icon={<Flag isoCode={localities.at(0)} />} tabs={tabs} actions={actions} group={true} />
       <Outlet />
     </>
   );

@@ -1,12 +1,16 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 
+import { PlusIcon } from '@heroicons/react/24/outline';
+
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import ClientService from '~/models/manage/clients.server';
-import { useLoaderData, Outlet } from '@remix-run/react';
+import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
 import Header from '~/components/header';
 import { Breadcrumb } from '~/layout/breadcrumbs';
+
+import { manage } from '~/auth/permissions';
 
 export const handle = {
   breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
@@ -31,7 +35,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function Client() {
-  const { client } = useLoaderData();
+  const [ searchParams ] = useSearchParams();
+  const { client: { id, name, localities }} = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -40,9 +45,14 @@ export default function Client() {
     { name: 'holidays', to: 'holidays' },
   ];
 
+  const locality = searchParams.get("locality") || localities.at(0);
+  const actions = [
+    { title: 'add-holiday', to: `/holidays/${locality}/add?entity=client&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.client },
+  ];
+
   return (
     <>
-      <Header title={client.name} tabs={tabs} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} />
       <Outlet />
     </>
   );

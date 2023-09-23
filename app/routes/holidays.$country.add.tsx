@@ -97,7 +97,7 @@ export async function action({ request, params }: ActionArgs) {
 
   const formData = await request.formData();
 
-  const result = await validator.validate(formData);console.log(result);
+  const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
   const year = result.data.date.getFullYear();
@@ -145,7 +145,7 @@ export default function Add() {
 
   return (
     <>
-      <Form method="post" validator={validator} id="add-service-centre" className="mt-5">
+      <Form method="post" validator={validator} id="add-holiday" className="mt-5">
         <Body>
           <Section heading={`New Holiday for ${country.name}`} explanation='Please enter the holiday information.' />
           <Group>

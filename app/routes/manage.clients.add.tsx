@@ -125,7 +125,9 @@ export const action = async ({ request }: ActionArgs) => {
   const service = ClientService(u);
   const client = await service.addClient({ localities, serviceCentreId, identifier, ...data });
   
-  return redirect('/manage/clients');
+  return client
+    ? redirect(`/manage/clients/${client.id}/info`)
+    : redirect(`/manage/clients`);
 };
 
 const Add = () => {

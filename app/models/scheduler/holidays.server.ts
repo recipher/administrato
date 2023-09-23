@@ -105,7 +105,7 @@ const service = () => {
       LEFT JOIN ${'serviceCentres'} ON ${'entityId'} = ${'serviceCentres'}.${'id'} AND ${'entity'} = 'service-centre'
       WHERE 
         ${{locality}} AND 
-        ${'entityId'} IS NOT NULL AND 
+        ${'entityId'} IS NOT NULL AND (${'isRemoved'} IS NULL OR ${'isRemoved'} = FALSE) AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
   };

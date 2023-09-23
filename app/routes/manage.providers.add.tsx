@@ -125,7 +125,9 @@ export const action = async ({ request }: ActionArgs) => {
   const service = ProviderService(u);
   const provider = await service.addProvider({ localities, serviceCentreId, identifier, ...data });
   
-  return redirect('/manage/providers');
+  return provider
+    ? redirect(`/manage/providers/${provider.id}/info`)
+    : redirect(`/manage/providers`);
 };
 
 const Add = () => {

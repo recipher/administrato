@@ -65,7 +65,7 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
   );
 
   return (
-    <ul role="list" className="divide-y divide-gray-100">
+    <ul role="list" className="divide-y divide-gray-100 py-3">
       {data.map((item: any, index: number) => (
         <li key={`${item[idKey]}-${index}`} className="group">
           {onClick 

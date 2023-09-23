@@ -132,7 +132,9 @@ export const action = async ({ request }: ActionArgs) => {
   // @ts-ignore
   const legalEntity = await service.addLegalEntity({ localities, serviceCentreId, identifier, ...data });
   
-  return redirect('/manage/legal-entities');
+  return legalEntity
+    ? redirect(`/manage/legal-entities/${legalEntity.id}/info`)
+    : redirect(`/manage/legal-entities`);
 };
 
 const Add = () => {

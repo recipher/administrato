@@ -1,22 +1,33 @@
-import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { ActionArgs, json, redirect, type LoaderArgs } from '@remix-run/node';
+import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
+
+import { badRequest, notFound } from '~/utility/errors';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
+import CountryService, { Country } from '~/models/countries.server';
+import HolidayService from '~/models/scheduler/holidays.server';
 
+import { requireUser } from '~/auth/auth.server';
+import { setFlashMessage, storage } from '~/utility/flash.server';
+
+import HolidayList from '~/components/holidays/list';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
-import { notFound, badRequest } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import toNumber from '~/helpers/to-number';
+import Tabs from '~/components/tabs';
+import { Level } from '~/components/toast';
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/holidays`} name="holidays" current={current} />
+    <Breadcrumb to={`/manage/serviceCentres/${serviceCentre?.id}/holidays`} name="holidays" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { id } = params;
+  const url = new URL(request.url);
+  const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
+  const isoCode = url.searchParams.get("locality");
+
+  const id = toNumber(params.id as string);
 
   if (id === undefined) return badRequest('Invalid request');
 
@@ -26,15 +37,69 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const serviceCentre = await service.getServiceCentre({ id });
 
   if (serviceCentre === undefined) return notFound('Service centre not found');
+  if (!serviceCentre.localities?.length) return badRequest('Invalid service centre data');
 
-  return json({ serviceCentre });
+  const countryService = CountryService();
+  const countries = await countryService.getCountries({ isoCodes: serviceCentre.localities });
+
+  const locality = (isoCode == null || serviceCentre.localities.includes(isoCode) === false)
+    ? serviceCentre.localities?.at(0) : isoCode; 
+
+  if (locality === undefined) return badRequest('Invalid service centre data');
+
+  const holidayService = HolidayService();
+  let holidays = await holidayService.listHolidaysByCountryForEntity({ locality, year, entity: 'service-centre', entityId: id });
+
+  if (holidays.length === 0) {
+    const synced = await holidayService.syncHolidays({ year, locality });
+    if (synced !== undefined) holidays = synced;
+  }
+
+  return json({ serviceCentre, holidays, countries, locality, year });
+};
+
+export async function action({ request }: ActionArgs) {
+  let message = "";
+  const { intent, year, ...data } = await request.json();
+  
+  const service = HolidayService();
+
+  if (intent === "remove") {
+    const { holiday, entity: { id: entityId, type: entity }} = data;
+    await service.deleteHolidayById(holiday.id, { entity, entityId });
+    message = `Holiday Removed Successfully:${holiday.name}, ${year} has been removed.`;
+  };
+
+  if (intent === "reinstate") {
+    const { holiday, entity: { id: entityId, type: entity }} = data;
+    await service.reinstateHolidayById(holiday.id, { entity, entityId });
+    message = `Holiday Reinstated Successfully:${holiday.name}, ${year} has been reinstated.`;
+  };
+ 
+  const session = await setFlashMessage({ request, message, level: Level.Success });
+  return redirect(`?year=${year}`, {
+    headers: { "Set-Cookie": await storage.commitSession(session) }});
 };
 
 const Holidays = () => {
-  const { serviceCentre } = useLoaderData();
+  const { serviceCentre, holidays, countries, locality, year } = useLoaderData();
 
+  const tabs = countries.map((country: Country) => 
+    ({ name: country.name, value: country.isoCode }));
+
+  const navigate = useNavigate();
+  const [ searchParams ] = useSearchParams();
+
+  const handleClick = (locality: string ) => {
+    searchParams.set("locality", locality);
+    navigate(`?${searchParams.toString()}`);
+  };
+  
   return (
-    <div></div>
+    <>
+      <Tabs tabs={tabs} selected={locality} onClick={handleClick} />
+      <HolidayList holidays={holidays} country={locality} year={year} entity={serviceCentre} entityType="service-centre" />
+    </>
   );
 };
 

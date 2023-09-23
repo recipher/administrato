@@ -98,7 +98,9 @@ export const action = async ({ request }: ActionArgs) => {
   
   const headers = await refreshUser({ id: u.id, request });
   
-  return redirect('/manage/service-centres', { headers });
+  return serviceCentre
+    ? redirect(`/manage/service-centres/${serviceCentre.id}/info`, { headers })
+    : redirect(`/manage/service-centres`, { headers });
 };
 
 const Add = () => {
