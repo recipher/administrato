@@ -20,7 +20,7 @@ export default function Lookup({ name, label, value, placeholder, ...props }: Pr
   const { error, getInputProps } = useField(name);
 
   return (
-    <div className="z-0 mb-3">
+    <div className="mb-3">
       <label htmlFor={name} className={classnames(
         props.disabled ? "text-gray-400" : "text-gray-900",
         "block text-sm font-medium leading-6")}>

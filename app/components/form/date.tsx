@@ -64,7 +64,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
 
   return (
     <div className="z-10">
-      <div className="p-3 bg-gray-100">
+      <div className="p-3 bg-gray-100 rounded-md">
         <div className="text-center lg:col-start-0 lg:col-end-6 lg:row-start-1">
           <div className="flex items-center text-gray-900">
             <button
@@ -170,8 +170,8 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
             <CalendarDaysIcon className="mx-2 h-5 w-5 text-gray-400 group-hover:text-indigo-400" aria-hidden="true" />
           </div>
         </div>
-        <div className={classnames(open ? "block" : "hidden", "absolute")}>
-          <div className="z-10 w-[24rem] mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+        <div className={classnames(open ? "block" : "hidden", "z-10 absolute")}>
+          <div className="w-[24rem] mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow">
             <Calendar date={date || defaultValue} onSelect={handleSelect} />
           </div>
         </div>
