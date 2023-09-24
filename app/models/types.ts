@@ -9,8 +9,8 @@ export type SearchOptions = {
   search: string | null | undefined;
 };
 
-export const ASC = 'asc'
-export const DESC = 'desc';
+export const ASC = 'ASC'
+export const DESC = 'DESC';
 
 export type IdProp = {
   id: number | string;

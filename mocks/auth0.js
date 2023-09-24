@@ -3,7 +3,7 @@ const { rest } = require("msw");
 const auth0Handlers = 
 [
   // /api/auth/me
-  rest.get('https://recipher.auth0.com/authorize', (req, res, ctx) => {
+  rest.post('https://recipher.auth0.com/oauth/token', (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({

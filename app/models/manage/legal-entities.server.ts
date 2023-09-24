@@ -19,6 +19,18 @@ type SearchOptions = {
   providerId?: number | undefined;
 } & BaseSearchOptions;
 
+export const frequencies = [
+  'monthly',
+  'weekly',
+  'bi-weekly',
+  'tri-weekly',
+  'four-weekly',
+  'semi-monthly',
+  'quarterly',
+  'half-yearly',
+  'yearly',
+];
+
 const service = (u: User) => {
   const getLatest = async (legalEntity: s.legalEntities.Insertable) => {
     const query = db.sql<db.SQL>`${'serviceCentreId'} = ${db.param(legalEntity.serviceCentreId)}`;

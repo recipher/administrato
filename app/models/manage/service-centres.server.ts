@@ -2,7 +2,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import type { SecurityKey, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
+import type { SecurityKey, IdProp, NameProp, KeyQueryOptions as BaseKeyQueryOptions, BypassKeyCheck } from '../types';
 
 import UserService, { type User } from '../access/users.server';
 import toNumber from '~/helpers/to-number';
@@ -13,29 +13,46 @@ const KEY_MIN = 0;
 const KEY_MAX = Number.MAX_SAFE_INTEGER;
 const MAX_ENTITIES = 50;
 
+type KeyQueryOptions = BaseKeyQueryOptions & {
+  parentId?: number | undefined;
+};
+
 export type ServiceCentre = s.serviceCentres.Selectable;
 
 const service = (u: User) => {
-  const getLatest = async () => {
+  const getLatest = async (parentId: number | null) => {
+    const whereParent = parentId
+      ? db.sql`${'parentId'} = ${db.param(parentId)}`
+      : db.sql`${'parentId'} IS NULL`;
+    
     const [ latest ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-    SELECT * FROM ${'serviceCentres'}
-    WHERE ${'keyEnd'} IS NOT NULL AND ${'parentId'} IS NULL
-    ORDER BY ${'keyEnd'} DESC
-    LIMIT 1
-    `.run(pool);
+      SELECT * FROM ${'serviceCentres'}
+      WHERE ${'keyEnd'} IS NOT NULL AND ${whereParent}
+      ORDER BY ${'keyEnd'} DESC
+      LIMIT 1`.run(pool);
+
     return latest;
   };
 
-  const generateKey = async (): Promise<SecurityKey> => {
-    const latest = await getLatest();
-    const keyStart = Number(latest?.keyEnd ? Number(latest.keyEnd) + 1 : 0);
-    const keyEnd = keyStart + Number(Math.round(KEY_MAX / MAX_ENTITIES));
+  const getParentKey = async (parentId: number | null) => {
+    if (parentId) {
+      return await getServiceCentre({ id: parentId }, { bypassKeyCheck: true });
+    }
+    return { keyStart: 0, keyEnd: KEY_MAX };
+  };
+
+  const generateKey = async (parentId: number | null): Promise<SecurityKey> => {
+    const { keyStart: keyMin, keyEnd: keyMax } = await getParentKey(parentId);
+
+    const latest = await getLatest(parentId);
+    const keyStart = Number(latest?.keyEnd ? Number(latest.keyEnd) + 1 : keyMin);
+    const keyEnd = keyStart + Number(Math.round((keyMax as number) / MAX_ENTITIES));
 
     return { keyStart, keyEnd };
   };
 
   const addServiceCentre = async (serviceCentre: s.serviceCentres.Insertable) => {
-    const key = await generateKey();
+    const key = await generateKey(serviceCentre.parentId as number);
     const withKey = { ...serviceCentre, ...key, identifier: generateIdentifier(serviceCentre) };
 
     const [inserted] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
@@ -47,7 +64,7 @@ const service = (u: User) => {
     const start = toNumber(String(inserted.keyStart)),
           end = toNumber(String(inserted.keyEnd));
 
-    if (start !== undefined && end !== undefined) {
+    if (!serviceCentre.parentId && start !== undefined && end !== undefined) {
       const userService = UserService(u);
       await userService.addSecurityKey({ 
         id: u.id, organization: u.organization, entity: 'service-centre', 
@@ -71,13 +88,18 @@ const service = (u: User) => {
       : serviceCentres;
   };
 
-  type AllowFullAccess = { allowFullAccess: boolean };
+  type AllowFullAccess = { allowFullAccess?: boolean };
 
   const listServiceCentres = async (query: KeyQueryOptions & AllowFullAccess = { isArchived: false, allowFullAccess: false }) => {
     const keys = query.keys || u.keys.serviceCentre;
+
+    const whereParent = query.parentId 
+      ? db.sql`main.${'parentId'} = ${db.param(query.parentId)}`
+      : db.sql`main.${'parentId'} IS NULL`;
+
     const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT main.* FROM ${'serviceCentres'} AS main
-      WHERE ${whereKeys({ keys, ...query })}
+      WHERE ${whereKeys({ keys, ...query })} AND ${whereParent}
       `.run(pool);
 
     return query.allowFullAccess ? checkForFullAccess(keys, serviceCentres) : serviceCentres;

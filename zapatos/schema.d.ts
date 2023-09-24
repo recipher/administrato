@@ -700,6 +700,12 @@ declare module 'zapatos/schema' {
       */
       clientId: db.Int8String | null;
       /**
+      * **legalEntities.milestoneSetId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      milestoneSetId: db.Int8String | null;
+      /**
       * **legalEntities.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -779,6 +785,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       clientId: number | null;
+      /**
+      * **legalEntities.milestoneSetId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      milestoneSetId: number | null;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -860,6 +872,12 @@ declare module 'zapatos/schema' {
       */
       clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **legalEntities.milestoneSetId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      milestoneSetId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **legalEntities.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -940,6 +958,12 @@ declare module 'zapatos/schema' {
       */
       clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **legalEntities.milestoneSetId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      milestoneSetId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **legalEntities.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -1019,6 +1043,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **legalEntities.milestoneSetId**
+      * - `int8` in database
+      * - Nullable, no default
+      */
+      milestoneSetId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -1238,17 +1268,23 @@ declare module 'zapatos/schema' {
       */
       interval: number | null;
       /**
+      * **milestones.time**
+      * - `timetz` in database
+      * - Nullable, no default
+      */
+      time: db.TimeTzString | null;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
       */
       entities: string[] | null;
       /**
-      * **milestones.legalEntityId**
+      * **milestones.setId**
       * - `int8` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: db.Int8String;
+      setId: db.Int8String;
     }
     export interface JSONSelectable {
       /**
@@ -1288,17 +1324,23 @@ declare module 'zapatos/schema' {
       */
       interval: number | null;
       /**
+      * **milestones.time**
+      * - `timetz` in database
+      * - Nullable, no default
+      */
+      time: db.TimeTzString | null;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
       */
       entities: string[] | null;
       /**
-      * **milestones.legalEntityId**
+      * **milestones.setId**
       * - `int8` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: number;
+      setId: number;
     }
     export interface Whereable {
       /**
@@ -1338,17 +1380,23 @@ declare module 'zapatos/schema' {
       */
       interval?: number | db.Parameter<number> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, number | db.Parameter<number> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **milestones.time**
+      * - `timetz` in database
+      * - Nullable, no default
+      */
+      time?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
       */
       entities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **milestones.legalEntityId**
+      * **milestones.setId**
       * - `int8` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      setId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1388,17 +1436,23 @@ declare module 'zapatos/schema' {
       */
       interval?: number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **milestones.time**
+      * - `timetz` in database
+      * - Nullable, no default
+      */
+      time?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
       */
       entities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **milestones.legalEntityId**
+      * **milestones.setId**
       * - `int8` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      setId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1438,19 +1492,168 @@ declare module 'zapatos/schema' {
       */
       interval?: number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, number | db.Parameter<number> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **milestones.time**
+      * - `timetz` in database
+      * - Nullable, no default
+      */
+      time?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
       */
       entities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **milestones.legalEntityId**
+      * **milestones.setId**
       * - `int8` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      setId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
     }
     export type UniqueIndex = 'milestones_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **milestoneSets**
+   * - Table in database
+   */
+  export namespace milestoneSets {
+    export type Table = 'milestoneSets';
+    export interface Selectable {
+      /**
+      * **milestoneSets.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: db.Int8String;
+      /**
+      * **milestoneSets.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: Date;
+      /**
+      * **milestoneSets.identifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      identifier: string | null;
+      /**
+      * **milestoneSets.isDefault**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isDefault: boolean | null;
+    }
+    export interface JSONSelectable {
+      /**
+      * **milestoneSets.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id: number;
+      /**
+      * **milestoneSets.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: db.TimestampTzString;
+      /**
+      * **milestoneSets.identifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      identifier: string | null;
+      /**
+      * **milestoneSets.isDefault**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isDefault: boolean | null;
+    }
+    export interface Whereable {
+      /**
+      * **milestoneSets.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **milestoneSets.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **milestoneSets.identifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **milestoneSets.isDefault**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isDefault?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **milestoneSets.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **milestoneSets.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **milestoneSets.identifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      identifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **milestoneSets.isDefault**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isDefault?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **milestoneSets.id**
+      * - `int8` in database
+      * - `NOT NULL`, identity column
+      */
+      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **milestoneSets.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **milestoneSets.identifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      identifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **milestoneSets.isDefault**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isDefault?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'milestonesets_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2985,20 +3188,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = clients.Table | holidays.Table | legalEntities.Table | localities.Table | milestones.Table | providers.Table | scheduleDates.Table | schedules.Table | serviceCentres.Table | workers.Table;
-    export type Selectable = clients.Selectable | holidays.Selectable | legalEntities.Selectable | localities.Selectable | milestones.Selectable | providers.Selectable | scheduleDates.Selectable | schedules.Selectable | serviceCentres.Selectable | workers.Selectable;
-    export type JSONSelectable = clients.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | providers.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | serviceCentres.JSONSelectable | workers.JSONSelectable;
-    export type Whereable = clients.Whereable | holidays.Whereable | legalEntities.Whereable | localities.Whereable | milestones.Whereable | providers.Whereable | scheduleDates.Whereable | schedules.Whereable | serviceCentres.Whereable | workers.Whereable;
-    export type Insertable = clients.Insertable | holidays.Insertable | legalEntities.Insertable | localities.Insertable | milestones.Insertable | providers.Insertable | scheduleDates.Insertable | schedules.Insertable | serviceCentres.Insertable | workers.Insertable;
-    export type Updatable = clients.Updatable | holidays.Updatable | legalEntities.Updatable | localities.Updatable | milestones.Updatable | providers.Updatable | scheduleDates.Updatable | schedules.Updatable | serviceCentres.Updatable | workers.Updatable;
-    export type UniqueIndex = clients.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | providers.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | serviceCentres.UniqueIndex | workers.UniqueIndex;
-    export type Column = clients.Column | holidays.Column | legalEntities.Column | localities.Column | milestones.Column | providers.Column | scheduleDates.Column | schedules.Column | serviceCentres.Column | workers.Column;
+    export type Table = clients.Table | holidays.Table | legalEntities.Table | localities.Table | milestones.Table | milestoneSets.Table | providers.Table | scheduleDates.Table | schedules.Table | serviceCentres.Table | workers.Table;
+    export type Selectable = clients.Selectable | holidays.Selectable | legalEntities.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | providers.Selectable | scheduleDates.Selectable | schedules.Selectable | serviceCentres.Selectable | workers.Selectable;
+    export type JSONSelectable = clients.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | providers.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | serviceCentres.JSONSelectable | workers.JSONSelectable;
+    export type Whereable = clients.Whereable | holidays.Whereable | legalEntities.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | providers.Whereable | scheduleDates.Whereable | schedules.Whereable | serviceCentres.Whereable | workers.Whereable;
+    export type Insertable = clients.Insertable | holidays.Insertable | legalEntities.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | providers.Insertable | scheduleDates.Insertable | schedules.Insertable | serviceCentres.Insertable | workers.Insertable;
+    export type Updatable = clients.Updatable | holidays.Updatable | legalEntities.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | providers.Updatable | scheduleDates.Updatable | schedules.Updatable | serviceCentres.Updatable | workers.Updatable;
+    export type UniqueIndex = clients.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | providers.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | serviceCentres.UniqueIndex | workers.UniqueIndex;
+    export type Column = clients.Column | holidays.Column | legalEntities.Column | localities.Column | milestones.Column | milestoneSets.Column | providers.Column | scheduleDates.Column | schedules.Column | serviceCentres.Column | workers.Column;
   
-    export type AllBaseTables = [clients.Table, holidays.Table, legalEntities.Table, localities.Table, milestones.Table, providers.Table, scheduleDates.Table, schedules.Table, serviceCentres.Table, workers.Table];
+    export type AllBaseTables = [clients.Table, holidays.Table, legalEntities.Table, localities.Table, milestones.Table, milestoneSets.Table, providers.Table, scheduleDates.Table, schedules.Table, serviceCentres.Table, workers.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [clients.Table, holidays.Table, legalEntities.Table, localities.Table, milestones.Table, providers.Table, scheduleDates.Table, schedules.Table, serviceCentres.Table, workers.Table];
+    export type AllTablesAndViews = [clients.Table, holidays.Table, legalEntities.Table, localities.Table, milestones.Table, milestoneSets.Table, providers.Table, scheduleDates.Table, schedules.Table, serviceCentres.Table, workers.Table];
   }
 
 
@@ -3031,6 +3234,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.Selectable;
     "localities": localities.Selectable;
     "milestones": milestones.Selectable;
+    "milestoneSets": milestoneSets.Selectable;
     "providers": providers.Selectable;
     "scheduleDates": scheduleDates.Selectable;
     "schedules": schedules.Selectable;
@@ -3044,6 +3248,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.JSONSelectable;
     "localities": localities.JSONSelectable;
     "milestones": milestones.JSONSelectable;
+    "milestoneSets": milestoneSets.JSONSelectable;
     "providers": providers.JSONSelectable;
     "scheduleDates": scheduleDates.JSONSelectable;
     "schedules": schedules.JSONSelectable;
@@ -3057,6 +3262,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.Whereable;
     "localities": localities.Whereable;
     "milestones": milestones.Whereable;
+    "milestoneSets": milestoneSets.Whereable;
     "providers": providers.Whereable;
     "scheduleDates": scheduleDates.Whereable;
     "schedules": schedules.Whereable;
@@ -3070,6 +3276,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.Insertable;
     "localities": localities.Insertable;
     "milestones": milestones.Insertable;
+    "milestoneSets": milestoneSets.Insertable;
     "providers": providers.Insertable;
     "scheduleDates": scheduleDates.Insertable;
     "schedules": schedules.Insertable;
@@ -3083,6 +3290,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.Updatable;
     "localities": localities.Updatable;
     "milestones": milestones.Updatable;
+    "milestoneSets": milestoneSets.Updatable;
     "providers": providers.Updatable;
     "scheduleDates": scheduleDates.Updatable;
     "schedules": schedules.Updatable;
@@ -3096,6 +3304,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.UniqueIndex;
     "localities": localities.UniqueIndex;
     "milestones": milestones.UniqueIndex;
+    "milestoneSets": milestoneSets.UniqueIndex;
     "providers": providers.UniqueIndex;
     "scheduleDates": scheduleDates.UniqueIndex;
     "schedules": schedules.UniqueIndex;
@@ -3109,6 +3318,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.Column;
     "localities": localities.Column;
     "milestones": milestones.Column;
+    "milestoneSets": milestoneSets.Column;
     "providers": providers.Column;
     "scheduleDates": scheduleDates.Column;
     "schedules": schedules.Column;
@@ -3122,6 +3332,7 @@ declare module 'zapatos/schema' {
     "legalEntities": legalEntities.SQL;
     "localities": localities.SQL;
     "milestones": milestones.SQL;
+    "milestoneSets": milestoneSets.SQL;
     "providers": providers.SQL;
     "scheduleDates": scheduleDates.SQL;
     "schedules": schedules.SQL;

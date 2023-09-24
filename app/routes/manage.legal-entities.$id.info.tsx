@@ -11,6 +11,7 @@ import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
+  i18n: "schedule",
   breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
     <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/info`} name="info" current={current} />
 };
@@ -32,6 +33,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 const Info = () => {
   const { t } = useTranslation();
+  const { t: ts } = useTranslation("schedule");
   const { legalEntity } = useLoaderData();
 
   return (
@@ -44,6 +46,9 @@ const Info = () => {
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
+          </Field>
+          <Field title="Schedule Frequency">
+            {ts(legalEntity.frequency)}
           </Field>
           <Field title="Provider">
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>

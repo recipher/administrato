@@ -1,22 +1,24 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import ServiceCentreService from '~/models/manage/service-centres.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
+import { badRequest, notFound } from '~/utility/errors';
 
+import ServiceCentreService, { ServiceCentre } from '~/models/manage/service-centres.server';
+
+import Alert, { Level } from '~/components/alert';
+import { List, ListContext, ListItem } from '~/components/list';
+import { requireUser } from '~/auth/auth.server';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
-import { notFound, badRequest } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import toNumber from '~/helpers/to-number';
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/holidays`} name="holidays" current={current} />
+    <Breadcrumb to={`/manage/serviceCentres/${serviceCentre?.id}/holidays`} name="holidays" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { id } = params;
+  const id = toNumber(params.id as string);
 
   if (id === undefined) return badRequest('Invalid request');
 
@@ -27,15 +29,23 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (serviceCentre === undefined) return notFound('Service centre not found');
 
-  return json({ serviceCentre });
+  const groups = await service.listServiceCentres({ parentId: id });
+
+  return json({ serviceCentre, groups });
 };
 
-const Holidays = () => {
-  const { serviceCentre } = useLoaderData();
+const Groups = () => {
+  const { serviceCentre, groups } = useLoaderData();
+  
+  const Item = (group: ServiceCentre) => <ListItem data={group.name} />;
+  const Context = (group: ServiceCentre) => <ListContext chevron={true} />
 
   return (
-    <div></div>
+    <>
+      {groups.length === 0 && <Alert title="No service centre groups" level={Level.Info} />}
+        <List data={groups} renderItem={Item} renderContext={Context} />
+    </>
   );
 };
 
-export default Holidays;
+export default Groups;

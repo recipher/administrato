@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Link } from '@remix-run/react';
 
 import classnames from '~/helpers/classnames';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 type ToProps = {
   item: any;
@@ -34,7 +34,7 @@ export const ListItem = ({ className = "", image, data, sub }: { className?: str
   );
 };
 
-export const ListContext = ({ data, sub, chevron = true }: { data?: any, sub?: any, chevron?: boolean }) => {
+export const ListContext = ({ data, sub, chevron = true, open = false }: { data?: any, sub?: any, chevron?: boolean, open?: boolean }) => {
   return (
     <>
       <div className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
@@ -45,7 +45,8 @@ export const ListContext = ({ data, sub, chevron = true }: { data?: any, sub?: a
           {sub}
         </p>
       </div>
-      {chevron && <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
+      {chevron && !open && <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
+      {open && <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
     </>
   );
 };

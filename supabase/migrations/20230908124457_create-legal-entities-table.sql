@@ -9,6 +9,7 @@ create table
     "serviceCentreId" bigint not null,
     "providerId" bigint null,
     "clientId" bigint null,
+    "milestoneSetId" bigint null,
     "isArchived" boolean null default false,
     "keyStart" bigint null,
     "keyEnd" bigint null,
@@ -16,6 +17,7 @@ create table
     constraint legal_entities_pkey primary key (id),
     constraint legalEntities_clientId_fkey foreign key ("clientId") references clients (id),
     constraint legalEntities_providerId_fkey foreign key ("providerId") references providers (id),
-    constraint legalEntities_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id)
+    constraint legalEntities_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id),
+    constraint legalEntities_milestoneSetId_fkey foreign key ("milestoneSetId") references "milestoneSets" (id)
   ) tablespace pg_default;
 alter table public."legalEntities" ENABLE ROW LEVEL SECURITY;

@@ -6,7 +6,7 @@ type Props = {
   sort: string | null;
 };
 
-const ASC = 'asc', DESC = 'desc';
+const ASC = 'ASC', DESC = 'DESC';
 
 export default function Sort({ sort }: Props) {
   const { t } = useTranslation();

@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 import { IdentificationIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import LegalEntityService, { frequencies } from '~/models/manage/legal-entities.server';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 import { type Provider } from '~/models/manage/providers.server';
@@ -26,8 +26,10 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
+import { useTranslation } from 'react-i18next';
 
 export const handle = {
+  i18n: "schedule",
   breadcrumb: ({ current }: { current: boolean }) => 
     <Breadcrumb to='/manage/legal-entities/add' name="add-legal-entity" current={current} />
 };
@@ -43,7 +45,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const serviceCentre = serviceCentres.find(sc => sc.id === serviceCentreId);
 
-  return json({ serviceCentres, serviceCentre });
+  return json({ serviceCentres, serviceCentre, frequencies });
 };
 
 z.setErrorMap((issue, ctx) => {
@@ -138,7 +140,8 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Add = () => {
-  const { serviceCentres, serviceCentre } = useLoaderData();
+  const { t } = useTranslation("schedule");
+  const { serviceCentres, serviceCentre, frequencies } = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
   const [ provider, setProvider ] = useState<Provider>();
@@ -183,7 +186,7 @@ const Add = () => {
         <Body>
           <Section heading='New Legal Entity' explanation='Please enter the new legal entity details.' />
           <Group>
-            <Field>
+          <Field>
               <UniqueInput label="Legal Entity Name" name="name" placeholder="e.g. Recipher Scotland"
                 checkUrl="/manage/legal-entities/name" property="legalEntity" message="This name is already in use" />
             </Field>
@@ -191,6 +194,9 @@ const Add = () => {
               <UniqueInput label="Identifier" name="identifier" 
                 checkUrl="/manage/legal-entities" property="legalEntity" message="This identifier is already in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
+            </Field>
+            <Field>
+              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f) }))} />
             </Field>
             <Field span={3}>
               <div className="pt-9">
