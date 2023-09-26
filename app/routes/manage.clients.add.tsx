@@ -1,18 +1,24 @@
 import { useEffect, useRef, useState, FormEvent } from 'react';
-import { type ActionArgs, redirect, json, type LoaderArgs } from '@remix-run/node';
+import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useActionData, useLoaderData, useSubmit } from '@remix-run/react'
 import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
+import { IdentificationIcon } from '@heroicons/react/24/solid';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
 import ClientService from '~/models/manage/clients.server';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
-import { Input, UniqueInput, Select, Cancel, Submit, Checkbox,
+import { Input, UniqueInput, Select, Cancel, Submit, Checkbox, Image,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
@@ -69,7 +75,8 @@ const schema =
         id: z
           .string()
           .transform(id => parseInt(id))
-      }).required()
+      }).required(),
+    logo: z.any(),
   });
 
 export const clientValidator = withZod(schema);
@@ -78,7 +85,13 @@ export const action = async ({ request }: ActionArgs) => {
   const countryService = CountryService();
 
   const u = await requireUser(request);
-  const formData = await request.formData()
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    createSupabaseUploadHandler({ bucket: "images" }),
+    createMemoryUploadHandler()
+  );
+
+  const formData = await parseMultipartFormData(request, uploadHandler);
 
   if (formData.get('intent') === 'change-codes') {
     const codes = String(formData.get('codes')).split(',');
@@ -167,7 +180,7 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={clientValidator} id="add-client">
+      <Form method="post" validator={clientValidator} id="add-client" encType="multipart/form-data">
         <Body>
           <Section heading='New Client' explanation='Please enter the new client details.' />
           <Group>
@@ -184,6 +197,9 @@ const Add = () => {
               <div className="pt-9">
                 <Checkbox label="Auto-generate?" name="auto" checked={autoGenerateIdentifier} onChange={handleAutoGenerate} />
               </div>
+            </Field>
+            <Field>
+              <Image label="Upload Logo" name="logo" accept="image/*" Icon={IdentificationIcon} />
             </Field>
             <Field>
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />

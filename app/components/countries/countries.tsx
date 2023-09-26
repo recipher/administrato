@@ -11,6 +11,8 @@ import pluralize from '~/helpers/pluralize';
 import classnames from '~/helpers/classnames';
 
 const LIMIT = 6;
+const KOSOVO = 'xk';
+const UNITED_NATIONS = 'un';
 
 type FlagProps = {
   country?: string | undefined;
@@ -21,8 +23,14 @@ type FlagProps = {
 
 export const Flag = ({ country, isoCode, size = 12, className = "" }: FlagProps) => {
   if (!isoCode) return <div className={classnames(className, `h-${size} w-${size} flex-none bg-white`)} />
-  return <Image className={classnames(className, `h-${size} w-${size} flex-none bg-white`)} fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
-    src={`https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`} alt={country} />
+  
+  const noFlag = [KOSOVO, UNITED_NATIONS].includes(isoCode.toLowerCase());
+  const src = noFlag
+    ? `/_static/images/${isoCode.toLowerCase()}.png`
+    : `https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`;
+
+  return <Image className={classnames(className, noFlag ? `h-${size-3} mt-1 rounded-md` : `h-${size}`, "flex-none bg-white")} fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
+    src={src} alt={country} />
 };
 
 const Country = ((country: Country) => (

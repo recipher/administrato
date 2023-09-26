@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState, FormEvent } from 'react';
-import { type ActionArgs, redirect, json, type LoaderArgs } from '@remix-run/node';
+import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useActionData, useLoaderData, useSubmit } from '@remix-run/react'
 import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
+import { CameraIcon } from '@heroicons/react/24/solid';
 import { IdentificationIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
 import LegalEntityService, { frequencies } from '~/models/manage/legal-entities.server';
 import ServiceCentreService from '~/models/manage/service-centres.server';
@@ -15,7 +21,7 @@ import { type Provider } from '~/models/manage/providers.server';
 
 import { requireUser } from '~/auth/auth.server';
 
-import { UniqueInput, Select, Cancel, Submit, Checkbox,
+import { UniqueInput, Select, Cancel, Submit, Checkbox, Image,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
@@ -78,6 +84,7 @@ const schema =
     providerId: z
       .string()
       .nonempty("The provider is required"),
+    logo: z.any(),
     });
 
 export const clientValidator = withZod(schema);
@@ -86,7 +93,13 @@ export const action = async ({ request }: ActionArgs) => {
   const countryService = CountryService();
 
   const u = await requireUser(request);
-  const formData = await request.formData()
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    createSupabaseUploadHandler({ bucket: "images" }),
+    createMemoryUploadHandler()
+  );
+
+  const formData = await parseMultipartFormData(request, uploadHandler);
 
   if (formData.get('intent') === 'change-codes') {
     const codes = String(formData.get('codes')).split(',');
@@ -182,11 +195,11 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={clientValidator} id="add-legal-entity">
+      <Form method="post" validator={clientValidator} id="add-legal-entity" encType="multipart/form-data">
         <Body>
           <Section heading='New Legal Entity' explanation='Please enter the new legal entity details.' />
           <Group>
-          <Field>
+            <Field>
               <UniqueInput label="Legal Entity Name" name="name" placeholder="e.g. Recipher Scotland"
                 checkUrl="/manage/legal-entities/name" property="legalEntity" message="This name is already in use" />
             </Field>
@@ -195,13 +208,16 @@ const Add = () => {
                 checkUrl="/manage/legal-entities" property="legalEntity" message="This identifier is already in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
-            <Field>
-              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f) }))} />
-            </Field>
             <Field span={3}>
               <div className="pt-9">
                 <Checkbox label="Auto-generate?" name="auto" checked={autoGenerateIdentifier} onChange={handleAutoGenerate} />
               </div>
+            </Field>
+            <Field>
+              <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
+            </Field>
+            <Field>
+              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f) }))} />
             </Field>
             <Field>
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />

@@ -34,7 +34,7 @@ export const ListItem = ({ className = "", image, data, sub }: { className?: str
   );
 };
 
-export const ListContext = ({ data, sub, chevron = true, open = false }: { data?: any, sub?: any, chevron?: boolean, open?: boolean }) => {
+export const ListContext = ({ data, sub, select = true, open = false }: { data?: any, sub?: any, select?: boolean, open?: boolean }) => {
   return (
     <>
       <div className="hidden shrink-0 text-sm sm:flex sm:flex-col sm:items-end">
@@ -45,7 +45,7 @@ export const ListContext = ({ data, sub, chevron = true, open = false }: { data?
           {sub}
         </p>
       </div>
-      {chevron && !open && <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
+      {select && !open && <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
       {open && <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />}
     </>
   );

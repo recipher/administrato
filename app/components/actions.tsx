@@ -14,9 +14,9 @@ export default function Actions({ actions = [] }: Props) {
   const { permissions } = useUser();
 
   const filter = (items: ActionsProps) => {
-    return items.filter(({ permission }: Action) => {
-      if (permission === undefined) return true;
-      return permissions.includes(permission);
+    return items.filter(({ permission, hidden }: Action) => {
+      if (permission === undefined) return !hidden;
+      return permissions.includes(permission) && !hidden;
     });
   };
 

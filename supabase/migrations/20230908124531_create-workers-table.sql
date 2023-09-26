@@ -5,6 +5,7 @@ create table
     identifier text not null,
     "firstName" text not null,
     "lastName" text not null,
+    photo text null,
     "clientId" bigint not null,
     "legalEntityId" bigint not null,
     "isArchived" boolean null default false,

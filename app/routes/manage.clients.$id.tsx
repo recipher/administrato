@@ -1,5 +1,6 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 
+import { IdentificationIcon } from '@heroicons/react/24/solid';
 import { PlusIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
@@ -36,7 +37,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function Client() {
   const [ searchParams ] = useSearchParams();
-  const { client: { id, name, localities }} = useLoaderData();
+  const { client: { id, name, localities, logo }} = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -50,9 +51,11 @@ export default function Client() {
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=client&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.client },
   ];
 
+  const icon = logo || <IdentificationIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;
+
   return (
     <>
-      <Header title={name} tabs={tabs} actions={actions} group={true} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} icon={icon} />
       <Outlet />
     </>
   );

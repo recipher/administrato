@@ -107,7 +107,7 @@ export default () => {
 export function ErrorBoundary() {
   const error = useRouteError();
   
-  console.log(error);
+  // console.log(error);
 
   if (isRouteErrorResponse(error)) {
     return (

@@ -1,10 +1,17 @@
-import { useEffect, useRef, useState, FormEvent } from 'react';
-import { type ActionArgs, redirect, json } from '@remix-run/node';
-import { useActionData, useLoaderData, useSubmit } from '@remix-run/react'
-import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
+import { useRef, useState } from 'react';
+import { type ActionArgs, redirect, json, type UploadHandler,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react'
+import { ValidatedForm as Form, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
+
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+
+import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
 import WorkerService from '~/models/manage/workers.server';
 import { type Client } from '~/models/manage/clients.server';
@@ -18,10 +25,9 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
-import { Input, Select, Cancel, Submit, Hidden,
+import { Input, Select, Cancel, Submit, Image,
   Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
-import Button, { ButtonType } from '~/components/button';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -35,11 +41,19 @@ export const loader = async ({ request }: ActionArgs) => {
   return json({ countries });
 };
 
+z.setErrorMap((issue, ctx) => {
+  if (issue.code === "invalid_type") {
+    if (issue.path.includes("locality"))
+      return { message: "Country is required" };
+  }
+  return { message: ctx.defaultError };
+});
+
 const schema = zfd.formData({
   firstName: z
     .string()
     .nonempty("First name is required"),
-    lastName: z
+  lastName: z
     .string()
     .nonempty("Last name is required"),
   legalEntityId: z
@@ -51,14 +65,21 @@ const schema = zfd.formData({
   locality: z
     .object({
       id: z.string()
-    })
+    }),
+  photo: z.any()
 });
 
 const validator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
   const u = await requireUser(request);
-  const formData = await request.formData()
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    createSupabaseUploadHandler({ bucket: "images" }),
+    createMemoryUploadHandler()
+  );
+
+  const formData = await parseMultipartFormData(request, uploadHandler);
 
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
@@ -69,7 +90,7 @@ export const action = async ({ request }: ActionArgs) => {
   // @ts-ignore
   const worker = await service.addWorker({ locality: isoCode, identifier: "", ...data });
   
-  return redirect('/manage/workers');
+  return redirect(`/manage/workers/${worker.id}/info`);
 };
 
 const Add = () => {
@@ -91,15 +112,18 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={validator} id="add-worker">
+      <Form method="post" validator={validator} id="add-worker" encType="multipart/form-data">
         <Body>
           <Section heading='New Worker' explanation='Please enter the new worker details.' />
           <Group>
-          <Field span={3}>
+            <Field span={3}>
               <Input label="First Name" name="firstName" />
             </Field>
             <Field span={3}>
               <Input label="Last Name" name="lastName" />
+            </Field>
+            <Field>
+              <Image label="Upload Photo" name="photo" accept="image/*" Icon={UserCircleIcon} />
             </Field>
           </Group>
           <Section size="md" />

@@ -34,7 +34,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   const { workers, metadata: { count }} = 
     await service.searchWorkers({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
 
-
   const isoCodes = workers.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
@@ -46,12 +45,11 @@ const actions = [
   { title: "add-worker", to: "add", icon: PlusIcon, permission: manage.create.worker },
 ];
 
-
 export default function Workers() {
   const { workers, count, offset, limit, search, countries } = useLoaderData();
 
   const Context = (worker: Worker) =>
-    <ListContext data={worker.client} sub={worker.legalEntity} chevron={false} />;
+    <ListContext data={worker.client} sub={worker.legalEntity} select={false} />;
 
   const Worker = (worker: Worker) =>
     <ListItem data={`${worker.firstName} ${worker.lastName}`} sub={<Flags localities={[worker.locality]} countries={countries} />} />

@@ -4,6 +4,7 @@ create table
     "createdAt" timestamp with time zone not null default now(),
     name text not null,
     identifier text not null,
+    logo text null,
     "serviceCentreId" bigint not null,
     "isArchived" boolean null default false,
     "keyStart" bigint null,

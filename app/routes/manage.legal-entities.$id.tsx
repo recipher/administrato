@@ -1,7 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
 
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { WalletIcon, PlusIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -36,7 +36,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function Provider() {
   const [ searchParams ] = useSearchParams();
-  const { legalEntity: { id, name, localities } } = useLoaderData();
+  const { legalEntity: { id, name, localities, logo }} = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -52,9 +52,11 @@ export default function Provider() {
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=legal-entity&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.legalEntity },
   ];
 
+  const icon = logo || <WalletIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;
+
   return (
     <>
-      <Header title={name} tabs={tabs} actions={actions} group={true} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} icon={icon} />
       <Outlet />
     </>
   );

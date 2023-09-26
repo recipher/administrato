@@ -1,6 +1,6 @@
-import { Fragment, MouseEventHandler, RefObject, useRef } from 'react';
+import { FormEvent, Fragment, MouseEventHandler, RefObject, useRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { Form, Link, useLocation, useSubmit } from '@remix-run/react';
+import { Form, Link, useLocation, useSearchParams, useSubmit } from '@remix-run/react';
 import {
   BellIcon, QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
@@ -34,8 +34,22 @@ const OrganizationModal = ({ modal, user, onSelect }: { modal: RefObject<RefModa
 
 export const Search = () => {
   const { t } = useTranslation();
+  const [ searchParams ] = useSearchParams();
+
+  const q = searchParams.get('q');
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const form = e.currentTarget;
+    const elements = form.elements as typeof form.elements & {
+      q: HTMLInputElement
+    };
+    const q = elements.q.value;
+
+    if (q === "") e.preventDefault();
+  }
+
   return (
-    <Form className="relative flex flex-1" action="/search" method="GET">
+    <Form className="relative flex flex-1" action="/search" method="GET" onSubmit={handleSubmit}>
       <label htmlFor="q" className="sr-only">
         {t('search')}
       </label>
@@ -46,7 +60,7 @@ export const Search = () => {
       <input
         id="q"
         className="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-md"
-        placeholder={t('search')}
+        placeholder={q || t('search')}
         type="search"
         autoCorrect="off"
         autoCapitalize="off"
@@ -86,7 +100,7 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
     { name: 'select-organization', onClick: showOrganizationModal },
     { name: 'unimpersonate', onClick: () => handleStopImpersonation(), hidden: user?.impersonator === undefined },
     { name: 'signout', to: '/logout' },
-  ];  
+  ];
 
   return (
     <>
@@ -129,7 +143,7 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
                 alt={user?.name}
               />
               <span className="hidden lg:flex lg:items-center">
-                <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
+                <span data-testid='username' className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
                   {user?.name}
                 </span>
                 <ChevronDownIcon className="ml-2 h-5 w-5 text-gray-400" aria-hidden="true" />

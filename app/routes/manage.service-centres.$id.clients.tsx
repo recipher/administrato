@@ -55,8 +55,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 const Clients = () => {
   const { serviceCentre, clients, count, offset, limit, search, sort, countries } = useLoaderData();
 
-  const Context = (worker: Client) =>
-    <ListContext chevron={true} />;
+  const Context = (client: Client) =>
+    <ListContext select={true} />;
 
   const Item = (client: Client) =>
     <ListItem data={client.name} sub={<Flags localities={client.localities} countries={countries} />} />

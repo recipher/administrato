@@ -33,8 +33,7 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
   if (!defaultButton) return;
 
   if (buttons.length === 1) return <Button {...defaultButton} type={ButtonType.Secondary} />
-
-  const onClick = defaultButton.onClick || defaultButton.to ? () => navigate(buildTo(searchParams, defaultButton.to)) : noOp;
+  const onClick = defaultButton.onClick || (defaultButton.to ? () => navigate(buildTo(searchParams, defaultButton.to)) : noOp);
 
   return (
     <div className="inline-flex rounded-md shadow-sm">

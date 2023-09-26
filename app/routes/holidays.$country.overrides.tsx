@@ -76,14 +76,14 @@ export default function Holidays() {
     holiday.client || holiday.provider || holiday.serviceCentre || holiday.legalEntity
 
   const Context = (holiday: any) =>
-    <ListContext chevron={false} sub={t(entity(holiday))} data={
+    <ListContext select={false} sub={t(entity(holiday))} data={
       <Link to={`/manage/${pluralize(entity(holiday))}/${holiday.entityId}/info`}>{name(holiday)}</Link>} />
 
   return (
     <>
       <Tabs tabs={tabs} selected={year} onClick={handleClick} />
 
-      {holidays.length === 0 && <Alert level={Level.Info} title={`No custom holidays for ${country.name}`} />}
+      {holidays.length === 0 && <Alert level={Level.Info} title={`No overridden holidays for ${country.name}`} />}
 
       <List data={holidays} onClick={noOp} renderItem={Item} renderContext={Context} />
     </>

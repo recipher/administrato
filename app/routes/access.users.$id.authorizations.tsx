@@ -146,7 +146,7 @@ export default function Profile() {
   return (
     <>
       <Layout>
-        <Heading heading="Authorization" explanation="Manage organization memberships." />
+        <Heading heading="Authorization" explanation="Authorizations grant access to data within the system." />
 
         {authorizables.length === 0 && <Alert title='No authorizations' level={Level.Warning} />}
         {authorizables.length > 0 && <ul role="list" className="mt-6 space-y-3 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">

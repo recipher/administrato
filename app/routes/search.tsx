@@ -1,8 +1,18 @@
 import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
 import { type LoaderFunction, json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
+import { requireUser } from "~/auth/auth.server";
+
+import SearchService from "~/models/manage/search.server";
+
+import Alert, { Level } from '~/components/alert';
+import { List, ListContext, ListItem } from '~/components/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import pluralize from "~/helpers/pluralize";
+import { useTranslation } from "react-i18next";
+
+const LIMIT = 10;
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -11,25 +21,38 @@ export const handle = {
 
 type LoaderData = {
   q: string | null;
-  // entries: NonNullable<Awaited<ReturnType<typeof search>>>;
+  results: Array<any>;
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
+  const u = await requireUser(request);
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
 
-  // const entries = await search(q as string);
+  const service = SearchService(u);
+  const results = await service.search({ search: q as string }, { offset: 0, limit: LIMIT, sortDirection: "asc" });
 
-  return json<LoaderData>({ q });
+  return json<LoaderData>({ q, results });
 };
 
 export default function EntryPage() {
-  const { q } = useLoaderData() as LoaderData;
+  const { t } = useTranslation();
+  const { q, results } = useLoaderData() as LoaderData;
+
+  const Item = (item: any) => <ListItem data={item.name} sub={t(item.type)} />;
+
+  const Context = (item: any) => 
+    <ListContext select={true} />
 
   return (
-    <h3>
-      <span>Search Results for{' '}</span>
-      <span className="underline">{q}</span>
-    </h3>
+    <>
+      <h2>
+        <span>Search Results for{' '}</span>
+        <span className="underline">{q}</span>
+      </h2>
+
+      {results.length <= 0 && <Alert title={`No results`} level={Level.Warning} />}
+      <List data={results} renderItem={Item} renderContext={Context} buildTo={({ item }: any) => `/manage/${pluralize(t(item.type))}/${item.id}/info`} />
+    </>
   );
 };

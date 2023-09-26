@@ -96,7 +96,7 @@ export default function User() {
 
   const actions = [
     { title: "impersonate", icon: UserCircleIcon, type: ButtonType.Secondary, 
-      onClick: impersonate, disabled: u.id === user.id },
+      onClick: impersonate, disabled: u.id === user.id, hidden: u?.impersonator !== undefined },
   ];
 
   return (

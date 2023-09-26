@@ -11,7 +11,22 @@ import Backend from "i18next-fs-backend";
 import i18n from "./i18n"; // your i18n configuration file
 import { resolve } from "node:path";
 
+import { startMockServer } from '../mocks/msw-server'
+import { animalHandlers, peopleHandlers, auth0Handlers } from '../mocks/msw-handlers'
+
 const ABORT_DELAY = 5000;
+
+if (process.env.NODE_ENV === "test") {
+  // Initialize MSW by uncommenting the line and handlers you wish to use below
+  startMockServer([
+    ...auth0Handlers,
+    
+    ...peopleHandlers,
+
+    // ⬇️ Example of excluding out handlers for other areas of your app / APIs you're mocking ⬇️
+    ...animalHandlers, 
+  ]);
+}
 
 export default async function handleRequest(
   request: Request,

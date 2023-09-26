@@ -8,6 +8,7 @@ import WorkerService from '~/models/manage/workers.server';
 import Header from '~/components/header';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { UserCircleIcon } from '@heroicons/react/24/solid';
 
 export const handle = {
   breadcrumb: ({ worker, current }: { worker: any, current: boolean }) => 
@@ -37,9 +38,13 @@ export default function ServiceCentre() {
     { name: 'location', to: 'location' },
   ];
 
+  const icon = worker.photo 
+    ? worker.photo 
+    : <UserCircleIcon className="h-12 w-12 text-indigo-500" aria-hidden="true" />
+
   return (
     <>
-      <Header title={`${worker.firstName} ${worker.lastName}`} tabs={tabs} />
+      <Header title={`${worker.firstName} ${worker.lastName}`} tabs={tabs} icon={icon} />
       <Outlet />
     </>
   );

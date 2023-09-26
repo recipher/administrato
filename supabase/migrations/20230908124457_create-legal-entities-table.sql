@@ -4,6 +4,7 @@ create table
     "createdAt" timestamp with time zone not null default now(),
     name text not null,
     identifier text not null,
+    logo text null,
     frequency text null default 'monthly'::text,
     "targetDay" text null default 'last'::text,
     "serviceCentreId" bigint not null,

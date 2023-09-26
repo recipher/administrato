@@ -60,7 +60,7 @@ export default function Holidays({ holidays, country, year, entity, entityType }
   const Item = (holiday: Holiday) =>
     <>
       <div className={classnames(holiday.isRemoved ? "opacity-25" : "", "min-w-0 flex-auto")}>
-        <p className={classnames(holiday.entity ? "text-gray-1000" : entity ? "text-gray-500" : "text-gray-900", "text-md font-semibold leading-6")}>
+        <p className={classnames(holiday.entity ? "text-gray-1000 font-semibold " : entity ? "text-gray-500" : "text-gray-900 font-semibold", "text-md leading-6")}>
           {holiday.name}
         </p>
         <p className={classnames(holiday.entity ? "text-gray-800" : entity ? "text-gray-400" : "text-gray-600", "mt-1 flex text-sm leading-5")}>
@@ -80,7 +80,7 @@ export default function Holidays({ holidays, country, year, entity, entityType }
           {holiday.isRemoved ? t('reinstate') : t('remove')}
         </button>
       </div>
-    } chevron={false} />
+    } select={false} />
 
   const noOp = () => null;
 

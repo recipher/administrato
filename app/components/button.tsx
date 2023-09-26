@@ -15,6 +15,7 @@ export type ButtonProps = {
   onClick?: Function;
   permission?: string;
   disabled?: boolean;
+  hidden?: boolean;
   submit?: boolean;
   to?: string;
 };

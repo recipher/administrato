@@ -121,8 +121,8 @@ const service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     return await db.sql<s.workers.SQL, s.workers.Selectable[]>`
       SELECT * FROM ${'workers'}
-        ${whereClientKeys({ keys: clientKeys })} AND 
-        ${whereLegalEntityKeys({ keys: legalEntityKeys })} 
+        (${whereClientKeys({ keys: clientKeys })} OR 
+        ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(pool);
   };
 
@@ -146,8 +146,8 @@ const service = (u: User) => {
       SELECT COUNT(${'workers'}.${'id'}) AS count FROM ${'workers'}
       WHERE 
         ${searchQuery(search)} AND 
-        ${whereClientKeys({ keys: clientKeys })} AND 
-        ${whereLegalEntityKeys({ keys: legalEntityKeys })} 
+        (${whereClientKeys({ keys: clientKeys })} OR 
+         ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(pool);
 
     const { count } = item as unknown as Count;
@@ -165,8 +165,8 @@ const service = (u: User) => {
       LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
       WHERE 
         ${searchQuery(search)} AND 
-        ${whereClientKeys({ keys: clientKeys })} AND 
-        ${whereLegalEntityKeys({ keys: legalEntityKeys })} 
+        (${whereClientKeys({ keys: clientKeys })} OR 
+         ${whereLegalEntityKeys({ keys: legalEntityKeys })})
       ORDER BY ${'workers'}.${'lastName'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
@@ -187,8 +187,8 @@ const service = (u: User) => {
       LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
       WHERE 
         (${'workers'}.${'id'} = ${db.param(numericId)} OR LOWER(${'workers'}.${'identifier'}) = ${db.param(id.toString().toLowerCase())}) AND
-        ${whereClientKeys({ keys: clientKeys })} AND 
-        ${whereLegalEntityKeys({ keys: legalEntityKeys })} 
+        (${whereClientKeys({ keys: clientKeys })} OR 
+         ${whereLegalEntityKeys({ keys: legalEntityKeys })})
       `.run(pool);
 
     return worker;
