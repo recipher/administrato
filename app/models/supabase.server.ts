@@ -53,8 +53,8 @@ async function uploadFile(data: AsyncIterable<Uint8Array>, { filename, contentTy
 };
 
 export function createSupabaseUploadHandler({ bucket }: { bucket: string }): UploadHandler {
-
   return async ({ filename, data, contentType }) => {
+    if (filename?.length === 0) return "";
     if (!filename) return undefined;
 
     return uploadFile(data, {

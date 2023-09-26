@@ -161,7 +161,7 @@ export default function Add() {
               <Group>
                 <Field span={3}>
                   <Lookup label={t(entityType)} name="entityId" onClick={noOp} 
-                    icon={icon} value={entity} placeholder={`Selected ${t(entityType)}`} />
+                    value={entity} placeholder={`Selected ${t(entityType)}`} />
                 </Field>
               </Group>
             </>}

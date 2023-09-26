@@ -30,16 +30,16 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const q = url.searchParams.get("q");
 
   const service = SearchService(u);
-  const results = await service.search({ search: q as string }, { offset: 0, limit: LIMIT, sortDirection: "asc" });
+  const results = q ? await service.search({ search: q as string }, { offset: 0, limit: LIMIT, sortDirection: "asc" }) : [];
 
-  return json<LoaderData>({ q, results });
+  return json<LoaderData>({ q: q ? q : "(no search)", results });
 };
 
-export default function EntryPage() {
+export default function Search() {
   const { t } = useTranslation();
   const { q, results } = useLoaderData() as LoaderData;
 
-  const Item = (item: any) => <ListItem data={item.name} sub={t(item.type)} />;
+  const Item = (item: any) => <ListItem data={item.name} sub={t(item.type)} image={item.image} />;
 
   const Context = (item: any) => 
     <ListContext select={true} />
@@ -48,10 +48,10 @@ export default function EntryPage() {
     <>
       <h2>
         <span>Search Results for{' '}</span>
-        <span className="underline">{q}</span>
+        <span className="underline font-medium">{q}</span>
       </h2>
 
-      {results.length <= 0 && <Alert title={`No results`} level={Level.Warning} />}
+      {results.length <= 0 && <Alert title={`Nothing found`} level={Level.Warning} />}
       <List data={results} renderItem={Item} renderContext={Context} buildTo={({ item }: any) => `/manage/${pluralize(t(item.type))}/${item.id}/info`} />
     </>
   );

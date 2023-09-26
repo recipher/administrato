@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 import { Link } from '@remix-run/react';
-
-import classnames from '~/helpers/classnames';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+
+import Image from '~/components/image';  
+import classnames from '~/helpers/classnames';
 
 type ToProps = {
   item: any;
@@ -18,7 +19,10 @@ type Props = {
   buildTo?(props: ToProps): string;
 };
 
-export const ListItem = ({ className = "", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode }) => {
+export const ListItem = ({ className = "", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
+  if (typeof image === "string") 
+    image = <Image src={image} className="h-12 w-12 rounded-md" />;
+
   return (
     <>
       {image}
