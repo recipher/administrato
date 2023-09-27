@@ -3,7 +3,7 @@ import { Link, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import pluralize from '~/helpers/pluralize';
 
-const NO_COUNT = -1;
+export const NO_COUNT = -1;
 
 type Props = {
   offset?: number;

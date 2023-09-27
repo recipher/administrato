@@ -78,7 +78,7 @@ const service = (u: User) => {
 
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const query = db.sql`
+    return db.sql`
       ${clients} 
       UNION ALL 
       ${workers}
@@ -86,9 +86,9 @@ const service = (u: User) => {
       ${providers}
       UNION ALL 
       ${legalEntities}
-      ORDER BY ${'name'} ${db.raw(sortDirection)}`;
-
-    return query.run(pool);
+      ORDER BY ${'name'} ${db.raw(sortDirection)}
+      OFFSET ${db.param(offset)}
+      LIMIT ${db.param(limit)}`.run(pool);
   };
 
   return { search };
