@@ -34,11 +34,26 @@ const service = (u?: User) => {
     return country;
   };
 
+  const getIsoCodes = async({ isoCodes }: IsoCodesOptions) => {
+    if (isoCodes.length === 0) return [];
+    const codes = isoCodes.map(code => `'${code}'`).join(',');
+
+    const localities = await db.sql<s.localities.SQL, s.localities.Selectable[]>`
+      SELECT ${'localities'}.${'isoCode'}, p.${'isoCode'} AS "parentIsoCode" FROM ${'localities'} 
+      LEFT JOIN ${'localities'} AS p ON ${'localities'}.${'parent'} = p.${'isoCode'}
+      WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
+    `.run(pool);
+
+    return localities.map((locality: any) => {
+      return locality.parentIsoCode || locality.isoCode;
+    });
+  };
+
   const getCountries = async ({ isoCodes }: IsoCodesOptions) => {
     if (isoCodes.length === 0) return [];
     const codes = isoCodes.map(code => `'${code}'`).join(',');
     return db.sql<s.localities.SQL, s.localities.Selectable[]>`
-      SELECT ${'localities'}.*, p.name AS "parentName" FROM ${'localities'} 
+      SELECT ${'localities'}.*, p.${'name'} AS "parentName" FROM ${'localities'} 
       LEFT JOIN ${'localities'} AS p ON ${'localities'}.${'parent'} = p.${'isoCode'}
       WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
     `.run(pool);
@@ -116,6 +131,7 @@ const service = (u?: User) => {
     getCountry,
     getCountries,
     getRegions,
+    getIsoCodes,
     listCountries,
     searchCountries,
     countCountries,

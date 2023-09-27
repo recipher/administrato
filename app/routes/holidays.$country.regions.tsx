@@ -23,7 +23,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const region = await service.getCountry({ isoCode });
   const regions = await service.listRegionsByCountry({ parent: isoCode });
 
-  return json({ country: { isoCode }, regions, region });
+  return json({ country: { isoCode }, regions, region, countries: regions });
 };
 
 export default function Holidays() {

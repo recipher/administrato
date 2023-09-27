@@ -104,9 +104,15 @@ export const action = async ({ request }: ActionArgs) => {
   if (formData.get('intent') === 'change-codes') {
     const data = String(formData.get('codes'));
     if (data === "") return json({ codes: [], regions: [], countries: [] });
-    const codes = data.split(',').reduce((codes: string[], code: string) => codes.includes(code) ? codes : [ ...codes, code ], []);
-    const countries = await countryService.getCountries({ isoCodes: codes });
-    const regions = await countryService.getRegions({ isoCodes: codes });
+
+    const codes = data.split(',')
+      .reduce((codes: string[], code: string) => 
+        codes.includes(code) ? codes : [ ...codes, code ], []);
+    
+    const isoCodes = await countryService.getIsoCodes({ isoCodes: codes });
+    const countries = await countryService.getCountries({ isoCodes });
+    const regions = await countryService.getRegions({ isoCodes });
+
     return json({ codes, regions, countries });
   }
 
@@ -172,20 +178,41 @@ const Add = () => {
 
   const showProviderModal = () => providerModal.current?.show('provider');
 
+  const [ country, setCountry ] = useState<Country>();
+
   const findRegions = (code: string) => 
     data?.regions?.filter((r: Country) => r.parent === code)
-    .map((r: Country) => ({ id: r.isoCode, ...r }));
+      .map((r: Country) => ({ id: r.isoCode, ...r }));
 
   const findCountry = (code: string) => {
     const c = data?.countries?.find((c: Country) => c.isoCode === code);
-    return { id: c.isoCode, ...c };
+    return c && { id: c.isoCode, ...c };
   };
 
-  const showCountriesModal = () => modal.current?.show();
+  const findRegion = (code: string) => {
+    const r = data?.regions?.find((c: Country) => c.isoCode === code);
+    return r && { id: r.isoCode, ...r };
+  };
+        
+  const showCountriesModal = () => {
+    setCountry(undefined);
+    modal.current?.show();
+  };
+  const showRegions = (country: Country) => {
+    if (country === undefined) 
+      showCountriesModal();
+    else
+      setCountry(country);
+  };
+
+  useEffect(() => {
+    if (country) modal.current?.show();
+  }, [country]);
 
   const selectCountry = (country: Country) => {
     const codes = data?.codes || [];
-    submit({ intent: "change-codes", codes: [ ...codes, country.isoCode ] }, { method: "post", encType: "multipart/form-data" });  
+    submit({ intent: "change-codes", codes: [ ...codes, country.isoCode ] }, 
+           { method: "post", encType: "multipart/form-data" });  
   };
 
   const removeCountry = (country: Country) => {
@@ -253,19 +280,21 @@ const Add = () => {
             </Field>
 
             {data?.codes?.map((code: string) => {
-              const country = findCountry(code);
-              const regions = findRegions(code);
+              const region = findRegion(code);
+              const isoCode = region ? region.parent : code;
+              const country = findCountry(isoCode);
+              const regions = findRegions(isoCode);
               return (
                 <>
                   <Field span={3} key={code}>
                     <Select 
                       label='Select Country or a Region'
                       name="localities" 
-                      defaultValue={country}
+                      defaultValue={region || country}
                       data={[ country ].concat(regions)} />
                   </Field>
                   <Field span={1}>
-                    <button onClick={() => removeCountry(country)}
+                    <button onClick={() => removeCountry(region || country)}
                       type="button" className="text-sm mt-10 text-red-600 hover:text-red-500">
                       {t('remove')}
                     </button>
@@ -279,7 +308,8 @@ const Add = () => {
           <Submit text="Save" submitting="Saving..." permission={manage.create.legalEntity} />
         </Footer>
       </Form>
-      <CountriesModal modal={modal} onSelect={selectCountry} />
+      <CountriesModal modal={modal} country={country}
+        onSelect={selectCountry} onSelectRegion={showRegions} />
       <SelectorModal ref={providerModal} onSelect={setProvider} allowChange={false} />
     </>
   );
