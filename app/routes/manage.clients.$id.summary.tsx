@@ -3,7 +3,6 @@ import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import ClientService from '~/models/manage/clients.server';
-import { Layout, Heading, Section, Field } from '~/components/info/info';
 import Stats from '~/components/stats';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
@@ -13,7 +12,7 @@ import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/clients/${client?.id}/info`} name="info" current={current} />
+    <Breadcrumb to={`/manage/clients/${client?.id}/summary`} name="summary" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -31,25 +30,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ client });
 };
 
-const Info = () => {
+export default () => {
   const { t } = useTranslation();
   const { client } = useLoaderData();
 
   return (
     <>
-      <Layout>
-        <Heading heading={t('info')} explanation={`Manage ${client.name}'s information.`} />
-        <Section>
-          <Field title="Client Name">
-            <p className="text-gray-900">{client.name}</p>
-            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
-              Update
-            </button>
-          </Field>
-        </Section>
-      </Layout>
+      <Stats />
     </>
   );
 };
 
-export default Info;

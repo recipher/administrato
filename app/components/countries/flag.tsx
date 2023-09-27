@@ -1,13 +1,35 @@
-import { Flag } from './countries';
-
 import { type Country } from '~/models/countries.server';
+import Image from '~/components/image';
+import classnames from '~/helpers/classnames';
 
-type Props = {
+const KOSOVO = 'xk';
+const UNITED_NATIONS = 'un';
+
+type FlagProps = {
+  country?: string | undefined;
+  isoCode: string | null;
+  size?: number;
+  className?: string;
+};
+
+export const Flag = ({ country, isoCode, size = 12, className = "" }: FlagProps) => {
+  if (!isoCode) return <div className={classnames(className, `h-${size} w-${size} flex-none bg-white`)} />
+  
+  const noFlag = [KOSOVO, UNITED_NATIONS].includes(isoCode.toLowerCase());
+  const src = noFlag
+    ? `/_static/images/${isoCode.toLowerCase()}.png`
+    : `https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`;
+
+  return <Image className={classnames(className, noFlag ? `h-${size-3} mt-1 rounded-md` : `h-${size}`, "flex-none bg-white")} fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
+    src={src} alt={country} />
+};
+
+type FlagsProps = {
   localities: Array<string | null> | null;
   countries?: Array<Country>;
 };
 
-export const Flags = ({ localities, countries }: Props) => {
+export const Flags = ({ localities, countries }: FlagsProps) => {
   if (localities === null || localities.length === 0 || localities?.at(0) == null) return;
 
   const country = (isoCode: string | null) => countries?.find((c: Country) => c.isoCode === isoCode);

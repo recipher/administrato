@@ -48,7 +48,7 @@ export default function File({ name, label, accept, Icon }: Props) {
           Choose
         </button>
         <input type="file" ref={fileRef} {...getInputProps({ id: name })}
-          onChange={handleSelectFile} accept={accept} className="sr-only" />
+          onChange={handleSelectFile} accept={accept} className="hidden" />
       </div>
       <ErrorMessage name={name} error={error} />
     </div>

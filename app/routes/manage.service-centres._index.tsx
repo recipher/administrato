@@ -38,7 +38,7 @@ export default function ServiceCentres() {
   const { serviceCentres, countries } = useLoaderData();
 
   const Context = (serviceCentre: ServiceCentre) =>
-    <ListContext chevron={true} />;
+    <ListContext select={true} />;
 
   const Item = (serviceCentre: ServiceCentre) =>
     <ListItem data={serviceCentre.name} sub={<Flags localities={serviceCentre.localities} countries={countries} />} />

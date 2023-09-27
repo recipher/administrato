@@ -12,7 +12,7 @@ import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import { Flag } from "~/components/countries/countries";
+import { Flag } from "~/components/countries/flag";
 
 export const handle = {
   breadcrumb: ({ country, parent, current }: { country: Country, parent: Country, current: boolean }) => {

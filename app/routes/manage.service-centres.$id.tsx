@@ -7,7 +7,7 @@ import { requireUser } from '~/auth/auth.server';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import Header from '~/components/header';
-import { Flag } from '~/components/countries/countries';
+import { Flag } from '~/components/countries/flag';
 import { manage } from '~/auth/permissions';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";

@@ -56,7 +56,7 @@ const LegalEntities = () => {
   const { provider, legalEntities, count, offset, limit, search, sort, countries } = useLoaderData();
 
   const Context = (legalEntity: LegalEntity) =>
-    <ListContext chevron={true} />;
+    <ListContext select={true} />;
 
   const Item = (legalEntity: LegalEntity) =>
     <ListItem data={legalEntity.name} sub={<Flags localities={legalEntity.localities} countries={countries} />} />

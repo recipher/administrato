@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react';
 import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';

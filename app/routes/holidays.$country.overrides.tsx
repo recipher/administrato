@@ -1,7 +1,6 @@
 import { intlFormat } from 'date-fns';
-import { useRef, useState } from 'react';
-import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
-import { Link, useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
+import { type LoaderArgs } from '@remix-run/node';
+import { Link, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';

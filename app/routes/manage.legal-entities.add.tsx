@@ -4,6 +4,7 @@ import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useActionData, useLoaderData, useSubmit } from '@remix-run/react'
+import { useTranslation } from 'react-i18next';
 import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
@@ -32,7 +33,6 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
-import { useTranslation } from 'react-i18next';
 
 export const handle = {
   i18n: "schedule",
@@ -102,7 +102,9 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   if (formData.get('intent') === 'change-codes') {
-    const codes = String(formData.get('codes')).split(',');
+    const data = String(formData.get('codes'));
+    if (data === "") return json({ codes: [], regions: [], countries: [] });
+    const codes = data.split(',').reduce((codes: string[], code: string) => codes.includes(code) ? codes : [ ...codes, code ], []);
     const countries = await countryService.getCountries({ isoCodes: codes });
     const regions = await countryService.getRegions({ isoCodes: codes });
     return json({ codes, regions, countries });
@@ -153,7 +155,8 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Add = () => {
-  const { t } = useTranslation("schedule");
+  const { t } = useTranslation();
+  const { t: ts } = useTranslation("schedule");
   const { serviceCentres, serviceCentre, frequencies } = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
@@ -183,6 +186,11 @@ const Add = () => {
   const selectCountry = (country: Country) => {
     const codes = data?.codes || [];
     submit({ intent: "change-codes", codes: [ ...codes, country.isoCode ] }, { method: "post", encType: "multipart/form-data" });  
+  };
+
+  const removeCountry = (country: Country) => {
+    const codes = (data?.codes || []).filter((code: string) => code !== country.isoCode);
+    submit({ intent: "change-codes", codes }, { method: "post", encType: "multipart/form-data" });  
   };
 
   useEffect(() => {
@@ -217,7 +225,7 @@ const Add = () => {
               <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
             </Field>
             <Field>
-              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f) }))} />
+              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: ts(f) }))} />
             </Field>
             <Field>
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />
@@ -248,13 +256,21 @@ const Add = () => {
               const country = findCountry(code);
               const regions = findRegions(code);
               return (
-                <Field key={code}>
-                  <Select 
-                    label='Select Country or a Region'
-                    name="localities" 
-                    defaultValue={country}
-                    data={[ country ].concat(regions)} />
-                </Field>
+                <>
+                  <Field span={3} key={code}>
+                    <Select 
+                      label='Select Country or a Region'
+                      name="localities" 
+                      defaultValue={country}
+                      data={[ country ].concat(regions)} />
+                  </Field>
+                  <Field span={1}>
+                    <button onClick={() => removeCountry(country)}
+                      type="button" className="text-sm mt-10 text-red-600 hover:text-red-500">
+                      {t('remove')}
+                    </button>
+                  </Field>
+                </>
               )})}
           </Group>
         </Body>

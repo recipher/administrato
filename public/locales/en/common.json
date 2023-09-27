@@ -41,6 +41,8 @@
   "provider": "Provider",
   "add-provider": "Add Provider",
   "info": "Information",
+  "stats": "Statistics",
+  "summary": "Summary",
   "location": "Location",
   "locations": "Locations",
   "access": "Access",

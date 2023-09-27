@@ -41,6 +41,8 @@ export default function Client() {
 
   const tabs = [
     { name: 'info', to: 'info' },
+    { name: 'summary', to: 'summary' },
+    { name: 'groups', to: 'groups' },
     { name: 'workers', to: 'workers' },
     { name: 'locations', to: 'locations' },
     { name: 'holidays', to: 'holidays' },

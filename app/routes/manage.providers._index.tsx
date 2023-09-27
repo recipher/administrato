@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
@@ -57,7 +57,7 @@ export default function Providers() {
   };
 
   const Context = (provider: Provider) =>
-    <ListContext data={serviceCentres.find((sc: ServiceCentre) => sc.id === provider.serviceCentreId)?.name} chevron={false} />;
+    <ListContext data={serviceCentres.find((sc: ServiceCentre) => sc.id === provider.serviceCentreId)?.name} select={false} />;
 
   const Item = (provider: Provider) =>
     <ListItem data={provider.name} sub={<Flags localities={provider.localities} countries={countries} />} />
