@@ -50,7 +50,8 @@ export default function Client() {
 
   const locality = searchParams.get("locality") || localities.at(0);
   const actions = [
-    { title: 'add-holiday', to: `/holidays/${locality}/add?entity=client&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.client },
+    { title: 'add-group', to: `/manage/clients/${id}/add-group`, default: true, icon: PlusIcon, permission: manage.edit.client },
+    { title: 'add-holiday', to: `/holidays/${locality}/add?entity=client&entity-id=${id}`, permission: manage.edit.client },
   ];
 
   const icon = logo || <IdentificationIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;

@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import ServiceCentreService from '~/models/manage/service-centres.server';
+import ClientService from '~/models/manage/clients.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import withAuthorization from '~/auth/with-authorization';
@@ -29,8 +29,8 @@ import Button, { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre.id}/groups/add`} name="add-group" current={current} />
+  breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/clients/${client.id}/groups/add`} name="add-group" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -40,12 +40,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = await service.getServiceCentre({ id });
+  const service = ClientService(u);
+  const client = await service.getClient({ id });
 
-  if (serviceCentre === undefined) return notFound('Service centre not found');
+  if (client === undefined) return notFound('Client not found');
 
-  return json({ serviceCentre });
+  return json({ client });
 };
 
 const schema = zfd.formData({
@@ -91,10 +91,10 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const validator = withZod(schema.superRefine(
     async (data, ctx) => {
-      const service = ServiceCentreService(u);
+      const service = ClientService(u);
       if (data.identifier) {
-        const serviceCentre = await service.getServiceCentre({ id: data.identifier }, { bypassKeyCheck: true });
-        if (serviceCentre !== undefined) 
+        const client = await service.getClient({ id: data.identifier }, { bypassKeyCheck: true });
+        if (client !== undefined) 
           ctx.addIssue({
             message: "This identifier is already in use",
             path: [ "identifier" ],
@@ -102,8 +102,8 @@ export const action = async ({ request, params }: ActionArgs) => {
           });
       }
         if (data.name) {
-          const serviceCentre = await service.getServiceCentreByName({ name: data.name }, { bypassKeyCheck: true });
-          if (serviceCentre !== undefined) 
+          const client = await service.getClientByName({ name: data.name }, { bypassKeyCheck: true });
+          if (client !== undefined) 
             ctx.addIssue({
               message: "This name is already in use",
               path: [ "name" ],
@@ -124,10 +124,11 @@ export const action = async ({ request, params }: ActionArgs) => {
   const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
   
-  const service = ServiceCentreService(u);
-  await service.addServiceCentre({ localities, identifier, parentId, ...data });
+  const service = ClientService(u);
+  const parent = await service.getClient({ id: parentId });
+  await service.addClient({ localities, identifier, parentId, serviceCentreId: parent.serviceCentreId, ...data });
   
-  return redirect(`/manage/service-centres/${parentId}/groups`);
+  return redirect(`/manage/clients/${parentId}/groups`);
 };
 
 const AddGroup = () => {
@@ -137,7 +138,7 @@ const AddGroup = () => {
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
-  const context = useFormContext("add-service-centre-group");
+  const context = useFormContext("add-client-group");
   const modal = useRef<RefModal>(null);
 
   const [ country, setCountry ] = useState<Country>();
@@ -192,17 +193,17 @@ const AddGroup = () => {
 
   return (
     <>
-      <Form method="post" validator={clientValidator} id="add-service-centre-group" className="mt-6">
+      <Form method="post" validator={clientValidator} id="add-client-group" className="mt-6">
         <Body>
-          <Section heading='New Group' explanation='Please enter the new service centre group details.' />
+          <Section heading='New Group' explanation='Please enter the new client group details.' />
           <Group>
             <Field>
               <UniqueInput label="Group Name" name="name" placeholder="e.g. Scotland"
-                checkUrl="/manage/service-centres/name" property="serviceCentre" message="This name is already in use" />
+                checkUrl="/manage/clients/name" property="client" message="This name is already in use" />
             </Field>
             <Field span={3}>
               <UniqueInput label="Identifier" name="identifier" 
-                checkUrl="/manage/service-centres" property="serviceCentre" message="This identifier is already in use"
+                checkUrl="/manage/clients" property="client" message="This identifier is already in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
             <Field span={3}>
@@ -251,7 +252,7 @@ const AddGroup = () => {
         </Body>
         <Footer>
           <Cancel />
-          <Submit text="Save" submitting="Saving..." permission={manage.create.serviceCentre} />
+          <Submit text="Save" submitting="Saving..." permission={manage.create.client} />
         </Footer>
       </Form>
       <CountriesModal modal={modal} country={country}

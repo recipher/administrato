@@ -1,14 +1,16 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import ClientService from '~/models/manage/clients.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
+import { badRequest, notFound } from '~/utility/errors';
 
+import ClientService, { Client } from '~/models/manage/clients.server';
+
+import Alert, { Level } from '~/components/alert';
+import { List, ListContext, ListItem } from '~/components/list';
+import { requireUser } from '~/auth/auth.server';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
-import { notFound, badRequest } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import toNumber from '~/helpers/to-number';
 
 export const handle = {
   breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
@@ -16,7 +18,7 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { id } = params;
+  const id = toNumber(params.id as string);
 
   if (id === undefined) return badRequest('Invalid request');
 
@@ -27,14 +29,22 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (client === undefined) return notFound('Client not found');
 
-  return json({ client });
+  const groups = await service.listClients({ parentId: id });
+
+  return json({ client, groups, clients: groups });
 };
 
 const Groups = () => {
-  const { client } = useLoaderData();
+  const { client, groups } = useLoaderData();
+  
+  const Item = (group: Client) => <ListItem data={group.name} />;
+  const Context = (group: Client) => <ListContext select={true} />
 
   return (
-    <div></div>
+    <>
+      {groups.length === 0 && <Alert title="No client groups" level={Level.Info} />}
+        <List data={groups} renderItem={Item} renderContext={Context} />
+    </>
   );
 };
 

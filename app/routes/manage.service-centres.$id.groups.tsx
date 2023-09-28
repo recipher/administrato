@@ -14,7 +14,7 @@ import toNumber from '~/helpers/to-number';
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/serviceCentres/${serviceCentre?.id}/holidays`} name="holidays" current={current} />
+    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/groups`} name="groups" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

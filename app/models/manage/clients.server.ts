@@ -5,7 +5,7 @@ import pool from '../db.server';
 import ServiceCentreService from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
-  QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
+  QueryOptions, IdProp, NameProp, KeyQueryOptions as BaseKeyQueryOptions, BypassKeyCheck } from '../types';
 import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
@@ -14,8 +14,13 @@ import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './sh
 
 export type Client = s.clients.Selectable & { groupCount?: number };
 
+type KeyQueryOptions = {
+  parentId?: number | undefined;
+} & BaseKeyQueryOptions;
+
 type SearchOptions = {
   serviceCentreId?: number | undefined;
+  parentId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -65,26 +70,33 @@ const service = (u: User) => {
 
   const listClients = async (query: KeyQueryOptions = { isArchived: false }) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "client"); 
+    const whereParent = query.parentId 
+      ? db.sql`main.${'parentId'} = ${db.param(query.parentId)}`
+      : db.sql`main.${'parentId'} IS NULL`;
     return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT main.* FROM ${'clients'} AS main
-      WHERE ${whereKeys({ keys, ...query })}
+      WHERE ${whereParent} AND ${whereKeys({ keys, ...query })}
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
-    const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-      AND 
-        LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+  const searchQuery = ({ search, serviceCentreId, parentId }: SearchOptions) => {
+    const parent = parentId 
+      ? db.sql`main.${'parentId'} = ${db.param(parentId)}`
+      : db.sql`main.${'parentId'} IS NULL`;
 
-    return serviceCentreId === undefined ? name
-      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+      const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
+        AND 
+          LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+
+    return serviceCentreId === undefined ? db.sql`${parent} ${name}`
+      : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countClients = async (search: SearchOptions) => {
     const keys = extractKeys(u, "serviceCentre", "client");
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'clients'} AS main
-      WHERE main.${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
     `.run(pool);
 
     const { count } = item as unknown as Count;
@@ -95,10 +107,14 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "client");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
+    const whereParent = search.parentId 
+      ? db.sql`main.${'parentId'} = ${db.param(search.parentId)}`
+      : db.sql`main.${'parentId'} IS NULL`;
+
     const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT main.*, COUNT(g.${'id'}) AS "groupCount" FROM ${'clients'} AS main
       LEFT JOIN ${'clients'} AS g ON main.${'id'} = g.${'parentId'}
-      WHERE main.${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
+      WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
       GROUP BY main.${'id'}
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}

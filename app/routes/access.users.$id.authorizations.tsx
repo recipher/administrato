@@ -30,7 +30,7 @@ export const handle = {
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name="profile" current={current} />
 };
 
-type Authorizable = LegalEntity | Client | Provider | ServiceCentre;
+type Authorizable = (LegalEntity | Client | Provider | ServiceCentre);
 type AuthorizableWithType = Authorizable & { type: string, Icon?: any };
 
 const toAuthorizables = (type: string, authorizables: Array<Authorizable>) => {
@@ -154,6 +154,7 @@ export default function Profile() {
             <li key={authorizable.id} className="group pt-3 sm:flex cursor-pointer">
               <div className="text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
                 {/* {authorizable.Icon && <authorizable.Icon className="inline -ml-0.5 mr-1.5 h-4 w-4 text-gray-400" aria-hidden="true" />} */}
+                {/* @ts-ignore */}
                 {t(authorizable.type)} {authorizable.parentId ? t('group') : null}
               </div>
               {hasPermission(security.edit.user) && <div className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
