@@ -35,10 +35,10 @@ export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, c
     const Arrow = () => <ArrowLongRightIcon className="ml-3 h-5 w-5 text-gray-400" aria-hidden="true" />;
     return onPage 
       ? <div className={className} onClick={() => onPage(next)}>
-          {'Next'}<Arrow />
+          {t('next')}<Arrow />
         </div>
       : <Link to={`?${nextParams.toString()}`} className={className}>
-          {'Next'}<Arrow />
+          {t('next')}<Arrow />
         </Link>
   };
 
@@ -47,10 +47,10 @@ export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, c
     const Arrow = () => <ArrowLongLeftIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />;
     return onPage 
       ? <div className={className} onClick={() => onPage(previous)}>
-          <Arrow />{'Previous'}
+          <Arrow />{t('previous')}
         </div>
       : <Link to={`?${previousParams.toString()}`} className={className}>
-          <Arrow />{'Previous'}
+          <Arrow />{t('previous')}
         </Link>
   };
 
@@ -61,7 +61,7 @@ export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, c
     >
       {totalItems !== NO_COUNT && <div className="hidden sm:block">
         <p className="text-sm text-gray-700">
-          Showing{' '}
+          {t('showing')}{' '}
           {totalItems > 0 && <><span className="font-medium">{from}</span><span>{' to '}</span><span className="font-medium">{to}</span> of{' '}</>}
           <span className="font-medium">{totalItems}</span> {t(pluralize(entity, totalItems))}
         </p>
@@ -70,12 +70,12 @@ export default function Pagination({ offset = 0, limit, totalItems = NO_COUNT, c
         {isStart
           ? <div className="inline-flex items-center pr-4 pb-4 text-sm font-medium text-gray-300">
               <ArrowLongLeftIcon className="mr-3 h-5 w-5 text-gray-200" aria-hidden="true" />
-              Previous
+              {t('previous')}
             </div>
             : <Previous />}
         {isEnd
           ? <div className="inline-flex items-center pl-4 pb-4 text-sm font-medium text-gray-300">
-              Next
+              {t('next')}
               <ArrowLongRightIcon className="ml-3 h-5 w-5 text-gray-200" aria-hidden="true" />
             </div>
           : <Next />}

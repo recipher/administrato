@@ -46,7 +46,7 @@ export const Search = () => {
     const q = elements.q.value;
 
     if (q === "") e.preventDefault();
-  }
+  };
 
   return (
     <Form className="relative flex flex-1" action="/search" method="GET" onSubmit={handleSubmit}>
@@ -88,7 +88,7 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
   const handleSelectOrganization = (organization: Organization) => {
     modal.current?.hide();
     submit(
-      { intent: "select-organization", organization, user, redirectTo }, 
+      { intent: "select-organization", organization, user }, 
       { action: "/profile", method: "post", encType: "application/json" }
     );
   };

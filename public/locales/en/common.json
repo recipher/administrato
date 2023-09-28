@@ -73,6 +73,8 @@
   "create": "Create",
   "edit": "Edit",
   "delete": "Delete",
+  "previous": "Previous",
+  "next": "Next",
   "help": "Help",
   "welcome": "Hello"
 }

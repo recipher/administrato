@@ -1,10 +1,9 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import ClientService from '~/models/manage/clients.server';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
-import Stats from '~/components/stats';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
@@ -42,6 +41,14 @@ const Info = () => {
         <Section>
           <Field title="Client Name">
             <p className="text-gray-900">{client.name}</p>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>
+          <Field title="Service Centre Name">
+            <Link className="text-indigo-900" to={`/manage/service-centres/${client.serviceCentreId}/info`}>
+              {client.serviceCentre}
+            </Link>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>

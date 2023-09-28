@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import ProviderService from '~/models/manage/providers.server';
@@ -30,7 +30,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ provider });
 };
 
-
 const Info = () => {
   const { t } = useTranslation();
   const { provider } = useLoaderData();
@@ -46,7 +45,15 @@ const Info = () => {
               Update
             </button>
           </Field>
-        </Section>
+          <Field title="Service Centre Name">
+            <Link className="text-indigo-900" to={`/manage/service-centres/${provider.serviceCentreId}/info`}>
+              {provider.serviceCentre}
+            </Link>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>
+      </Section>
       </Layout>
     </>
   );

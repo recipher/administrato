@@ -55,6 +55,14 @@ const Info = () => {
               {legalEntity.provider}
             </Link>
           </Field>
+          <Field title="Service Centre Name">
+            <Link className="text-indigo-900" to={`/manage/service-centres/${legalEntity.serviceCentreId}/info`}>
+              {legalEntity.serviceCentre}
+            </Link>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>
         </Section>
       </Layout>
     </>

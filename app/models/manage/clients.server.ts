@@ -130,8 +130,9 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "client");
     const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
-    const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT main.* FROM ${'clients'} AS main
+    const [ client ] = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'clients'} AS main
+      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
       `.run(pool);

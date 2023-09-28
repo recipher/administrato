@@ -34,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = ServiceCentreService(u);
   const serviceCentre = await service.getServiceCentre({ id }, { bypassKeyCheck });
-  const parent = serviceCentre.parentId ? await service.getServiceCentre({ id }) : null;
+  const parent = serviceCentre.parentId ? await service.getServiceCentre({ id: serviceCentre.parentId }) : null;
 
   if (serviceCentre === undefined && !bypassKeyCheck) return notFound('Service centre not found');
 

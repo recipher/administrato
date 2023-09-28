@@ -23,7 +23,7 @@ export const Breadcrumb = ({ name, to, Icon, current = false }: PageProps) => {
       <Link
         to={to}
         className={classnames(Icon ? "ml-4" : "", current ? "text-indigo-500 hover:text-indigo-700" : "text-gray-500 hover:text-gray-700",
-          "text-md font-medium")}
+          "text-md font-medium whitespace-nowrap")}
         aria-current={current ? 'page' : undefined}
       >
         {t(name)}
@@ -51,10 +51,10 @@ export default function Breadcrumbs({ breadcrumbs }: Props) {
       <ol role="list" className="flex items-center space-x-4">
         {breadcrumbs.map((breadcrumb, index) => (
           <li key={index}>
-            <div className="flex items-center">
+            <span className="flex items-center">
               {index !== 0 && <Separator />}
               {breadcrumb}
-            </div>
+            </span>
           </li>
         ))}
       </ol>

@@ -73,6 +73,9 @@
   "create": "Crear",
   "edit": "Editar",
   "delete": "Borrar",
+  "previous": "Previa",
+  "next": "Próxima",
+  "showing": "Demostración",
   "help": "Ayuda",
   "welcome": "Hola"
 }
