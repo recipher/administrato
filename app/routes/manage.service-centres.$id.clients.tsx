@@ -29,6 +29,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
+  const all = url.searchParams.get("all") === "true";
 
   const { id } = params;
 
@@ -43,7 +44,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const clientService = ClientService(u);
   const { clients, metadata: { count }} = 
-    await clientService.searchClients({ search, serviceCentre }, { offset, limit, sortDirection: sort });
+    await clientService.searchClients({ search, 
+      serviceCentreId: all ? undefined : Number(id),
+      serviceCentre: all ? serviceCentre : undefined
+    }, { offset, limit, sortDirection: sort });
 
   const isoCodes = clients.map(c => c.localities || []).flat();
   const countryService = CountryService();

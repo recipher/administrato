@@ -38,9 +38,9 @@ export const navigation = [
     children: [
       { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker,
         children: [
-          { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker },
-          { name: 'employees', to: '/manage/employees', icon: CubeIcon, permission: manage.read.worker },
-          { name: 'contractors', to: '/manage/contractors', icon: CubeIcon, permission: manage.read.worker },
+          { name: 'workers', to: '/manage/workers' },
+          { name: 'employees', to: '/manage/employees' },
+          { name: 'contractors', to: '/manage/contractors' },
         ],
       },
       { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },

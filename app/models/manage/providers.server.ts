@@ -16,6 +16,7 @@ export type Provider = s.providers.Selectable & { serviceCentre?: string };
 
 type SearchOptions = {
   serviceCentre?: ServiceCentre | undefined;
+  serviceCentreId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -65,12 +66,12 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentre }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return serviceCentre === undefined ? name 
-      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentre.id)}`; 
+    return serviceCentreId === undefined ? name 
+      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countProviders = async (search: SearchOptions) => {

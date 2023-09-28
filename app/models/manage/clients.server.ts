@@ -21,6 +21,7 @@ type KeyQueryOptions = {
 type SearchOptions = {
   serviceCentre?: ServiceCentre | undefined;
   parentId?: number | undefined;
+  serviceCentreId?: number | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -79,7 +80,7 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentre, parentId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId, parentId }: SearchOptions) => {
     const parent = parentId 
       ? db.sql`main.${'parentId'} = ${db.param(parentId)}`
       : db.sql`main.${'parentId'} IS NULL`;
@@ -87,8 +88,8 @@ const service = (u: User) => {
       const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
         AND LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return !serviceCentre ? db.sql`${parent} ${name}`
-      : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentre.id)}`; 
+    return !serviceCentreId ? db.sql`${parent} ${name}`
+      : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countClients = async (search: SearchOptions) => {

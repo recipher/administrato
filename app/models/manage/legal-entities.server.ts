@@ -18,6 +18,8 @@ export type LegalEntity = s.legalEntities.Selectable & { provider?: string, serv
 type SearchOptions = {
   serviceCentre?: ServiceCentre | undefined;
   provider?: Provider | undefined;
+  serviceCentreId?: number | undefined;
+  providerId?: number | undefined;
 } & BaseSearchOptions;
 
 export const frequencies = [
@@ -81,14 +83,14 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentre, provider }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId, providerId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    const whereServiceCentre = serviceCentre === undefined ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
-      : db.sql<db.SQL>`main.${'serviceCentreId'} = ${db.param(serviceCentre.id)}`;
-    const whereProvider = provider === undefined ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
-      : db.sql<db.SQL>`main.${'providerId'} = ${db.param(provider.id)}`;
+    const whereServiceCentre = serviceCentreId === undefined ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
+      : db.sql<db.SQL>`main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`;
+    const whereProvider = providerId === undefined ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
+      : db.sql<db.SQL>`main.${'providerId'} = ${db.param(providerId)}`;
 
     return db.sql<db.SQL>`${name} AND ${whereServiceCentre} AND ${whereProvider}`;    
   };
