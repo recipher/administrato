@@ -17,7 +17,7 @@ type KeyQueryOptions = BaseKeyQueryOptions & {
   parentId?: number | undefined;
 };
 
-export type ServiceCentre = s.serviceCentres.Selectable;
+export type ServiceCentre = s.serviceCentres.Selectable & { groupCount?: number };
 
 const service = (u: User) => {
   const getLatest = async (parentId: number | null) => {
@@ -76,7 +76,7 @@ const service = (u: User) => {
 
   const checkForFullAccess = (keys: Array<SecurityKey>, serviceCentres: Array<ServiceCentre>) => {
     return (keys.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
-      ? [ { id: 0 as unknown as db.Int8String, 
+      ? [ { id: Number.MAX_SAFE_INTEGER as unknown as db.Int8String, 
             name: "Full Authorization", 
             identifier: "full-authorization",
             localities: [], 
@@ -98,8 +98,11 @@ const service = (u: User) => {
       : db.sql`main.${'parentId'} IS NULL`;
 
     const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT main.* FROM ${'serviceCentres'} AS main
+      SELECT main.*, COUNT(g.${'id'}) AS "groupCount" 
+      FROM ${'serviceCentres'} AS main
+      LEFT JOIN ${'serviceCentres'} AS g ON main.${'id'} = g.${'parentId'}
       WHERE ${whereKeys({ keys, ...query })} AND ${whereParent}
+      GROUP BY main.${'id'}
       `.run(pool);
 
     return query.allowFullAccess ? checkForFullAccess(keys, serviceCentres) : serviceCentres;

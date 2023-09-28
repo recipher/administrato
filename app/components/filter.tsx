@@ -5,7 +5,7 @@ import pluralize from "~/helpers/pluralize";
 
 type Props = { 
   entity?: string;
-  title?: string;
+  title?: string | undefined;
   onFilter: Function; 
 };
 

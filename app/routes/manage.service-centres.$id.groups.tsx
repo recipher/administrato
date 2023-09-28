@@ -31,14 +31,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const groups = await service.listServiceCentres({ parentId: id });
 
-  return json({ serviceCentre, groups });
+  return json({ serviceCentre, groups, serviceCentres: groups });
 };
 
 const Groups = () => {
   const { serviceCentre, groups } = useLoaderData();
   
   const Item = (group: ServiceCentre) => <ListItem data={group.name} />;
-  const Context = (group: ServiceCentre) => <ListContext chevron={true} />
+  const Context = (group: ServiceCentre) => <ListContext select={true} />
 
   return (
     <>

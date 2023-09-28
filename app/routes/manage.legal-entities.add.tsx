@@ -162,7 +162,6 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Add = () => {
   const { t } = useTranslation();
-  const { t: ts } = useTranslation("schedule");
   const { serviceCentres, serviceCentre, frequencies } = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
@@ -251,8 +250,8 @@ const Add = () => {
             <Field>
               <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
             </Field>
-            <Field>
-              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: ts(f) }))} />
+            <Field span={3}>
+              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f, { ns: "schedule" }) }))} />
             </Field>
             <Field>
               <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />

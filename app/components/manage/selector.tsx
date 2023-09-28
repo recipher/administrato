@@ -2,17 +2,25 @@ import { forwardRef, Ref, useRef, useState, useImperativeHandle, useEffect, Frag
 import { useFetcher } from "@remix-run/react";
 
 import { useTranslation } from "react-i18next";
+import { Menu, Transition } from "@headlessui/react";
 
 import { MapIcon, WalletIcon, CurrencyYenIcon, IdentificationIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+
+import { type Client } from '~/models/manage/clients.server';
+import { type Provider } from '~/models/manage/providers.server';
+import { type ServiceCentre } from '~/models/manage/service-centres.server';
+import { type LegalEntity } from '~/models/manage/legal-entities.server';
 
 import Modal, { RefModal } from "../modals/modal";
 import Filter from "../filter";
 import Pagination from "../pagination";
-import List from "../list/basic";
+import { List, ListItem } from "../list";
 
 import pluralize from "~/helpers/pluralize";
-import { Menu, Transition } from "@headlessui/react";
 import classnames from "~/helpers/classnames";
+import { ChevronRightIcon } from "@heroicons/react/20/solid";
+
+type Entity = Client | Provider | LegalEntity | ServiceCentre;
 
 const LIMIT = 6;
 
@@ -69,14 +77,32 @@ const Dropdown = ({ onSelect, entity }: { onSelect: Function, entity: string }) 
   );
 };
 
-export const Selector = ({ entity, onSelect, onChange, allowChange }: 
-  { entity: string, onSelect: Function, onChange: Function, allowChange: boolean }) => {
+type SelectorProps = { 
+  entity: string;
+  parent: Entity | undefined;
+  onSelect: Function; 
+  onSelectGroups: Function;
+  onChange: Function; 
+  allowChange: boolean;
+};
+
+export const Selector = ({ entity, parent, onSelect, onSelectGroups, onChange, allowChange }: SelectorProps) => {
+  const { t } = useTranslation();
   const fetcher = useFetcher();
 
+  // @ts-ignore
+  const url = parent && parent.groupCount > 0
+    ? `/manage/${pluralize(entity)}/${parent.id}/groups` 
+    : `/manage/${pluralize(entity)}?index&full=true`;
+
+  // @ts-ignore
+  const title = parent && parent.groupCount > 0 
+    ? `Search ${parent.name} ${t('groups')}`
+    : undefined;
+
   useEffect(() => {
-    if (fetcher.state === "idle")
-      fetcher.load(`/manage/${pluralize(entity)}?index&full=true`);
-  }, [entity]);
+    if (fetcher.state === "idle") fetcher.load(url);
+  }, [entity, parent]);
 
   const Select = ({ entity, data }: { entity: string, data: Array<any> }) => {
     const [ offset, setOffset ] = useState(0);
@@ -84,7 +110,7 @@ export const Selector = ({ entity, onSelect, onChange, allowChange }:
 
     const ensureSize = (items: Array<any> = []) => {
       if (items.length < LIMIT) {
-        const empty = [...Array(LIMIT - items.length).keys()].map(_ => ({ id: '', name: '' }));
+        const empty = [...Array(LIMIT - items.length).keys()].map(_ => ({ id: null, name: "" }));
         return [ ...items, ...empty ];
       }
       return items;
@@ -107,17 +133,39 @@ export const Selector = ({ entity, onSelect, onChange, allowChange }:
       setEntities(ensureSize(paged));
     };
     
+    const Item = (entity: Entity) => <ListItem className="h-6" data={entity.name} />
+    const Context = (entity: Entity) => {
+      const handleClick = (e: any) => {
+        e.stopPropagation(); 
+        onSelectGroups(entity);
+      };
+
+      return (
+        <>
+          {/* @ts-ignore */}
+          {entity.parentId !== undefined && entity.groupCount > 0 &&
+            <button onClick={handleClick}
+              className="hidden sm:flex sm:flex-col sm:items-end">
+              {/* @ts-ignore */}
+              {entity.groupCount} {pluralize('group', entity.groupCount)}
+            </button>}
+          <ChevronRightIcon className={classnames(entity.name ? "" : "invisible", "h-5 w-5 flex-none text-gray-400")} aria-hidden="true" />
+        </>
+      );
+    };
+
     return (
       <>
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-          <Filter entity={entity} onFilter={handleFilter} />
+          <Filter entity={entity} title={title} onFilter={handleFilter} />
           {allowChange && <Dropdown onSelect={onChange} entity={entity} />}
         </div>
         <div className="mt-3">
-          <List data={entities} onClick={onSelect} />
+          <List data={entities} renderItem={Item} renderContext={Context} onClick={onSelect} />
         </div>
-        <Pagination onPage={handlePage}
-          entity={entity} offset={offset} limit={LIMIT} 
+        {/* @ts-ignore */}
+        <Pagination entity={parent && parent.groupCount ? "group" : entity}
+          offset={offset} limit={LIMIT} onPage={handlePage}
           totalItems={filteredEntities?.length || 0} />
       </>
     );
@@ -133,14 +181,24 @@ export const SelectorModal = forwardRef(({ onSelect, allowChange = true }:
   { onSelect: any, allowChange?: boolean }, ref: Ref<RefSelectorModal>) => {
   const modal = useRef<RefModal>(null);
   const [entity, setEntity] = useState('');
-
+  const [parent, setParent] = useState<Entity | undefined>(undefined);
+  
   const handleSelect = (item: any) => {
     onSelect(item, entity);
     modal.current?.hide();
   };
 
-  const show = (entity: string) => {
+  const handleSelectGroups = (item: any) => {
+    setParent(item);
+  };
+
+  const handleChange = (entity: string) => {
+    setParent(undefined);
     setEntity(entity);
+  };
+
+  const show = (entity: string) => {
+    handleChange(entity);
     modal.current?.show();
   };
 
@@ -148,8 +206,10 @@ export const SelectorModal = forwardRef(({ onSelect, allowChange = true }:
 
   return (
     <Modal ref={modal}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[27rem]">
-        <Selector entity={entity} onSelect={handleSelect} onChange={setEntity} allowChange={allowChange} />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[25rem]">
+        <Selector entity={entity} parent={parent}
+          onSelect={handleSelect} onSelectGroups={handleSelectGroups}
+            onChange={handleChange} allowChange={allowChange} />
       </div>
     </Modal>
   );

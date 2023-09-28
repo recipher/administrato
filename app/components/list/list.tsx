@@ -21,7 +21,9 @@ type Props = {
 
 export const ListItem = ({ className = "", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
   if (typeof image === "string") 
-    image = <Image src={image} className="h-12 w-12 rounded-md" />;
+    image = image.length 
+      ? <Image src={image} className="h-12 w-12 rounded-full" />
+      : <div className="h-12 w-12 rounded-full border-solid border-2 border-gray-100" />;
 
   return (
     <>
@@ -70,7 +72,7 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
   );
 
   return (
-    <ul role="list" className="divide-y divide-gray-100 py-3">
+    <ul className="divide-y divide-gray-100 py-3">
       {data.map((item: any, index: number) => (
         <li key={`${item[idKey]}-${index}`} className="group">
           {onClick 

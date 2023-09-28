@@ -12,7 +12,7 @@ import { type User } from '../access/users.server';
 
 import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
 
-export type Client = s.clients.Selectable;
+export type Client = s.clients.Selectable & { groupCount?: number };
 
 type SearchOptions = {
   serviceCentreId?: number | undefined;
@@ -96,8 +96,10 @@ const service = (u: User) => {
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT main.* FROM ${'clients'} AS main
+      SELECT main.*, COUNT(g.${'id'}) AS "groupCount" FROM ${'clients'} AS main
+      LEFT JOIN ${'clients'} AS g ON main.${'id'} = g.${'parentId'}
       WHERE main.${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}
+      GROUP BY main.${'id'}
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}

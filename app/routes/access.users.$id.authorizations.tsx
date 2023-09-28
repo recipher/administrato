@@ -154,7 +154,7 @@ export default function Profile() {
             <li key={authorizable.id} className="group pt-3 sm:flex cursor-pointer">
               <div className="text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
                 {/* {authorizable.Icon && <authorizable.Icon className="inline -ml-0.5 mr-1.5 h-4 w-4 text-gray-400" aria-hidden="true" />} */}
-                {t(authorizable.type)}
+                {t(authorizable.type)} {authorizable.parentId ? t('group') : null}
               </div>
               {hasPermission(security.edit.user) && <div className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
                 <div className="text-gray-900 font-medium">{authorizable.name}</div>
