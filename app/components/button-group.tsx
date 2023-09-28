@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Link, useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
+import { useUser } from '~/hooks';
 
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
@@ -14,6 +15,9 @@ export type ButtonGroupButton = {
   to?: string,
   icon?: any,
   onClick?: Function,
+  permission?: string;
+  disabled?: boolean;
+  hidden?: boolean;
   default?: boolean | undefined,
 };
 export type ButtonGroupProps = {
@@ -24,6 +28,15 @@ export type ButtonGroupProps = {
 const noOp = () => null!
 
 export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
+  const { permissions } = useUser();
+
+  const filter = ({ buttons }: ButtonGroupProps) => {
+    return buttons.filter(({ permission, hidden }: ButtonGroupButton) => {
+      if (permission === undefined) return !hidden;
+      return permissions.includes(permission) && !hidden;
+    });
+  };
+
   const [ searchParams ] = useSearchParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -60,7 +73,7 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
         >
           <Menu.Items className="absolute right-0 z-50 -mr-1 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
-              {buttons.map((button) => (
+              {filter({ buttons }).map((button) => (
                 <Menu.Item key={button.title}>
                   {({ active }) => {
                     const className = classnames('block px-4 py-2 text-sm cursor-pointer',

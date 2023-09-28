@@ -2,7 +2,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import ServiceCentreService from './service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
   QueryOptions, IdProp, NameProp, KeyQueryOptions as BaseKeyQueryOptions, BypassKeyCheck } from '../types';
@@ -10,16 +10,16 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
+import { whereKeys, whereExactKeys, extractKeys, pickKeys, generateIdentifier } from './shared.server';
 
-export type Client = s.clients.Selectable & { groupCount?: number };
+export type Client = s.clients.Selectable & { groupCount?: number, serviceCentre?: string };
 
 type KeyQueryOptions = {
   parentId?: number | undefined;
 } & BaseKeyQueryOptions;
 
 type SearchOptions = {
-  serviceCentreId?: number | undefined;
+  serviceCentre?: ServiceCentre | undefined;
   parentId?: number | undefined;
 } & BaseSearchOptions;
 
@@ -45,7 +45,7 @@ const service = (u: User) => {
       ? await getClient({ id: client.parentId as number })
       : await service.getServiceCentre({ id: client.serviceCentreId as number })
  
-    const maxEntities = client.parentId ? 100 : 100000; // Move to constants
+    const maxEntities = client.parentId ? 100 : 1000000; // Move to constants
 
     const latest = await getLatest(client);
 
@@ -79,21 +79,21 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentreId, parentId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentre, parentId }: SearchOptions) => {
     const parent = parentId 
       ? db.sql`main.${'parentId'} = ${db.param(parentId)}`
       : db.sql`main.${'parentId'} IS NULL`;
 
       const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-        AND 
-          LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+        AND LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return serviceCentreId === undefined ? db.sql`${parent} ${name}`
-      : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    return !serviceCentre ? db.sql`${parent} ${name}`
+      : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentre.id)}`; 
   };
 
   const countClients = async (search: SearchOptions) => {
-    const keys = extractKeys(u, "serviceCentre", "client");
+    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "client");
+
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'clients'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
@@ -104,18 +104,17 @@ const service = (u: User) => {
   };
 
   const searchClients = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
-    const keys = extractKeys(u, "serviceCentre", "client");
+    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "client");
+
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const whereParent = search.parentId 
-      ? db.sql`main.${'parentId'} = ${db.param(search.parentId)}`
-      : db.sql`main.${'parentId'} IS NULL`;
-
-    const clients = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT main.*, COUNT(g.${'id'}) AS "groupCount" FROM ${'clients'} AS main
+    const clients = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "serviceCentre", COUNT(g.${'id'}) AS "groupCount" 
+      FROM ${'clients'} AS main
       LEFT JOIN ${'clients'} AS g ON main.${'id'} = g.${'parentId'}
+      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
-      GROUP BY main.${'id'}
+      GROUP BY main.${'id'}, s.${'name'}
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}

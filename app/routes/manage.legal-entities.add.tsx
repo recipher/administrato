@@ -11,12 +11,12 @@ import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
 import { CameraIcon } from '@heroicons/react/24/solid';
-import { IdentificationIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { IdentificationIcon, MagnifyingGlassIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
 import LegalEntityService, { frequencies } from '~/models/manage/legal-entities.server';
-import ServiceCentreService from '~/models/manage/service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 import { type Provider } from '~/models/manage/providers.server';
 
@@ -33,6 +33,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
+import toNumber from '~/helpers/to-number';
 
 export const handle = {
   i18n: "schedule",
@@ -42,25 +43,15 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const serviceCentreId = url.searchParams.get("service-centre");
+  const id = toNumber(url.searchParams.get("service-centre") as string);
 
   const u = await requireUser(request);
 
   const service = ServiceCentreService(u);
-  const serviceCentres = await service.listServiceCentres();
+  const serviceCentre = id ? await service.getServiceCentre({ id }) : undefined;
 
-  const serviceCentre = serviceCentres.find(sc => sc.id === serviceCentreId);
-
-  return json({ serviceCentres, serviceCentre, frequencies });
+  return json({ serviceCentre, frequencies });
 };
-
-z.setErrorMap((issue, ctx) => {
-  if (issue.code === "invalid_type") {
-    if (issue.path.includes("serviceCentre"))
-      return { message: "Service centre is required" };
-  }
-  return { message: ctx.defaultError };
-});
 
 const schema = 
   zfd.formData({
@@ -75,17 +66,16 @@ const schema =
       .object({
         id: z.string().or(z.array(z.string()))
       }),
-    serviceCentre: z
-      .object({
-        id: z
-          .string()
-          .transform(id => parseInt(id))
-      }).required(),
+    serviceCentreId: z
+      .string()
+      .nonempty("The service centre is required")
+      .transform(id => parseInt(id)),
     providerId: z
       .string()
-      .nonempty("The provider is required"),
+      .nonempty("The provider is required")
+      .transform(id => parseInt(id)),
     logo: z.any(),
-    });
+  });
 
 export const clientValidator = withZod(schema);
 
@@ -148,12 +138,11 @@ export const action = async ({ request }: ActionArgs) => {
     return { ...validationError(result.error), codes, countries, regions };
   }
 
-  const { data: { serviceCentre: { id: serviceCentreId }, localities: { id: codes }, identifier = "", ...data } } = result;
+  const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = LegalEntityService(u);
-  // @ts-ignore
-  const legalEntity = await service.addLegalEntity({ localities, serviceCentreId, identifier, ...data });
+  const legalEntity = await service.addLegalEntity({ localities, identifier, ...data });
   
   return legalEntity
     ? redirect(`/manage/legal-entities/${legalEntity.id}/info`)
@@ -162,10 +151,11 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Add = () => {
   const { t } = useTranslation();
-  const { serviceCentres, serviceCentre, frequencies } = useLoaderData();
+  const { frequencies, ...loaderData } = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
   const [ provider, setProvider ] = useState<Provider>();
+  const [ serviceCentre, setServiceCentre ] = useState<ServiceCentre>(loaderData.serviceCentre);
 
   const data = useActionData();
   const submit = useSubmit();
@@ -174,8 +164,10 @@ const Add = () => {
   const modal = useRef<RefModal>(null);
 
   const providerModal = useRef<RefSelectorModal>(null);
-
   const showProviderModal = () => providerModal.current?.show('provider');
+
+  const serviceCentreModal = useRef<RefSelectorModal>(null);
+  const showServiceCentreModal = () => serviceCentreModal.current?.show('service-centre');
 
   const [ country, setCountry ] = useState<Country>();
 
@@ -253,12 +245,13 @@ const Add = () => {
             <Field span={3}>
               <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f, { ns: "schedule" }) }))} />
             </Field>
-            <Field>
-              <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />
-            </Field>
           </Group>
           <Section size="md" />
           <Group>
+            <Field span={3}>
+              <Lookup label="Service Centre" name="serviceCentreId" onClick={showServiceCentreModal} 
+                icon={MapIcon} value={serviceCentre} placeholder="Select a Service Centre" />
+            </Field>
             <Field span={3}>
               <Lookup label="Provider" name="providerId" onClick={showProviderModal} 
                 icon={IdentificationIcon} value={provider} placeholder="Select a Provider" />
@@ -310,6 +303,8 @@ const Add = () => {
       <CountriesModal modal={modal} country={country}
         onSelect={selectCountry} onSelectRegion={showRegions} />
       <SelectorModal ref={providerModal} onSelect={setProvider} allowChange={false} />
+      <SelectorModal ref={serviceCentreModal} forAuthorization={false}
+        onSelect={setServiceCentre} allowChange={false} />
     </>
   );
 }

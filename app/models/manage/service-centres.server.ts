@@ -11,7 +11,7 @@ import { whereKeys, whereExactKeys, generateIdentifier } from './shared.server';
 
 const KEY_MIN = 0;
 const KEY_MAX = Number.MAX_SAFE_INTEGER;
-const MAX_ENTITIES = 50;
+const MAX_ENTITIES = 100;
 
 type KeyQueryOptions = BaseKeyQueryOptions & {
   parentId?: number | undefined;

@@ -43,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const clientService = ClientService(u);
   const { clients, metadata: { count }} = 
-    await clientService.searchClients({ search, serviceCentreId: toNumber(id) }, { offset, limit, sortDirection: sort });
+    await clientService.searchClients({ search, serviceCentre }, { offset, limit, sortDirection: sort });
 
   const isoCodes = clients.map(c => c.localities || []).flat();
   const countryService = CountryService();

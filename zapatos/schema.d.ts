@@ -54,6 +54,12 @@ declare module 'zapatos/schema' {
       */
       identifier: string;
       /**
+      * **clients.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo: string | null;
+      /**
       * **clients.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
@@ -89,12 +95,6 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       serviceCentreId: db.Int8String;
-      /**
-      * **clients.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo: string | null;
     }
     export interface JSONSelectable {
       /**
@@ -121,6 +121,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string;
+      /**
+      * **clients.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo: string | null;
       /**
       * **clients.isArchived**
       * - `bool` in database
@@ -157,12 +163,6 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       serviceCentreId: number;
-      /**
-      * **clients.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo: string | null;
     }
     export interface Whereable {
       /**
@@ -189,6 +189,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **clients.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.isArchived**
       * - `bool` in database
@@ -225,12 +231,6 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **clients.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -257,6 +257,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **clients.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **clients.isArchived**
       * - `bool` in database
@@ -293,12 +299,6 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       serviceCentreId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
-      /**
-      * **clients.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -325,6 +325,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **clients.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **clients.isArchived**
       * - `bool` in database
@@ -361,12 +367,6 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
-      /**
-      * **clients.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'clients_pkey';
     export type Column = keyof Selectable;
@@ -700,6 +700,12 @@ declare module 'zapatos/schema' {
       */
       identifier: string;
       /**
+      * **legalEntities.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo: string | null;
+      /**
       * **legalEntities.frequency**
       * - `text` in database
       * - Nullable, default: `'monthly'::text`
@@ -759,12 +765,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities: string[] | null;
-      /**
-      * **legalEntities.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo: string | null;
     }
     export interface JSONSelectable {
       /**
@@ -791,6 +791,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string;
+      /**
+      * **legalEntities.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo: string | null;
       /**
       * **legalEntities.frequency**
       * - `text` in database
@@ -851,12 +857,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities: string[] | null;
-      /**
-      * **legalEntities.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo: string | null;
     }
     export interface Whereable {
       /**
@@ -883,6 +883,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **legalEntities.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.frequency**
       * - `text` in database
@@ -943,12 +949,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **legalEntities.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -975,6 +975,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **legalEntities.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.frequency**
       * - `text` in database
@@ -1035,12 +1041,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
-      /**
-      * **legalEntities.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1067,6 +1067,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **legalEntities.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.frequency**
       * - `text` in database
@@ -1127,12 +1133,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
-      /**
-      * **legalEntities.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'legal_entities_pkey';
     export type Column = keyof Selectable;
@@ -1752,6 +1752,12 @@ declare module 'zapatos/schema' {
       */
       identifier: string;
       /**
+      * **providers.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo: string | null;
+      /**
       * **providers.serviceCentreId**
       * - `int8` in database
       * - `NOT NULL`, no default
@@ -1781,12 +1787,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities: string[] | null;
-      /**
-      * **providers.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo: string | null;
     }
     export interface JSONSelectable {
       /**
@@ -1813,6 +1813,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string;
+      /**
+      * **providers.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo: string | null;
       /**
       * **providers.serviceCentreId**
       * - `int8` in database
@@ -1843,12 +1849,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities: string[] | null;
-      /**
-      * **providers.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo: string | null;
     }
     export interface Whereable {
       /**
@@ -1875,6 +1875,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **providers.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **providers.serviceCentreId**
       * - `int8` in database
@@ -1905,12 +1911,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **providers.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1937,6 +1937,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **providers.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **providers.serviceCentreId**
       * - `int8` in database
@@ -1967,12 +1973,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
-      /**
-      * **providers.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1999,6 +1999,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **providers.logo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **providers.serviceCentreId**
       * - `int8` in database
@@ -2029,12 +2035,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
-      /**
-      * **providers.logo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'providers_pkey';
     export type Column = keyof Selectable;
@@ -2900,6 +2900,12 @@ declare module 'zapatos/schema' {
       */
       lastName: string;
       /**
+      * **workers.photo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      photo: string | null;
+      /**
       * **workers.clientId**
       * - `int8` in database
       * - `NOT NULL`, no default
@@ -2947,12 +2953,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       locality: string | null;
-      /**
-      * **workers.photo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      photo: string | null;
     }
     export interface JSONSelectable {
       /**
@@ -2985,6 +2985,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lastName: string;
+      /**
+      * **workers.photo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      photo: string | null;
       /**
       * **workers.clientId**
       * - `int8` in database
@@ -3033,12 +3039,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       locality: string | null;
-      /**
-      * **workers.photo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      photo: string | null;
     }
     export interface Whereable {
       /**
@@ -3071,6 +3071,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lastName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **workers.photo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      photo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **workers.clientId**
       * - `int8` in database
@@ -3119,12 +3125,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       locality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **workers.photo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      photo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -3157,6 +3157,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lastName: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **workers.photo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **workers.clientId**
       * - `int8` in database
@@ -3205,12 +3211,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
-      /**
-      * **workers.photo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -3243,6 +3243,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       lastName?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **workers.photo**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **workers.clientId**
       * - `int8` in database
@@ -3291,12 +3297,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
-      /**
-      * **workers.photo**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'worker_pkey';
     export type Column = keyof Selectable;

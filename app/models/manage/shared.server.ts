@@ -1,8 +1,12 @@
 import * as db from 'zapatos/db';
 import * as s from 'zapatos/schema';
 
-import { type KeyQueryOptions } from '../types';
+import { type SecurityKey, type SecurityKeys, type KeyQueryOptions } from '../types';
 import { type User } from '../access/users.server';
+import { type ServiceCentre } from './service-centres.server';
+import { type LegalEntity } from './legal-entities.server';
+import { type Client } from './clients.server';
+import { type Provider } from './providers.server';
 
 export const whereKeys = ({ keys, isArchived = false, bypassKeyCheck = false }: KeyQueryOptions) => {
   const byIsArchived = db.sql<db.SQL>`main.${'isArchived'} = ${db.param(isArchived)}`;
@@ -32,6 +36,14 @@ export const whereExactKeys = ({ keys }: KeyQueryOptions) => {
 
   return query;
 };
+
+export type Authorizable = ServiceCentre | Client | Provider | LegalEntity;
+
+export const pickKeys = (authorizable: Authorizable | undefined) => 
+  authorizable ? [ { keyStart: Number(authorizable.keyStart || 0), keyEnd: Number(authorizable.keyEnd || 0) } ] : undefined;
+
+export const concatKeys = (key: SecurityKey | undefined, extractedKeys: SecurityKeys) =>
+  key ? [ key, extractedKeys ].flat() : extractedKeys;
 
 export const extractKeys = (u: User, ...sets: Array<"serviceCentre" | "client" | "provider" | "legalEntity">) =>
   sets.map(set => u.keys[set] || []).flat();

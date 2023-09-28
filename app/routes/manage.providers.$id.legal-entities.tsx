@@ -43,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const legalEntityService = LegalEntityService(u);
   const { legalEntities, metadata: { count }} = 
-    await legalEntityService.searchLegalEntities({ search, providerId: toNumber(id) }, { offset, limit, sortDirection: sort });
+    await legalEntityService.searchLegalEntities({ search, provider }, { offset, limit, sortDirection: sort });
 
   const isoCodes = legalEntities.map(le => le.localities || []).flat();
   const countryService = CountryService();

@@ -13,8 +13,14 @@ import { manage } from '~/auth/permissions';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name={serviceCentre?.name} current={current} />
+  breadcrumb: ({ serviceCentre, parent, current }: { serviceCentre: any, parent: any, current: boolean }) => {
+    const crumb = <Breadcrumb key={serviceCentre.id} to={`/manage/service-centres/${serviceCentre?.id}`} name={serviceCentre?.name } current={current} />;
+    
+    return !parent ? crumb : [ 
+      <Breadcrumb key={parent.id} to={`/manage/service-centres/${parent?.id}`} name={parent?.name} />,
+      <Breadcrumb key={`${parent.id}-r`} to={`/manage/service-centres/${parent?.id}/groups`} name="groups" />,
+      crumb ];
+  }
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -28,19 +34,20 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = ServiceCentreService(u);
   const serviceCentre = await service.getServiceCentre({ id }, { bypassKeyCheck });
+  const parent = serviceCentre.parentId ? await service.getServiceCentre({ id }) : null;
 
   if (serviceCentre === undefined && !bypassKeyCheck) return notFound('Service centre not found');
 
-  return json({ serviceCentre });
+  return json({ serviceCentre, parent });
 };
 
 export default function ServiceCentre() {
   const [ searchParams ] = useSearchParams();
-  const { serviceCentre: { id, name, localities }} = useLoaderData();
+  const { serviceCentre: { id, name, localities, parentId }} = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
-    { name: 'groups', to: 'groups' },
+    { name: 'groups', to: 'groups', hidden: parentId !== null },
     { name: 'clients', to: 'clients' },
     { name: 'legal-entities', to: 'legal-entities' },
     { name: 'providers', to: 'providers' },
@@ -51,8 +58,8 @@ export default function ServiceCentre() {
 
   const locality = searchParams.get("locality") || localities.at(0);
   const actions = [
-    { title: 'add-group', to: `/manage/service-centres/${id}/add-group`, default: true, icon: PlusIcon, permission: manage.edit.serviceCentre },
-    { title: 'add-client', to: `/manage/clients/add?service-centre=${id}`, permission: manage.create.client },
+    { title: 'add-group', to: `/manage/service-centres/${id}/add-group`, hidden: parentId !== null, permission: manage.edit.serviceCentre },
+    { title: 'add-client', to: `/manage/clients/add?service-centre=${id}`, default: true, icon: PlusIcon, permission: manage.create.client },
     { title: 'add-legal-entity', to: `/manage/legal-entities/add?service-centre=${id}`, permission: manage.create.legalEntity },
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=service-centre&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.serviceCentre },
   ];

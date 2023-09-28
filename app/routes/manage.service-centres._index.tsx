@@ -16,7 +16,7 @@ import { manage } from '~/auth/permissions';
 
 export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
-  const allowFullAccess = !!url.searchParams.get("full");
+  const allowFullAccess = url.searchParams.get("full") === "true";
 
   const user = await requireUser(request);
   

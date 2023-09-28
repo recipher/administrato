@@ -2,7 +2,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import ServiceCentreService from './service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
+import { type Provider } from './providers.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
   QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
@@ -10,13 +11,13 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
+import { whereKeys, whereExactKeys, extractKeys, pickKeys, generateIdentifier } from './shared.server';
 
-export type LegalEntity = s.legalEntities.Selectable & { provider: string };
+export type LegalEntity = s.legalEntities.Selectable & { provider?: string, serviceCentre?: string };
 
 type SearchOptions = {
-  serviceCentreId?: number | undefined;
-  providerId?: number | undefined;
+  serviceCentre?: ServiceCentre | undefined;
+  provider?: Provider | undefined;
 } & BaseSearchOptions;
 
 export const frequencies = [
@@ -80,20 +81,21 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentreId, providerId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentre, provider }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    const serviceCentre = serviceCentreId === undefined ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
-      : db.sql<db.SQL>`main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`;
-    const provider = providerId === undefined ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
-      : db.sql<db.SQL>`main.${'providerId'} = ${db.param(providerId)}`;
+    const whereServiceCentre = serviceCentre === undefined ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
+      : db.sql<db.SQL>`main.${'serviceCentreId'} = ${db.param(serviceCentre.id)}`;
+    const whereProvider = provider === undefined ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
+      : db.sql<db.SQL>`main.${'providerId'} = ${db.param(provider.id)}`;
 
-    return db.sql<db.SQL>`${name} AND ${serviceCentre} AND ${provider}`;    
+    return db.sql<db.SQL>`${name} AND ${whereServiceCentre} AND ${whereProvider}`;    
   };
 
   const countLegalEntities = async (search: SearchOptions) => {
-    const keys = extractKeys(u, "serviceCentre", "legalEntity");
+    const keys = pickKeys(search.serviceCentre) || pickKeys(search.provider) || 
+      extractKeys(u, "serviceCentre", "legalEntity");
     
     const [ item ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'legalEntities'} AS main
@@ -105,12 +107,15 @@ const service = (u: User) => {
   };
 
   const searchLegalEntities = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
-    const keys = extractKeys(u, "serviceCentre", "legalEntity");
+    const keys = pickKeys(search.serviceCentre) || pickKeys(search.provider) || 
+       extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const legalEntities = await db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.*, p.${'name'} AS provider FROM ${'legalEntities'} AS main
+    const legalEntities = await db.sql<s.legalEntities.SQL | s.providers.SQL | s.serviceCentres.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "serviceCentre" 
+      FROM ${'legalEntities'} AS main
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
+      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}

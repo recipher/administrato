@@ -2,7 +2,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import ServiceCentreService from './service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
   QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
@@ -10,12 +10,12 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-import { whereKeys, whereExactKeys, extractKeys, generateIdentifier } from './shared.server';
+import { whereKeys, whereExactKeys, extractKeys, pickKeys, generateIdentifier } from './shared.server';
 
-export type Provider = s.providers.Selectable;
+export type Provider = s.providers.Selectable & { serviceCentre?: string };
 
 type SearchOptions = {
-  serviceCentreId?: number | undefined;
+  serviceCentre?: ServiceCentre | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -65,16 +65,16 @@ const service = (u: User) => {
       `.run(pool);
   };
 
-  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentre }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return serviceCentreId === undefined ? name
-      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    return serviceCentre === undefined ? name 
+      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentre.id)}`; 
   };
 
   const countProviders = async (search: SearchOptions) => {
-    const keys = extractKeys(u, "serviceCentre", "provider");
+    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "provider");
     const [ item ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'providers'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
@@ -85,11 +85,12 @@ const service = (u: User) => {
   };
 
   const searchProviders = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
-    const keys = extractKeys(u, "serviceCentre", "provider");
+    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "provider");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const providers = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT main.* FROM ${'providers'} AS main
+    const providers = await db.sql<s.providers.SQL | s.serviceCentres.SQL, s.providers.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'providers'} AS main
+      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}

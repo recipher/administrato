@@ -36,7 +36,13 @@ export const navigation = [
   { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
   { name: 'manage', to: '/manage', icon: CircleStackIcon,
     children: [
-      { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker },
+      { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker,
+        children: [
+          { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker },
+          { name: 'employees', to: '/manage/employees', icon: CubeIcon, permission: manage.read.worker },
+          { name: 'contractors', to: '/manage/contractors', icon: CubeIcon, permission: manage.read.worker },
+        ],
+      },
       { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
       { name: 'legal-entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
       { name: 'providers', to: '/manage/providers', icon: CurrencyYenIcon, permission: manage.read.provider },

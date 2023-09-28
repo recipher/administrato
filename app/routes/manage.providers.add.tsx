@@ -11,7 +11,7 @@ import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
 import { CameraIcon } from '@heroicons/react/24/solid';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
@@ -19,18 +19,20 @@ import withAuthorization from '~/auth/with-authorization';
 import { requireUser } from '~/auth/auth.server';
 
 import ProviderService from '~/models/manage/providers.server';
-import ServiceCentreService from '~/models/manage/service-centres.server';
+import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import { UniqueInput, Select, Cancel, Submit, Checkbox, Image, 
-         Body, Section, Group, Field, Footer } from '~/components/form';
+         Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
 import type { RefModal } from '~/components/modals/modal';
 import { CountriesModal } from '~/components/countries/countries';
+import { SelectorModal, RefSelectorModal } from '~/components/manage/selector';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { manage } from '~/auth/permissions';
 import Button, { ButtonType } from '~/components/button';
+import toNumber from '~/helpers/to-number';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
@@ -39,25 +41,15 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const serviceCentreId = url.searchParams.get("service-centre");
+  const id = toNumber(url.searchParams.get("service-centre") as string);
 
   const u = await requireUser(request);
 
   const service = ServiceCentreService(u);
-  const serviceCentres = await service.listServiceCentres();
+  const serviceCentre = id ? await service.getServiceCentre({ id }) : undefined;
 
-  const serviceCentre = serviceCentres.find(sc => sc.id === serviceCentreId);
-
-  return json({ serviceCentres, serviceCentre });
+  return json({ serviceCentre });
 };
-
-z.setErrorMap((issue, ctx) => {
-  if (issue.code === "invalid_type") {
-    if (issue.path.includes("serviceCentre"))
-      return { message: "Service centre is required" };
-  }
-  return { message: ctx.defaultError };
-});
 
 const schema = 
   zfd.formData({
@@ -72,12 +64,10 @@ const schema =
       .object({
         id: z.string().or(z.array(z.string()))
       }),
-    serviceCentre: z
-      .object({
-        id: z
-          .string()
-          .transform(id => parseInt(id))
-      }).required(),
+    serviceCentreId: z
+      .string()
+      .nonempty("The service centre is required")
+      .transform(id => parseInt(id)),
     logo: z.any(),
   });
 
@@ -142,11 +132,11 @@ export const action = async ({ request }: ActionArgs) => {
     return { ...validationError(result.error), codes, countries, regions };
   }
 
-  const { data: { serviceCentre: { id: serviceCentreId }, localities: { id: codes }, identifier = "", ...data } } = result;
+  const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = ProviderService(u);
-  const provider = await service.addProvider({ localities, serviceCentreId, identifier, ...data });
+  const provider = await service.addProvider({ localities, identifier, ...data });
   
   return provider
     ? redirect(`/manage/providers/${provider.id}/info`)
@@ -155,15 +145,19 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Add = () => {
   const { t } = useTranslation();
-  const { serviceCentres, serviceCentre } = useLoaderData();
+  const loaderData = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
+  const [ serviceCentre, setServiceCentre ] = useState<ServiceCentre>(loaderData.serviceCentre);
 
   const data = useActionData();
   const submit = useSubmit();
 
   const context = useFormContext("add-provider");
   const modal = useRef<RefModal>(null);
+
+  const serviceCentreModal = useRef<RefSelectorModal>(null);
+  const showServiceCentreModal = () => serviceCentreModal.current?.show('service-centre');
 
   const [ country, setCountry ] = useState<Country>();
 
@@ -238,8 +232,9 @@ const Add = () => {
             <Field>
               <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
             </Field>
-            <Field>
-              <Select data={serviceCentres} name="serviceCentre" label="Service Centre" defaultValue={serviceCentre} />
+            <Field span={3}>
+              <Lookup label="Service Centre" name="serviceCentreId" onClick={showServiceCentreModal} 
+                icon={MapIcon} value={serviceCentre} placeholder="Select a Service Centre" />
             </Field>
           </Group>
           <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
@@ -287,6 +282,8 @@ const Add = () => {
       </Form>
       <CountriesModal modal={modal} country={country}
         onSelect={selectCountry} onSelectRegion={showRegions} />
+      <SelectorModal ref={serviceCentreModal} forAuthorization={false}
+        onSelect={setServiceCentre} allowChange={false} />
     </>
   );
 }

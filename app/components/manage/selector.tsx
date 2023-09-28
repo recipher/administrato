@@ -84,16 +84,17 @@ type SelectorProps = {
   onSelectGroups: Function;
   onChange: Function; 
   allowChange: boolean;
+  forAuthorization: boolean;
 };
 
-export const Selector = ({ entity, parent, onSelect, onSelectGroups, onChange, allowChange }: SelectorProps) => {
+export const Selector = ({ entity, parent, onSelect, onSelectGroups, onChange, allowChange, forAuthorization }: SelectorProps) => {
   const { t } = useTranslation();
   const fetcher = useFetcher();
 
   // @ts-ignore
   const url = parent && parent.groupCount > 0
     ? `/manage/${pluralize(entity)}/${parent.id}/groups` 
-    : `/manage/${pluralize(entity)}?index&full=true`;
+    : `/manage/${pluralize(entity)}?index&full=${forAuthorization}`;
 
   // @ts-ignore
   const title = parent && parent.groupCount > 0 
@@ -177,8 +178,8 @@ export const Selector = ({ entity, parent, onSelect, onSelectGroups, onChange, a
   return fetcher.data && <Select entity={entity} data={fetcher.data?.[key]} />;
 };
 
-export const SelectorModal = forwardRef(({ onSelect, allowChange = true }: 
-  { onSelect: any, allowChange?: boolean }, ref: Ref<RefSelectorModal>) => {
+export const SelectorModal = forwardRef(({ onSelect, allowChange = true, forAuthorization = true }: 
+  { onSelect: any, allowChange?: boolean, forAuthorization?: boolean }, ref: Ref<RefSelectorModal>) => {
   const modal = useRef<RefModal>(null);
   const [entity, setEntity] = useState('');
   const [parent, setParent] = useState<Entity | undefined>(undefined);
@@ -207,7 +208,7 @@ export const SelectorModal = forwardRef(({ onSelect, allowChange = true }:
   return (
     <Modal ref={modal}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[25rem]">
-        <Selector entity={entity} parent={parent}
+        <Selector entity={entity} parent={parent} forAuthorization={forAuthorization}
           onSelect={handleSelect} onSelectGroups={handleSelectGroups}
             onChange={handleChange} allowChange={allowChange} />
       </div>

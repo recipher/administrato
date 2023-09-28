@@ -30,10 +30,11 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const serviceCentreService = ServiceCentreService(u);
   const serviceCentres = await serviceCentreService.listServiceCentres();
+  const serviceCentre = serviceCentreId ? serviceCentres.find((sc: ServiceCentre) => Number(sc.id) === serviceCentreId) : undefined;
 
   const service = LegalEntityService(u);
   const { legalEntities, metadata: { count }} = 
-    await service.searchLegalEntities({ search, serviceCentreId }, { offset, limit, sortDirection: sort });
+    await service.searchLegalEntities({ search, serviceCentre }, { offset, limit, sortDirection: sort });
 
   const isoCodes = legalEntities.map(s => s.localities || []).flat();
   const countryService = CountryService();
@@ -57,7 +58,7 @@ export default function LegalEntities() {
   };
   
   const Context = (legalEntity: LegalEntity) =>
-    <ListContext data={serviceCentres.find((sc: ServiceCentre) => sc.id === legalEntity.serviceCentreId)?.name} chevron={false} />;
+    <ListContext data={legalEntity.serviceCentre} select={false} />;
 
   const Item = (legalEntity: LegalEntity) =>
     <ListItem data={legalEntity.name} sub={<Flags localities={legalEntity.localities} countries={countries} />} />

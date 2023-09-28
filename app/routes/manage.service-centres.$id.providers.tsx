@@ -43,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const providerService = ProviderService(u);
   const { providers, metadata: { count }} = 
-    await providerService.searchProviders({ search, serviceCentreId: toNumber(id) }, { offset, limit, sortDirection: sort });
+    await providerService.searchProviders({ search, serviceCentre }, { offset, limit, sortDirection: sort });
 
   const isoCodes = providers.map(p => p.localities || []).flat();
   const countryService = CountryService();
@@ -53,17 +53,16 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Providers = () => {
-  const { serviceCentre, providers, count, offset, limit, search, sort, countries } = useLoaderData();
+  const { providers, count, offset, limit, search, sort, countries } = useLoaderData();
 
-  const Context = (provider: Provider) =>
-    <ListContext chevron={true} />;
+  const Context = (provider: Provider) => <ListContext select={true} />;
 
   const Item = (provider: Provider) =>
     <ListItem data={provider.name} sub={<Flags localities={provider.localities} countries={countries} />} />
   
   return (
     <>
-      <Filter className="pt-6" filterTitle='Search legal entities' filterParam='q' allowSort={true} sort={sort} filter={search} />
+      <Filter className="pt-6" filterTitle='Search providers' filterParam='q' allowSort={true} sort={sort} filter={search} />
 
       {count <= 0 && <Alert title={`No providers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
       <List data={providers} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/providers/${props.item.id}/info`} />

@@ -43,7 +43,7 @@ const Groups = () => {
   return (
     <>
       {groups.length === 0 && <Alert title="No service centre groups" level={Level.Info} />}
-        <List data={groups} renderItem={Item} renderContext={Context} />
+        <List data={groups} renderItem={Item} renderContext={Context} buildTo={({ item }) => `../../${item.id}`} />
     </>
   );
 };
