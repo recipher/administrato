@@ -1306,15 +1306,15 @@ declare module 'zapatos/schema' {
       /**
       * **milestones.identifier**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      identifier: string | null;
+      identifier: string;
       /**
-      * **milestones.descriptor**
+      * **milestones.description**
       * - `text` in database
       * - Nullable, no default
       */
-      descriptor: string | null;
+      description: string | null;
       /**
       * **milestones.index**
       * - `int4` in database
@@ -1362,15 +1362,15 @@ declare module 'zapatos/schema' {
       /**
       * **milestones.identifier**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      identifier: string | null;
+      identifier: string;
       /**
-      * **milestones.descriptor**
+      * **milestones.description**
       * - `text` in database
       * - Nullable, no default
       */
-      descriptor: string | null;
+      description: string | null;
       /**
       * **milestones.index**
       * - `int4` in database
@@ -1418,15 +1418,15 @@ declare module 'zapatos/schema' {
       /**
       * **milestones.identifier**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **milestones.descriptor**
+      * **milestones.description**
       * - `text` in database
       * - Nullable, no default
       */
-      descriptor?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      description?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **milestones.index**
       * - `int4` in database
@@ -1474,15 +1474,15 @@ declare module 'zapatos/schema' {
       /**
       * **milestones.identifier**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      identifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      identifier: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **milestones.descriptor**
+      * **milestones.description**
       * - `text` in database
       * - Nullable, no default
       */
-      descriptor?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      description?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **milestones.index**
       * - `int4` in database
@@ -1530,15 +1530,15 @@ declare module 'zapatos/schema' {
       /**
       * **milestones.identifier**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      identifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **milestones.descriptor**
+      * **milestones.description**
       * - `text` in database
       * - Nullable, no default
       */
-      descriptor?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      description?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **milestones.index**
       * - `int4` in database

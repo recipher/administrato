@@ -18,7 +18,7 @@ import { Level } from '~/components/toast';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/milestones/sets/add' name="add-milestone-set" current={current} />
+    <Breadcrumb to='/milestones/add' name="add-milestone-set" current={current} />
 };
 
 const schema = zfd.formData({

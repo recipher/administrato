@@ -5,8 +5,14 @@ import { badRequest } from '~/utility/errors';
 
 import MilestoneService, { type MilestoneSet } from '~/models/scheduler/milestones.server';
 import Header from '~/components/header';
+import { Breadcrumb } from "~/layout/breadcrumbs";
 
 import { scheduler } from '~/auth/permissions';
+
+export const handle = {
+  breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
+    <Breadcrumb to={`/milestones/${milestoneSet.id}`} name={milestoneSet.identifier} current={current} />
+};
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { id } = params;

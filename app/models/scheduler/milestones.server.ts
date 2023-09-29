@@ -20,6 +20,10 @@ const service = () => {
     const latest = await getLatestMilestonesForSet({ setId: Number(milestone.setId) })
 
     milestone.index = latest === undefined ? 0 : (latest.index || 0) + 1;
+    milestone.identifier = milestone.identifier.toString()
+      .replace(/([a-z])([A-Z])/g, "$1-$2")
+      .replace(/[\s_]+/g, '-')
+      .toLowerCase();
 
     const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       INSERT INTO ${'milestones'} (${db.cols(milestone)})
@@ -118,7 +122,7 @@ const service = () => {
     const [ previous ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}} AND ${'index'} < ${db.param(index)}
-      ORDER BY ${'index'} ASC`.run(pool);
+      ORDER BY ${'index'} DESC`.run(pool);
 
     if (previous === undefined) throw Error('Minimum index reached');
 

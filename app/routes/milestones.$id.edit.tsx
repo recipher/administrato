@@ -9,9 +9,15 @@ import MilestoneService, { type MilestoneSet, type Milestone } from '~/models/sc
 import Alert, { Level } from '~/components/alert';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
+import { Breadcrumb } from "~/layout/breadcrumbs";
+import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import classnames from '~/helpers/classnames';
-import { setFlashMessage, storage } from '~/utility/flash.server';
+
+export const handle = {
+  breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
+    <Breadcrumb to={`/milestones/${milestoneSet.id}/edit`} name="edit" current={current} />
+};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { id } = params;
@@ -100,7 +106,11 @@ export default function MilestoneSets() {
           <li key={`${ms.id}-${index}`} className="group">
             <div className="flex justify-between gap-x-6 py-3">
               <div className="flex min-w-0 gap-x-4">
-                <span className="text-sm text-gray-300 pt-1">{ms.index+1}</span> {ms.identifier}
+                <span className="text-sm text-gray-300 pt-1">
+                  {ms.index+1}
+                </span> 
+                <span className="text-medium">{ms.identifier}</span>
+                {ms.description}
               </div>
               <div className="flex shrink-0 items-center gap-x-6">
                 <ul className="group-hover:block hidden">

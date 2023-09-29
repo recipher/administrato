@@ -8,6 +8,7 @@ export { default as Input } from './input';
 export { default as Lookup } from './lookup';
 export { default as Select } from './select';
 export { default as Submit } from './submit';
+export { default as TextArea } from './text-area';
 export { default as Toggle } from './toggle';
 export { default as UniqueInput } from './unique-input';
 export { Body, Section, Group, Field, Footer } from './layout';
