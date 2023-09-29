@@ -55,7 +55,6 @@ export default function ServiceCentre() {
     { name: 'holidays', to: 'holidays' },
   ];
 
-
   const locality = searchParams.get("locality") || localities.at(0);
   const actions = [
     { title: 'add-group', to: `/manage/service-centres/${id}/add-group`, hidden: parentId !== null, permission: manage.edit.serviceCentre },

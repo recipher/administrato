@@ -57,7 +57,7 @@ export const ListContext = ({ data, sub, select = true, open = false }: { data?:
   );
 };
 
-const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey];
+const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey].toString();
 
 export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo }: Props) {
   const Item = ({ item }: any) => (

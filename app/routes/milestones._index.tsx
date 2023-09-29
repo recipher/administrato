@@ -26,7 +26,6 @@ export default function MilestoneSets() {
   const Context = (set: MilestoneSet) => 
     <ListContext data={`${set.milestones.length} ${t('milestones')}`} open={true} />
 
-
   const actions = [
     { title: "add-milestone-set", to: "/milestones/add", icon: PlusIcon },
   ];

@@ -25,6 +25,7 @@
   "milestone-set": "Milestone Set",
   "milestone-sets": "Milestone Sets",
   "add-milestone-set": "Add a Milestone Set",
+  "add-milestone": "Add a Milestone",
   "manage": "Manage",
   "legal-entities": "Legal Entities",
   "legal-entity": "Legal Entity",
@@ -75,6 +76,7 @@
   "delete": "Delete",
   "previous": "Previous",
   "next": "Next",
+  "showing": "Showing",
   "help": "Help",
   "welcome": "Hello"
 }
