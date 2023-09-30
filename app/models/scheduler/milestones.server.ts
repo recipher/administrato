@@ -46,6 +46,15 @@ const service = () => {
     return milestoneSet;
   };
 
+  const getDefaultSet = async () => {
+    return await db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
+      SELECT * FROM ${'milestones'} 
+      LEFT JOIN ${'milestoneSets'} ON ${'milestoneSets'}${'id'} = ${'milestones'}.${'setId'}
+      WHERE ${'milestoneSets'}.${'isDefault'} = TRUE
+      ORDER BY ${'index'} ASC
+    `.run(pool);
+  };
+
   const getMilestonesBySet = async ({ setId }: { setId: number }) => {
     return await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
@@ -156,6 +165,7 @@ const service = () => {
     addMilestoneSet,
     getMilestoneSetById,
     getMilestonesBySet,
+    getDefaultSet,
     removeMilestone,
     increaseMilestoneIndex,
     decreaseMilestoneIndex,

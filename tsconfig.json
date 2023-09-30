@@ -1,6 +1,6 @@
 {
   "exclude": ["./app/scheduler"],
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "zapatos.js"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "zapatos.js", "mocks/index.js", "mocks/auth0.js", "mocks/index.js"],
   "compilerOptions": {
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,

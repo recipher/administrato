@@ -44,8 +44,7 @@ const ConfirmModal = (props: Props, ref: Ref<RefConfirmModal>) => {
     _question: string,
     _yesTitle: string = "Yes",
     _noTitle: string = "Cancel",
-    _description?: string,
-    _inputString?: string
+    _description?: string
   ) => {
     setTitle(_question.toString());
     if (_yesTitle) setYesTitle(_yesTitle);

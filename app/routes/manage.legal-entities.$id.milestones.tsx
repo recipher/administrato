@@ -2,6 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
+import MilestoneService from '~/models/scheduler/milestones.server';
 import Alert, { Level } from '~/components/alert';
 import { Basic as List } from '~/components/list';
 
@@ -25,9 +26,16 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const service = LegalEntityService(u);
   const legalEntity = await service.getLegalEntity({ id });
 
+  const { milestoneSetId: setId } = legalEntity;
+
+  const milestoneService = MilestoneService();
+  const milestones = setId === null
+    ? milestoneService.getDefaultSet()
+    : milestoneService.getMilestonesBySet({ setId: Number(setId) })
+
   if (legalEntity === undefined) return notFound('Legal entity not found');
 
-  return json({ legalEntity });
+  return json({ legalEntity, milestones });
 };
 
 const Milestones = () => {
