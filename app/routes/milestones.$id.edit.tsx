@@ -102,14 +102,14 @@ export default function MilestoneSets() {
       {milestones.length <= 0 && <Alert title={`No milestones`} level={Level.Warning} />}
 
       <ul className="divide-y divide-gray-100 py-3">
-        {milestones.map((ms: any, index: number) => (
+        {milestones.map((ms: Milestone, index: number) => (
           <li key={`${ms.id}-${index}`} className="group">
             <div className="flex justify-between gap-x-6 py-3">
               <div className="flex min-w-0 gap-x-4">
                 <span className="text-sm text-gray-300 pt-1">
-                  {ms.index+1}
+                  {(ms.index || 0)+1}
                 </span> 
-                <span className="text-medium">{ms.identifier}</span>
+                <span className={classnames(ms.pivot === true ? "text-medium": "")}>{ms.identifier}</span>
                 {ms.description}
               </div>
               <div className="flex shrink-0 items-center gap-x-6">

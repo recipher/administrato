@@ -25,6 +25,10 @@ const service = () => {
       .replace(/[\s_]+/g, '-')
       .toLowerCase();
 
+    if (milestone.pivot) await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+      UPDATE ${'milestones'} SET ${'pivot'} = FALSE WHERE ${'setId'} = ${db.param(milestone.setId)}
+    `.run(pool);
+
     const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       INSERT INTO ${'milestones'} (${db.cols(milestone)})
       VALUES (${db.vals(milestone)}) RETURNING *`.run(pool);

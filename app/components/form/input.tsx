@@ -12,9 +12,10 @@ type Props = {
   focus?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  width?: string;
 };
 
-export default function Input({ name, label, value, focus = false, disabled = false, placeholder }: Props) {
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder, width }: Props) {
   const { error, getInputProps } = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -29,12 +30,13 @@ export default function Input({ name, label, value, focus = false, disabled = fa
         "block text-sm font-medium leading-6")}>
         {label}
       </label>
-      <div className="relative mt-2 rounded-md shadow-sm">
+      <div className={classnames(width ? `w-${width}` : "",
+        "relative mt-2 rounded-md shadow-sm")}>
         <input
           ref={inputRef} 
           disabled={disabled}
           placeholder={placeholder}
-          value={value}
+          defaultValue={value}
           {...getInputProps({ id: name })}
           autoCorrect="off"
           autoCapitalize="off"

@@ -12,14 +12,15 @@ type Props = {
   focus?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  rows?: number;
 };
 
-export default function Input({ name, label, value, focus = false, disabled = false, placeholder }: Props) {
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder, rows = 4 }: Props) {
   const { error, getInputProps } = useField(name);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (error || focus) inputRef.current?.focus();
+    if (error || focus) textareaRef.current?.focus();
   }, [focus, error]);
 
   return (
@@ -30,11 +31,12 @@ export default function Input({ name, label, value, focus = false, disabled = fa
         {label}
       </label>
       <div className="relative mt-2 rounded-md shadow-sm">
-        <input
-          ref={inputRef} 
+        <textarea
+          ref={textareaRef} 
           disabled={disabled}
           placeholder={placeholder}
-          value={value}
+          defaultValue={value}
+          rows={rows}
           {...getInputProps({ id: name })}
           autoCorrect="off"
           autoCapitalize="off"

@@ -7,6 +7,7 @@ create table
     index integer null,
     interval integer null,
     time timetz null,
+    pivot boolean null,
     entities text[] null,
     "setId" bigint not null,
     constraint milestones_pkey primary key (id),

@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react";
 
+import classnames from "~/helpers/classnames";
+
 export const Body = ({ children }: PropsWithChildren<{}>) => {
   return (
     <div className="space-y-12">
@@ -31,9 +33,9 @@ export const Group = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export const Field = ({ span = 4, width = 100, children }: PropsWithChildren<{ span?: number, width?: number }>) => {
+export const Field = ({ span = 4, width, children }: PropsWithChildren<{ span?: number, width?: string }>) => {
   return (
-    <div className={`sm:col-span-${span}`}>
+    <div className={classnames(width ? `w-${width}` : "", `sm:col-span-${span}`)}>
       {children}
     </div>
   );

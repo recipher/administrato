@@ -1,4 +1,5 @@
 import { type ActionArgs, redirect, json, LoaderArgs } from '@remix-run/node';
+import { useTranslation } from 'react-i18next';
 import { ValidatedForm as Form, validationError } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
@@ -8,7 +9,7 @@ import { badRequest } from '~/utility/errors';
 
 import MilestoneService from '~/models/scheduler/milestones.server';
 
-import { Input, TextArea, Cancel, Submit,
+import { Input, TextArea, Checkbox, CheckboxGroup, Cancel, Submit,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import withAuthorization from '~/auth/with-authorization';
@@ -18,6 +19,8 @@ import { scheduler } from '~/auth/permissions';
 import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Level } from '~/components/toast';
+
+const ENTITIES = [ "service-centre", "provider", "client", "legal-entity" ];
 
 export const handle = {
   breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
@@ -43,7 +46,19 @@ const validator = withZod(zfd.formData({
   description: z
     .string()
     .optional(),
-}));
+  pivot: z
+    .coerce.boolean(),
+  interval: z
+    .coerce.number()
+    .min(0),
+  entities: z
+    .any()
+    .transform(o =>
+      ENTITIES
+      .map(entity => o[entity] === "on" ? entity : undefined)
+      .reduce((entities: string[], entity) => entity === undefined ? entities : [ ...entities, entity ], [])
+    )
+  }));
 
 export const action = async ({ request, params }: ActionArgs) => {
   const { id } = params;
@@ -70,9 +85,15 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const Add = () => {
+  const { t } = useTranslation();
+
+  const entities = ENTITIES.map(value => ({
+    value, label: t(value), checked: true
+  }));
+
   return (
     <>
-      <Form method="post" validator={validator} id="add-milestone-set" className="mt-5">
+      <Form method="post" validator={validator} id="add-milestone" className="mt-5">
         <Body>
           <Section heading='New Milestone' explanation='Please enter the new milestone details.' />
           <Group>
@@ -80,20 +101,29 @@ const Add = () => {
               <Input label="Identifier" name="identifier" placeholder="e.g. pay-date" />
             </Field>
             <Field>
-              <TextArea label="Description" name="description" placeholder="e.g. Pay Date" />
+              <TextArea label="Description" name="description" placeholder="e.g. Pay Date" rows={2} />
             </Field>
-            <Field width={50}>
-              <Input label="Deadline" name="time" placeholder="e.g. pay-date" />
+            {/* <Field>
+              <Input label="Deadline" name="time" />
+            </Field> */}
+          </Group>
+          <Section size="md" heading='Pivot Milestone' explanation='One milestone should be marked as the pivot, which determines where the first date should be calculated when schedules are generated.' />
+          <Group>
+            <Field>
+              <Checkbox label="Pivot?" name="pivot" />
             </Field>
           </Group>
           <Section size="md" heading='Preceding Interval' explanation='Select how many days precede this milestone. The first milestone will always have an interval of zero days.' />
           <Group>
             <Field span={3}>
-              <Input label="Interval in Days" name="description" placeholder="0" value="0" />
+              <Input label="Interval in Days" name="interval" placeholder="0" width="44" />
             </Field>
           </Group>
           <Section size="md" heading='Entities' explanation='Specify which entities this milestone applies to.' />
           <Group>
+            <Field>
+              <CheckboxGroup name="entities" items={entities} />
+            </Field>
           </Group>
         </Body>
         <Footer>
