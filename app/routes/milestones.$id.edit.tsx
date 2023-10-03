@@ -8,6 +8,8 @@ import { badRequest } from '~/utility/errors';
 import MilestoneService, { type MilestoneSet, type Milestone } from '~/models/scheduler/milestones.server';
 import Alert, { Level } from '~/components/alert';
 
+import { Table } from '~/components';
+
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { setFlashMessage, storage } from '~/utility/flash.server';
@@ -97,47 +99,49 @@ export default function MilestoneSets() {
       { method: "post", encType: "application/json" });
   };
 
+  const Identifier = ({ milestone }: { milestone: Milestone }) => (
+    <>
+      <span className="text-sm text-gray-300 pt-1 pr-3">
+        {(milestone.index || 0)+1}
+      </span> 
+      <span className={classnames(milestone.pivot?.toString() === "true" ? "text-red-500": "", "text-gray-500")}>{milestone.identifier}</span>
+    </>
+  );
+
+  const columns = [
+    { 
+      name: "identifier", display: (ms: Milestone) => <Identifier milestone={ms} />
+    }, 
+    { name: "description", className: "text-md w-full max-w-0 sm:w-auto sm:max-w-none", stack: "lg" },
+    { name: "entities", display: (ms: Milestone) => ms.entities?.map(e => t(e)).join(', '), stack: "sm" },
+    { name: "interval", type: "number", className: "w-16", display: (ms: Milestone) => `${ms.interval ? ms.interval : '0'} days` },
+  ];
+
+  const actions = [
+    { 
+      name: "up", 
+      className: (ms: Milestone) => (ms.index || 0) === maxIndex ? "text-gray-200 cursor-default" : "text-gray-400 hover:text-gray-500",
+      onClick: (ms: Milestone) => handleMove(ms, 1)
+    }, 
+    
+    { 
+      name: "down", 
+      className: (ms: Milestone) => (ms.index || 0) === 0 ? "text-gray-200 cursor-default" : "text-gray-400 hover:text-gray-500",
+      onClick: (ms: Milestone) => handleMove(ms, -1)
+    },
+    { 
+      name: "remove", 
+      className: () => "font-medium text-red-600 hover:text-red-500",
+      onClick: (ms: Milestone) => handleRemove(ms) 
+    }
+  ];
+
   return (
     <>
       {milestones.length <= 0 && <Alert title={`No milestones`} level={Level.Warning} />}
 
-      <ul className="divide-y divide-gray-100 py-3">
-        {milestones.map((ms: Milestone, index: number) => (
-          <li key={`${ms.id}-${index}`} className="group">
-            <div className="flex justify-between gap-x-6 py-3">
-              <div className="flex min-w-0 gap-x-4">
-                <span className="text-sm text-gray-300 pt-1">
-                  {(ms.index || 0)+1}
-                </span> 
-                <span className={classnames(ms.pivot === true ? "text-medium": "")}>{ms.identifier}</span>
-                {ms.description}
-              </div>
-              <div className="flex shrink-0 items-center gap-x-6">
-                <ul className="group-hover:block hidden">
-                  <li className="inline pl-3">
-                    <button type="button" onClick={() => handleMove(ms, 1)}
-                      className={classnames((ms.index || 0) === maxIndex ? "text-gray-200 cursor-default" : "text-gray-400 hover:text-gray-500")}>
-                      {t('up')}
-                    </button>
-                  </li>
-                  <li className="inline pl-3">
-                    <button type="button" onClick={() => handleMove(ms, -1)}
-                      className={classnames((ms.index || 0) === 0 ? "text-gray-200 cursor-default" : "text-gray-400 hover:text-gray-500")}>
-                      {t('down')}
-                    </button>
-                  </li>
-                  <li className="inline pl-3">
-                    <button onClick={() => handleRemove(ms)}
-                      type="button" className="font-medium text-red-600 hover:text-red-500">
-                      {t('remove')}
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <Table data={milestones} columns={columns} actions={actions} showHeadings={false} />
+
       <ConfirmModal ref={confirm} onYes={onConfirmRemove} />
     </>
   );
