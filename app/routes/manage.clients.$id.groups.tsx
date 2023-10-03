@@ -18,7 +18,7 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const id = toNumber(params.id as string);
+  const { id } = params;
 
   if (id === undefined) return badRequest('Invalid request');
 

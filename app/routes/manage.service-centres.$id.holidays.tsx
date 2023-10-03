@@ -27,7 +27,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
   const isoCode = url.searchParams.get("locality");
 
-  const id = toNumber(params.id as string);
+  const { id } = params;
 
   if (id === undefined) return badRequest('Invalid request');
 

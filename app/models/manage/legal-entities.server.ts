@@ -2,6 +2,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+export { default as create } from '../id.server';
+
 import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
 import { type Provider } from './providers.server';
 
@@ -18,8 +20,8 @@ export type LegalEntity = s.legalEntities.Selectable & { provider?: string, serv
 type SearchOptions = {
   serviceCentre?: ServiceCentre | undefined;
   provider?: Provider | undefined;
-  serviceCentreId?: number | undefined;
-  providerId?: number | undefined;
+  serviceCentreId?: string | null | undefined;
+  providerId?: string | null | undefined;
 } & BaseSearchOptions;
 
 export const frequencies = [
@@ -50,7 +52,7 @@ const service = (u: User) => {
   const generateKey = async (legalEntity: s.legalEntities.Insertable): Promise<SecurityKey> => {
     const service = ServiceCentreService(u);
 
-    const parent = await service.getServiceCentre({ id: legalEntity.serviceCentreId as number })
+    const parent = await service.getServiceCentre({ id: legalEntity.serviceCentreId as string })
     const maxEntities = 10000; // Move to constants
     const latest = await getLatest(legalEntity);
 
@@ -87,9 +89,9 @@ const service = (u: User) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    const whereServiceCentre = serviceCentreId === undefined ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
+    const whereServiceCentre = serviceCentreId == null ? db.sql<db.SQL>`main.${'serviceCentreId'} IS NOT NULL`
       : db.sql<db.SQL>`main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`;
-    const whereProvider = providerId === undefined ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
+    const whereProvider = providerId == null ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
       : db.sql<db.SQL>`main.${'providerId'} = ${db.param(providerId)}`;
 
     return db.sql<db.SQL>`${name} AND ${whereServiceCentre} AND ${whereProvider}`;    
@@ -130,7 +132,6 @@ const service = (u: User) => {
 
   const getLegalEntity = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
-    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ client ] = await db.sql<s.legalEntities.SQL | s.providers.SQL | s.serviceCentres.SQL, s.legalEntities.Selectable[]>`
       SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "serviceCentre" 
@@ -138,7 +139,7 @@ const service = (u: User) => {
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
-      (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+      (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
       `.run(pool);
 
     return client;

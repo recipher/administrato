@@ -2,8 +2,6 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 

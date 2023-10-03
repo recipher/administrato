@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { badRequest } from '~/utility/errors';
 
-import MilestoneService, { type MilestoneSet, type Milestone } from '~/models/scheduler/milestones.server';
+import MilestoneService, { type Milestone, create } from '~/models/scheduler/milestones.server';
 import Alert, { Level } from '~/components/alert';
 
 import { Table } from '~/components';
@@ -15,6 +15,7 @@ import { Breadcrumb } from "~/layout/breadcrumbs";
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import classnames from '~/helpers/classnames';
+import pluralize from '~/helpers/pluralize';
 
 export const handle = {
   breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
@@ -28,7 +29,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = MilestoneService();
   const milestoneSet = await service.getMilestoneSetById({ id });
-  const milestones = await service.getMilestonesBySet({ setId: Number(id) });
+  const milestones = await service.getMilestonesBySet({ setId: id });
 
   return json({ milestoneSet, milestones });
 };
@@ -108,25 +109,27 @@ export default function MilestoneSets() {
     </>
   );
 
+  const days = (days: number | null) => `${days || 0} ${pluralize('Day', days || 0)}`
+
   const columns = [
     { 
       name: "identifier", display: (ms: Milestone) => <Identifier milestone={ms} />
     }, 
     { name: "description", className: "text-md w-full max-w-0 sm:w-auto sm:max-w-none", stack: "lg" },
     { name: "entities", display: (ms: Milestone) => ms.entities?.map(e => t(e)).join(', '), stack: "sm" },
-    { name: "interval", type: "number", className: "w-16", display: (ms: Milestone) => `${ms.interval ? ms.interval : '0'} days` },
+    { name: "interval", type: "number", className: "w-16", display: (ms: Milestone) => days(ms.interval) },
   ];
 
   const actions = [
     { 
       name: "up", 
-      className: (ms: Milestone) => (ms.index || 0) === maxIndex ? "text-gray-200 cursor-default" : "text-gray-400 hover:text-gray-500",
+      className: (ms: Milestone) => (ms.index || 0) === maxIndex ? "text-gray-300 cursor-default" : "text-gray-600 hover:text-gray-800",
       onClick: (ms: Milestone) => handleMove(ms, 1)
     }, 
     
     { 
       name: "down", 
-      className: (ms: Milestone) => (ms.index || 0) === 0 ? "text-gray-200 cursor-default" : "text-gray-400 hover:text-gray-500",
+      className: (ms: Milestone) => (ms.index || 0) === 0 ? "text-gray-300 cursor-default" : "text-gray-600 hover:text-gray-800",
       onClick: (ms: Milestone) => handleMove(ms, -1)
     },
     { 

@@ -2,6 +2,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+export { default as create } from '../id.server';
+
 import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
@@ -16,7 +18,7 @@ export type Provider = s.providers.Selectable & { serviceCentre?: string };
 
 type SearchOptions = {
   serviceCentre?: ServiceCentre | undefined;
-  serviceCentreId?: number | undefined;
+  serviceCentreId?: string | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -35,7 +37,7 @@ const service = (u: User) => {
   const generateKey = async (provider: s.providers.Insertable): Promise<SecurityKey> => {
     const service = ServiceCentreService(u);
 
-    const parent = await service.getServiceCentre({ id: provider.serviceCentreId as number })
+    const parent = await service.getServiceCentre({ id: provider.serviceCentreId as string })
     const maxEntities = 10000; // Move to constants
     const latest = await getLatest(provider);
 
@@ -70,7 +72,7 @@ const service = (u: User) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return serviceCentreId === undefined ? name 
+    return serviceCentreId == null ? name 
       : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
@@ -104,13 +106,12 @@ const service = (u: User) => {
 
   const getProvider = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
-    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ provider ] = await db.sql<s.providers.SQL | s.serviceCentres.SQL, s.providers.Selectable[]>`
       SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'providers'} AS main
       LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
-        (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+        (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
       `.run(pool);
 
     return provider;

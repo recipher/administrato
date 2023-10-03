@@ -45,7 +45,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const providerService = ProviderService(u);
   const { providers, metadata: { count }} = 
     await providerService.searchProviders({ search, 
-      serviceCentreId: all ? undefined : Number(id),
+      serviceCentreId: all ? undefined : id,
       serviceCentre: all ? serviceCentre : undefined
     }, { offset, limit, sortDirection: sort });
 

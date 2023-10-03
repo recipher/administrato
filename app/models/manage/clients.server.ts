@@ -2,6 +2,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+export { default as create } from '../id.server';
+
 import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
@@ -15,13 +17,13 @@ import { whereKeys, whereExactKeys, extractKeys, pickKeys, generateIdentifier } 
 export type Client = s.clients.Selectable & { groupCount?: number, serviceCentre?: string };
 
 type KeyQueryOptions = {
-  parentId?: number | undefined;
+  parentId?: string | undefined;
 } & BaseKeyQueryOptions;
 
 type SearchOptions = {
   serviceCentre?: ServiceCentre | undefined;
-  parentId?: number | undefined;
-  serviceCentreId?: number | undefined;
+  parentId?: string | null | undefined;
+  serviceCentreId?: string | null | undefined;
 } & BaseSearchOptions;
 
 const service = (u: User) => {
@@ -43,8 +45,8 @@ const service = (u: User) => {
     const service = ServiceCentreService(u);
 
     const parent = client.parentId
-      ? await getClient({ id: client.parentId as number })
-      : await service.getServiceCentre({ id: client.serviceCentreId as number })
+      ? await getClient({ id: client.parentId as string })
+      : await service.getServiceCentre({ id: client.serviceCentreId as string })
  
     const maxEntities = client.parentId ? 100 : 1000000; // Move to constants
 
@@ -128,13 +130,12 @@ const service = (u: User) => {
 
   const getClient = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = extractKeys(u, "serviceCentre", "client");
-    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ client ] = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
       SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'clients'} AS main
       LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
-        (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+        (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
       `.run(pool);
 
     return client;

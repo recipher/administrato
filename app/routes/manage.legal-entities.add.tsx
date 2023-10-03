@@ -15,7 +15,7 @@ import { IdentificationIcon, MagnifyingGlassIcon, MapIcon } from '@heroicons/rea
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
-import LegalEntityService, { frequencies } from '~/models/manage/legal-entities.server';
+import LegalEntityService, { create, frequencies } from '~/models/manage/legal-entities.server';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 import { type Provider } from '~/models/manage/providers.server';
@@ -43,7 +43,7 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const id = toNumber(url.searchParams.get("service-centre") as string);
+  const id = url.searchParams.get("service-centre");
 
   const u = await requireUser(request);
 
@@ -68,12 +68,10 @@ const schema =
       }),
     serviceCentreId: z
       .string()
-      .nonempty("The service centre is required")
-      .transform(id => parseInt(id)),
+      .nonempty("The service centre is required"),
     providerId: z
       .string()
-      .nonempty("The provider is required")
-      .transform(id => parseInt(id)),
+      .nonempty("The provider is required"),
     logo: z.any(),
   });
 
@@ -142,7 +140,7 @@ export const action = async ({ request }: ActionArgs) => {
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = LegalEntityService(u);
-  const legalEntity = await service.addLegalEntity({ localities, identifier, ...data });
+  const legalEntity = await service.addLegalEntity(create({ localities, identifier, ...data }));
   
   return legalEntity
     ? redirect(`/manage/legal-entities/${legalEntity.id}/info`)

@@ -2,6 +2,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+export { default as create } from '../id.server';
+
 import ClientService from './clients.server';
 import LegalEntityService from './legal-entities.server';
 
@@ -23,8 +25,8 @@ import { whereExactKeys, extractKeys } from './shared.server';
 export type Worker = s.workers.Selectable & { legalEntity: string, client: string };
 
 type SearchOptions = {
-  clientId?: number | undefined;
-  legalEntityId?: number | undefined;
+  clientId?: string | null | undefined;
+  legalEntityId?: string | null | undefined;
 } & BaseSearchOptions;
 
 const generateIdentifier = ({ firstName, lastName, identifier }: s.workers.Insertable) =>
@@ -36,7 +38,7 @@ const generateIdentifier = ({ firstName, lastName, identifier }: s.workers.Inser
         .toLowerCase();
 
 export const whereClientKeys = ({ keys }: KeyQueryOptions) => {
-  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} = 0`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} IS NULL`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
@@ -48,7 +50,7 @@ export const whereClientKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
-  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} = 0`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} IS NULL`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
@@ -88,8 +90,8 @@ const service = (u: User) => {
     const clientService = ClientService(u);
     const legalEntityService = LegalEntityService(u);
 
-    const client = await clientService.getClient({ id: worker.clientId as number })
-    const legalEntity = await legalEntityService.getLegalEntity({ id: worker.legalEntityId as number })
+    const client = await clientService.getClient({ id: worker.clientId as string })
+    const legalEntity = await legalEntityService.getLegalEntity({ id: worker.legalEntityId as string })
     const latestForClient = await getLatestForClient(worker);
     const latestForLegalEntity = await getLatestForLegalEntity(worker);
     const maxEntities = 10000; // Move to constants
@@ -131,9 +133,9 @@ const service = (u: User) => {
       (LOWER(${'workers'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
        LOWER(${'workers'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
 
-    const client = clientId === undefined ? db.sql<db.SQL>`${'workers'}.${'clientId'} IS NOT NULL`
+    const client = clientId == null ? db.sql<db.SQL>`${'workers'}.${'clientId'} IS NOT NULL`
       : db.sql<db.SQL>`${'workers'}.${'clientId'} = ${db.param(clientId)}`;
-    const legalEntity = legalEntityId === undefined ? db.sql<db.SQL>`${'legalEntityId'} IS NOT NULL`
+    const legalEntity = legalEntityId == null ? db.sql<db.SQL>`${'legalEntityId'} IS NOT NULL`
       : db.sql<db.SQL>`${'workers'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
 
     return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity}`;    
@@ -179,14 +181,13 @@ const service = (u: User) => {
   const getWorker = async ({ id }: IdProp) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
-    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ worker ] = await db.sql<s.workers.SQL | s.legalEntities.SQL | s.clients.SQL, s.workers.Selectable[]>`
       SELECT ${'workers'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'workers'}
       LEFT JOIN ${'legalEntities'} AS le ON ${'workers'}.${'legalEntityId'} = le.${'id'}
       LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
       WHERE 
-        (${'workers'}.${'id'} = ${db.param(numericId)} OR LOWER(${'workers'}.${'identifier'}) = ${db.param(id.toString().toLowerCase())}) AND
+        (${'workers'}.${'id'} = ${db.param(id)} OR LOWER(${'workers'}.${'identifier'}) = ${db.param(id.toLowerCase())}) AND
         (${whereClientKeys({ keys: clientKeys })} OR 
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
       `.run(pool);

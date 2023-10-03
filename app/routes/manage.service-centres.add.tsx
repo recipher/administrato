@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import ServiceCentreService from '~/models/manage/service-centres.server';
+import ServiceCentreService, { create } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import { Input, UniqueInput, Select, Cancel, Submit, Checkbox,
@@ -104,7 +104,7 @@ export const action = async ({ request }: ActionArgs) => {
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
   
   const service = ServiceCentreService(u);
-  const serviceCentre = await service.addServiceCentre({ localities, identifier, ...data });
+  const serviceCentre = await service.addServiceCentre(create({ localities, identifier, ...data }));
   
   const headers = await refreshUser({ id: u.id, request });
   

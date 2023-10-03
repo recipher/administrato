@@ -4,7 +4,7 @@ import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
-import MilestoneService from '~/models/scheduler/milestones.server';
+import MilestoneService, { create } from '~/models/scheduler/milestones.server';
 
 import { UniqueInput, Cancel, Submit,
          Body, Section, Group, Field, Footer } from '~/components/form';
@@ -52,7 +52,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   if (result.error) return json({ ...validationError(result.error) });
 
-  const set = await MilestoneService().addMilestoneSet({ ...result.data });
+  const set = await MilestoneService().addMilestoneSet(create({ ...result.data }));
 
   const message = `Milestone Set Added:Milestone set ${set.identifier} successfully added.`;
   const level = Level.Success;

@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 import { badRequest } from '~/utility/errors';
 
-import MilestoneService from '~/models/scheduler/milestones.server';
+import MilestoneService, { create } from '~/models/scheduler/milestones.server';
 
 import { Input, TextArea, Checkbox, CheckboxGroup, Cancel, Submit,
          Body, Section, Group, Field, Footer } from '~/components/form';
@@ -34,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = MilestoneService();
   const milestoneSet = await service.getMilestoneSetById({ id });
-  const milestones = await service.getMilestonesBySet({ setId: Number(id) });
+  const milestones = await service.getMilestonesBySet({ setId: id });
 
   return json({ milestoneSet, milestones });
 };
@@ -73,7 +73,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (result.error) return json({ ...validationError(result.error) });
 
   const { data: { description = null, ...data }} = result;
-  const ms = await MilestoneService().addMilestone({ description, setId: Number(id), ...data });
+  const ms = await MilestoneService().addMilestone(create({ description, setId: id, ...data }));
 
   const message = `Milestone Added:Milestone ${ms.identifier} successfully added.`;
   const level = Level.Success;

@@ -13,7 +13,7 @@ export const ASC = 'ASC'
 export const DESC = 'DESC';
 
 export type IdProp = {
-  id: number | string;
+  id: string;
 };
 
 export type NameProp = {

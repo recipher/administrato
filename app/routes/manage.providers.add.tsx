@@ -18,7 +18,7 @@ import { createSupabaseUploadHandler } from '~/models/supabase.server';
 import withAuthorization from '~/auth/with-authorization';
 import { requireUser } from '~/auth/auth.server';
 
-import ProviderService from '~/models/manage/providers.server';
+import ProviderService, { create } from '~/models/manage/providers.server';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
@@ -41,7 +41,7 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const id = toNumber(url.searchParams.get("service-centre") as string);
+  const id = url.searchParams.get("service-centre");
 
   const u = await requireUser(request);
 
@@ -66,8 +66,7 @@ const schema =
       }),
     serviceCentreId: z
       .string()
-      .nonempty("The service centre is required")
-      .transform(id => parseInt(id)),
+      .nonempty("The service centre is required"),
     logo: z.any(),
   });
 
@@ -136,7 +135,7 @@ export const action = async ({ request }: ActionArgs) => {
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = ProviderService(u);
-  const provider = await service.addProvider({ localities, identifier, ...data });
+  const provider = await service.addProvider(create({ localities, identifier, ...data }));
   
   return provider
     ? redirect(`/manage/providers/${provider.id}/info`)

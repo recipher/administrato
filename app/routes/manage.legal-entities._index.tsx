@@ -24,13 +24,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-  const serviceCentreId = toNumber(url.searchParams.get("service-centre") as string);
+  const serviceCentreId = url.searchParams.get("service-centre");
 
   const u = await requireUser(request);
 
   const serviceCentreService = ServiceCentreService(u);
   const serviceCentres = await serviceCentreService.listServiceCentres();
-  const serviceCentre = serviceCentreId ? serviceCentres.find((sc: ServiceCentre) => Number(sc.id) === serviceCentreId) : undefined;
+  const serviceCentre = serviceCentreId ? serviceCentres.find((sc: ServiceCentre) => sc.id === serviceCentreId) : undefined;
 
   const service = LegalEntityService(u);
   const { legalEntities, metadata: { count }} = 

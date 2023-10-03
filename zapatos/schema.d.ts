@@ -31,16 +31,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **clients.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **clients.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **clients.name**
       * - `text` in database
@@ -67,10 +73,10 @@ declare module 'zapatos/schema' {
       isArchived: boolean | null;
       /**
       * **clients.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId: db.Int8String | null;
+      parentId: string | null;
       /**
       * **clients.keyStart**
       * - `int8` in database
@@ -91,24 +97,30 @@ declare module 'zapatos/schema' {
       localities: string[] | null;
       /**
       * **clients.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: db.Int8String;
+      serviceCentreId: string;
     }
     export interface JSONSelectable {
       /**
       * **clients.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **clients.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **clients.name**
       * - `text` in database
@@ -135,10 +147,10 @@ declare module 'zapatos/schema' {
       isArchived: boolean | null;
       /**
       * **clients.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId: number | null;
+      parentId: string | null;
       /**
       * **clients.keyStart**
       * - `int8` in database
@@ -159,24 +171,30 @@ declare module 'zapatos/schema' {
       localities: string[] | null;
       /**
       * **clients.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: number;
+      serviceCentreId: string;
     }
     export interface Whereable {
       /**
       * **clients.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **clients.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.name**
       * - `text` in database
@@ -203,10 +221,10 @@ declare module 'zapatos/schema' {
       isArchived?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      parentId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.keyStart**
       * - `int8` in database
@@ -227,24 +245,30 @@ declare module 'zapatos/schema' {
       localities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
       * **clients.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **clients.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **clients.name**
       * - `text` in database
@@ -271,10 +295,10 @@ declare module 'zapatos/schema' {
       isArchived?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
       /**
       * **clients.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      parentId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **clients.keyStart**
       * - `int8` in database
@@ -295,24 +319,30 @@ declare module 'zapatos/schema' {
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
       /**
       * **clients.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      serviceCentreId: string | db.Parameter<string> | db.SQLFragment;
     }
     export interface Updatable {
       /**
       * **clients.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **clients.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **clients.name**
       * - `text` in database
@@ -339,10 +369,10 @@ declare module 'zapatos/schema' {
       isArchived?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **clients.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      parentId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **clients.keyStart**
       * - `int8` in database
@@ -363,10 +393,10 @@ declare module 'zapatos/schema' {
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **clients.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
     }
     export type UniqueIndex = 'clients_pkey';
     export type Column = keyof Selectable;
@@ -384,16 +414,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **holidays.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **holidays.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **holidays.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **holidays.locality**
       * - `text` in database
@@ -426,10 +462,10 @@ declare module 'zapatos/schema' {
       entity: string | null;
       /**
       * **holidays.entityId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      entityId: db.Int8String | null;
+      entityId: string | null;
       /**
       * **holidays.isRemoved**
       * - `bool` in database
@@ -440,16 +476,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **holidays.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **holidays.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **holidays.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **holidays.locality**
       * - `text` in database
@@ -482,10 +524,10 @@ declare module 'zapatos/schema' {
       entity: string | null;
       /**
       * **holidays.entityId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      entityId: number | null;
+      entityId: string | null;
       /**
       * **holidays.isRemoved**
       * - `bool` in database
@@ -496,16 +538,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **holidays.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **holidays.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.locality**
       * - `text` in database
@@ -538,10 +586,10 @@ declare module 'zapatos/schema' {
       entity?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.entityId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      entityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **holidays.isRemoved**
       * - `bool` in database
@@ -552,16 +600,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **holidays.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **holidays.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **holidays.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **holidays.locality**
       * - `text` in database
@@ -594,10 +648,10 @@ declare module 'zapatos/schema' {
       entity?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **holidays.entityId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      entityId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **holidays.isRemoved**
       * - `bool` in database
@@ -608,16 +662,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **holidays.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **holidays.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **holidays.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **holidays.locality**
       * - `text` in database
@@ -650,10 +710,10 @@ declare module 'zapatos/schema' {
       entity?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **holidays.entityId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      entityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      entityId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **holidays.isRemoved**
       * - `bool` in database
@@ -677,16 +737,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **legalEntities.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **legalEntities.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **legalEntities.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **legalEntities.name**
       * - `text` in database
@@ -719,28 +785,28 @@ declare module 'zapatos/schema' {
       targetDay: string | null;
       /**
       * **legalEntities.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: db.Int8String;
+      serviceCentreId: string;
       /**
       * **legalEntities.providerId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      providerId: db.Int8String | null;
+      providerId: string | null;
       /**
       * **legalEntities.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId: db.Int8String | null;
+      clientId: string | null;
       /**
       * **legalEntities.milestoneSetId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      milestoneSetId: db.Int8String | null;
+      milestoneSetId: string | null;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -769,16 +835,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **legalEntities.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **legalEntities.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **legalEntities.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **legalEntities.name**
       * - `text` in database
@@ -811,28 +883,28 @@ declare module 'zapatos/schema' {
       targetDay: string | null;
       /**
       * **legalEntities.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: number;
+      serviceCentreId: string;
       /**
       * **legalEntities.providerId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      providerId: number | null;
+      providerId: string | null;
       /**
       * **legalEntities.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId: number | null;
+      clientId: string | null;
       /**
       * **legalEntities.milestoneSetId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      milestoneSetId: number | null;
+      milestoneSetId: string | null;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -861,16 +933,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **legalEntities.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **legalEntities.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.name**
       * - `text` in database
@@ -903,28 +981,28 @@ declare module 'zapatos/schema' {
       targetDay?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.providerId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      providerId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      clientId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.milestoneSetId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      milestoneSetId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      milestoneSetId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -953,16 +1031,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **legalEntities.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **legalEntities.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **legalEntities.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.name**
       * - `text` in database
@@ -995,28 +1079,28 @@ declare module 'zapatos/schema' {
       targetDay?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      serviceCentreId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **legalEntities.providerId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      providerId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      clientId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.milestoneSetId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      milestoneSetId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      milestoneSetId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -1045,16 +1129,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **legalEntities.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **legalEntities.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **legalEntities.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.name**
       * - `text` in database
@@ -1087,28 +1177,28 @@ declare module 'zapatos/schema' {
       targetDay?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **legalEntities.providerId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      providerId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      providerId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      clientId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.milestoneSetId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      milestoneSetId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      milestoneSetId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.isArchived**
       * - `bool` in database
@@ -1149,12 +1239,6 @@ declare module 'zapatos/schema' {
     export type Table = 'localities';
     export interface Selectable {
       /**
-      * **localities.createdAt**
-      * - `timestamptz` in database
-      * - `NOT NULL`, default: `now()`
-      */
-      createdAt: Date;
-      /**
       * **localities.isoCode**
       * - `text` in database
       * - `NOT NULL`, no default
@@ -1174,12 +1258,6 @@ declare module 'zapatos/schema' {
       parent: string | null;
     }
     export interface JSONSelectable {
-      /**
-      * **localities.createdAt**
-      * - `timestamptz` in database
-      * - `NOT NULL`, default: `now()`
-      */
-      createdAt: db.TimestampTzString;
       /**
       * **localities.isoCode**
       * - `text` in database
@@ -1201,12 +1279,6 @@ declare module 'zapatos/schema' {
     }
     export interface Whereable {
       /**
-      * **localities.createdAt**
-      * - `timestamptz` in database
-      * - `NOT NULL`, default: `now()`
-      */
-      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
-      /**
       * **localities.isoCode**
       * - `text` in database
       * - `NOT NULL`, no default
@@ -1227,12 +1299,6 @@ declare module 'zapatos/schema' {
     }
     export interface Insertable {
       /**
-      * **localities.createdAt**
-      * - `timestamptz` in database
-      * - `NOT NULL`, default: `now()`
-      */
-      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
-      /**
       * **localities.isoCode**
       * - `text` in database
       * - `NOT NULL`, no default
@@ -1252,12 +1318,6 @@ declare module 'zapatos/schema' {
       parent?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
-      /**
-      * **localities.createdAt**
-      * - `timestamptz` in database
-      * - `NOT NULL`, default: `now()`
-      */
-      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **localities.isoCode**
       * - `text` in database
@@ -1293,10 +1353,10 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **milestones.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **milestones.createdAt**
       * - `timestamptz` in database
@@ -1304,11 +1364,17 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **milestones.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
+      /**
       * **milestones.identifier**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      identifier: string;
+      identifier: string | null;
       /**
       * **milestones.description**
       * - `text` in database
@@ -1334,6 +1400,12 @@ declare module 'zapatos/schema' {
       */
       time: db.TimeTzString | null;
       /**
+      * **milestones.pivot**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      pivot: boolean | null;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
@@ -1341,24 +1413,18 @@ declare module 'zapatos/schema' {
       entities: string[] | null;
       /**
       * **milestones.setId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      setId: db.Int8String;
-      /**
-      * **milestones.pivot**
-      * - `bool` in database
-      * - Nullable, no default
-      */
-      pivot: boolean | null;
+      setId: string;
     }
     export interface JSONSelectable {
       /**
       * **milestones.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **milestones.createdAt**
       * - `timestamptz` in database
@@ -1366,11 +1432,17 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **milestones.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
+      /**
       * **milestones.identifier**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      identifier: string;
+      identifier: string | null;
       /**
       * **milestones.description**
       * - `text` in database
@@ -1396,6 +1468,12 @@ declare module 'zapatos/schema' {
       */
       time: db.TimeTzString | null;
       /**
+      * **milestones.pivot**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      pivot: boolean | null;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
@@ -1403,24 +1481,18 @@ declare module 'zapatos/schema' {
       entities: string[] | null;
       /**
       * **milestones.setId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      setId: number;
-      /**
-      * **milestones.pivot**
-      * - `bool` in database
-      * - Nullable, no default
-      */
-      pivot: boolean | null;
+      setId: string;
     }
     export interface Whereable {
       /**
       * **milestones.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **milestones.createdAt**
       * - `timestamptz` in database
@@ -1428,9 +1500,15 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **milestones.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **milestones.identifier**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -1458,6 +1536,12 @@ declare module 'zapatos/schema' {
       */
       time?: db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **milestones.pivot**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      pivot?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
@@ -1465,24 +1549,18 @@ declare module 'zapatos/schema' {
       entities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
       /**
       * **milestones.setId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      setId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **milestones.pivot**
-      * - `bool` in database
-      * - Nullable, no default
-      */
-      pivot?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      setId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
       * **milestones.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **milestones.createdAt**
       * - `timestamptz` in database
@@ -1490,11 +1568,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **milestones.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **milestones.identifier**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      identifier: string | db.Parameter<string> | db.SQLFragment;
+      identifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **milestones.description**
       * - `text` in database
@@ -1520,6 +1604,12 @@ declare module 'zapatos/schema' {
       */
       time?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **milestones.pivot**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      pivot?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
@@ -1527,24 +1617,18 @@ declare module 'zapatos/schema' {
       entities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
       /**
       * **milestones.setId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      setId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
-      /**
-      * **milestones.pivot**
-      * - `bool` in database
-      * - Nullable, no default
-      */
-      pivot?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+      setId: string | db.Parameter<string> | db.SQLFragment;
     }
     export interface Updatable {
       /**
       * **milestones.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **milestones.createdAt**
       * - `timestamptz` in database
@@ -1552,11 +1636,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **milestones.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **milestones.identifier**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      identifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **milestones.description**
       * - `text` in database
@@ -1582,6 +1672,12 @@ declare module 'zapatos/schema' {
       */
       time?: db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.TimeTzString | db.Parameter<db.TimeTzString> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **milestones.pivot**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      pivot?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **milestones.entities**
       * - `_text` in database
       * - Nullable, no default
@@ -1589,16 +1685,10 @@ declare module 'zapatos/schema' {
       entities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **milestones.setId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      setId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
-      /**
-      * **milestones.pivot**
-      * - `bool` in database
-      * - Nullable, no default
-      */
-      pivot?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      setId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
     }
     export type UniqueIndex = 'milestones_pkey';
     export type Column = keyof Selectable;
@@ -1616,16 +1706,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **milestoneSets.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **milestoneSets.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **milestoneSets.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **milestoneSets.identifier**
       * - `text` in database
@@ -1642,16 +1738,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **milestoneSets.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **milestoneSets.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **milestoneSets.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **milestoneSets.identifier**
       * - `text` in database
@@ -1668,16 +1770,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **milestoneSets.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **milestoneSets.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **milestoneSets.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **milestoneSets.identifier**
       * - `text` in database
@@ -1694,16 +1802,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **milestoneSets.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **milestoneSets.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **milestoneSets.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **milestoneSets.identifier**
       * - `text` in database
@@ -1720,16 +1834,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **milestoneSets.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **milestoneSets.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **milestoneSets.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **milestoneSets.identifier**
       * - `text` in database
@@ -1759,16 +1879,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **providers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **providers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **providers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **providers.name**
       * - `text` in database
@@ -1789,10 +1915,10 @@ declare module 'zapatos/schema' {
       logo: string | null;
       /**
       * **providers.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: db.Int8String;
+      serviceCentreId: string;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -1821,16 +1947,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **providers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **providers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **providers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **providers.name**
       * - `text` in database
@@ -1851,10 +1983,10 @@ declare module 'zapatos/schema' {
       logo: string | null;
       /**
       * **providers.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: number;
+      serviceCentreId: string;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -1883,16 +2015,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **providers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **providers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **providers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **providers.name**
       * - `text` in database
@@ -1913,10 +2051,10 @@ declare module 'zapatos/schema' {
       logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **providers.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -1945,16 +2083,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **providers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **providers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **providers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **providers.name**
       * - `text` in database
@@ -1975,10 +2119,10 @@ declare module 'zapatos/schema' {
       logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **providers.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      serviceCentreId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -2007,16 +2151,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **providers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **providers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **providers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **providers.name**
       * - `text` in database
@@ -2037,10 +2187,10 @@ declare module 'zapatos/schema' {
       logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **providers.serviceCentreId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -2082,10 +2232,10 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **scheduleDates.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **scheduleDates.createdAt**
       * - `timestamptz` in database
@@ -2093,17 +2243,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **scheduleDates.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
+      /**
       * **scheduleDates.scheduleId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      scheduleId: db.Int8String;
+      scheduleId: string;
       /**
       * **scheduleDates.milestoneId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      milestoneId: db.Int8String;
+      milestoneId: string;
       /**
       * **scheduleDates.date**
       * - `date` in database
@@ -2118,10 +2274,10 @@ declare module 'zapatos/schema' {
       isManual: boolean | null;
       /**
       * **scheduleDates.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId: db.Int8String | null;
+      clientId: string | null;
       /**
       * **scheduleDates.status**
       * - `text` in database
@@ -2132,10 +2288,10 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **scheduleDates.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **scheduleDates.createdAt**
       * - `timestamptz` in database
@@ -2143,17 +2299,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **scheduleDates.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
+      /**
       * **scheduleDates.scheduleId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      scheduleId: number;
+      scheduleId: string;
       /**
       * **scheduleDates.milestoneId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      milestoneId: number;
+      milestoneId: string;
       /**
       * **scheduleDates.date**
       * - `date` in database
@@ -2168,10 +2330,10 @@ declare module 'zapatos/schema' {
       isManual: boolean | null;
       /**
       * **scheduleDates.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId: number | null;
+      clientId: string | null;
       /**
       * **scheduleDates.status**
       * - `text` in database
@@ -2182,10 +2344,10 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **scheduleDates.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **scheduleDates.createdAt**
       * - `timestamptz` in database
@@ -2193,17 +2355,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **scheduleDates.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **scheduleDates.scheduleId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      scheduleId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      scheduleId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **scheduleDates.milestoneId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      milestoneId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      milestoneId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **scheduleDates.date**
       * - `date` in database
@@ -2218,10 +2386,10 @@ declare module 'zapatos/schema' {
       isManual?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
       * **scheduleDates.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      clientId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **scheduleDates.status**
       * - `text` in database
@@ -2232,10 +2400,10 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **scheduleDates.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **scheduleDates.createdAt**
       * - `timestamptz` in database
@@ -2243,17 +2411,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **scheduleDates.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **scheduleDates.scheduleId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      scheduleId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      scheduleId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **scheduleDates.milestoneId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      milestoneId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      milestoneId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **scheduleDates.date**
       * - `date` in database
@@ -2268,10 +2442,10 @@ declare module 'zapatos/schema' {
       isManual?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
       /**
       * **scheduleDates.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      clientId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **scheduleDates.status**
       * - `text` in database
@@ -2282,10 +2456,10 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **scheduleDates.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **scheduleDates.createdAt**
       * - `timestamptz` in database
@@ -2293,17 +2467,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **scheduleDates.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **scheduleDates.scheduleId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      scheduleId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      scheduleId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **scheduleDates.milestoneId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      milestoneId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      milestoneId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **scheduleDates.date**
       * - `date` in database
@@ -2318,10 +2498,10 @@ declare module 'zapatos/schema' {
       isManual?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **scheduleDates.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      clientId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **scheduleDates.status**
       * - `text` in database
@@ -2345,10 +2525,10 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **schedules.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **schedules.createdAt**
       * - `timestamptz` in database
@@ -2356,11 +2536,17 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **schedules.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
+      /**
       * **schedules.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: db.Int8String;
+      legalEntityId: string;
       /**
       * **schedules.year**
       * - `int4` in database
@@ -2395,10 +2581,10 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **schedules.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **schedules.createdAt**
       * - `timestamptz` in database
@@ -2406,11 +2592,17 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **schedules.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
+      /**
       * **schedules.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: number;
+      legalEntityId: string;
       /**
       * **schedules.year**
       * - `int4` in database
@@ -2445,10 +2637,10 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **schedules.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **schedules.createdAt**
       * - `timestamptz` in database
@@ -2456,11 +2648,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **schedules.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **schedules.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      legalEntityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **schedules.year**
       * - `int4` in database
@@ -2495,10 +2693,10 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **schedules.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **schedules.createdAt**
       * - `timestamptz` in database
@@ -2506,11 +2704,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **schedules.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
       * **schedules.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      legalEntityId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **schedules.year**
       * - `int4` in database
@@ -2545,10 +2749,10 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **schedules.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **schedules.createdAt**
       * - `timestamptz` in database
@@ -2556,11 +2760,17 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **schedules.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
       * **schedules.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      legalEntityId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **schedules.year**
       * - `int4` in database
@@ -2608,16 +2818,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **serviceCentres.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **serviceCentres.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **serviceCentres.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **serviceCentres.name**
       * - `text` in database
@@ -2632,10 +2848,10 @@ declare module 'zapatos/schema' {
       identifier: string;
       /**
       * **serviceCentres.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId: db.Int8String | null;
+      parentId: string | null;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database
@@ -2664,16 +2880,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **serviceCentres.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **serviceCentres.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **serviceCentres.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **serviceCentres.name**
       * - `text` in database
@@ -2688,10 +2910,10 @@ declare module 'zapatos/schema' {
       identifier: string;
       /**
       * **serviceCentres.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId: number | null;
+      parentId: string | null;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database
@@ -2720,16 +2942,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **serviceCentres.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **serviceCentres.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **serviceCentres.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **serviceCentres.name**
       * - `text` in database
@@ -2744,10 +2972,10 @@ declare module 'zapatos/schema' {
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **serviceCentres.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      parentId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database
@@ -2776,16 +3004,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **serviceCentres.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **serviceCentres.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **serviceCentres.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **serviceCentres.name**
       * - `text` in database
@@ -2800,10 +3034,10 @@ declare module 'zapatos/schema' {
       identifier: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **serviceCentres.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
+      parentId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database
@@ -2832,16 +3066,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **serviceCentres.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **serviceCentres.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **serviceCentres.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **serviceCentres.name**
       * - `text` in database
@@ -2856,10 +3096,10 @@ declare module 'zapatos/schema' {
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **serviceCentres.parentId**
-      * - `int8` in database
+      * - `text` in database
       * - Nullable, no default
       */
-      parentId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
+      parentId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **serviceCentres.isArchived**
       * - `bool` in database
@@ -2901,16 +3141,22 @@ declare module 'zapatos/schema' {
     export interface Selectable {
       /**
       * **workers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: db.Int8String;
+      id: string;
       /**
       * **workers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
+      /**
+      * **workers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
       /**
       * **workers.identifier**
       * - `text` in database
@@ -2937,16 +3183,16 @@ declare module 'zapatos/schema' {
       photo: string | null;
       /**
       * **workers.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      clientId: db.Int8String;
+      clientId: string;
       /**
       * **workers.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: db.Int8String;
+      legalEntityId: string;
       /**
       * **workers.isArchived**
       * - `bool` in database
@@ -2987,16 +3233,22 @@ declare module 'zapatos/schema' {
     export interface JSONSelectable {
       /**
       * **workers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id: number;
+      id: string;
       /**
       * **workers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
+      /**
+      * **workers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
       /**
       * **workers.identifier**
       * - `text` in database
@@ -3023,16 +3275,16 @@ declare module 'zapatos/schema' {
       photo: string | null;
       /**
       * **workers.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      clientId: number;
+      clientId: string;
       /**
       * **workers.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: number;
+      legalEntityId: string;
       /**
       * **workers.isArchived**
       * - `bool` in database
@@ -3073,16 +3325,22 @@ declare module 'zapatos/schema' {
     export interface Whereable {
       /**
       * **workers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **workers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **workers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **workers.identifier**
       * - `text` in database
@@ -3109,16 +3367,16 @@ declare module 'zapatos/schema' {
       photo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **workers.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      clientId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **workers.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
+      legalEntityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **workers.isArchived**
       * - `bool` in database
@@ -3159,16 +3417,22 @@ declare module 'zapatos/schema' {
     export interface Insertable {
       /**
       * **workers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment;
+      id: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **workers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **workers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
       * **workers.identifier**
       * - `text` in database
@@ -3195,16 +3459,16 @@ declare module 'zapatos/schema' {
       photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **workers.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      clientId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      clientId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **workers.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      legalEntityId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **workers.isArchived**
       * - `bool` in database
@@ -3245,16 +3509,22 @@ declare module 'zapatos/schema' {
     export interface Updatable {
       /**
       * **workers.id**
-      * - `int8` in database
-      * - `NOT NULL`, identity column
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      id?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.DefaultType | db.SQLFragment>;
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **workers.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **workers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
       * **workers.identifier**
       * - `text` in database
@@ -3281,16 +3551,16 @@ declare module 'zapatos/schema' {
       photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **workers.clientId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      clientId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      clientId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **workers.legalEntityId**
-      * - `int8` in database
+      * - `text` in database
       * - `NOT NULL`, no default
       */
-      legalEntityId?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      legalEntityId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **workers.isArchived**
       * - `bool` in database

@@ -2,7 +2,9 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import { ASC, DESC } from '../types';
+export { default as create } from '../id.server';
+
+import { ASC } from '../types';
 
 export type Milestone = s.milestones.Selectable;
 export type MilestoneSet = s.milestoneSets.Selectable & { milestones: Array<Milestone>};
@@ -11,38 +13,38 @@ const service = () => {
   const addMilestoneSet = async (milestoneSet: s.milestoneSets.Insertable) => {
     const [inserted] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       INSERT INTO ${'milestoneSets'} (${db.cols(milestoneSet)})
-      VALUES (${db.vals(milestoneSet)}) RETURNING *`.run(pool);
+      VALUES (${db.vals(milestoneSet)}) RETURNING *
+    `.run(pool);
 
     return inserted;
   };
 
   const addMilestone = async (milestone: s.milestones.Insertable) => {
-    const latest = await getLatestMilestonesForSet({ setId: Number(milestone.setId) })
+    const latest = await getLatestMilestonesForSet({ setId: milestone.setId as string })
 
     milestone.index = latest === undefined ? 0 : (latest.index || 0) + 1;
-    milestone.identifier = milestone.identifier.toString()
+    milestone.identifier = (milestone.identifier as string)
       .replace(/([a-z])([A-Z])/g, "$1-$2")
       .replace(/[\s_]+/g, '-')
       .toLowerCase();
 
     if (milestone.pivot) await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      UPDATE ${'milestones'} SET ${'pivot'} = FALSE WHERE ${'setId'} = ${db.param(milestone.setId)}
-    `.run(pool);
+        UPDATE ${'milestones'} SET ${'pivot'} = FALSE WHERE ${'setId'} = ${db.param(milestone.setId)}
+      `.run(pool);
 
     const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       INSERT INTO ${'milestones'} (${db.cols(milestone)})
-      VALUES (${db.vals(milestone)}) RETURNING *`.run(pool);
+      VALUES (${db.vals(milestone)}) RETURNING *
+    `.run(pool);
 
     return inserted;
   };
 
-  const getMilestoneSetById = async ({ id }: { id: number | string }) => {
-    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
-
+  const getMilestoneSetById = async ({ id }: { id: string }) => {
     const [ milestoneSet ] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       SELECT * FROM ${'milestoneSets'} 
-      WHERE ${'id'} = ${db.param(numericId)} OR LOWER(${'identifier'}) = ${db.param(id.toString().toLowerCase())}`
-      .run(pool);
+      WHERE ${'id'} = ${db.param(id)} OR LOWER(${'identifier'}) = ${db.param(id.toLowerCase())}
+    `.run(pool);
     return milestoneSet;
   };
 
@@ -55,7 +57,7 @@ const service = () => {
     `.run(pool);
   };
 
-  const getMilestonesBySet = async ({ setId }: { setId: number }) => {
+  const getMilestonesBySet = async ({ setId }: { setId: string }) => {
     return await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}}
@@ -63,7 +65,7 @@ const service = () => {
     `.run(pool);
   };
 
-  const getMilestonesBySetAboveIndex = async ({ setId, index }: { setId: number, index: number }) => {
+  const getMilestonesBySetAboveIndex = async ({ setId, index }: { setId: string, index: number }) => {
     return await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}} AND ${'index'} > ${db.param(index)}
@@ -71,43 +73,47 @@ const service = () => {
     `.run(pool);
   };
 
-  const removeMilestone = async ({ id }: { id: number }) => {
+  const removeMilestone = async ({ id }: { id: string }) => {
     const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
-      WHERE ${{id}}`.run(pool);
+      WHERE ${{id}}
+    `.run(pool);
 
     if (milestone === undefined) throw Error('Milestone not found');
 
     await reindexAbove(milestone);
 
     return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      DELETE FROM ${'milestones'} WHERE ${{id}}`.run(pool);
+      DELETE FROM ${'milestones'} WHERE ${{id}}
+    `.run(pool);
   };
 
-  const updateMilestoneIndex = async ({ id, index }: { id: number, index: number }) => {
+  const updateMilestoneIndex = async ({ id, index }: { id: string, index: number }) => {
     return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       UPDATE ${'milestones'} SET ${'index'} = ${db.param(index)} 
-      WHERE ${'id'} = ${db.param(id)}`.run(pool)
+      WHERE ${'id'} = ${db.param(id)}
+    `.run(pool)
   };
 
   const reindexAbove = async ({ setId, index }: Milestone) => {
     if (index === null) return;
-    const milestones = await getMilestonesBySetAboveIndex({ setId: Number(setId), index });
+    const milestones = await getMilestonesBySetAboveIndex({ setId, index });
 
     await Promise.all(milestones.map(({ id, index: i }: Milestone) =>
-      updateMilestoneIndex({ id: Number(id), index: (i || 0)-1 })
+      updateMilestoneIndex({ id, index: (i || 0)-1 })
     ));
   };
 
   const swapIndexes = async (first: Milestone, second: Milestone) => {
-    await updateMilestoneIndex({ id: Number(first.id), index: Number(second.index) });
-    await updateMilestoneIndex({ id: Number(second.id), index: Number(first.index) });
+    await updateMilestoneIndex({ id: first.id, index: Number(second.index) });
+    await updateMilestoneIndex({ id: second.id, index: Number(first.index) });
   };
 
-  const increaseMilestoneIndex = async ({ id }: { id: number }) => {
+  const increaseMilestoneIndex = async ({ id }: { id: string }) => {
     const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
-      WHERE ${{id}}`.run(pool);
+      WHERE ${{id}}
+    `.run(pool);
 
     if (milestone === undefined) throw Error('Milestone not found');
 
@@ -116,17 +122,19 @@ const service = () => {
     const [ next ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}} AND ${'index'} > ${db.param(index)}
-      ORDER BY ${'index'} ASC`.run(pool);
+      ORDER BY ${'index'} ASC
+    `.run(pool);
 
     if (next === undefined) throw Error('Maximum index reached');
 
     return swapIndexes(milestone, next);
   };
 
-  const decreaseMilestoneIndex = async ({ id }: { id: number }) => {
+  const decreaseMilestoneIndex = async ({ id }: { id: string }) => {
     const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
-      WHERE ${{id}}`.run(pool);
+      WHERE ${{id}}
+    `.run(pool);
 
     if (milestone === undefined) throw Error('Milestone not found');
 
@@ -142,7 +150,7 @@ const service = () => {
     return swapIndexes(milestone, previous);
   };
 
-  const getLatestMilestonesForSet = async ({ setId }: { setId: number }) => {
+  const getLatestMilestonesForSet = async ({ setId }: { setId: string }) => {
     const milestones = await getMilestonesBySet({ setId });
     if (milestones.length === 0) return;
 

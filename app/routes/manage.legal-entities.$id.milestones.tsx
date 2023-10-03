@@ -3,8 +3,6 @@ import { useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
 import MilestoneService from '~/models/scheduler/milestones.server';
-import Alert, { Level } from '~/components/alert';
-import { Basic as List } from '~/components/list';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 
@@ -31,7 +29,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const milestoneService = MilestoneService();
   const milestones = setId === null
     ? milestoneService.getDefaultSet()
-    : milestoneService.getMilestonesBySet({ setId: Number(setId) })
+    : milestoneService.getMilestonesBySet({ setId })
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 

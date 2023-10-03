@@ -1,6 +1,5 @@
 create table
   public.localities (
-    "createdAt" timestamp with time zone not null default now(),
     "isoCode" text not null,
     name text not null,
     parent text null,

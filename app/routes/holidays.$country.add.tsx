@@ -6,7 +6,7 @@ import { CurrencyYenIcon, IdentificationIcon, WalletIcon, MapIcon } from '@heroi
 
 import { badRequest, notFound } from '~/utility/errors';
 import CountryService from '~/models/countries.server';
-import HolidayService from '~/models/scheduler/holidays.server';
+import HolidayService, { create } from '~/models/scheduler/holidays.server';
 import ProviderService, { Provider } from '~/models/manage/providers.server';
 import ClientService, { Client } from '~/models/manage/clients.server';
 import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
@@ -40,7 +40,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { country: isoCode } = params;
 
   const entityType = url.searchParams.get("entity") || null;
-  const entityId = toNumber(url.searchParams.get("entity-id") as string) || null;
+  const entityId = url.searchParams.get("entity-id") as string;
 
   if (isoCode === undefined) return badRequest('Invalid request');
 
@@ -80,7 +80,7 @@ export const validator = withZod(
       .nonempty('Holiday date is required')
       .transform(date => new Date(date)),
     entityId: z
-      .coerce.number()
+      .string()
       .optional()
     })
 );
@@ -107,7 +107,7 @@ export async function action({ request, params }: ActionArgs) {
 
   try {
     const service = HolidayService();
-    await service.addHoliday({ name, date, locality: isoCode, entity, entityId: entityId || null });
+    await service.addHoliday(create({ name, date, locality: isoCode, entity, entityId: entityId || null }));
     message = `Holiday Added Successfully:${name} was added to ${year}`;
   } catch(e: any) {
     message = `Holiday Add Error:${e.message}`;

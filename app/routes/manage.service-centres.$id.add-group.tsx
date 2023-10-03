@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import ServiceCentreService from '~/models/manage/service-centres.server';
+import ServiceCentreService, { create } from '~/models/manage/service-centres.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import withAuthorization from '~/auth/with-authorization';
@@ -34,7 +34,7 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const id = toNumber(params.id as string);
+  const { id } = params;
 
   if (id === undefined) return badRequest('Invalid request');
 
@@ -65,7 +65,7 @@ const schema = zfd.formData({
 const clientValidator = withZod(schema);
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const parentId = toNumber(params.id as string);
+  const parentId = params.id;
 
   if (parentId === undefined) return badRequest('Invalid data');
 
@@ -125,7 +125,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
   
   const service = ServiceCentreService(u);
-  await service.addServiceCentre({ localities, identifier, parentId, ...data });
+  await service.addServiceCentre(create({ localities, identifier, parentId, ...data }));
   
   return redirect(`/manage/service-centres/${parentId}/groups`);
 };

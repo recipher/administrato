@@ -3,6 +3,9 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+export { default as create } from '../id.server';
+import { default as create } from '../id.server';
+
 import { isSameDay, isSameMonth, isSameYear } from 'date-fns';
 
 const key = process.env.HOLIDAY_API_KEY as string;
@@ -17,12 +20,12 @@ type ListOptions = {
 
 type EntityOptions = {
   entity: string;
-  entityId: number;
+  entityId: string;
 };
 
 type OptionalEntityOptions = {
   entity: string | null;
-  entityId: number | null;
+  entityId: string | null;
 };
 
 type QueryOptions = { 
@@ -41,24 +44,24 @@ const service = () => {
     return inserted;
   };
 
-  const getHolidayById = async ({ id }: { id: number }) => {
+  const getHolidayById = async ({ id }: { id: string }) => {
     const [ holiday ] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
       SELECT * FROM ${'holidays'} 
       WHERE ${{id}}`.run(pool);
     return holiday;
   };
 
-  const deleteHolidayById = async (id: number, entity?: OptionalEntityOptions) => {
+  const deleteHolidayById = async (id: string, entity?: OptionalEntityOptions) => {
     if (entity) {
       const { name, date, locality, ...holiday } = await getHolidayById({ id });
       if (!holiday.entity) {
-        return addHoliday({ name, date, locality, isRemoved: true, ...entity });
+        return addHoliday(create({ name, date, locality, isRemoved: true, ...entity }));
       }
     }
     return db.sql<s.holidays.SQL>`DELETE FROM ${'holidays'} WHERE ${{id}}`.run(pool);
   };
 
-  const reinstateHolidayById = async (id: number, entity: EntityOptions) => {
+  const reinstateHolidayById = async (id: string, entity: EntityOptions) => {
     if (entity) {
       const holiday = await getHolidayById({ id });
       if (holiday.entity) {
@@ -142,10 +145,10 @@ const service = () => {
     if (holidays.length === 0) return;
 
     await db.insert('holidays', holidays.map(holiday => (
-      { name: holiday.name, 
+      create({ name: holiday.name, 
         date: new Date(holiday.date), 
         observed: new Date(holiday.observed), 
-        locality: holiday.country }
+        locality: holiday.country })
     ))).run(pool);
 
     return listHolidaysByCountry({ year, locality });

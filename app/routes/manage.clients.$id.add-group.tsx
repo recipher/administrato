@@ -34,7 +34,7 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const id = toNumber(params.id as string);
+  const { id } = params;
 
   if (id === undefined) return badRequest('Invalid request');
 
@@ -65,7 +65,7 @@ const schema = zfd.formData({
 const clientValidator = withZod(schema);
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const parentId = toNumber(params.id as string);
+  const parentId = params.id;
 
   if (parentId === undefined) return badRequest('Invalid data');
 

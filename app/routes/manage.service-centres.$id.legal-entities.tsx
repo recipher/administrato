@@ -45,7 +45,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const legalEntityService = LegalEntityService(u);
   const { legalEntities, metadata: { count }} = 
     await legalEntityService.searchLegalEntities({ search, 
-      serviceCentreId: all ? undefined : Number(id),
+      serviceCentreId: all ? undefined : id,
       serviceCentre: all ? serviceCentre : undefined
     }, { offset, limit, sortDirection: sort });
 

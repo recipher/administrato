@@ -2,6 +2,9 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+import { default as create } from '../id.server';
+export { default as create } from '../id.server';
+
 import type { SecurityKey, IdProp, NameProp, KeyQueryOptions as BaseKeyQueryOptions, BypassKeyCheck } from '../types';
 
 import UserService, { type User } from '../access/users.server';
@@ -14,13 +17,13 @@ const KEY_MAX = Number.MAX_SAFE_INTEGER;
 const MAX_ENTITIES = 100;
 
 type KeyQueryOptions = BaseKeyQueryOptions & {
-  parentId?: number | undefined;
+  parentId?: string | undefined;
 };
 
 export type ServiceCentre = s.serviceCentres.Selectable & { groupCount?: number };
 
 const service = (u: User) => {
-  const getLatest = async (parentId: number | null) => {
+  const getLatest = async (parentId: string | null) => {
     const whereParent = parentId
       ? db.sql`${'parentId'} = ${db.param(parentId)}`
       : db.sql`${'parentId'} IS NULL`;
@@ -34,14 +37,14 @@ const service = (u: User) => {
     return latest;
   };
 
-  const getParentKey = async (parentId: number | null) => {
+  const getParentKey = async (parentId: string | null) => {
     if (parentId) {
       return await getServiceCentre({ id: parentId }, { bypassKeyCheck: true });
     }
     return { keyStart: 0, keyEnd: KEY_MAX };
   };
 
-  const generateKey = async (parentId: number | null): Promise<SecurityKey> => {
+  const generateKey = async (parentId: string | null): Promise<SecurityKey> => {
     const { keyStart: keyMin, keyEnd: keyMax } = await getParentKey(parentId);
 
     const latest = await getLatest(parentId);
@@ -52,7 +55,7 @@ const service = (u: User) => {
   };
 
   const addServiceCentre = async (serviceCentre: s.serviceCentres.Insertable) => {
-    const key = await generateKey(serviceCentre.parentId as number);
+    const key = await generateKey(serviceCentre.parentId as string);
     const withKey = { ...serviceCentre, ...key, identifier: generateIdentifier(serviceCentre) };
 
     const [inserted] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
@@ -76,7 +79,7 @@ const service = (u: User) => {
 
   const checkForFullAccess = (keys: Array<SecurityKey>, serviceCentres: Array<ServiceCentre>) => {
     return (keys.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
-      ? [ { id: Number.MAX_SAFE_INTEGER as unknown as db.Int8String, 
+      ? [ create({ 
             name: "Full Authorization", 
             identifier: "full-authorization",
             localities: [], 
@@ -84,7 +87,7 @@ const service = (u: User) => {
             keyStart: KEY_MIN as unknown as db.Int8String, 
             keyEnd: KEY_MAX as unknown as db.Int8String, 
             createdAt: new Date(), 
-            isArchived: false }, ...serviceCentres ]
+            isArchived: false }), ...serviceCentres ]
       : serviceCentres;
   };
 
@@ -110,12 +113,11 @@ const service = (u: User) => {
 
   const getServiceCentre = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
     const keys = u.keys.serviceCentre;
-    const numericId = isNaN(parseInt(id as string)) ? 0 : id;
 
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT main.* FROM ${'serviceCentres'} AS main
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
-        (main.${'id'} = ${db.param(numericId)} OR LOWER(main.${'identifier'}) = ${db.param(id.toString().toLowerCase())})
+        (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
       `.run(pool);
 
     return serviceCentre;

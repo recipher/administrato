@@ -13,7 +13,7 @@ import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
-import WorkerService from '~/models/manage/workers.server';
+import WorkerService, { create } from '~/models/manage/workers.server';
 import { type Client } from '~/models/manage/clients.server';
 import { type LegalEntity } from '~/models/manage/legal-entities.server';
 import CountryService, { type Country } from '~/models/countries.server';
@@ -88,7 +88,7 @@ export const action = async ({ request }: ActionArgs) => {
   
   const service = WorkerService(u);
   // @ts-ignore
-  const worker = await service.addWorker({ locality: isoCode, identifier: "", ...data });
+  const worker = await service.addWorker(create({ locality: isoCode, identifier: "", ...data }));
   
   return redirect(`/manage/workers/${worker.id}/info`);
 };
