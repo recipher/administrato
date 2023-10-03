@@ -84,11 +84,12 @@ export const action = async ({ request }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { locality: { id: isoCode }, ...data } } = result;
+  const { data: { locality: { id: isoCode }, ...data }} = result;
   
   const service = WorkerService(u);
   // @ts-ignore
-  const worker = await service.addWorker(create({ locality: isoCode, identifier: "", ...data }));
+  const worker = await service.addWorker(create({ 
+    locality: isoCode, identifier: "", classifier: "worker", ...data }));
   
   return redirect(`/manage/workers/${worker.id}/info`);
 };

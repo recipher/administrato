@@ -1,8 +1,6 @@
 create table
   public.clients (
     id text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedAt" timestamp with time zone not null default now(),
     name text not null,
     identifier text not null,
     logo text null,
@@ -12,6 +10,8 @@ create table
     "keyEnd" bigint null,
     localities text[] null,
     "serviceCentreId" text not null,
+    "createdAt" timestamp with time zone not null default now(),
+    "updatedAt" timestamp with time zone not null default now(),
     constraint clients_pkey primary key (id),
     constraint clients_parentId_fkey foreign key ("parentId") references clients (id) on delete cascade,
     constraint clients_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id)

@@ -1,8 +1,6 @@
 create table
   public.holidays (
     id text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedAt" timestamp with time zone not null default now(),
     locality text not null,
     date date not null,
     observed date null,
@@ -10,6 +8,8 @@ create table
     entity text null,
     "entityId" text null,
     "isRemoved" boolean null,    
+    "createdAt" timestamp with time zone not null default now(),
+    "updatedAt" timestamp with time zone not null default now(),
     constraint holiday_pkey primary key (id),
     constraint holidays_locality_fkey foreign key (locality) references localities ("isoCode")
   ) tablespace pg_default;

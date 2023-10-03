@@ -5,7 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 import { badRequest } from '~/utility/errors';
 
-import MilestoneService, { type Milestone, create } from '~/models/scheduler/milestones.server';
+import { requireUser } from '~/auth/auth.server';
+
+import MilestoneService, { type Milestone } from '~/models/scheduler/milestones.server';
 import Alert, { Level } from '~/components/alert';
 
 import { Table } from '~/components';
@@ -23,11 +25,13 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const { id } = params;
 
   if (id === undefined) return badRequest('Invalid data');
 
-  const service = MilestoneService();
+  const service = MilestoneService(u);
   const milestoneSet = await service.getMilestoneSetById({ id });
   const milestones = await service.getMilestonesBySet({ setId: id });
 
@@ -35,7 +39,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const service = MilestoneService();
+  const u = await requireUser(request);
+  const service = MilestoneService(u);
 
   let message = "", level = Level.Success;
   const { intent, milestone: { id, identifier, ...milestone }} = await request.json();
@@ -52,9 +57,9 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   if (intent === 'change-index') {
     try {
-      (milestone.direction > 0)
-      ? await service.increaseMilestoneIndex({ id })
-      : await service.decreaseMilestoneIndex({ id })        
+      milestone.direction > 0
+        ? await service.increaseMilestoneIndex({ id })
+        : await service.decreaseMilestoneIndex({ id })        
     } catch(e: any) {
       message = `Milestone Move Error:${e.message}.`;
       level = Level.Error;

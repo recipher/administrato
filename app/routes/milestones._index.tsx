@@ -4,13 +4,17 @@ import { useTranslation } from 'react-i18next';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 
+import { requireUser } from '~/auth/auth.server';
+
 import MilestoneService, { type MilestoneSet } from '~/models/scheduler/milestones.server';
 import Header from '~/components/header/advanced';
 import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const service = MilestoneService();
+  const u = await requireUser(request);
+
+  const service = MilestoneService(u);
 
   const milestoneSets = await service.listMilestoneSets();
 

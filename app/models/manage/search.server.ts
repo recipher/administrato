@@ -24,19 +24,19 @@ const service = (u: User) => {
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}`;
   };
 
-  const searchWorkers = (search: SearchOptions) => {  
+  const searchPeople = (search: SearchOptions) => {  
     const searchQuery = ({ search }: SearchOptions) => {
       return search == null ? db.sql<db.SQL>`${'lastName'} IS NOT NULL` : db.sql<db.SQL>`
-        (LOWER(${'workers'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
-         LOWER(${'workers'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;  
+        (LOWER(${'people'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
+         LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;  
     };
 
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
-    return db.sql<s.workers.SQL | s.legalEntities.SQL | s.clients.SQL, s.workers.Selectable[]>`
-      SELECT ${'workers'}.id, CONCAT(${'workers'}."firstName", ' ', ${'workers'}."lastName") AS name, ${'workers'}.${'photo'} AS image, 'worker' AS type 
-      FROM ${'workers'}
+    return db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
+      SELECT ${'people'}.id, CONCAT(${'people'}."firstName", ' ', ${'people'}."lastName") AS name, ${'people'}.${'photo'} AS image, 'worker' AS type 
+      FROM ${'people'}
       WHERE 
         ${searchQuery(search)} AND 
         (${whereClientKeys({ keys: clientKeys })} OR 
@@ -72,7 +72,7 @@ const service = (u: User) => {
 
   const search = (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {
     const clients = searchClients(search);
-    const workers = searchWorkers(search);
+    const people = searchPeople(search);
     const providers = searchProviders(search);
     const legalEntities = searchLegalEntities(search);
 
@@ -81,7 +81,7 @@ const service = (u: User) => {
     return db.sql`
       ${clients} 
       UNION ALL 
-      ${workers}
+      ${people}
       UNION ALL 
       ${providers}
       UNION ALL 

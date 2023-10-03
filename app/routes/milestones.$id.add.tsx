@@ -28,11 +28,13 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const { id } = params;
 
   if (id === undefined) return badRequest('Invalid data');
 
-  const service = MilestoneService();
+  const service = MilestoneService(u);
   const milestoneSet = await service.getMilestoneSetById({ id });
   const milestones = await service.getMilestonesBySet({ setId: id });
 
@@ -61,11 +63,12 @@ const validator = withZod(zfd.formData({
   }));
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const u = await requireUser(request);
+
   const { id } = params;
 
   if (id === undefined) return badRequest('Invalid data');
 
-  const u = await requireUser(request);
   const formData = await request.formData()
 
   const result = await validator.validate(formData);
@@ -73,7 +76,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (result.error) return json({ ...validationError(result.error) });
 
   const { data: { description = null, ...data }} = result;
-  const ms = await MilestoneService().addMilestone(create({ description, setId: id, ...data }));
+  const ms = await MilestoneService(u).addMilestone(create({ description, setId: id, ...data }));
 
   const message = `Milestone Added:Milestone ${ms.identifier} successfully added.`;
   const level = Level.Success;

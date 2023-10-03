@@ -3,6 +3,8 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 
 import { badRequest } from '~/utility/errors';
 
+import { requireUser } from '~/auth/auth.server';
+
 import MilestoneService, { type MilestoneSet } from '~/models/scheduler/milestones.server';
 import Header from '~/components/header';
 import { Breadcrumb } from "~/layout/breadcrumbs";
@@ -15,11 +17,13 @@ export const handle = {
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
+  const u = await requireUser(request);
+  
   const { id } = params;
 
   if (id === undefined) return badRequest('Invalid data');
 
-  const service = MilestoneService();
+  const service = MilestoneService(u);
   const milestoneSet = await service.getMilestoneSetById({ id });
 
   return json({ milestoneSet });

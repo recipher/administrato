@@ -22,14 +22,14 @@ export type WorkerSecurityKey = {
 
 import { whereExactKeys, extractKeys } from './shared.server';
 
-export type Worker = s.workers.Selectable & { legalEntity: string, client: string };
+export type Worker = s.people.Selectable & { legalEntity: string, client: string };
 
 type SearchOptions = {
   clientId?: string | null | undefined;
   legalEntityId?: string | null | undefined;
 } & BaseSearchOptions;
 
-const generateIdentifier = ({ firstName, lastName, identifier }: s.workers.Insertable) =>
+const generateIdentifier = ({ firstName, lastName, identifier }: s.people.Insertable) =>
   identifier !== "" && identifier != null
     ? identifier
     : `${firstName} ${lastName}`
@@ -38,7 +38,7 @@ const generateIdentifier = ({ firstName, lastName, identifier }: s.workers.Inser
         .toLowerCase();
 
 export const whereClientKeys = ({ keys }: KeyQueryOptions) => {
-  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} IS NULL`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`${'people'}.${'id'} IS NULL`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
@@ -50,7 +50,7 @@ export const whereClientKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
-  let byKeys = db.sql<db.SQL>`${'workers'}.${'id'} IS NULL`; // Ensure nothing is returned with no keys
+  let byKeys = db.sql<db.SQL>`${'people'}.${'id'} IS NULL`; // Ensure nothing is returned with no keys
 
   if (keys) {
     for (let i = 0; i < keys?.length; i++) {
@@ -62,11 +62,11 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 const service = (u: User) => {
-  const getLatestForClient = async (worker: s.workers.Insertable) => {
+  const getLatestForClient = async (worker: s.people.Insertable) => {
     const query = db.sql<db.SQL>`${'clientId'} = ${db.param(worker.clientId)}`;
 
-    const [ latest ] = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT * FROM ${'workers'}
+    const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+      SELECT * FROM ${'people'}
       WHERE ${'clientKeyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'clientKeyEnd'} DESC
       LIMIT 1
@@ -74,11 +74,11 @@ const service = (u: User) => {
     return latest;
   };
 
-  const getLatestForLegalEntity = async (worker: s.workers.Insertable) => {
+  const getLatestForLegalEntity = async (worker: s.people.Insertable) => {
     const query = db.sql<db.SQL>`${'legalEntityId'} = ${db.param(worker.legalEntityId)}`;
 
-    const [ latest ] = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT * FROM ${'workers'}
+    const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+      SELECT * FROM ${'people'}
       WHERE ${'legalEntityKeyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'legalEntityKeyEnd'} DESC
       LIMIT 1
@@ -86,7 +86,7 @@ const service = (u: User) => {
     return latest;
   };
 
-  const generateKeys = async (worker: s.workers.Insertable): Promise<WorkerSecurityKey> => {
+  const generateKeys = async (worker: s.people.Insertable): Promise<WorkerSecurityKey> => {
     const clientService = ClientService(u);
     const legalEntityService = LegalEntityService(u);
 
@@ -107,12 +107,12 @@ const service = (u: User) => {
     return { clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd };
   };
 
-  const addWorker = async (worker: s.workers.Insertable) => {
+  const addWorker = async (worker: s.people.Insertable) => {
     const keys = await generateKeys(worker);
     const withKeys = { ...worker, ...keys, identifier: generateIdentifier(worker) };
 
-    const [inserted] = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      INSERT INTO ${'workers'} (${db.cols(withKeys)})
+    const [inserted] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+      INSERT INTO ${'people'} (${db.cols(withKeys)})
       VALUES (${db.vals(withKeys)}) RETURNING *`.run(pool);
 
     return inserted;
@@ -121,8 +121,8 @@ const service = (u: User) => {
   const listWorkers = async (query: KeyQueryOptions = { isArchived: false }) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
-    return await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT * FROM ${'workers'}
+    return await db.sql<s.people.SQL, s.people.Selectable[]>`
+      SELECT * FROM ${'people'}
         (${whereClientKeys({ keys: clientKeys })} OR 
         ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(pool);
@@ -130,13 +130,13 @@ const service = (u: User) => {
 
   const searchQuery = ({ search, clientId, legalEntityId }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`${'lastName'} IS NOT NULL` : db.sql<db.SQL>`
-      (LOWER(${'workers'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
-       LOWER(${'workers'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
+      (LOWER(${'people'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
+       LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
 
-    const client = clientId == null ? db.sql<db.SQL>`${'workers'}.${'clientId'} IS NOT NULL`
-      : db.sql<db.SQL>`${'workers'}.${'clientId'} = ${db.param(clientId)}`;
+    const client = clientId == null ? db.sql<db.SQL>`${'people'}.${'clientId'} IS NOT NULL`
+      : db.sql<db.SQL>`${'people'}.${'clientId'} = ${db.param(clientId)}`;
     const legalEntity = legalEntityId == null ? db.sql<db.SQL>`${'legalEntityId'} IS NOT NULL`
-      : db.sql<db.SQL>`${'workers'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
+      : db.sql<db.SQL>`${'people'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
 
     return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity}`;    
   };
@@ -144,8 +144,8 @@ const service = (u: User) => {
   const countWorkers = async (search: SearchOptions) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
-    const [ item ] = await db.sql<s.workers.SQL, s.workers.Selectable[]>`
-      SELECT COUNT(${'workers'}.${'id'}) AS count FROM ${'workers'}
+    const [ item ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+      SELECT COUNT(${'people'}.${'id'}) AS count FROM ${'people'}
       WHERE 
         ${searchQuery(search)} AND 
         (${whereClientKeys({ keys: clientKeys })} OR 
@@ -161,15 +161,15 @@ const service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const workers = await db.sql<s.workers.SQL | s.legalEntities.SQL | s.clients.SQL, s.workers.Selectable[]>`
-      SELECT ${'workers'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'workers'}
-      LEFT JOIN ${'legalEntities'} AS le ON ${'workers'}.${'legalEntityId'} = le.${'id'}
-      LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
+    const workers = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'people'}
+      LEFT JOIN ${'legalEntities'} AS le ON ${'people'}.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clients'} AS c ON ${'people'}.${'clientId'} = c.${'id'}
       WHERE 
         ${searchQuery(search)} AND 
         (${whereClientKeys({ keys: clientKeys })} OR 
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
-      ORDER BY ${'workers'}.${'lastName'} ${db.raw(sortDirection)}
+      ORDER BY ${'people'}.${'lastName'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
@@ -182,12 +182,12 @@ const service = (u: User) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
-    const [ worker ] = await db.sql<s.workers.SQL | s.legalEntities.SQL | s.clients.SQL, s.workers.Selectable[]>`
-      SELECT ${'workers'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'workers'}
-      LEFT JOIN ${'legalEntities'} AS le ON ${'workers'}.${'legalEntityId'} = le.${'id'}
-      LEFT JOIN ${'clients'} AS c ON ${'workers'}.${'clientId'} = c.${'id'}
+    const [ worker ] = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'people'}
+      LEFT JOIN ${'legalEntities'} AS le ON ${'people'}.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clients'} AS c ON ${'people'}.${'clientId'} = c.${'id'}
       WHERE 
-        (${'workers'}.${'id'} = ${db.param(id)} OR LOWER(${'workers'}.${'identifier'}) = ${db.param(id.toLowerCase())}) AND
+        (${'people'}.${'id'} = ${db.param(id)} OR LOWER(${'people'}.${'identifier'}) = ${db.param(id.toLowerCase())}) AND
         (${whereClientKeys({ keys: clientKeys })} OR 
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
       `.run(pool);

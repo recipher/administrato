@@ -1,8 +1,6 @@
 create table
   public."legalEntities" (
     id text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedAt" timestamp with time zone not null default now(),
     name text not null,
     identifier text not null,
     logo text null,
@@ -16,6 +14,8 @@ create table
     "keyStart" bigint null,
     "keyEnd" bigint null,
     localities text[] null,
+    "createdAt" timestamp with time zone not null default now(),
+    "updatedAt" timestamp with time zone not null default now(),
     constraint legal_entities_pkey primary key (id),
     constraint legalEntities_clientId_fkey foreign key ("clientId") references clients (id),
     constraint legalEntities_providerId_fkey foreign key ("providerId") references providers (id),

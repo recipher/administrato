@@ -86,13 +86,13 @@ const service = (u: User) => {
 
     await reindexAbove(milestone);
 
-    return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+    return db.sql<s.milestones.SQL>`
       DELETE FROM ${'milestones'} WHERE ${{id}}
     `.run(pool);
   };
 
   const updateMilestoneIndex = async ({ id, index }: { id: string, index: number }) => {
-    return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+    return db.sql<s.milestones.SQL>`
       UPDATE ${'milestones'} 
       SET ${'index'} = ${db.param(index)}, ${'updatedAt'} = now()
       WHERE ${'id'} = ${db.param(id)}

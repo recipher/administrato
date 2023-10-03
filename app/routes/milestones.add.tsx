@@ -30,9 +30,11 @@ const schema = zfd.formData({
 const clientValidator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
+  const u = await requireUser(request);
+
   const validator = withZod(schema.superRefine(
     async (data, ctx) => {
-      const service = MilestoneService();
+      const service = MilestoneService(u);
       if (data.identifier) {
         const set = await service.getMilestoneSetById({ id: data.identifier });
         if (set !== undefined) 
@@ -45,14 +47,13 @@ export const action = async ({ request }: ActionArgs) => {
     }
   ));
 
-  const u = await requireUser(request);
   const formData = await request.formData()
 
   const result = await validator.validate(formData);
 
   if (result.error) return json({ ...validationError(result.error) });
 
-  const set = await MilestoneService().addMilestoneSet(create({ ...result.data }));
+  const set = await MilestoneService(u).addMilestoneSet(create({ ...result.data }));
 
   const message = `Milestone Set Added:Milestone set ${set.identifier} successfully added.`;
   const level = Level.Success;

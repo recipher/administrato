@@ -1,3 +1,9 @@
+import type * as s from 'zapatos/schema';
+import * as db from 'zapatos/db';
+import pool from '../db.server';
+
+import { default as create } from '../id.server';
+
 import client from './auth0.server';
 
 const { DOMAIN: ns } = process.env;
@@ -133,7 +139,16 @@ const service = (u?: User) => {
   
     const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
     
-    return updateMetadata({ id, metadata });
+    await updateMetadata({ id, metadata });
+
+    const [ keyStart, keyEnd ] = key;
+    const authorization = create({ user: id, organization: orgKey, keyStart, keyEnd, entity });
+    const [inserted] = await db.sql<s.authorizations.SQL, s.authorizations.Selectable[]>`
+      INSERT INTO ${'authorizations'} (${db.cols(authorization)})
+      VALUES (${db.vals(authorization)}) RETURNING *`
+    .run(pool);
+
+    return inserted;
   };
   
   const removeSecurityKey = async ({ id, entity, organization, key }: Id & KeyData) => {
@@ -154,7 +169,14 @@ const service = (u?: User) => {
   
     const metadata = rebuildKeys(user.app_metadata?.keys, orgKey, entityKey, update);
     
-    return updateMetadata({ id, metadata });
+    await updateMetadata({ id, metadata });
+
+    const [ keyStart, keyEnd ] = key;
+    const authorization = { user: id, organization: orgKey, keyStart, keyEnd, entity };
+    await db.sql<s.authorizations.SQL>`
+      DELETE FROM ${'authorizations'} 
+      WHERE ${{...authorization}}`
+    .run(pool);
   };
   
   const assignRole = async({ id, role }: Id & { role: string }) => {

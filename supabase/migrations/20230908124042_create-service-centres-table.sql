@@ -1,8 +1,6 @@
 create table
   public."serviceCentres" (
     id text not null,
-    "createdAt" timestamp with time zone not null default now(),
-    "updatedAt" timestamp with time zone not null default now(),
     name text not null,
     identifier text not null,
     "parentId" text null,
@@ -10,6 +8,8 @@ create table
     "keyStart" bigint null,
     "keyEnd" bigint null,
     localities text[] null,
+    "createdAt" timestamp with time zone not null default now(),
+    "updatedAt" timestamp with time zone not null default now(),
     constraint service_centres_pkey primary key (id),
     constraint service_centres_parentId_fkey foreign key ("parentId") references "serviceCentres" (id) on delete cascade
   ) tablespace pg_default;
