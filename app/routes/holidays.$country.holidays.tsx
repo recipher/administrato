@@ -2,6 +2,8 @@ import { redirect, type LoaderArgs, type ActionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
+import { requireUser } from '~/auth/auth.server';
+
 import CountryService from '~/models/countries.server';
 import HolidayService from '~/models/scheduler/holidays.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
@@ -17,6 +19,8 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
   const { country: isoCode } = params;
@@ -28,7 +32,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (country === undefined) return notFound('Country not found');
 
-  const holidayService = HolidayService();
+  const holidayService = HolidayService(u);
   let holidays = await holidayService.listHolidaysByCountry({ locality: isoCode, year });
 
   if (holidays.length === 0) {
@@ -40,10 +44,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
+  const u = await requireUser(request);
+
   let message = "";
   const { intent, year, ...data } = await request.json();
   
-  const service = HolidayService();
+  const service = HolidayService(u);
 
   if (intent === "remove") {
     const { holiday } = data;

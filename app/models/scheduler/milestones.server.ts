@@ -4,12 +4,13 @@ import pool from '../db.server';
 
 export { default as create } from '../id.server';
 
+import { type User } from '../access/users.server';
 import { ASC } from '../types';
 
 export type Milestone = s.milestones.Selectable;
 export type MilestoneSet = s.milestoneSets.Selectable & { milestones: Array<Milestone>};
 
-const service = () => {
+const service = (u: User) => {
   const addMilestoneSet = async (milestoneSet: s.milestoneSets.Insertable) => {
     const [inserted] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       INSERT INTO ${'milestoneSets'} (${db.cols(milestoneSet)})
@@ -29,7 +30,9 @@ const service = () => {
       .toLowerCase();
 
     if (milestone.pivot) await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-        UPDATE ${'milestones'} SET ${'pivot'} = FALSE WHERE ${'setId'} = ${db.param(milestone.setId)}
+        UPDATE ${'milestones'} 
+        SET ${'pivot'} = FALSE, ${'updatedAt'} = now() 
+        WHERE ${'setId'} = ${db.param(milestone.setId)}
       `.run(pool);
 
     const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
@@ -90,7 +93,8 @@ const service = () => {
 
   const updateMilestoneIndex = async ({ id, index }: { id: string, index: number }) => {
     return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      UPDATE ${'milestones'} SET ${'index'} = ${db.param(index)} 
+      UPDATE ${'milestones'} 
+      SET ${'index'} = ${db.param(index)}, ${'updatedAt'} = now()
       WHERE ${'id'} = ${db.param(id)}
     `.run(pool)
   };

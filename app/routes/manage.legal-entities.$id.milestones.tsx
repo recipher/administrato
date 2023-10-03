@@ -15,18 +15,18 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const { id } = params;
 
   if (id === undefined) return badRequest('Invalid request');
-
-  const u = await requireUser(request);
 
   const service = LegalEntityService(u);
   const legalEntity = await service.getLegalEntity({ id });
 
   const { milestoneSetId: setId } = legalEntity;
 
-  const milestoneService = MilestoneService();
+  const milestoneService = MilestoneService(u);
   const milestones = setId === null
     ? milestoneService.getDefaultSet()
     : milestoneService.getMilestonesBySet({ setId })

@@ -13,6 +13,8 @@ const holidayAPI = new HolidayAPI({ key });
 
 export type Holiday = s.holidays.Selectable;
 
+import { type User } from '../access/users.server';
+
 type ListOptions = { 
   year: number;
   locality: string;
@@ -35,7 +37,7 @@ type QueryOptions = {
 const isSameDate = (left: Date, right: Date) =>
   isSameDay(left, right) && isSameMonth(left, right) && isSameYear(left, right);
  
-const service = () => {
+const service = (u: User) => {
   const addHoliday = async (holiday: s.holidays.Insertable) => {
     const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
       INSERT INTO ${'holidays'} (${db.cols(holiday)})

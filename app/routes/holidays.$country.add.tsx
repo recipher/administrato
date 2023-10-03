@@ -86,9 +86,11 @@ export const validator = withZod(
 );
 
 export async function action({ request, params }: ActionArgs) {
+  const u = await requireUser(request);
+
   const url = new URL(request.url);
   const entity = url.searchParams.get("entity") || null;
-  // const entityId = toNumber(url.searchParams.get("entity-id") as string) || null;
+  // const entityId = url.searchParams.get("entity-id");
 
   const { country: isoCode } = params;
 
@@ -106,7 +108,7 @@ export async function action({ request, params }: ActionArgs) {
   const { data: { name, date, entityId }} = result;
 
   try {
-    const service = HolidayService();
+    const service = HolidayService(u);
     await service.addHoliday(create({ name, date, locality: isoCode, entity, entityId: entityId || null }));
     message = `Holiday Added Successfully:${name} was added to ${year}`;
   } catch(e: any) {

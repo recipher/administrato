@@ -23,15 +23,14 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
   const isoCode = url.searchParams.get("locality");
 
   const { id } = params;
-
   if (id === undefined) return badRequest('Invalid request');
-
-  const u = await requireUser(request);
 
   const service = ClientService(u);
   const client = await service.getClient({ id });
@@ -47,7 +46,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (locality === undefined) return badRequest('Invalid legal entity data');
 
-  const holidayService = HolidayService();
+  const holidayService = HolidayService(u);
   let holidays = await holidayService.listHolidaysByCountryForEntity({ locality, year, entity: 'client', entityId: id });
 
   if (holidays.length === 0) {
@@ -59,10 +58,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export async function action({ request }: ActionArgs) {
+  const u = await requireUser(request);
+
   let message = "";
   const { intent, year, ...data } = await request.json();
   
-  const service = HolidayService();
+  const service = HolidayService(u);
 
   if (intent === "remove") {
     const { holiday, entity: { id: entityId, type: entity }} = data;

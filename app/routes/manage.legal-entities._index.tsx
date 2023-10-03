@@ -36,7 +36,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const { legalEntities, metadata: { count }} = 
     await service.searchLegalEntities({ search, serviceCentre }, { offset, limit, sortDirection: sort });
 
-  const isoCodes = legalEntities.map(s => s.localities || []).flat();
+  const isoCodes = legalEntities.map((le: LegalEntity) => le.localities || []).flat();
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
 

@@ -4,6 +4,8 @@ import { Link, useLoaderData, useNavigate, useSearchParams } from '@remix-run/re
 import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
+import { requireUser } from '~/auth/auth.server';
+
 import CountryService from '~/models/countries.server';
 import HolidayService, { type Holiday } from '~/models/scheduler/holidays.server';
 import Alert, { Level } from '~/components/alert';
@@ -21,6 +23,8 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
   const { country: isoCode } = params;
@@ -32,7 +36,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (country === undefined) return notFound('Country not found');
 
-  const holidayService = HolidayService();
+  const holidayService = HolidayService(u);
   let holidays = await holidayService.listCustomHolidaysByCountry({ locality: isoCode, year });
 
   return { holidays, country, year };
