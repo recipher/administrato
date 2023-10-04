@@ -7,6 +7,8 @@ export { default as create } from '../id.server';
 import { type User } from '../access/users.server';
 import { ASC } from '../types';
 
+type TxOrPool = { txOrPool?: typeof pool | db.TxnClientForSerializable };
+
 export type Milestone = s.milestones.Selectable;
 export type MilestoneSet = s.milestoneSets.Selectable & { milestones: Array<Milestone>};
 
@@ -29,18 +31,20 @@ const service = (u: User) => {
       .replace(/[\s_]+/g, '-')
       .toLowerCase();
 
-    if (milestone.pivot) await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+    return db.serializable(pool, async tx => {
+      if (milestone.pivot) await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
         UPDATE ${'milestones'} 
         SET ${'pivot'} = FALSE, ${'updatedAt'} = now() 
         WHERE ${'setId'} = ${db.param(milestone.setId)}
-      `.run(pool);
+      `.run(tx);
 
-    const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      INSERT INTO ${'milestones'} (${db.cols(milestone)})
-      VALUES (${db.vals(milestone)}) RETURNING *
-    `.run(pool);
+      const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+        INSERT INTO ${'milestones'} (${db.cols(milestone)})
+        VALUES (${db.vals(milestone)}) RETURNING *
+      `.run(tx);
 
-    return inserted;
+      return inserted;
+    });
   };
 
   const getMilestoneSetById = async ({ id }: { id: string }) => {
@@ -52,7 +56,7 @@ const service = (u: User) => {
   };
 
   const getDefaultSet = async () => {
-    return await db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
+    return db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       LEFT JOIN ${'milestoneSets'} ON ${'milestoneSets'}${'id'} = ${'milestones'}.${'setId'}
       WHERE ${'milestoneSets'}.${'isDefault'} = TRUE
@@ -61,97 +65,116 @@ const service = (u: User) => {
   };
 
   const getMilestonesBySet = async ({ setId }: { setId: string }) => {
-    return await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+    return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}}
       ORDER BY ${'index'} ASC
     `.run(pool);
   };
 
-  const getMilestonesBySetAboveIndex = async ({ setId, index }: { setId: string, index: number }) => {
-    return await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+  const getMilestonesBySetAboveIndex = async ({ setId, index, txOrPool = pool }: { setId: string, index: number } & TxOrPool) => {
+    return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}} AND ${'index'} > ${db.param(index)}
       ORDER BY ${'index'} ASC
-    `.run(pool);
+    `.run(txOrPool);
   };
 
   const removeMilestone = async ({ id }: { id: string }) => {
-    const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
-      WHERE ${{id}}
-    `.run(pool);
+    return db.serializable(pool, async tx => {
+      const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+        SELECT * FROM ${'milestones'} 
+        WHERE ${{id}}
+      `.run(tx);
 
-    if (milestone === undefined) throw Error('Milestone not found');
+      if (milestone === undefined) throw Error('Milestone not found');
+console.log(milestone)
+      if (milestone.pivot) await db.sql<s.milestones.SQL>`
+        UPDATE ${'milestones'} 
+        SET ${'pivot'} = TRUE, ${'updatedAt'} = now() 
+        WHERE ${'id'} = (
+          SELECT ${'id'} 
+          FROM ${'milestones'}
+          WHERE ${'setId'} = ${db.param(milestone.setId)}
+          ORDER BY ${'index'} DESC
+          LIMIT 1
+        )
+      `.run(tx);
 
-    await reindexAbove(milestone);
+      await reindexAbove({ ...milestone, txOrPool: tx });
 
-    return db.sql<s.milestones.SQL>`
-      DELETE FROM ${'milestones'} WHERE ${{id}}
-    `.run(pool);
+      return db.sql<s.milestones.SQL>`
+        DELETE FROM ${'milestones'} WHERE ${{id}}
+      `.run(tx);
+    });
   };
 
-  const updateMilestoneIndex = async ({ id, index }: { id: string, index: number }) => {
+  const updateMilestoneIndex = async ({ id, index, txOrPool = pool }: { id: string, index: number } & TxOrPool) => {
     return db.sql<s.milestones.SQL>`
       UPDATE ${'milestones'} 
       SET ${'index'} = ${db.param(index)}, ${'updatedAt'} = now()
       WHERE ${'id'} = ${db.param(id)}
-    `.run(pool)
+    `.run(txOrPool)
   };
 
-  const reindexAbove = async ({ setId, index }: Milestone) => {
+  const reindexAbove = async ({ setId, index, txOrPool = pool }: Milestone & TxOrPool) => {
     if (index === null) return;
-    const milestones = await getMilestonesBySetAboveIndex({ setId, index });
+    const milestones = await getMilestonesBySetAboveIndex({ setId, index, txOrPool });
 
     await Promise.all(milestones.map(({ id, index: i }: Milestone) =>
-      updateMilestoneIndex({ id, index: (i || 0)-1 })
+      updateMilestoneIndex({ id, index: (i || 0)-1, txOrPool })
     ));
   };
 
-  const swapIndexes = async (first: Milestone, second: Milestone) => {
-    await updateMilestoneIndex({ id: first.id, index: Number(second.index) });
-    await updateMilestoneIndex({ id: second.id, index: Number(first.index) });
+  const swapIndexes = async ({ first, second, txOrPool = pool }: { first: Milestone, second: Milestone } & TxOrPool) => {
+    await updateMilestoneIndex({ id: first.id, index: Number(second.index), txOrPool });
+    await updateMilestoneIndex({ id: second.id, index: Number(first.index), txOrPool });
   };
 
-  const increaseMilestoneIndex = async ({ id }: { id: string }) => {
-    const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
-      WHERE ${{id}}
-    `.run(pool);
+  const increaseMilestoneIndex = async ({ id, txOrPool = pool }: { id: string } & TxOrPool) => {
+    return db.serializable(txOrPool, async tx => {
+      const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+        SELECT * FROM ${'milestones'} 
+        WHERE ${{id}}
+      `.run(tx);
 
-    if (milestone === undefined) throw Error('Milestone not found');
+      if (milestone === undefined) throw Error('Milestone not found');
 
-    const { setId, index } = milestone;
+      const { setId, index } = milestone;
 
-    const [ next ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
-      WHERE ${{setId}} AND ${'index'} > ${db.param(index)}
-      ORDER BY ${'index'} ASC
-    `.run(pool);
+      const [ next ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+        SELECT * FROM ${'milestones'} 
+        WHERE ${{setId}} AND ${'index'} > ${db.param(index)}
+        ORDER BY ${'index'} ASC
+      `.run(tx);
 
-    if (next === undefined) throw Error('Maximum index reached');
+      if (next === undefined) throw Error('Maximum index reached');
 
-    return swapIndexes(milestone, next);
+      return swapIndexes({ first: milestone, second: next, txOrPool: tx });
+    });
   };
 
-  const decreaseMilestoneIndex = async ({ id }: { id: string }) => {
-    const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
-      WHERE ${{id}}
-    `.run(pool);
+  const decreaseMilestoneIndex = async ({ id, txOrPool = pool }: { id: string } & TxOrPool) => {
+    return db.serializable(txOrPool, async tx => {
+      const [ milestone ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+        SELECT * FROM ${'milestones'} 
+        WHERE ${{id}}
+      `.run(tx);
 
-    if (milestone === undefined) throw Error('Milestone not found');
+      if (milestone === undefined) throw Error('Milestone not found');
 
-    const { setId, index } = milestone;
+      const { setId, index } = milestone;
 
-    const [ previous ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
-      WHERE ${{setId}} AND ${'index'} < ${db.param(index)}
-      ORDER BY ${'index'} DESC`.run(pool);
+      const [ previous ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+        SELECT * FROM ${'milestones'} 
+        WHERE ${{setId}} AND ${'index'} < ${db.param(index)}
+        ORDER BY ${'index'} DESC
+      `.run(tx);
 
-    if (previous === undefined) throw Error('Minimum index reached');
+      if (previous === undefined) throw Error('Minimum index reached');
 
-    return swapIndexes(milestone, previous);
+      return swapIndexes({ first: milestone, second: previous, txOrPool: tx });
+    });
   };
 
   const getLatestMilestonesForSet = async ({ setId }: { setId: string }) => {
