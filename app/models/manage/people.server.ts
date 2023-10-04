@@ -13,16 +13,16 @@ import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
 
-export type WorkerSecurityKey = {
+export type PersonSecurityKey = {
   clientKeyStart: number;
   clientKeyEnd: number;
   legalEntityKeyStart: number;
   legalEntityKeyEnd: number;
 };
 
-import { whereExactKeys, extractKeys } from './shared.server';
+import { extractKeys } from './shared.server';
 
-export type Worker = s.people.Selectable & { legalEntity: string, client: string };
+export type Person = s.people.Selectable & { legalEntity: string, client: string };
 
 type SearchOptions = {
   clientId?: string | null | undefined;
@@ -62,8 +62,8 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 const service = (u: User) => {
-  const getLatestForClient = async (worker: s.people.Insertable) => {
-    const query = db.sql<db.SQL>`${'clientId'} = ${db.param(worker.clientId)}`;
+  const getLatestForClient = async (person: s.people.Insertable) => {
+    const query = db.sql<db.SQL>`${'clientId'} = ${db.param(person.clientId)}`;
 
     const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
@@ -74,8 +74,8 @@ const service = (u: User) => {
     return latest;
   };
 
-  const getLatestForLegalEntity = async (worker: s.people.Insertable) => {
-    const query = db.sql<db.SQL>`${'legalEntityId'} = ${db.param(worker.legalEntityId)}`;
+  const getLatestForLegalEntity = async (person: s.people.Insertable) => {
+    const query = db.sql<db.SQL>`${'legalEntityId'} = ${db.param(person.legalEntityId)}`;
 
     const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
@@ -86,14 +86,14 @@ const service = (u: User) => {
     return latest;
   };
 
-  const generateKeys = async (worker: s.people.Insertable): Promise<WorkerSecurityKey> => {
+  const generateKeys = async (person: s.people.Insertable): Promise<PersonSecurityKey> => {
     const clientService = ClientService(u);
     const legalEntityService = LegalEntityService(u);
 
-    const client = await clientService.getClient({ id: worker.clientId as string })
-    const legalEntity = await legalEntityService.getLegalEntity({ id: worker.legalEntityId as string })
-    const latestForClient = await getLatestForClient(worker);
-    const latestForLegalEntity = await getLatestForLegalEntity(worker);
+    const client = await clientService.getClient({ id: person.clientId as string })
+    const legalEntity = await legalEntityService.getLegalEntity({ id: person.legalEntityId as string })
+    const latestForClient = await getLatestForClient(person);
+    const latestForLegalEntity = await getLatestForLegalEntity(person);
     const maxEntities = 10000; // Move to constants
 
     if (client === undefined || legalEntity === undefined) 
@@ -107,9 +107,9 @@ const service = (u: User) => {
     return { clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd };
   };
 
-  const addWorker = async (worker: s.people.Insertable) => {
-    const keys = await generateKeys(worker);
-    const withKeys = { ...worker, ...keys, identifier: generateIdentifier(worker) };
+  const addPerson = async (person: s.people.Insertable) => {
+    const keys = await generateKeys(person);
+    const withKeys = { ...person, ...keys, identifier: generateIdentifier(person) };
 
     const [inserted] = await db.sql<s.people.SQL, s.people.Selectable[]>`
       INSERT INTO ${'people'} (${db.cols(withKeys)})
@@ -118,13 +118,13 @@ const service = (u: User) => {
     return inserted;
   };
 
-  const listWorkers = async (query: KeyQueryOptions = { isArchived: false }) => {
+  const listPeople = async () => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
-    return await db.sql<s.people.SQL, s.people.Selectable[]>`
+    return db.sql<s.people.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
-        (${whereClientKeys({ keys: clientKeys })} OR 
-        ${whereLegalEntityKeys({ keys: legalEntityKeys })})
+      WHERE (${whereClientKeys({ keys: clientKeys })} OR 
+             ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(pool);
   };
 
@@ -141,7 +141,7 @@ const service = (u: User) => {
     return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity}`;    
   };
 
-  const countWorkers = async (search: SearchOptions) => {
+  const countPeople = async (search: SearchOptions) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     const [ item ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
@@ -156,12 +156,12 @@ const service = (u: User) => {
     return count;
   };
 
-  const searchWorkers = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  const searchPeople = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const workers = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
+    const people = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
       SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'people'}
       LEFT JOIN ${'legalEntities'} AS le ON ${'people'}.${'legalEntityId'} = le.${'id'}
       LEFT JOIN ${'clients'} AS c ON ${'people'}.${'clientId'} = c.${'id'}
@@ -173,16 +173,16 @@ const service = (u: User) => {
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
       `.run(pool);
-    const count = await countWorkers(search);
+    const count = await countPeople(search);
 
-    return { workers, metadata: { count }};
+    return { people, metadata: { count }};
   };
 
-  const getWorker = async ({ id }: IdProp) => {
+  const getPerson = async ({ id }: IdProp) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
-    const [ worker ] = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
+    const [ person ] = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
       SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'people'}
       LEFT JOIN ${'legalEntities'} AS le ON ${'people'}.${'legalEntityId'} = le.${'id'}
       LEFT JOIN ${'clients'} AS c ON ${'people'}.${'clientId'} = c.${'id'}
@@ -192,15 +192,15 @@ const service = (u: User) => {
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
       `.run(pool);
 
-    return worker;
+    return person;
   };
 
   return {
-    addWorker,
-    getWorker,
-    searchWorkers,
-    countWorkers,
-    listWorkers,
+    addPerson,
+    getPerson,
+    searchPeople,
+    countPeople,
+    listPeople,
   };
 };
 

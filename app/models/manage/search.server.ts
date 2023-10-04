@@ -8,7 +8,7 @@ import { ASC, DESC } from '../types';
 import { type User } from '../access/users.server';
 
 import { whereKeys, extractKeys } from './shared.server';
-import { whereLegalEntityKeys, whereClientKeys } from './workers.server';
+import { whereLegalEntityKeys, whereClientKeys } from './people.server';
 
 const service = (u: User) => {
   const searchProviders = (search: SearchOptions) => {  

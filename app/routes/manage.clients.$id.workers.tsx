@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import ClientService from '~/models/manage/clients.server';
-import WorkerService, { Worker } from '~/models/manage/workers.server';
+import PersonService, { Person } from '~/models/manage/people.server';
 import CountryService from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { List, ListItem, ListContext } from '~/components/list';
@@ -41,25 +41,25 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (client === undefined) return notFound('Client not found');
 
-  const workerService = WorkerService(u);
-  const { workers, metadata: { count }} = 
-    await workerService.searchWorkers({ search, clientId: id }, { offset, limit, sortDirection: sort });
+  const personService = PersonService(u);
+  const { people, metadata: { count }} = 
+    await personService.searchPeople({ search, clientId: id }, { offset, limit, sortDirection: sort });
 
-  const isoCodes = workers.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
+  const isoCodes = people.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
     
-  return json({ client, workers, count, offset, limit, search, sort, countries });
+  return json({ client, people, count, offset, limit, search, sort, countries });
 };
 
 const Workers = () => {
-  const { client, workers, count, offset, limit, search, sort, countries } = useLoaderData();
+  const { client, people, count, offset, limit, search, sort, countries } = useLoaderData();
 
-  const Context = (worker: Worker) =>
+  const Context = (person: Person) =>
     <ListContext select={true} />;
 
-  const Item = (worker: Worker) =>
-    <ListItem data={`${worker.firstName} ${worker.lastName}`} sub={<Flags localities={[worker.locality]} countries={countries} />} />
+  const Item = (person: Person) =>
+    <ListItem data={`${person.firstName} ${person.lastName}`} sub={<Flags localities={[person.locality]} countries={countries} />} />
   
   return (
     <>
@@ -70,7 +70,7 @@ const Workers = () => {
       </div>
 
       {count <= 0 && <Alert title={`No workers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
-      <List data={workers} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/workers/${props.item.id}/info`} />
+      <List data={people} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/workers/${props.item.id}/info`} />
       <Pagination entity='worker' totalItems={count} offset={offset} limit={limit} />
     </>
   );

@@ -115,7 +115,9 @@ const service = (u: User) => {
     const keys = u.keys.serviceCentre;
 
     const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT main.* FROM ${'serviceCentres'} AS main
+      SELECT main.*, p.${'name'} AS parent 
+      FROM ${'serviceCentres'} AS main
+      LEFT JOIN ${'serviceCentres'} AS p ON main.${'parentId'} = p.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
       `.run(pool);

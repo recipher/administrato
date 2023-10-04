@@ -132,7 +132,9 @@ const service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "client");
 
     const [ client ] = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
-      SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'clients'} AS main
+      SELECT main.*, s.${'name'} AS "serviceCentre", g.${'name'} AS parent
+      FROM ${'clients'} AS main
+      LEFT JOIN ${'clients'} AS g ON main.${'parentId'} = g.${'id'}
       LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})

@@ -13,7 +13,7 @@ import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
-import WorkerService, { create } from '~/models/manage/workers.server';
+import PersonService, { create } from '~/models/manage/people.server';
 import { type Client } from '~/models/manage/clients.server';
 import { type LegalEntity } from '~/models/manage/legal-entities.server';
 import CountryService, { type Country } from '~/models/countries.server';
@@ -86,9 +86,9 @@ export const action = async ({ request }: ActionArgs) => {
 
   const { data: { locality: { id: isoCode }, ...data }} = result;
   
-  const service = WorkerService(u);
+  const service = PersonService(u);
   // @ts-ignore
-  const worker = await service.addWorker(create({ 
+  const worker = await service.addPerson(create({ 
     locality: isoCode, identifier: "", classifier: "worker", ...data }));
   
   return redirect(`/manage/workers/${worker.id}/info`);
@@ -127,7 +127,7 @@ const Add = () => {
               <Image label="Upload Photo" name="photo" accept="image/*" Icon={UserCircleIcon} />
             </Field>
           </Group>
-          <Section size="md" />
+          <Section size="md" heading="Select Memberships" explanation="Workers need to belong to both a client and a legal entity." />
           <Group>
             <Field span={3}>
               <Lookup label="Client" name="clientId" onClick={showClientModal} 

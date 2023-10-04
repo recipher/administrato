@@ -33,7 +33,7 @@ export default function Holidays() {
     <>
       {regions.length === 0 && <Alert level={Level.Info} title={`No regions in ${region.name}`} />}
 
-      <List data={regions} idKey="isoCode" buildTo={({ item }) => `../../${item.isoCode}` } />
+      <List data={regions} idKey="isoCode" buildTo={({ item }) => `../../${item.isoCode}`} />
     </>
   );
 }

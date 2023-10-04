@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import ServiceCentreService from '~/models/manage/service-centres.server';
@@ -40,11 +40,20 @@ const Info = () => {
         <Heading heading={t('info')} explanation={`Manage ${serviceCentre.name}'s information.`} />
         <Section>
           <Field title="Service Centre Name">
-            <p className="text-gray-900">{serviceCentre.name}</p>
+            {!serviceCentre.parentId && <p className="text-gray-900">{serviceCentre.name}</p>}
+            {serviceCentre.parentId && <Link className="text-indigo-900" to={`/manage/service-centres/${serviceCentre.parentId}/info`}>
+              {serviceCentre.parent}
+            </Link>}
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
           </Field>
+          {serviceCentre.parentId && <Field title="Group Name">
+            <p className="text-gray-900">{serviceCentre.name}</p>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>}
         </Section>
       </Layout>
     </>

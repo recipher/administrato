@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
-import WorkerService, { Worker } from '~/models/manage/workers.server';
+import PersonService, { Person } from '~/models/manage/people.server';
 import CountryService from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { List, ListItem, ListContext } from '~/components/list';
@@ -41,24 +41,24 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 
-  const workerService = WorkerService(u);
-  const { workers, metadata: { count }} = 
-    await workerService.searchWorkers({ search, legalEntityId: id }, { offset, limit, sortDirection: sort });
+  const personService = PersonService(u);
+  const { people, metadata: { count }} = 
+    await personService.searchPeople({ search, legalEntityId: id }, { offset, limit, sortDirection: sort });
 
-  const isoCodes = workers.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
+  const isoCodes = people.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
     
-  return json({ legalEntity, workers, count, offset, limit, search, sort, countries });
+  return json({ legalEntity, people, count, offset, limit, search, sort, countries });
 };
 
 const Workers = () => {
-  const { legalEntity, workers, count, offset, limit, search, sort, countries } = useLoaderData();
+  const { legalEntity, people, count, offset, limit, search, sort, countries } = useLoaderData();
 
-  const Context = (worker: Worker) => <ListContext select={true} />;
+  const Context = (person: Person) => <ListContext select={true} />;
 
-  const Item = (worker: Worker) =>
-    <ListItem data={`${worker.firstName} ${worker.lastName}`} sub={<Flags localities={[worker.locality]} countries={countries} />} />
+  const Item = (person: Person) =>
+    <ListItem data={`${person.firstName} ${person.lastName}`} sub={<Flags localities={[person.locality]} countries={countries} />} />
   
   return (
     <>
@@ -69,7 +69,7 @@ const Workers = () => {
       </div>
 
       {count <= 0 && <Alert title={`No workers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
-      <List data={workers} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/workers/${props.item.id}/info`} />
+      <List data={people} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/workers/${props.item.id}/info`} />
       <Pagination entity='worker' totalItems={count} offset={offset} limit={limit} />
     </>
   );

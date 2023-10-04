@@ -1,9 +1,9 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import WorkerService, { type Worker } from '~/models/manage/workers.server';
-import CountryService, { type Country } from '~/models/countries.server';
+import PersonService, { type Person } from '~/models/manage/people.server';
+import CountryService from '~/models/countries.server';
 
 import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';
@@ -25,20 +25,20 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-  const clientId = toNumber(url.searchParams.get("client") as string);
-  const legalEntityId = toNumber(url.searchParams.get("legal-entity") as string);
+  const clientId = url.searchParams.get("client");
+  const legalEntityId = url.searchParams.get("legal-entity");
 
   const u = await requireUser(request);
 
-  const service = WorkerService(u);
-  const { workers, metadata: { count }} = 
-    await service.searchWorkers({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
+  const service = PersonService(u);
+  const { people, metadata: { count }} = 
+    await service.searchPeople({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
 
-  const isoCodes = workers.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
+  const isoCodes = people.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
   
-  return json({ workers, count, offset, limit, search, clientId, legalEntityId, countries });
+  return json({ people, count, offset, limit, search, clientId, legalEntityId, countries });
 };
 
 const actions = [
@@ -46,13 +46,13 @@ const actions = [
 ];
 
 export default function Workers() {
-  const { workers, count, offset, limit, search, countries } = useLoaderData();
+  const { people, count, offset, limit, search, countries } = useLoaderData();
 
-  const Context = (worker: Worker) =>
-    <ListContext data={worker.client} sub={worker.legalEntity} select={false} />;
+  const Context = (person: Person) =>
+    <ListContext data={person.client} sub={person.legalEntity} select={false} />;
 
-  const Worker = (worker: Worker) =>
-    <ListItem data={`${worker.firstName} ${worker.lastName}`} sub={<Flags localities={[worker.locality]} countries={countries} />} />
+  const Worker = (person: Person) =>
+    <ListItem data={`${person.firstName} ${person.lastName}`} sub={<Flags localities={[person.locality]} countries={countries} />} />
     
   return (
     <>
@@ -61,7 +61,7 @@ export default function Workers() {
 
       {count <= 0 && <Alert title={`No workers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
-      <List data={workers} renderItem={Worker} renderContext={Context} />
+      <List data={people} renderItem={Worker} renderContext={Context} />
       <Pagination entity='worker' totalItems={count} offset={offset} limit={limit} />
     </>
   );

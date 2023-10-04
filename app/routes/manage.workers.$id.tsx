@@ -4,15 +4,15 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import WorkerService from '~/models/manage/workers.server';
+import PersonService from '~/models/manage/people.server';
 import Header from '~/components/header';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 
 export const handle = {
-  breadcrumb: ({ worker, current }: { worker: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name={`${worker?.firstName} ${worker?.lastName}`} current={current} />
+  breadcrumb: ({ person, current }: { person: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/workers/${person?.id}/info`} name={`${person?.firstName} ${person?.lastName}`} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -22,29 +22,29 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = WorkerService(u);
-  const worker = await service.getWorker({ id });
+  const service = PersonService(u);
+  const person = await service.getPerson({ id });
 
-  if (worker === undefined) return notFound('Worker not found');
+  if (person === undefined) return notFound('Worker not found');
 
-  return json({ worker });
+  return json({ person });
 };
 
 export default function ServiceCentre() {
-  const { worker } = useLoaderData();
+  const { person } = useLoaderData();
 
   const tabs = [
     { name: 'info', to: 'info' },
     { name: 'location', to: 'location' },
   ];
 
-  const icon = worker.photo 
-    ? worker.photo 
+  const icon = person.photo 
+    ? person.photo 
     : <UserCircleIcon className="h-12 w-12 text-indigo-500" aria-hidden="true" />
 
   return (
     <>
-      <Header title={`${worker.firstName} ${worker.lastName}`} tabs={tabs} icon={icon} />
+      <Header title={`${person.firstName} ${person.lastName}`} tabs={tabs} icon={icon} />
       <Outlet />
     </>
   );

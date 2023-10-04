@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import WorkerService from '~/models/manage/workers.server';
+import PersonService from '~/models/manage/people.server';
 import { requireUser } from '~/auth/auth.server';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
@@ -11,8 +11,8 @@ import { notFound, badRequest } from '~/utility/errors';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name="info" current={current} />
+  breadcrumb: ({ worker, current }: { worker: any, current: boolean }) => 
+    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name="info" current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -22,19 +22,19 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = WorkerService(u);
-  const worker = await service.getWorker({ id });
+  const service = PersonService(u);
+  const person = await service.getPerson({ id });
 
-  if (worker === undefined) return notFound('Worker not found');
+  if (person === undefined) return notFound('Worker not found');
 
-  return json({ worker });
+  return json({ person });
 };
 
 const Info = () => {
   const { t } = useTranslation();
-  const { worker } = useLoaderData();
+  const { person } = useLoaderData();
 
-  const name = `${worker.firstName} ${worker.lastName}`;
+  const name = `${person.firstName} ${person.lastName}`;
 
   return (
     <>
@@ -48,10 +48,10 @@ const Info = () => {
             </button>
           </Field>
           <Field title="Client">
-            <Link className="text-indigo-900" to={`/manage/clients/${worker.clientId}/info`}>{worker.client}</Link>
+            <Link className="text-indigo-900" to={`/manage/clients/${person.clientId}/info`}>{person.client}</Link>
           </Field>
           <Field title="Legal Entity">
-            <Link className="text-indigo-900" to={`/manage/legal-entities/${worker.legalEntityId}/info`}>{worker.legalEntity}</Link>
+            <Link className="text-indigo-900" to={`/manage/legal-entities/${person.legalEntityId}/info`}>{person.legalEntity}</Link>
           </Field>
         </Section>
       </Layout>

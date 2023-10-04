@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import ClientService from '~/models/manage/clients.server';
+import ClientService, { create } from '~/models/manage/clients.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
 import withAuthorization from '~/auth/with-authorization';
@@ -23,10 +23,10 @@ import { UniqueInput, Select, Cancel, Submit, Checkbox,
 
 import type { RefModal } from '~/components/modals/modal';
 import { CountriesModal } from '~/components/countries/countries';
+import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import Button, { ButtonType } from '~/components/button';
-import toNumber from '~/helpers/to-number';
 
 export const handle = {
   breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
@@ -69,24 +69,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   if (parentId === undefined) return badRequest('Invalid data');
 
-  const countryService = CountryService();
-
   const u = await requireUser(request);
   const formData = await request.formData()
 
   if (formData.get('intent') === 'change-codes') {
-    const data = String(formData.get('codes'));
-    if (data === "") return json({ codes: [], regions: [], countries: [] });
-
-    const codes = data.split(',')
-      .reduce((codes: string[], code: string) => 
-        codes.includes(code) ? codes : [ ...codes, code ], []);
-    
-    const isoCodes = await countryService.getIsoCodes({ isoCodes: codes });
-    const countries = await countryService.getCountries({ isoCodes });
-    const regions = await countryService.getRegions({ isoCodes });
-
-    return json({ codes, regions, countries });
+    return json(await changeCodes(formData));
   }
 
   const validator = withZod(schema.superRefine(
@@ -115,10 +102,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const result = await validator.validate(formData);
   if (result.error) { 
-    const codes = [ result.submittedData.localities.isoCode ].flat();
-    const countries = await countryService.getCountries({ isoCodes: codes });
-    const regions = await countryService.getRegions({ isoCodes: codes });
-    return { ...validationError(result.error), codes, countries, regions };
+    return buildValidationError(result.error, result.submittedData.localities);
   }
 
   const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
@@ -126,66 +110,15 @@ export const action = async ({ request, params }: ActionArgs) => {
   
   const service = ClientService(u);
   const parent = await service.getClient({ id: parentId });
-  await service.addClient({ localities, identifier, parentId, serviceCentreId: parent.serviceCentreId, ...data });
+  await service.addClient(create({ localities, identifier, parentId, serviceCentreId: parent.serviceCentreId, ...data }));
   
   return redirect(`/manage/clients/${parentId}/groups`);
 };
 
 const AddGroup = () => {
-  const { t } = useTranslation();
-  const data = useActionData();
-  const submit = useSubmit();
-
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
   const context = useFormContext("add-client-group");
-  const modal = useRef<RefModal>(null);
-
-  const [ country, setCountry ] = useState<Country>();
-
-  const findRegions = (code: string) => 
-    data?.regions?.filter((r: Country) => r.parent === code)
-      .map((r: Country) => ({ id: r.isoCode, ...r }));
-
-  const findCountry = (code: string) => {
-    const c = data?.countries?.find((c: Country) => c.isoCode === code);
-    return c && { id: c.isoCode, ...c };
-  };
-
-  const findRegion = (code: string) => {
-    const r = data?.regions?.find((c: Country) => c.isoCode === code);
-    return r && { id: r.isoCode, ...r };
-  };
-        
-  const showCountriesModal = () => {
-    setCountry(undefined);
-    modal.current?.show();
-  };
-  const showRegions = (country: Country) => {
-    if (country === undefined) 
-      showCountriesModal();
-    else
-      setCountry(country);
-  };
-
-  useEffect(() => {
-    if (country) modal.current?.show();
-  }, [country]);
-
-  const selectCountry = (country: Country) => {
-    const codes = data?.codes || [];
-    submit({ intent: "change-codes", codes: [ ...codes, country.isoCode ] }, 
-           { method: "post", encType: "multipart/form-data" });  
-  };
-
-  const removeCountry = (country: Country) => {
-    const codes = (data?.codes || []).filter((code: string) => code !== country.isoCode);
-    submit({ intent: "change-codes", codes }, { method: "post", encType: "multipart/form-data" });  
-  };
-
-  useEffect(() => {
-    context.validate();  // HACK :)
-  }, [data]);
 
   const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
     setAutoGenerateIdentifier(e.currentTarget.checked);
@@ -212,51 +145,13 @@ const AddGroup = () => {
               </div>
             </Field>
           </Group>
-          <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the group is associated, or select a specific region.' />
-          <Group>
-            <Field>
-              <Button title="Select a Country" 
-                icon={MagnifyingGlassIcon} 
-                type={ButtonType.Secondary} 
-                onClick={showCountriesModal} />
-
-                {context.fieldErrors.localities && 
-                  <p className="mt-2 text-sm text-red-600">
-                    Please specify at least one country
-                  </p>}
-            </Field>
-
-            {data?.codes?.map((code: string) => {
-              const region = findRegion(code);
-              const isoCode = region ? region.parent : code;
-              const country = findCountry(isoCode);
-              const regions = findRegions(isoCode);
-              return (
-                <>
-                  <Field span={3} key={code}>
-                    <Select 
-                      label='Select Country or a Region'
-                      name="localities" 
-                      defaultValue={region || country}
-                      data={[ country ].concat(regions)} />
-                  </Field>
-                  <Field span={1}>
-                    <button onClick={() => removeCountry(region || country)}
-                      type="button" className="text-sm mt-10 text-red-600 hover:text-red-500">
-                      {t('remove')}
-                    </button>
-                  </Field>
-                </>
-              )})}
-          </Group>
+          <CountryFormManager context={context} />
         </Body>
         <Footer>
           <Cancel />
           <Submit text="Save" submitting="Saving..." permission={manage.create.client} />
         </Footer>
       </Form>
-      <CountriesModal modal={modal} country={country}
-        onSelect={selectCountry} onSelectRegion={showRegions} />
     </>
   );
 }

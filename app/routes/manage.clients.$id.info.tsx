@@ -40,11 +40,20 @@ const Info = () => {
         <Heading heading={t('info')} explanation={`Manage ${client.name}'s information.`} />
         <Section>
           <Field title="Client Name">
-            <p className="text-gray-900">{client.name}</p>
+            {!client.parentId && <p className="text-gray-900">{client.name}</p>}
+            {client.parentId && <Link className="text-indigo-900" to={`/manage/clients/${client.parentId}/info`}>
+              {client.parent}
+            </Link>}
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
           </Field>
+          {client.parentId && <Field title="Group Name">
+            <p className="text-gray-900">{client.name}</p>
+            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>}
           <Field title="Service Centre Name">
             <Link className="text-indigo-900" to={`/manage/service-centres/${client.serviceCentreId}/info`}>
               {client.serviceCentre}
