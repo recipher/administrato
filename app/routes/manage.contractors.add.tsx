@@ -146,4 +146,4 @@ const Add = () => {
   );
 }
 
-export default withAuthorization(manage.create.serviceCentre)(Add);
+export default withAuthorization(manage.create.worker)(Add);

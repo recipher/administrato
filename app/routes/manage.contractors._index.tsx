@@ -27,23 +27,22 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-
+  
   const clientId = url.searchParams.get("client");
-  const legalEntityId = url.searchParams.get("legal-entity");
 
   const service = PersonService(u);
   const { people, metadata: { count }} = 
-    await service.searchWorkers({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
+    await service.searchContractors({ search, clientId }, { offset, limit, sortDirection: sort });
 
   const isoCodes = people.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
   
-  return json({ people, count, offset, limit, search, clientId, legalEntityId, countries });
+  return json({ people, count, offset, limit, search, clientId, countries });
 };
 
 const actions = [
-  { title: "add-worker", to: "add", icon: PlusIcon, permission: manage.create.worker },
+  { title: "add-contractor", to: "add", icon: PlusIcon, permission: manage.create.worker },
 ];
 
 const navigation = [
@@ -52,24 +51,24 @@ const navigation = [
   { name: "employees", to: "/manage/employees", permission: manage.read.worker },
 ];
 
-export default function Workers() {
+export default function Contractors() {
   const { people, count, offset, limit, search, countries } = useLoaderData();
 
   const Context = (person: Person) =>
-    <ListContext data={person.client} sub={person.legalEntity} select={false} />;
+    <ListContext data={person.client} select={false} />;
 
-  const Worker = (person: Person) =>
+  const Contractor = (person: Person) =>
     <ListItem data={`${person.firstName} ${person.lastName}`} sub={<Flags localities={[person.locality]} countries={countries} />} />
     
   return (
     <>
-      <Header title="workers" navigation={navigation} actions={actions}
-        filterTitle='Search workers' filterParam='q' allowSort={true} />
+      <Header title="contractors" navigation={navigation} actions={actions}
+        filterTitle='Search contractors' filterParam='q' allowSort={true} />
 
-      {count <= 0 && <Alert title={`No workers found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
+      {count <= 0 && <Alert title={`No contractors found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
 
-      <List data={people} renderItem={Worker} renderContext={Context} />
-      <Pagination entity='worker' totalItems={count} offset={offset} limit={limit} />
+      <List data={people} renderItem={Contractor} renderContext={Context} />
+      <Pagination entity='contractor' totalItems={count} offset={offset} limit={limit} />
     </>
   );
 }

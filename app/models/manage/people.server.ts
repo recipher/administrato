@@ -161,14 +161,14 @@ const service = (u: User) => {
       (LOWER(${'people'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
        LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
 
-    const client = clientId == null ? db.sql<db.SQL>`${'people'}.${'clientId'} IS NOT NULL`
-      : db.sql<db.SQL>`${'people'}.${'clientId'} = ${db.param(clientId)}`;
-    const legalEntity = legalEntityId == null ? db.sql<db.SQL>`${'legalEntityId'} IS NOT NULL`
-      : db.sql<db.SQL>`${'people'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
-    const classification = classifier == null ? db.sql<db.SQL>`${'classifier'} IS NOT NULL`
-      : db.sql<db.SQL>`${'people'}.${'classifier'} = ${db.param(classifier)}`;
+    const client = clientId == null ? db.sql``
+      : db.sql<db.SQL>`AND ${'people'}.${'clientId'} = ${db.param(clientId)}`;
+    const legalEntity = legalEntityId == null ? db.sql``
+      : db.sql<db.SQL>`AND ${'people'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
+    const classification = classifier == null ? db.sql``
+      : db.sql<db.SQL>`AND ${'people'}.${'classifier'} = ${db.param(classifier)}`;
 
-    return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity} AND ${classification}`;    
+    return db.sql<db.SQL>`${name} ${client} ${legalEntity} ${classification}`;    
   };
 
   const countPeople = async (search: SearchOptions) => {

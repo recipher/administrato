@@ -30,7 +30,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ person });
 };
 
-export default function ServiceCentre() {
+export default function Worker() {
   const { person } = useLoaderData();
 
   const tabs = [

@@ -108,7 +108,7 @@ const Add = () => {
     <>
       <Form method="post" validator={validator} id="add-worker" encType="multipart/form-data">
         <Body>
-          <Section heading='New Worker' explanation='Please enter the new worker details.' />
+          <Section heading='New Employee' explanation='Please enter the new employee details.' />
           <Group>
             <Field span={3}>
               <Input label="First Name" name="firstName" />
@@ -147,4 +147,4 @@ const Add = () => {
   );
 }
 
-export default withAuthorization(manage.create.serviceCentre)(Add);
+export default withAuthorization(manage.create.worker)(Add);

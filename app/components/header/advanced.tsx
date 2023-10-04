@@ -3,8 +3,7 @@ import { Form, useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { Menu, Transition } from '@headlessui/react';
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
 import Tabs, { TabsProps } from '../navigation-tabs';
 import Actions, { ActionsProps } from '../actions';
@@ -18,6 +17,7 @@ export type TitleProps = {
   title: string;
   subtitle?:  string | undefined;
   icon?: ReactNode | string | undefined;
+  navigation?: TabsProps;
 };
 export type FilterProps = {
   filterTitle?: string | undefined;
@@ -44,19 +44,76 @@ export type Props = {
   tabs?: TabsProps;
 } & TitleProps & FilterProps & ButtonsProps;
 
-export const Title = ({ title, subtitle, icon }: TitleProps) => {
+const Dropdown = ({ title, items, selected }: { title: ReactNode, items?: TabsProps | undefined, selected: string }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  if (items?.length === 0) return null;
+
+  return (
+    <Menu as="div" className="mr-6 mb-2 relative inline-block text-left focus:outline-none">
+      <div>
+        <Menu.Button className="group inline-flex justify-center text-md text-gray-700 hover:text-gray-900 focus:outline-none">
+          {title}
+          <ChevronDownIcon
+            className="-mr-1 ml-1 mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+            aria-hidden="true"
+          />
+        </Menu.Button>
+      </div>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute left-0 z-10 mt-1 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="py-1">
+            {items?.map((item) => (
+              <Menu.Item key={item.name}>
+                {({ active }) => (
+                  <div
+                    onClick={() => navigate(item.to)}
+                    className={classnames(
+                      item.name === selected ? 'font-medium text-gray-900' : 'text-gray-500',
+                      active ? 'bg-gray-100' : '',
+                      'block px-4 py-2 text-sm cursor-pointer'
+                    )}
+                  >
+                    {t(item.name)}
+                  </div>
+                )}
+              </Menu.Item>
+            ))}
+          </div>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
+};
+
+export const Title = ({ title, subtitle, icon, navigation }: TitleProps) => {
+  const { t } = useTranslation();
+
+  const Text = () => 
+    <h3 className={classnames(icon && !subtitle ? "pt-2": "", 
+        "flex text-lg font-semibold leading-6 text-gray-900")}>
+      {t(title)}
+    </h3>
+
   return (
     <>
       {icon && <div className="mr-4 mt-2 flex-shrink-0">{icon}</div>}
-      <div className="h-8">
-        <h3 className={classnames(icon && !subtitle ? "pt-2": "", 
-              "text-lg font-semibold leading-6 text-gray-900")}>
-          {t(title)}
-        </h3>
+      <div className="h-8 group">
+        {navigation?.length === 0
+          ? <Text />
+          : <Dropdown items={navigation} title={<Text />} selected={title} />}
         {subtitle && <p className="text-sm text-gray-500">
           {t(subtitle)}
-        </p>}
+        </p>} 
       </div>
     </>
   );
@@ -166,7 +223,7 @@ export const Buttons = ({ actions = [], group = false, title }: ButtonsProps) =>
     : <Actions actions={actions} />
 };
 
-export default function Header({ title, subtitle, icon, tabs = [], actions = [], additionalFilters,
+export default function Header({ title, navigation = [], subtitle, icon, tabs = [], actions = [], additionalFilters,
   filterTitle, filterParam = 'q', allowSort = true, group = false }: Props) {
 
   const [ searchParams ] = useSearchParams();
@@ -181,7 +238,7 @@ export default function Header({ title, subtitle, icon, tabs = [], actions = [],
       <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
         <div className="ml-4 mt-4">
           <div className="flex items-center">
-            <Title title={title} subtitle={subtitle} icon={icon} />
+            <Title title={title} subtitle={subtitle} icon={icon} navigation={navigation} />
           </div>
         </div>
         <div className="ml-4 flex flex-shrink-0 pt-3">
