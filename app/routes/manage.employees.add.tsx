@@ -10,11 +10,11 @@ import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { WalletIcon } from '@heroicons/react/24/outline';
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
 import PersonService, { create } from '~/models/manage/people.server';
-import { type Client } from '~/models/manage/clients.server';
 import { type LegalEntity } from '~/models/manage/legal-entities.server';
 import CountryService, { type Country } from '~/models/countries.server';
 
@@ -24,15 +24,14 @@ import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
-import { flag } from '~/components/countries/flag';
 
 import { Input, Select, Cancel, Submit, Image,
   Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
-import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
+import { flag } from '~/components/countries/flag';
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage/workers/add' name="add-worker" current={current} />
+    <Breadcrumb to='/manage/employees/add' name="add-employee" current={current} />
 };
 
 export const loader = async ({ request }: ActionArgs) => {
@@ -60,9 +59,6 @@ const schema = zfd.formData({
   legalEntityId: z
     .string()
     .nonempty("The legal entity is required"),
-  clientId: z
-    .string()
-    .nonempty("The client is required"),
   locality: z
     .object({
       id: z.string()
@@ -88,7 +84,8 @@ export const action = async ({ request }: ActionArgs) => {
   const { data: { locality: { id: isoCode }, ...data }} = result;
   
   const service = PersonService(u);
-  const worker = await service.addWorker(create({ locality: isoCode, identifier: "", ...data }));
+  // @ts-ignore
+  const worker = await service.addEmployee(create({ locality: isoCode, identifier: "", ...data }));
   
   return redirect(`/manage/workers/${worker.id}/info`);
 };
@@ -96,10 +93,8 @@ export const action = async ({ request }: ActionArgs) => {
 const Add = () => {
   const { countries } = useLoaderData();
 
-  const [ client, setClient ] = useState<Client>();
   const [ legalEntity, setLegalEntity ] = useState<LegalEntity>();
   
-  const clientModal = useRef<RefSelectorModal>(null);
   const legalEntityModal = useRef<RefSelectorModal>(null);
 
   const withFlag = countries.map((country: Country) => ({
@@ -107,7 +102,6 @@ const Add = () => {
     image: flag(country.isoCode)
   }));
 
-  const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
 
   return (
@@ -126,18 +120,14 @@ const Add = () => {
               <Image label="Upload Photo" name="photo" accept="image/*" Icon={UserCircleIcon} />
             </Field>
           </Group>
-          <Section size="md" heading="Select Memberships" explanation="Workers need to belong to both a client and a legal entity." />
+          <Section size="md" heading="Select Legal Entity" explanation="Employees need to belong to a legal entity." />
           <Group>
-            <Field span={3}>
-              <Lookup label="Client" name="clientId" onClick={showClientModal} 
-                icon={IdentificationIcon} value={client} placeholder="Select a Client" />
-            </Field>
             <Field span={3}>
               <Lookup label="Legal Entity" name="legalEntityId" onClick={showLegalEntityModal} 
                 icon={WalletIcon} value={legalEntity} placeholder="Select a Legal Entity" />
             </Field>
           </Group>
-          <Section heading='Specify Country' explanation='Enter the country where the worker resides.' size="md" />
+          <Section heading='Specify Country' explanation='Enter the country where the employee resides.' size="md" />
           <Group>
             <Field span={3}>
               <Select 
@@ -152,7 +142,6 @@ const Add = () => {
           <Submit text="Save" submitting="Saving..." permission={manage.create.worker} />
         </Footer>
       </Form>
-      <SelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
       <SelectorModal ref={legalEntityModal} onSelect={setLegalEntity} allowChange={false} />
     </>
   );

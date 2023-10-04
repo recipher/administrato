@@ -14,19 +14,27 @@ import { ASC, DESC } from '../types';
 import { type User } from '../access/users.server';
 
 export type PersonSecurityKey = {
-  clientKeyStart: number;
-  clientKeyEnd: number;
-  legalEntityKeyStart: number;
-  legalEntityKeyEnd: number;
+  clientKeyStart: number | undefined;
+  clientKeyEnd: number | undefined;
+  legalEntityKeyStart: number | undefined;
+  legalEntityKeyEnd: number | undefined;
 };
 
 import { extractKeys } from './shared.server';
 
 export type Person = s.people.Selectable & { legalEntity: string, client: string };
 
+export enum Classifier {
+  Worker = "worker",
+  Employee = "employee",
+  Contractor = "contractor",
+  Person = "person",
+};
+
 type SearchOptions = {
   clientId?: string | null | undefined;
   legalEntityId?: string | null | undefined;
+  classifier?: Classifier | null | undefined;
 } & BaseSearchOptions;
 
 const generateIdentifier = ({ firstName, lastName, identifier }: s.people.Insertable) =>
@@ -87,22 +95,33 @@ const service = (u: User) => {
   };
 
   const generateKeys = async (person: s.people.Insertable): Promise<PersonSecurityKey> => {
-    const clientService = ClientService(u);
-    const legalEntityService = LegalEntityService(u);
+    let clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd;
 
-    const client = await clientService.getClient({ id: person.clientId as string })
-    const legalEntity = await legalEntityService.getLegalEntity({ id: person.legalEntityId as string })
-    const latestForClient = await getLatestForClient(person);
-    const latestForLegalEntity = await getLatestForLegalEntity(person);
     const maxEntities = 10000; // Move to constants
 
-    if (client === undefined || legalEntity === undefined) 
-      throw new Error('Error generating security key');
+    if (person.clientId) {
+      const clientService = ClientService(u);
+      const client = await clientService.getClient({ id: person.clientId as string })
+      const latestForClient = await getLatestForClient(person);
 
-    const clientKeyStart = Number(latestForClient?.clientKeyEnd ? Number(latestForClient.clientKeyEnd) + 1 : client.keyStart);
-    const clientKeyEnd = clientKeyStart + Number(Math.round(client.keyEnd as unknown as number / maxEntities));
-    const legalEntityKeyStart = Number(latestForLegalEntity?.legalEntityKeyEnd ? Number(latestForLegalEntity.legalEntityKeyEnd) + 1 : legalEntity.keyStart);
-    const legalEntityKeyEnd = legalEntityKeyStart + Number(Math.round(legalEntity.keyEnd as unknown as number / maxEntities));
+      if (client === undefined) 
+        throw new Error('Error generating security key');
+
+      clientKeyStart = Number(latestForClient?.clientKeyEnd ? Number(latestForClient.clientKeyEnd) + 1 : client.keyStart);
+      clientKeyEnd = clientKeyStart + Number(Math.round(client.keyEnd as unknown as number / maxEntities));
+    }
+
+    if (person.legalEntityId) {
+      const legalEntityService = LegalEntityService(u);
+      const legalEntity = await legalEntityService.getLegalEntity({ id: person.legalEntityId as string })
+      const latestForLegalEntity = await getLatestForLegalEntity(person);
+
+      if (legalEntity === undefined) 
+        throw new Error('Error generating security key');
+
+      legalEntityKeyStart = Number(latestForLegalEntity?.legalEntityKeyEnd ? Number(latestForLegalEntity.legalEntityKeyEnd) + 1 : legalEntity.keyStart);
+      legalEntityKeyEnd = legalEntityKeyStart + Number(Math.round(legalEntity.keyEnd as unknown as number / maxEntities));
+    }
     
     return { clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd };
   };
@@ -118,6 +137,15 @@ const service = (u: User) => {
     return inserted;
   };
 
+  const addWorker = async (worker: s.people.Insertable) =>
+    addPerson({ ...worker, classifier: Classifier.Worker });
+
+  const addContractor = async (worker: s.people.Insertable) =>
+    addPerson({ ...worker, classifier: Classifier.Contractor });
+
+  const addEmployee = async (worker: s.people.Insertable) =>
+    addPerson({ ...worker, classifier: Classifier.Employee });
+
   const listPeople = async () => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
@@ -128,7 +156,7 @@ const service = (u: User) => {
     `.run(pool);
   };
 
-  const searchQuery = ({ search, clientId, legalEntityId }: SearchOptions) => {
+  const searchQuery = ({ search, clientId, legalEntityId, classifier }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`${'lastName'} IS NOT NULL` : db.sql<db.SQL>`
       (LOWER(${'people'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
        LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
@@ -137,8 +165,10 @@ const service = (u: User) => {
       : db.sql<db.SQL>`${'people'}.${'clientId'} = ${db.param(clientId)}`;
     const legalEntity = legalEntityId == null ? db.sql<db.SQL>`${'legalEntityId'} IS NOT NULL`
       : db.sql<db.SQL>`${'people'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
+    const classification = classifier == null ? db.sql<db.SQL>`${'classifier'} IS NOT NULL`
+      : db.sql<db.SQL>`${'people'}.${'classifier'} = ${db.param(classifier)}`;
 
-    return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity}`;    
+    return db.sql<db.SQL>`${name} AND ${client} AND ${legalEntity} AND ${classification}`;    
   };
 
   const countPeople = async (search: SearchOptions) => {
@@ -178,6 +208,15 @@ const service = (u: User) => {
     return { people, metadata: { count }};
   };
 
+  const searchWorkers =  async (search: SearchOptions, meta: QueryOptions) =>
+    searchPeople({ ...search, classifier: Classifier.Worker }, meta); 
+
+  const searchContractors =  async (search: SearchOptions, meta: QueryOptions) =>
+    searchPeople({ ...search, classifier: Classifier.Contractor }, meta); 
+
+  const searchEmployees =  async (search: SearchOptions, meta: QueryOptions) =>
+    searchPeople({ ...search, classifier: Classifier.Employee }, meta); 
+
   const getPerson = async ({ id }: IdProp) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
@@ -197,8 +236,14 @@ const service = (u: User) => {
 
   return {
     addPerson,
+    addWorker,
+    addContractor,
+    addEmployee,
     getPerson,
     searchPeople,
+    searchWorkers,
+    searchEmployees,
+    searchContractors,
     countPeople,
     listPeople,
   };

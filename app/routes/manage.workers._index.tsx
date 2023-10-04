@@ -20,6 +20,8 @@ import { List, ListContext, ListItem } from '~/components/list';
 const LIMIT = 6;
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const u = await requireUser(request);
+
   const url = new URL(request.url);
   const offset = toNumber(url.searchParams.get("offset") as string);
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
@@ -28,11 +30,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   const clientId = url.searchParams.get("client");
   const legalEntityId = url.searchParams.get("legal-entity");
 
-  const u = await requireUser(request);
-
   const service = PersonService(u);
   const { people, metadata: { count }} = 
-    await service.searchPeople({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
+    await service.searchWorkers({ search, clientId, legalEntityId }, { offset, limit, sortDirection: sort });
 
   const isoCodes = people.map(s => s.locality).reduce((codes: string[], code) => code ? [ code, ...codes ] : codes, []);
   const countryService = CountryService();

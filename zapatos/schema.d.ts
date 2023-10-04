@@ -2197,27 +2197,27 @@ declare module 'zapatos/schema' {
       /**
       * **people.clientKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyStart: db.Int8String;
+      clientKeyStart: db.Int8String | null;
       /**
       * **people.clientKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyEnd: db.Int8String;
+      clientKeyEnd: db.Int8String | null;
       /**
       * **people.legalEntityKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyStart: db.Int8String;
+      legalEntityKeyStart: db.Int8String | null;
       /**
       * **people.legalEntityKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyEnd: db.Int8String;
+      legalEntityKeyEnd: db.Int8String | null;
       /**
       * **people.locality**
       * - `text` in database
@@ -2295,27 +2295,27 @@ declare module 'zapatos/schema' {
       /**
       * **people.clientKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyStart: number;
+      clientKeyStart: number | null;
       /**
       * **people.clientKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyEnd: number;
+      clientKeyEnd: number | null;
       /**
       * **people.legalEntityKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyStart: number;
+      legalEntityKeyStart: number | null;
       /**
       * **people.legalEntityKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyEnd: number;
+      legalEntityKeyEnd: number | null;
       /**
       * **people.locality**
       * - `text` in database
@@ -2393,25 +2393,25 @@ declare module 'zapatos/schema' {
       /**
       * **people.clientKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       clientKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **people.clientKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       clientKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **people.legalEntityKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       legalEntityKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
       * **people.legalEntityKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -2491,27 +2491,27 @@ declare module 'zapatos/schema' {
       /**
       * **people.clientKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyStart: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      clientKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **people.clientKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyEnd: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      clientKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **people.legalEntityKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyStart: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      legalEntityKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **people.legalEntityKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyEnd: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment;
+      legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
       * **people.locality**
       * - `text` in database
@@ -2589,27 +2589,27 @@ declare module 'zapatos/schema' {
       /**
       * **people.clientKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      clientKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.clientKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      clientKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      clientKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.legalEntityKeyStart**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      legalEntityKeyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.legalEntityKeyEnd**
       * - `int8` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment>;
+      legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.locality**
       * - `text` in database

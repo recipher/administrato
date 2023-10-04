@@ -12,13 +12,16 @@ type FlagProps = {
   className?: string;
 };
 
+export const flag = (isoCode: string) =>
+  `https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`;
+
 export const Flag = ({ country, isoCode, size = 12, className = "" }: FlagProps) => {
   if (!isoCode) return <div className={classnames(className, `h-${size} w-${size} flex-none bg-white`)} />
   
   const noFlag = [KOSOVO, UNITED_NATIONS].includes(isoCode.toLowerCase());
   const src = noFlag
     ? `/_static/images/${isoCode.toLowerCase()}.png`
-    : `https://cdn.ipregistry.co/flags/twemoji/${isoCode.toLowerCase()}.svg`;
+    : flag(isoCode);
 
   return <Image className={classnames(className, noFlag ? `h-${size-3} mt-1 rounded-md` : `h-${size}`, "flex-none bg-white")} fallbackSrc='https://cdn.ipregistry.co/flags/twemoji/gb.svg'
     src={src} alt={country} />
