@@ -17,8 +17,8 @@ export default ({ entity = '', onFilter, title }: Props) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    e.stopPropagation();
     onFilter(text);
-    // if (text) onFilter(text);
   };
 
   return (
