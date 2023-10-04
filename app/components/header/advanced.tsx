@@ -1,5 +1,5 @@
 import { Fragment, ReactNode } from 'react';
-import { Form, useNavigate, useSearchParams } from '@remix-run/react';
+import { Form, NavLink, useNavigate, useSearchParams } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import { Menu, Transition } from '@headlessui/react';
@@ -9,6 +9,7 @@ import Tabs, { TabsProps } from '../navigation-tabs';
 import Actions, { ActionsProps } from '../actions';
 import ButtonGroup from '../button-group';
 import Image from '../image';
+import { Separator } from '~/layout/breadcrumbs';
 
 import Sort from './sort';
 import classnames from '~/helpers/classnames';
@@ -44,57 +45,6 @@ export type Props = {
   tabs?: TabsProps;
 } & TitleProps & FilterProps & ButtonsProps;
 
-const Dropdown = ({ title, items, selected }: { title: ReactNode, items?: TabsProps | undefined, selected: string }) => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-
-  if (items?.length === 0) return null;
-
-  return (
-    <Menu as="div" className="mr-6 mb-2 relative inline-block text-left focus:outline-none">
-      <div>
-        <Menu.Button className="group inline-flex justify-center text-md text-gray-700 hover:text-gray-900 focus:outline-none">
-          {title}
-          <ChevronDownIcon
-            className="-mr-1 ml-1 mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-            aria-hidden="true"
-          />
-        </Menu.Button>
-      </div>
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute left-0 z-10 mt-1 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1">
-            {items?.map((item) => (
-              <Menu.Item key={item.name}>
-                {({ active }) => (
-                  <div
-                    onClick={() => navigate(item.to)}
-                    className={classnames(
-                      item.name === selected ? 'font-medium text-gray-900' : 'text-gray-500',
-                      active ? 'bg-gray-100' : '',
-                      'block px-4 py-2 text-sm cursor-pointer'
-                    )}
-                  >
-                    {t(item.name)}
-                  </div>
-                )}
-              </Menu.Item>
-            ))}
-          </div>
-        </Menu.Items>
-      </Transition>
-    </Menu>
-  );
-};
-
 export const Title = ({ title, subtitle, icon, navigation }: TitleProps) => {
   const { t } = useTranslation();
 
@@ -104,13 +54,31 @@ export const Title = ({ title, subtitle, icon, navigation }: TitleProps) => {
       {t(title)}
     </h3>
 
+  const Navigation = () => (
+    <ul className="flex items-center space-x-4" >
+      {navigation?.map((item, index) => (
+        <li key={item.name} className="flex items-center">
+          <NavLink to={item.to}>
+            {({ isActive }) => (
+              <h3 className={classnames(isActive 
+                ? "font-semibold text-gray-900" : "text-gray-600", "text-lg")}>
+                <span className="flex items-center">
+                  {index !== 0 && <Separator />}
+                  {t(item.name)}
+                </span>
+              </h3>
+            )}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <>
       {icon && <div className="mr-4 mt-2 flex-shrink-0">{icon}</div>}
       <div className="h-8 group">
-        {navigation?.length === 0
-          ? <Text />
-          : <Dropdown items={navigation} title={<Text />} selected={title} />}
+        {navigation?.length === 0 ? <Text /> : <Navigation />}
         {subtitle && <p className="text-sm text-gray-500">
           {t(subtitle)}
         </p>} 

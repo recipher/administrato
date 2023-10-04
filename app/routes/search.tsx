@@ -1,4 +1,4 @@
-import { MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { type LoaderFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/auth/auth.server";
@@ -19,7 +19,7 @@ const LIMIT = 10;
 
 export const handle = {
   breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={MagnifyingGlassCircleIcon} to='/search' name="search" current={current} />
+    <Breadcrumb Icon={MagnifyingGlassIcon} to='/search' name="search" current={current} />
 };
 
 type LoaderData = {

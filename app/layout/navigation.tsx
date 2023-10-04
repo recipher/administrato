@@ -36,11 +36,11 @@ export const navigation = [
   { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
   { name: 'manage', to: '/manage', icon: CircleStackIcon,
     children: [
-      { name: 'workers', to: '/manage/workers', icon: CubeIcon, permission: manage.read.worker,
+      { name: 'people', to: '/manage/people/worker', icon: CubeIcon, permission: manage.read.worker,
         children: [
-          { name: 'workers', to: '/manage/workers' },
-          { name: 'employees', to: '/manage/employees' },
-          { name: 'contractors', to: '/manage/contractors' },
+          { name: 'workers', to: '/manage/people/worker' },
+          { name: 'employees', to: '/manage/people/employee' },
+          { name: 'contractors', to: '/manage/people/contractor' },
         ],
       },
       { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },

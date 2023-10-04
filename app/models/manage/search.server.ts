@@ -35,7 +35,7 @@ const service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
     return db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
-      SELECT ${'people'}.id, CONCAT(${'people'}."firstName", ' ', ${'people'}."lastName") AS name, ${'people'}.${'photo'} AS image, 'worker' AS type 
+      SELECT ${'people'}.id, CONCAT(${'people'}."firstName", ' ', ${'people'}."lastName") AS name, ${'people'}.${'photo'} AS image, classifier AS type 
       FROM ${'people'}
       WHERE 
         ${searchQuery(search)} AND 
