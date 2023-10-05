@@ -50,7 +50,7 @@ export default function Client() {
     { name: 'info', to: 'info' },
     { name: 'summary', to: 'summary' },
     { name: 'groups', to: 'groups', hidden: parentId !== null },
-    { name: 'workers', to: 'workers' },
+    { name: 'people', to: 'people/worker' },
     { name: 'locations', to: 'locations' },
     { name: 'holidays', to: 'holidays' },
   ];
