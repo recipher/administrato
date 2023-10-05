@@ -14,10 +14,9 @@ import { Section, Group, Field } from "../form/layout";
 import { Select } from '../form';
 import Button, { ButtonType } from '../button';
 
-export const changeCodes = async (formData: FormData) => {
+export const changeCodes = async (data: string) => {
   const service = CountryService();
 
-  const data = String(formData.get('codes'));
   if (data === "") return { codes: [], regions: [], countries: [] };
 
   const codes = data.split(',')
@@ -40,24 +39,32 @@ export const buildValidationError = async (error: ValidatorError, localities: an
   return { ...validationError(error), codes, countries, regions };
 };
 
-export function CountryFormManager({ context }: { context: FormContextValue }) {
+type Props = { 
+  context: FormContextValue;
+  data: {
+    codes: Array<string>;
+    regions: Array<Country>;
+    countries: Array<Country>;
+  } | undefined;
+};
+
+export function CountryFormManager({ context, data }: Props) {
   const { t } = useTranslation();
-  const data = useActionData();
   const submit = useSubmit();
   const modal = useRef<RefModal>(null);
 
   const [ country, setCountry ] = useState<Country>();
 
-  const findRegions = (code: string) => 
+  const findRegions = (code: string | null) => 
     data?.regions?.filter((r: Country) => r.parent === code)
       .map((r: Country) => ({ id: r.isoCode, ...r }));
 
-  const findCountry = (code: string) => {
+  const findCountry = (code: string | null) => {
     const c = data?.countries?.find((c: Country) => c.isoCode === code);
     return c && { id: c.isoCode, ...c };
   };
 
-  const findRegion = (code: string) => {
+  const findRegion = (code: string | null) => {
     const r = data?.regions?.find((c: Country) => c.isoCode === code);
     return r && { id: r.isoCode, ...r };
   };
@@ -83,7 +90,8 @@ export function CountryFormManager({ context }: { context: FormContextValue }) {
            { method: "post", encType: "multipart/form-data" });  
   };
 
-  const removeCountry = (country: Country) => {
+  const removeCountry = (country: Country | undefined) => {
+    if (country === undefined) return;
     const codes = (data?.codes || []).filter((code: string) => code !== country.isoCode);
     submit({ intent: "change-codes", codes }, { method: "post", encType: "multipart/form-data" });  
   };
@@ -113,6 +121,7 @@ export function CountryFormManager({ context }: { context: FormContextValue }) {
           const isoCode = region ? region.parent : code;
           const country = findCountry(isoCode);
           const regions = findRegions(isoCode);
+          const countryAndRegions = country && regions ? [ country ].concat(regions) : [];
 
           return (
             <>
@@ -121,7 +130,7 @@ export function CountryFormManager({ context }: { context: FormContextValue }) {
                   label='Select Country or a Region'
                   name="localities" 
                   defaultValue={region || country}
-                  data={[ country ].concat(regions)} />
+                  data={countryAndRegions} />
               </Field>
               <Field span={1}>
                 <button onClick={() => removeCountry(region || country)}

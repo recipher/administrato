@@ -1,16 +1,11 @@
-import { useEffect, useRef, useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json, LoaderArgs } from '@remix-run/node';
-import { useActionData, useSubmit } from '@remix-run/react'
-import { useTranslation } from 'react-i18next';
-import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
+import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-
 import ClientService, { create } from '~/models/manage/clients.server';
-import CountryService, { type Country } from '~/models/countries.server';
 
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
@@ -18,15 +13,13 @@ import { requireUser } from '~/auth/auth.server';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import { UniqueInput, Select, Cancel, Submit, Checkbox,
+import { UniqueInput, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
-import type { RefModal } from '~/components/modals/modal';
-import { CountriesModal } from '~/components/countries/countries';
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
-import Button, { ButtonType } from '~/components/button';
+import { useActionData } from '@remix-run/react';
 
 export const handle = {
   breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
@@ -73,7 +66,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData()
 
   if (formData.get('intent') === 'change-codes') {
-    return json(await changeCodes(formData));
+    return json(await changeCodes(String(formData.get('codes'))));
   }
 
   const validator = withZod(schema.superRefine(
@@ -116,6 +109,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const AddGroup = () => {
+  const data = useActionData();
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
   const context = useFormContext("add-client-group");
@@ -145,7 +139,7 @@ const AddGroup = () => {
               </div>
             </Field>
           </Group>
-          <CountryFormManager context={context} />
+          <CountryFormManager context={context} data={data} />
         </Body>
         <Footer>
           <Cancel />

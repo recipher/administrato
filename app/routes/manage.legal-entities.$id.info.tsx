@@ -33,7 +33,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 const Info = () => {
   const { t } = useTranslation();
-  const { t: ts } = useTranslation("schedule");
   const { legalEntity } = useLoaderData();
 
   return (
@@ -48,7 +47,7 @@ const Info = () => {
             </button>
           </Field>
           <Field title="Schedule Frequency">
-            {ts(legalEntity.frequency)}
+            {t(legalEntity.frequency, { ns: "schedule" })}
           </Field>
           <Field title="Provider">
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>

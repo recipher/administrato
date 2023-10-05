@@ -1,23 +1,22 @@
-import { useEffect, useRef, useState, FormEvent } from 'react';
+import { useRef, useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
-import { useActionData, useLoaderData, useSubmit } from '@remix-run/react'
+import { useActionData, useLoaderData } from '@remix-run/react'
 import { useTranslation } from 'react-i18next';
-import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
+import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
 
 import { CameraIcon } from '@heroicons/react/24/solid';
-import { IdentificationIcon, MagnifyingGlassIcon, MapIcon } from '@heroicons/react/24/outline';
+import { IdentificationIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
 import LegalEntityService, { create, frequencies } from '~/models/manage/legal-entities.server';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
-import CountryService, { type Country } from '~/models/countries.server';
 import { type Provider } from '~/models/manage/providers.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -26,15 +25,11 @@ import { UniqueInput, Select, Cancel, Submit, Checkbox, Image,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
-import type { RefModal } from '~/components/modals/modal';
-import { CountriesModal } from '~/components/countries/countries';
 import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
-import Button, { ButtonType } from '~/components/button';
-import toNumber from '~/helpers/to-number';
 
 export const handle = {
   i18n: "schedule",
@@ -79,8 +74,6 @@ const schema =
 export const clientValidator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
-  const countryService = CountryService();
-
   const u = await requireUser(request);
 
   const uploadHandler: UploadHandler = composeUploadHandlers(
@@ -91,7 +84,7 @@ export const action = async ({ request }: ActionArgs) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   if (formData.get('intent') === 'change-codes') {
-    return json(await changeCodes(formData));
+    return json(await changeCodes(String(formData.get('codes'))));
   }
 
   const validator = withZod(schema.superRefine(
@@ -135,6 +128,7 @@ export const action = async ({ request }: ActionArgs) => {
 };
 
 const Add = () => {
+  const data = useActionData();
   const { t } = useTranslation();
   const { frequencies, ...loaderData } = useLoaderData();
 
@@ -192,7 +186,7 @@ const Add = () => {
                 icon={IdentificationIcon} value={provider} placeholder="Select a Provider" />
             </Field>
           </Group>
-          <CountryFormManager context={context} />
+          <CountryFormManager context={context} data={data} />
         </Body>
         <Footer>
           <Cancel />

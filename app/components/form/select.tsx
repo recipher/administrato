@@ -17,7 +17,7 @@ type Props = {
   name: string;
   label: string;
   data?: DataProps;
-  defaultValue?: ItemProps | null;
+  defaultValue?: ItemProps | undefined | null;
 };
 
 export default function Select({ name, label, data = [], defaultValue = null }: Props) {

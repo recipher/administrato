@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json, LoaderArgs } from '@remix-run/node';
-import { ValidatedForm as Form, useFormContext, validationError } from 'remix-validated-form';
+import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
 import { withZod } from '@remix-validated-form/with-zod';
 import { zfd } from 'zod-form-data';
 import { z } from 'zod';
@@ -18,6 +18,7 @@ import { UniqueInput, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
 import { Breadcrumb } from "~/layout/breadcrumbs";
+import { useActionData } from '@remix-run/react';
 
 export const handle = {
   breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
@@ -64,7 +65,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData()
 
   if (formData.get('intent') === 'change-codes') {
-    return json(await changeCodes(formData));
+    return json(await changeCodes(String(formData.get('codes'))));
   }
 
   const validator = withZod(schema.superRefine(
@@ -106,6 +107,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const AddGroup = () => {
+  const data = useActionData();
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
   const context = useFormContext("add-service-centre-group");
@@ -135,7 +137,7 @@ const AddGroup = () => {
               </div>
             </Field>
           </Group>
-          <CountryFormManager context={context} />
+          <CountryFormManager context={context} data={data} />
         </Body>
         <Footer>
           <Cancel />
