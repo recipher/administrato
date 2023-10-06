@@ -1,9 +1,8 @@
 import { useFetcher, useLocation } from '@remix-run/react';
-import { useTranslation } from 'react-i18next';
 import { useState, PropsWithChildren, useEffect, useContext } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
-import useBreadcrumbs from '~/hooks/use-breadcrumbs';
+import { useBreadcrumbs, usePage } from '~/hooks';
 import ToastContext from '~/hooks/use-toast';
 
 import Breadcrumbs from './breadcrumbs';
@@ -29,17 +28,17 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
   }) || helps.at(helps.length-1))?.identifier || "app")
 
   const breadcrumbs = useBreadcrumbs();
+  const page = usePage();
   const [ sidebarOpen, setSidebarOpen ] = useState(false)
 
   const handleClickHelp = () => setHelpOpen(true);
 
-  const handleFavourite = (favourite: string) => {
-    fetcher.submit({ favourite, intent: "set-favourite", user, redirectTo: `${pathname}?${search}` }, 
+  const handleFavourite = (pathname: string, name: string) => {
+    fetcher.submit({ favourite: { pathname, name }, intent: "set-favourite", user, redirectTo: `${pathname}?${search}` }, 
       { method: "POST", action: "/profile", encType: "application/json" });
   };
 
   useEffect(() => {
-    console.log(fetcher.data);
     createToast(fetcher.data?.flash);
   }, [ fetcher.data, createToast ]);
 
@@ -72,8 +71,8 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
 
           <main className="py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <Breadcrumbs breadcrumbs={breadcrumbs} onFavourite={handleFavourite}
-                favourites={user.settings.favourites} />
+              <Breadcrumbs breadcrumbs={breadcrumbs} page={page} 
+                favourites={user?.settings.favourites} onFavourite={handleFavourite} />
               <div className="mt-6">{children}</div>
             </div>
           </main>

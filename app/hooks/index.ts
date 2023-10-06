@@ -5,6 +5,7 @@ import type { User } from "~/auth/auth.server";
 
 export { default as useHelp } from './use-help';
 export { default as useBreadcrumbs } from './use-breadcrumbs';
+export { default as usePage } from './use-page';
 export { default as useChangeLanguage } from './use-change-language';
 // export { default as useToast, ToastProvider } from './use-toast';
 

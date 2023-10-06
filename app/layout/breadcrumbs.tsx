@@ -13,11 +13,16 @@ type PageProps = {
   Icon?: any;
 };
 
-type Props = {
-  breadcrumbs: Array<ReactNode>;
-  favourites: Array<string>;
+type Favourite = { pathname: string; name: string };
+type FavouriteProps = {
+  favourites: Array<Favourite>;
   onFavourite: Function;
 };
+
+type Props = {
+  breadcrumbs: Array<ReactNode>;
+  page: Array<string>;
+} & FavouriteProps;
 
 export type BreadcrumbProps = {
   current: boolean; 
@@ -53,20 +58,25 @@ export const Separator = () => (
   </svg>
 );
 
-const Favourite = ({ favourites, onFavourite }: { favourites: Array<string>, onFavourite: Function }) => {
+const Favourite = ({ favourites, pathname, onFavourite }: FavouriteProps & { pathname: string }) => {
+  const favourited = favourites?.map((f: Favourite) => f.pathname).includes(pathname);
   return (
-    <StarIcon onClick={() => onFavourite()}
-      className={classnames("h-5 w-5 flex-shrink-0 text-gray-300 ml-3 cursor-pointer hover:text-gray-400")} />
+    favourited 
+      ? <SelectedStarIcon onClick={() => onFavourite()} 
+          className="h-5 w-5 ml-3 cursor-pointer flex-shrink-0 text-yellow-300 hover:text-yellow-200"/>
+      : <StarIcon onClick={() => onFavourite()}
+          className="h-5 w-5 ml-3 cursor-pointer flex-shrink-0 text-gray-300 hover:text-gray-400" />
   );
 };
 
-export default function Breadcrumbs({ breadcrumbs, favourites, onFavourite }: Props) {
+export default function Breadcrumbs({ breadcrumbs, page, favourites, onFavourite }: Props) {
+  const { t } = useTranslation();
   const { pathname } = useLocation();
-  
+
   if (breadcrumbs === undefined || breadcrumbs.length === 0) return;
 
   const handleFavourite = () => {
-    onFavourite(pathname);
+    onFavourite(pathname, page.map((p: string) => t(p)).join(' | '));
   };
 
   return (
@@ -80,7 +90,7 @@ export default function Breadcrumbs({ breadcrumbs, favourites, onFavourite }: Pr
             </span>
           </li>
         ))}
-        <Favourite favourites={favourites} onFavourite={handleFavourite} />
+        <Favourite favourites={favourites} pathname={pathname} onFavourite={handleFavourite} />
       </ol>
     </nav>
   );
