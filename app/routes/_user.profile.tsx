@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { redirect, type ActionArgs, json } from '@remix-run/node';
-import { useSubmit } from "@remix-run/react";
+import { redirect, type ActionArgs } from '@remix-run/node';
+import { Link, useSubmit } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "remix-i18next";
 
@@ -13,10 +13,9 @@ import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 import { useUser } from '~/hooks';
 
 import Image from '~/components/image';
-import { Level } from '~/components/alert';
+import Alert, { Level } from '~/components/alert';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading, Section, Field } from '~/components/info/info';
-import { List, ListItem, ListContext } from '~/components/list';
 
 import classnames from "~/helpers/classnames";
 import i18n from "~/i18n";
@@ -70,7 +69,7 @@ export async function action({ request }: ActionArgs) {
     message = isFavourite 
       ? `Favourite Removed:${favourite.name} removed from favourites.`
       : `Favourite Added:${favourite.name} added to favourites.`;
-    level = Level.Success;
+    level = Level.Info;
   };
  
   const session = await setFlashMessage({ request, message, level });
@@ -112,14 +111,38 @@ const Languages = () => {
   );
 };
 
-const Favourites = ({ favourites }: { favourites: Array<{ pathname: string, name: string }> }) => {
-  
-  const Context = () => <ListContext select={false} />;
-  const Item = (favourite: { name: string, pathname: string }) => 
-    <ListItem data={favourite.name} />
+type Favourite = { pathname: string, name: string };
+
+const Favourites = ({ favourites }: { favourites: Array<Favourite> }) => {
+  const { t } = useTranslation();
+  const submit = useSubmit();
+  const user = useUser();
+
+  const handleRemove = (favourite: Favourite) => {
+    submit({ favourite, intent: "set-favourite", user }, 
+      { method: "POST", encType: "application/json" });
+  };
 
   return (
-    <List data={favourites} renderItem={Item} renderContext={Context} buildTo={({ item }: { item: any }) => item.pathname } />
+    <>
+      {favourites.length === 0 && <Alert title='No favourites' level={Level.Info} />}
+      {favourites.length > 0 && <ul role="list" className="space-y-3 divide-y divide-gray-100 text-md leading-6">
+        {favourites.map((favourite: Favourite) => (
+          <li key={favourite.pathname} className="group pt-3 sm:flex cursor-pointer">
+
+            <Link to={favourite.pathname} className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
+              <div className="text-gray-800 group-hover:text-gray-600">
+                {favourite.name}
+              </div>
+              <button onClick={(e) => { e.preventDefault(); handleRemove(favourite) }}
+                type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
+                {t('remove')}
+              </button>
+            </Link>
+          </li>
+        ))}
+      </ul>}
+    </>
   );
 };
 

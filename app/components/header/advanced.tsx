@@ -203,11 +203,9 @@ export default function Header({ title, navigation = [], subtitle, icon, tabs = 
 
   return (
     <div className="border-b border-gray-200 bg-white">
-      <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
-        <div className="ml-4 mt-4">
-          <div className="flex items-center">
-            <Title title={title} subtitle={subtitle} icon={icon} navigation={navigation} />
-          </div>
+      <div className={classnames(icon ? "" : "mt-3", "flex flex-wrap items-center justify-between sm:flex-nowrap")}>
+        <div className={classnames(icon ? "-ml-1" : "", "flex items-center")}>
+          <Title title={title} subtitle={subtitle} icon={icon} navigation={navigation} />
         </div>
         <div className="ml-4 flex flex-shrink-0 pt-3">
           {actions.length > 0 && <Buttons actions={actions} group={group} />}

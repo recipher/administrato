@@ -13,9 +13,9 @@ import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { scheduler } from '~/auth/permissions';
 
 export const handle = {
-  page: ({ legalEntity }: { legalEntity: any }) => legalEntity?.name,
+  name: ({ legalEntity }: { legalEntity: any }) => legalEntity?.name,
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedule${legalEntity?.id}`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/${legalEntity?.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -23,14 +23,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest('Invalid request');
 
-  const bypassKeyCheck = !!new URL(request.url).searchParams.get("bypass");
-
   const u = await requireUser(request);
 
   const service = LegalEntityService(u);
-  const legalEntity = await service.getLegalEntity({ id }, { bypassKeyCheck });
+  const legalEntity = await service.getLegalEntity({ id });
 
-  if (legalEntity === undefined && !bypassKeyCheck) return notFound('Legal entity not found');
+  if (legalEntity === undefined) return notFound('Legal entity not found');
 
   return json({ legalEntity });
 };
@@ -41,11 +39,14 @@ export default function Provider() {
 
   const tabs = [
     { name: 'schedules', to: 'schedules' },
+    { name: 'info', to: 'info' },
+    { name: 'approvals', to: 'approvals' },
+    { name: 'approvers', to: 'approvers' },
     { name: 'holidays', to: 'holidays' },
   ];
 
   const actions = [
-    { title: 'generate-schedule', to: 'generate', default: true, icon: PlusIcon, permission: scheduler.create.schedule },
+    { title: 'generate-schedules', to: 'generate', default: true, icon: PlusIcon, permission: scheduler.create.schedule },
   ];
 
   const icon = (logo.length && logo) || <WalletIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;

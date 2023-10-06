@@ -76,7 +76,7 @@ export default function Breadcrumbs({ breadcrumbs, page, favourites, onFavourite
   if (breadcrumbs === undefined || breadcrumbs.length === 0) return;
 
   const handleFavourite = () => {
-    onFavourite(pathname, page.map((p: string) => t(p)).join(' | '));
+    onFavourite(pathname, page.map((p: string) => t(p)).join(String.fromCharCode(0x2800, 0x2192, 0x2800 )));
   };
 
   return (

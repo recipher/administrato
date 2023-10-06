@@ -14,7 +14,9 @@
   "scheduler": "Scheduler",
   "schedule": "Schedule",
   "schedules": "Schedules",
-  "generate-schedule": "Generate a Schedule",
+  "generate-schedules": "Generate Schedules",
+  "approvals": "Approvals",
+  "approvers": "Approvers",
   "add-holiday": "Add a Holiday",
   "region": "Region",
   "regions": "Regions",
@@ -98,5 +100,6 @@
   "next": "Next",
   "showing": "Showing",
   "help": "Help",
+  "settings": "Settings",
   "welcome": "Hello"
 }

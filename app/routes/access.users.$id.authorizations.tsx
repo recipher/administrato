@@ -158,13 +158,13 @@ export default function Profile() {
                 {/* @ts-ignore */}
                 {t(authorizable.type)} {authorizable.parentId ? t('group') : null}
               </div>
-              {hasPermission(security.edit.user) && <div className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
+              <div className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
                 <div className="text-gray-900 font-medium">{authorizable.name}</div>
-                <button onClick={() => handleRevoke(authorizable)}
+                {hasPermission(security.edit.user) && <button onClick={() => handleRevoke(authorizable)}
                   type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
                   {t('revoke')}
-                </button>
-              </div>}
+                </button>}
+              </div>
             </li>
           ))}
         </ul>}

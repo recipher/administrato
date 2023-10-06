@@ -14,7 +14,9 @@
   "scheduler": "Programadora",
   "schedule": "Horario",
   "schedules": "Horarios",
-  "generate-schedule": "Generar un Horario",
+  "generate-schedules": "Generar Horarios",
+  "approvals": "Aprobaciones",
+  "approvers": "Aprobadoras",
   "holiday": "Vacación",
   "holidays": "Vacaciones",
   "add-holiday": "Agregar un Feriado",
@@ -98,5 +100,6 @@
   "next": "Próxima",
   "showing": "Demostración",
   "help": "Ayuda",
+  "settings": "Ajustes",
   "welcome": "Hola"
 }

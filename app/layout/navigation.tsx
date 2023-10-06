@@ -31,7 +31,14 @@ type NavItem = {
 };
 
 export const navigation = [
-  { name: 'schedules', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule },
+  { name: 'scheduler', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule,
+  children: [
+    { name: 'summary', to: '/schedules/summary' },
+    { name: 'schedules', to: '/schedules' },
+    { name: 'approvals', to: '/schedules/approvals' },
+    { name: 'settings', to: '/schedules/settings' },
+  ]
+},
   { name: 'holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon, permission: scheduler.read.holiday },
   { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
   { name: 'manage', to: '/manage', icon: CircleStackIcon,

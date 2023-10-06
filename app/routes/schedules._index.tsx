@@ -13,6 +13,7 @@ import { requireUser } from '~/auth/auth.server';
 import { Flags } from '~/components/countries/flag';
 import Pagination from '~/components/pagination';
 import { List, ListItem, ListContext } from '~/components/list';
+import { scheduler } from '~/auth/permissions';
 import toNumber from '~/helpers/to-number';
 
 const LIMIT = 6;
@@ -42,7 +43,11 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({ legalEntities, countries, count, offset, limit, search, serviceCentres, serviceCentreId });
 };
 
-export default function LegalEntities() {
+const actions = [
+  { title: "generate-schedules", to: "generate", icon: PlusIcon, permission: scheduler.create.schedule },
+];
+
+export default function Schedules() {
   const { legalEntities, countries, count, offset, limit, search, serviceCentres, serviceCentreId } = useLoaderData();
 
   const filter = {
@@ -60,7 +65,7 @@ export default function LegalEntities() {
 
   return (
     <>
-      <Header title="legal-entities" additionalFilters={filter}
+      <Header title="legal-entities" additionalFilters={filter} actions={actions}
         filterTitle='Search legal entities' filterParam='q' allowSort={true} />
 
       {count <= 0 && <Alert title={`No legal entities found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}

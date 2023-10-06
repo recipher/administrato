@@ -19,11 +19,9 @@ export default function Header({ title, subtitle, icon, filterTitle, filterParam
 
   return (
     <div className="border-b border-gray-200 bg-white">
-      <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
-        <div className="ml-4 mt-4 mb-4">
-          <div className="flex items-center">
-            <Title title={title} subtitle={subtitle} icon={icon} />
-          </div>
+      <div className="flex flex-wrap items-center justify-between sm:flex-nowrap">
+        <div className="mb-4 flex items-center">
+          <Title title={title} subtitle={subtitle} icon={icon} />
         </div>
         <div className="ml-4 flex flex-shrink-0">
           <Filter filter={filter} sort={sort} filterParam={filterParam} 
