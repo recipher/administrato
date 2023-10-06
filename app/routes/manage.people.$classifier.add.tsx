@@ -23,7 +23,7 @@ import CountryService, { type Country } from '~/models/countries.server';
 import { requireUser } from '~/auth/auth.server';
 
 import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import { flag } from '~/components/countries/flag';
@@ -35,8 +35,9 @@ import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
 import { configs, type Config } from './manage.people';
 
 export const handle = {
-  breadcrumb: ({ classifier, current }: { classifier: Classifier, current: boolean }) => 
-    <Breadcrumb to={`/manage/people/${classifier}/add`} name={`add-${classifier}`} current={current} />
+  name: ({ classifier }: { classifier: Classifier }) => `add-${classifier}`,
+  breadcrumb: ({ classifier, current, name }: { classifier: Classifier } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/people/${classifier}/add`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

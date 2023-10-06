@@ -7,12 +7,13 @@ import { requireUser } from '~/auth/auth.server';
 import PersonService, { type Person, Classifier } from '~/models/manage/people.server';
 import Header from '~/components/header';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 
 export const handle = {
-  breadcrumb: ({ person, classifier, current }: { person: Person, classifier: Classifier, current: boolean }) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/info`} name={`${person?.firstName} ${person?.lastName}`} current={current} />
+  name: ({ person }: { person: Person }) => `${person?.firstName} ${person?.lastName}`,
+  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

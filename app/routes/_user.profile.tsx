@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { redirect, type ActionArgs } from '@remix-run/node';
+import { redirect, type ActionArgs, json } from '@remix-run/node';
 import { useSubmit } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "remix-i18next";
@@ -7,21 +7,21 @@ import { useLocale } from "remix-i18next";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
 import UserService from '~/models/access/users.server';
-import { getSession, storage, mapProfileToUser } from '~/auth/auth.server';
 import refreshUser from '~/auth/refresh.server';
 import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 
 import Image from '~/components/image';
 import { Level } from '~/components/alert';
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import classnames from "~/helpers/classnames";
 import i18n from "~/i18n";
 
 export const handle = {
   i18n: "language",
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={UserCircleIcon} to='/profile' name="my-profile" current={current} />
+  name: () => "my-profile",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb Icon={UserCircleIcon} to='/profile' name={name} current={current} />
 };
 
 export async function action({ request }: ActionArgs) {
@@ -49,6 +49,20 @@ export async function action({ request }: ActionArgs) {
     message = `Language Changed:Your language has been changed to ${language}.`;
     level = Level.Info;
     redirectTo = `${redirectTo}?lng=${lng}`;
+  };
+
+  if (intent === "set-favourite") {
+    const { favourite, user: { id, settings }} = props;
+
+    const favourites = settings?.favourites?.includes(favourite)
+      ? [ ...settings.favourites.filter((f: string) => f !== favourite )]
+      : [ ...(settings.favourites || []), favourite ];
+
+    await service.updateSettings({ id, settings: { favourites }});
+    await refreshUser({ id, request, headers });
+
+    message = `Favourite:Page ${favourite}.`;
+    level = Level.Success;
   };
  
   const session = await setFlashMessage({ request, message, level });

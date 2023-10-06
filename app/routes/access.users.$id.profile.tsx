@@ -7,13 +7,14 @@ import { badRequest, notFound } from '~/utility/errors';
 import { mapProfileToUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/models/access/users.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name="profile" current={current} />
+  name: () => "profile",
+  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
+    <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

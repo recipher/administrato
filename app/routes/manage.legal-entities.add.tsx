@@ -27,14 +27,15 @@ import { CountryFormManager, buildValidationError, changeCodes } from '~/compone
 
 import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
 export const handle = {
   i18n: "schedule",
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage/legal-entities/add' name="add-legal-entity" current={current} />
+  name: () => "add-legal-entity",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to='/manage/legal-entities/add' name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

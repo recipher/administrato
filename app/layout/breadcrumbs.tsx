@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
-import { Link } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+
+import { StarIcon } from "@heroicons/react/24/outline";
+import { StarIcon as SelectedStarIcon } from "@heroicons/react/24/solid";
 import classnames from '~/helpers/classnames';
 
 type PageProps = {
@@ -12,6 +15,13 @@ type PageProps = {
 
 type Props = {
   breadcrumbs: Array<ReactNode>;
+  favourites: Array<string>;
+  onFavourite: Function;
+};
+
+export type BreadcrumbProps = {
+  current: boolean; 
+  name: string;
 };
 
 export const Breadcrumb = ({ name, to, Icon, current = false }: PageProps) => {
@@ -43,8 +53,21 @@ export const Separator = () => (
   </svg>
 );
 
-export default function Breadcrumbs({ breadcrumbs }: Props) {
+const Favourite = ({ favourites, onFavourite }: { favourites: Array<string>, onFavourite: Function }) => {
+  return (
+    <StarIcon onClick={() => onFavourite()}
+      className={classnames("h-5 w-5 flex-shrink-0 text-gray-300 ml-3 cursor-pointer hover:text-gray-400")} />
+  );
+};
+
+export default function Breadcrumbs({ breadcrumbs, favourites, onFavourite }: Props) {
+  const { pathname } = useLocation();
+  
   if (breadcrumbs === undefined || breadcrumbs.length === 0) return;
+
+  const handleFavourite = () => {
+    onFavourite(pathname);
+  };
 
   return (
     <nav className="flex" aria-label="breadcrumb">
@@ -57,6 +80,7 @@ export default function Breadcrumbs({ breadcrumbs }: Props) {
             </span>
           </li>
         ))}
+        <Favourite favourites={favourites} onFavourite={handleFavourite} />
       </ol>
     </nav>
   );

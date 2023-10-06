@@ -9,7 +9,7 @@ import RoleService, { type Role } from '~/models/access/roles.server';
 
 import { useUser } from '~/hooks';
 
-import { Breadcrumb } from '~/layout/breadcrumbs';
+import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';
 
 import { Toggle } from '~/components/form';
@@ -22,8 +22,9 @@ import ToastContext from '~/hooks/use-toast';
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/roles`} name="roles" current={current} />
+  name: () => "roles",
+  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
+    <Breadcrumb key={user.id} to={`/access/users/${user.id}/roles`} name={name} current={current} />
 };
 
 type MemberRole = Role & { isMember: boolean };

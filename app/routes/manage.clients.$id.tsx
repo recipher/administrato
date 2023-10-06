@@ -6,20 +6,21 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ClientService from '~/models/manage/clients.server';
+import ClientService, { Client } from '~/models/manage/clients.server';
 import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
 import Header from '~/components/header';
-import { Breadcrumb } from '~/layout/breadcrumbs';
+import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ client, parent, current }: { client: any, parent: any, current: boolean }) => {
-    const crumb = <Breadcrumb key={client.id} to={`/manage/clients/${client?.id}`} name={client?.name } current={current} />;
+  name: ({ client, parent }: { client: Client, parent: Client }) => parent !== null ?  [ parent?.name, "groups", client?.name ] : client?.name,
+  breadcrumb: ({ client, parent, current, name }: { client: Client, parent: Client } & BreadcrumbProps) => {
+    const crumb = <Breadcrumb key={client.id} to={`/manage/clients/${client?.id}`} name={Array.isArray(name) ? name[2] : name} current={current} />;
     
     return !parent ? crumb : [ 
-      <Breadcrumb key={parent.id} to={`/manage/clients/${parent?.id}`} name={parent?.name} />,
-      <Breadcrumb key={`${parent.id}-r`} to={`/manage/clients/${parent?.id}/groups`} name="groups" />,
+      <Breadcrumb key={parent.id} to={`/manage/clients/${parent?.id}`} name={name[0]} />,
+      <Breadcrumb key={`${parent.id}-r`} to={`/manage/clients/${parent?.id}/groups`} name={name[1]} />,
       crumb ];
   }
 };
@@ -42,7 +43,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ client, parent });
 };
 
-export default function Client() {
+export default () => {
   const [ searchParams ] = useSearchParams();
   const { client: { id, name, localities, logo, parentId }} = useLoaderData();
 

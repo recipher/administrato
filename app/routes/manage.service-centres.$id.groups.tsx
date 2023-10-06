@@ -8,13 +8,12 @@ import ServiceCentreService, { ServiceCentre } from '~/models/manage/service-cen
 import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';
 import { requireUser } from '~/auth/auth.server';
-import { Breadcrumb } from "~/layout/breadcrumbs";
-
-import toNumber from '~/helpers/to-number';
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/groups`} name="groups" current={current} />
+  name: () => "groups",
+  breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/groups`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

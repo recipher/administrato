@@ -7,7 +7,7 @@ import CountryService from '~/models/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
@@ -15,8 +15,9 @@ import { Layout, Heading, Section, Field } from '~/components/info/info';
 import { configs } from './manage.people';
 
 export const handle = {
-  breadcrumb: ({ worker, current }: { worker: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name="info" current={current} />
+  name: () => "info",
+  breadcrumb: ({ worker, current, name }: { worker: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

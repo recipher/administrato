@@ -4,15 +4,16 @@ import { useTranslation } from 'react-i18next';
 
 import ProviderService from '~/models/manage/providers.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}/info`} name="info" current={current} />
+  name: () => "info",
+  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/providers/${provider?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

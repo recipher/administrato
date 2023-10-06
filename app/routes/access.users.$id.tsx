@@ -11,15 +11,16 @@ import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 import Header from '~/components/header';
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { ButtonType } from '~/components/button';
 import { Level } from '~/components/toast';
 import { useUser } from '~/hooks';
 
 export const handle = {
-  breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user?.id}`} name={user.name} current={current} />
+  name: ({ user }: { user: User }) => user.name,
+  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
+    <Breadcrumb key={user.id} to={`/access/users/${user?.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -10,7 +10,7 @@ import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';
 import Pagination, { NO_COUNT } from "~/components/pagination";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import pluralize from "~/helpers/pluralize";
 import toNumber from "~/helpers/to-number";
@@ -18,8 +18,9 @@ import toNumber from "~/helpers/to-number";
 const LIMIT = 10;
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={MagnifyingGlassIcon} to='/search' name="search" current={current} />
+  name: () => "search",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb Icon={MagnifyingGlassIcon} to='/search' name={name} current={current} />
 };
 
 type LoaderData = {

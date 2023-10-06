@@ -4,14 +4,15 @@ import { useLoaderData } from '@remix-run/react';
 import LegalEntityService from '~/models/manage/legal-entities.server';
 import MilestoneService from '~/models/scheduler/milestones.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
-  breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/milestones`} name="milestones" current={current} />
+  name: () => "milestones",
+  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/milestones`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

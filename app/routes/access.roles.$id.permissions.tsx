@@ -7,7 +7,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import RoleService, { type Role, namespaces } from '~/models/access/roles.server';
 
-import { Breadcrumb } from '~/layout/breadcrumbs';
+import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';
 
 import ToastContext from '~/hooks/use-toast';
@@ -22,8 +22,9 @@ import { Layout, Heading } from '~/components/info/info';
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>
-    <Breadcrumb key={role?.id} to={`/access/roles/${role?.id}/permissions`} name="permissions" current={current} />
+  name: () => "permissions",
+  breadcrumb: ({ role, current, name }: { role: Role } & BreadcrumbProps) =>
+    <Breadcrumb key={role?.id} to={`/access/roles/${role?.id}/permissions`} name={name} current={current} />
 };
 
 type MemberPermission = { 

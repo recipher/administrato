@@ -1,5 +1,5 @@
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';

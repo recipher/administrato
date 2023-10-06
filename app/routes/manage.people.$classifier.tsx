@@ -2,7 +2,7 @@ import { type LoaderArgs, json } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { CubeIcon } from "@heroicons/react/24/outline";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from "~/auth/with-authorization";
 
 import { manage } from '~/auth/permissions';
@@ -10,8 +10,9 @@ import { Classifier } from "~/models/manage/people.server";
 import pluralize from "~/helpers/pluralize";
 
 export const handle = {
-  breadcrumb: ({ classifier, current }: { classifier: Classifier, current: boolean }) => 
-    <Breadcrumb Icon={CubeIcon} to={`/manage/people/${classifier}`} name={pluralize(classifier)} current={current} />
+  name: ({ classifier }: { classifier: Classifier }) => pluralize(classifier),
+  breadcrumb: ({ classifier, current, name }: { classifier: Classifier } & BreadcrumbProps) => 
+    <Breadcrumb Icon={CubeIcon} to={`/manage/people/${classifier}`} name={name} current={current} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

@@ -11,11 +11,12 @@ import { Level } from '~/components/alert';
 import toNumber from '~/helpers/to-number';
 import HolidayList from '~/components/holidays/list';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name="holidays" current={current} />
+  name: () => "holidays",
+  breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -9,7 +9,7 @@ import MilestoneService, { create } from '~/models/scheduler/milestones.server';
 import { UniqueInput, Cancel, Submit,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { scheduler } from '~/auth/permissions';
 import { requireUser } from '~/auth/auth.server';
@@ -17,8 +17,9 @@ import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Level } from '~/components/toast';
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/milestones/add' name="add-milestone-set" current={current} />
+  name: () => "add-milestone-set",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to='/milestones/add' name={name} current={current} />
 };
 
 const schema = zfd.formData({

@@ -5,14 +5,15 @@ import { useTranslation } from 'react-i18next';
 import ClientService from '~/models/manage/clients.server';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
-  breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/clients/${client?.id}/info`} name="info" current={current} />
+  name: () => "info",
+  breadcrumb: ({ client, current, name }: { client: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/clients/${client?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

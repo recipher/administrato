@@ -26,12 +26,13 @@ import { UniqueInput, Cancel, Submit, Checkbox, Image,
 
 import { SelectorModal, RefSelectorModal } from '~/components/manage/selector';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage/providers/add' name="add-provider" current={current} />
+  name: () => "add-provider",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to='/manage/providers/add' name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

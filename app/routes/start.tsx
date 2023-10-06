@@ -12,12 +12,13 @@ import {
 import { Heading } from '~/components/info/info';
 import { useUser } from '~/hooks';
 
-import { Breadcrumb } from '~/layout/breadcrumbs';
+import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import classnames from '~/helpers/classnames';
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to={`/start`} name="Start" current={current} Icon={GlobeAmericasIcon} />
+  name: () => "start",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to={`/start`} name={name} current={current} Icon={GlobeAmericasIcon} />
 };
 
 const actions = [

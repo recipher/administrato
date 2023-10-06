@@ -14,7 +14,7 @@ import { Input, TextArea, Checkbox, CheckboxGroup, Cancel, Submit,
 
 import withAuthorization from '~/auth/with-authorization';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { scheduler } from '~/auth/permissions';
 import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
@@ -23,8 +23,9 @@ import { Level } from '~/components/toast';
 const ENTITIES = [ "service-centre", "provider", "client", "legal-entity" ];
 
 export const handle = {
-  breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
-    <Breadcrumb to={`/milestones/${milestoneSet.id}/add`} name="add-milestone" current={current} />
+  name: () => "add-milestone",
+  breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/milestones/${milestoneSet.id}/add`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

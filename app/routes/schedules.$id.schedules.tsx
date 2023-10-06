@@ -6,15 +6,16 @@ import { requireUser } from '~/auth/auth.server';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import Alert, { Level } from '~/components/alert';
 import Tabs from '~/components/tabs';
 
 import toNumber from '~/helpers/to-number';
 
 export const handle = {
-  breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}/schedules`} name="schedules" current={current} />
+  name: () => "schedules",
+  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/schedules/${legalEntity?.id}/schedules`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

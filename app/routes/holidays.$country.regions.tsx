@@ -5,13 +5,14 @@ import CountryService from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { Basic as List } from '~/components/list';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { badRequest } from '~/utility/errors';
 
 export const handle = {
-  breadcrumb: ({ country, current }: { country: any, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/regions`} name="regions" current={current} />
+  name: () => "regions",
+  breadcrumb: ({ country, current, name }: { country: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/regions`} name={name} current={current} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

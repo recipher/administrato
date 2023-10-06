@@ -1,7 +1,7 @@
 import { V2_MetaFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: "Scheduler / Manage" }];
@@ -9,8 +9,9 @@ export const meta: V2_MetaFunction = () => {
 
 export const handle = {
   help: "manage",
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage' name="manage" current={current} />
+  name: () => "manage",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to='/manage' name={name} current={current} />
 };
 
 export default () => <Outlet />;

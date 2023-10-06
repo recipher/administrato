@@ -1,6 +1,6 @@
 import { Outlet } from "@remix-run/react";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from "~/auth/with-authorization";
 
 import { manage } from '~/auth/permissions';
@@ -14,8 +14,9 @@ export const configs = new Map<string, Config>([
 ]);
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to={`/manage/people/worker`} name="people" current={current} />
+  name: () => "people",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/people/worker`} name={name} current={current} />
 };
 
 const People = () => <Outlet />;

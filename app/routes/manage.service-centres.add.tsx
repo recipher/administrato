@@ -16,13 +16,14 @@ import { requireUser } from '~/auth/auth.server';
 import refreshUser from '~/auth/refresh.server';
 import withAuthorization from '~/auth/with-authorization';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { manage } from '~/auth/permissions';
 import { useActionData } from '@remix-run/react';
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage/service-centres/add' name="add-service-centre" current={current} />
+  name: () => "add-service-centre",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to='/manage/service-centres/add' name={name} current={current} />
 };
 
 const schema = zfd.formData({

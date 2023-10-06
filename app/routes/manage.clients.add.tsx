@@ -24,13 +24,14 @@ import { CountryFormManager, buildValidationError, changeCodes } from '~/compone
 
 import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb to='/manage/clients/add' name="add-client" current={current} />
+  name: () => "add-client",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb to='/manage/clients/add' name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

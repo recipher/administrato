@@ -38,8 +38,6 @@ const icons = new Map<Level, any>([
 ]);
 
 export default function Toast({ level = Level.Success, title, message, hideAfter = 10 }: Props) {
-  if (message === undefined) return;
-
   const [show, setShow] = useState(true);
 
   useEffect(() => {
@@ -55,6 +53,8 @@ export default function Toast({ level = Level.Success, title, message, hideAfter
 
   const colour = colours.get(level);
   const Icon = icons.get(level);
+
+  if (message === undefined) return;
 
   if (message.includes(':')) [ title, message ] = message.split(':');
 

@@ -1,7 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
 import PersonService, { Person, Classifier } from '~/models/manage/people.server';
 import CountryService from '~/models/countries.server';
 import Alert, { Level } from '~/components/alert';
@@ -11,7 +11,7 @@ import { Filter } from '~/components/header/advanced';
 import { Flags } from '~/components/countries/flag';
 import Tabs from '~/components/tabs';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -21,9 +21,10 @@ import pluralize from '~/helpers/pluralize';
 const LIMIT = 6;
 
 export const handle = {
-  breadcrumb: ({ legalEntity, classifier, current }: { legalEntity: any, classifier: Classifier, current: boolean }) => 
-    [ <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/people/worker`} name='people' current={false} />,
-      <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/people/${classifier}`} name={pluralize(classifier)} current={current} /> ]
+  name: ({ classifier }: { legalEntity: LegalEntity, classifier: Classifier }) => [ "people", pluralize(classifier) ],
+  breadcrumb: ({ legalEntity, classifier, current, name }: { legalEntity: LegalEntity, classifier: Classifier } & BreadcrumbProps) => 
+    [ <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/people/worker`} name={name[0]} current={false} />,
+      <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/people/${classifier}`} name={name[1]} current={current} /> ]
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

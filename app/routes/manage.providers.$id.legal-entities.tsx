@@ -10,7 +10,7 @@ import Pagination from '~/components/pagination';
 import { Filter } from '~/components/header/advanced';
 import { Flags } from '~/components/countries/flag';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -19,8 +19,9 @@ import toNumber from '~/helpers/to-number';
 const LIMIT = 6;
 
 export const handle = {
-  breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}/legal-entities`} name="legal-entities" current={current} />
+  name: () => "legal-entities",
+  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/providers/${provider?.id}/legal-entities`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

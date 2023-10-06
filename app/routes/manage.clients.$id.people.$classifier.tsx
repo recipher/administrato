@@ -11,7 +11,7 @@ import { Filter } from '~/components/header/advanced';
 import { Flags } from '~/components/countries/flag';
 import Tabs from '~/components/tabs';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -21,9 +21,10 @@ import pluralize from '~/helpers/pluralize';
 const LIMIT = 6;
 
 export const handle = {
-  breadcrumb: ({ client, classifier, current }: { client: any, classifier: Classifier, current: boolean }) => 
-    [ <Breadcrumb to={`/manage/clients/${client?.id}/people/worker`} name='people' current={false} />,
-      <Breadcrumb to={`/manage/clients/${client?.id}/people/${classifier}`} name={pluralize(classifier)} current={current} /> ]
+  name: ({ classifier }: { classifier: Classifier }) => [ 'people', pluralize(classifier) ],
+  breadcrumb: ({ client, classifier, current, name }: { client: any, classifier: Classifier } & BreadcrumbProps) => 
+    [ <Breadcrumb to={`/manage/clients/${client?.id}/people/worker`} name={name[0]} current={false} />,
+      <Breadcrumb to={`/manage/clients/${client?.id}/people/${classifier}`} name={name[1]} current={current} /> ]
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

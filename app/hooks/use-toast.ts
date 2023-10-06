@@ -1,8 +1,8 @@
-import { createContext } from "react";
+import { createContext, Dispatch, SetStateAction } from "react";
 import { type FlashMessage } from "~/utility/flash.server";
 
 type ToastContextProps = {
-  createToast: React.Dispatch<React.SetStateAction<FlashMessage>>,
+  createToast: Dispatch<SetStateAction<FlashMessage>>,
   toast: FlashMessage
 };
 

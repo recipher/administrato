@@ -17,12 +17,13 @@ import { badRequest, notFound } from '~/utility/errors';
 import { UniqueInput, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { useActionData } from '@remix-run/react';
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre.id}/groups/add`} name="add-group" current={current} />
+  name: () => "add-group",
+  breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/service-centres/${serviceCentre.id}/groups/add`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -13,13 +13,14 @@ import { List, ListItem, ListContext } from "~/components/list";
 import Tabs from '~/components/tabs';
 import toNumber from '~/helpers/to-number';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { useLocale } from 'remix-i18next';
 import pluralize from '~/helpers/pluralize';
 
 export const handle = {
-  breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name="holidays" current={current} />
+  name: () => "overrides",
+  breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -6,15 +6,16 @@ import { WalletIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
 import Header from '~/components/header';
-import { Breadcrumb } from '~/layout/breadcrumbs';
+import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}`} name={legalEntity?.name} current={current} />
+  name: ({ legalEntity }: { legalEntity: LegalEntity }) => legalEntity?.name,
+  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

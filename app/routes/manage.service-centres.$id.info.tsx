@@ -5,14 +5,15 @@ import { useTranslation } from 'react-i18next';
 import ServiceCentreService from '~/models/manage/service-centres.server';
 import { requireUser } from '~/auth/auth.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, current }: { serviceCentre: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name="info" current={current} />
+  name: () => "info",
+  breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

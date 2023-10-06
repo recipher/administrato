@@ -8,13 +8,12 @@ import ClientService, { Client } from '~/models/manage/clients.server';
 import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';
 import { requireUser } from '~/auth/auth.server';
-import { Breadcrumb } from "~/layout/breadcrumbs";
-
-import toNumber from '~/helpers/to-number';
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/clients/${client?.id}/groups`} name="groups" current={current} />
+  name: () => "groups",
+  breadcrumb: ({ client, current, name }: { client: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/clients/${client?.id}/groups`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

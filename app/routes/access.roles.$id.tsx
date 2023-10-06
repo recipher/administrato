@@ -3,14 +3,15 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import Header from '~/components/header/basic-with-actions';
+import Header from '~/components/header/advanced';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import RoleService, { type Role } from '~/models/access/roles.server';
 
 export const handle = {
-  breadcrumb: ({ role, current }: { role: Role, current: boolean }) =>
-    <Breadcrumb key={role.id} to={`/access/roles/${role.id}`} name={role.description} current={current} />
+  name: ({ role }: { role: Role }) => role.description,
+  breadcrumb: ({ role, current, name }: { role: Role } & BreadcrumbProps) =>
+    <Breadcrumb key={role.id} to={`/access/roles/${role.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -4,15 +4,16 @@ import { Link, useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/models/manage/legal-entities.server';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
-  breadcrumb: ({ legalEntity, current }: { legalEntity: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/locations`} name="locations" current={current} />
+  name: () => "locations",
+  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/locations`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

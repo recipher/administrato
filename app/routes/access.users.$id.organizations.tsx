@@ -15,7 +15,7 @@ import { useUser } from '~/hooks';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import Button, { ButtonType } from '~/components/button';
 import { Level } from '~/components/toast';
 import { RefModal } from '~/components/modals/modal';
@@ -26,8 +26,9 @@ import { Layout, Heading } from '~/components/info/info';
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/organizations`} name="organizations" current={current} />
+  name: () => "organizations",
+  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
+    <Breadcrumb key={user.id} to={`/access/users/${user.id}/organizations`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

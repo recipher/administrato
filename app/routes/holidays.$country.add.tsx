@@ -23,14 +23,15 @@ import { z } from 'zod';
 import { Cancel, DatePicker, Input, Submit,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Level } from '~/components/toast';
 import toNumber from '~/helpers/to-number';
 import pluralize from '~/helpers/pluralize';
 
 export const handle = {
-  breadcrumb: ({ country, year, current }: { country: any, year: number, current: boolean }) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name="add" current={current} />
+  name: () => "add",
+  breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

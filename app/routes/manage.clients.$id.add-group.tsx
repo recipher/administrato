@@ -18,12 +18,13 @@ import { UniqueInput, Cancel, Submit, Checkbox,
 
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { useActionData } from '@remix-run/react';
 
 export const handle = {
-  breadcrumb: ({ client, current }: { client: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/clients/${client.id}/groups/add`} name="add-group" current={current} />
+  name: () => "add-group",
+  breadcrumb: ({ client, current, name }: { client: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/clients/${client.id}/groups/add`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

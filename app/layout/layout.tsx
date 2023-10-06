@@ -1,8 +1,10 @@
+import { useFetcher, useLocation } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
-import { useState, PropsWithChildren } from 'react';
+import { useState, PropsWithChildren, useEffect, useContext } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 import useBreadcrumbs from '~/hooks/use-breadcrumbs';
+import ToastContext from '~/hooks/use-toast';
 
 import Breadcrumbs from './breadcrumbs';
 import Header from './header';
@@ -16,16 +18,30 @@ import { useHelp } from '~/hooks';
 type Props = { user: User };
 
 export default function Layout({ user, children }: PropsWithChildren<Props>) {
-  const { t } = useTranslation();
+  const fetcher = useFetcher();
+  const { pathname, search } = useLocation();
+  const { createToast } = useContext(ToastContext);
+
   const helps = useHelp();
-  const [ sidebarOpen, setSidebarOpen ] = useState(false)
   const [ helpOpen, setHelpOpen ] = useState(false)
   const [ activeHelp, setActiveHelp ] = useState((helps.find(help => {
     return help.current;
   }) || helps.at(helps.length-1))?.identifier || "app")
+
   const breadcrumbs = useBreadcrumbs();
+  const [ sidebarOpen, setSidebarOpen ] = useState(false)
 
   const handleClickHelp = () => setHelpOpen(true);
+
+  const handleFavourite = (favourite: string) => {
+    fetcher.submit({ favourite, intent: "set-favourite", user, redirectTo: `${pathname}?${search}` }, 
+      { method: "POST", action: "/profile", encType: "application/json" });
+  };
+
+  useEffect(() => {
+    console.log(fetcher.data);
+    createToast(fetcher.data?.flash);
+  }, [ fetcher.data, createToast ]);
 
   return (
     <>
@@ -56,7 +72,8 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
 
           <main className="py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <Breadcrumbs breadcrumbs={breadcrumbs} />
+              <Breadcrumbs breadcrumbs={breadcrumbs} onFavourite={handleFavourite}
+                favourites={user.settings.favourites} />
               <div className="mt-6">{children}</div>
             </div>
           </main>

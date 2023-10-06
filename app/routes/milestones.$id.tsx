@@ -7,13 +7,14 @@ import { requireUser } from '~/auth/auth.server';
 
 import MilestoneService, { type MilestoneSet } from '~/models/scheduler/milestones.server';
 import Header from '~/components/header';
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { scheduler } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
-    <Breadcrumb to={`/milestones/${milestoneSet.id}`} name={milestoneSet.identifier} current={current} />
+  name: ({ milestoneSet }: { milestoneSet: any }) => {milestoneSet?.identifier},
+  breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/milestones/${milestoneSet?.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

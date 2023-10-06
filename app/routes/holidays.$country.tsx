@@ -11,16 +11,17 @@ import Header from '~/components/header';
 import { ButtonType } from '~/components/button';
 import toNumber from '~/helpers/to-number';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Flag } from "~/components/countries/flag";
 
 export const handle = {
-  breadcrumb: ({ country, parent, current }: { country: Country, parent: Country, current: boolean }) => {
-    const crumb = <Breadcrumb key={country.isoCode} to={`/holidays/${country?.isoCode}`} name={country?.name } current={current} />;
+  name: ({ country, parent }: { country: Country, parent: Country }) => !parent ? country?.name : [ parent?.name, "regions", country?.name ],
+  breadcrumb: ({ country, parent, current, name }: { country: Country, parent: Country } & BreadcrumbProps) => {
+    const crumb = <Breadcrumb key={country.isoCode} to={`/holidays/${country?.isoCode}`} name={Array.isArray(name) ? name[2] : name} current={current} />;
     
     return !parent ? crumb : [ 
-      <Breadcrumb key={parent.isoCode} to={`/holidays/${parent?.isoCode}`} name={parent?.name} />,
-      <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name="regions" />,
+      <Breadcrumb key={parent.isoCode} to={`/holidays/${parent?.isoCode}`} name={name[0]} />,
+      <Breadcrumb key={`${parent.isoCode}-r`} to={`/holidays/${parent?.isoCode}/regions`} name={name[1]} />,
       crumb ];
   }
 };

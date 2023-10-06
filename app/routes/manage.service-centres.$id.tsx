@@ -10,15 +10,15 @@ import Header from '~/components/header';
 import { Flag } from '~/components/countries/flag';
 import { manage } from '~/auth/permissions';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ serviceCentre, parent, current }: { serviceCentre: any, parent: any, current: boolean }) => {
-    const crumb = <Breadcrumb key={serviceCentre.id} to={`/manage/service-centres/${serviceCentre?.id}`} name={serviceCentre?.name } current={current} />;
-    
-    return !parent ? crumb : [ 
-      <Breadcrumb key={parent.id} to={`/manage/service-centres/${parent?.id}`} name={parent?.name} />,
-      <Breadcrumb key={`${parent.id}-r`} to={`/manage/service-centres/${parent?.id}/groups`} name="groups" />,
+  name: ({ serviceCentre, parent }: { serviceCentre: any, parent: any }) => parent !== null ?  [ parent?.name, "groups", serviceCentre?.name ] : serviceCentre?.name,
+  breadcrumb: ({ serviceCentre, parent, current, name }: { serviceCentre: any, parent: any } & BreadcrumbProps) => {
+    const crumb = <Breadcrumb key={serviceCentre.id} to={`/manage/service-centres/${serviceCentre?.id}`} name={Array.isArray(name) ? name[2] : name} current={current} />;
+    return parent === null ? crumb : [ 
+      <Breadcrumb key={parent.id} to={`/manage/service-centres/${parent?.id}`} name={name[0]} />,
+      <Breadcrumb key={`${parent.id}-r`} to={`/manage/service-centres/${parent?.id}/groups`} name={name[1]} />,
       crumb ];
   }
 };

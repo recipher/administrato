@@ -1,11 +1,12 @@
 import { Outlet } from "@remix-run/react";
 import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={CalendarDaysIcon} to='/schedules' name="schedules" current={current} />
+  name: () => "schedules",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb Icon={CalendarDaysIcon} to='/schedules' name={name} current={current} />
 };
 
 export default () => <Outlet/>;

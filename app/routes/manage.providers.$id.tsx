@@ -9,13 +9,14 @@ import { requireUser } from '~/auth/auth.server';
 import ProviderService from '~/models/manage/providers.server';
 
 import Header from '~/components/header';
-import { Breadcrumb } from '~/layout/breadcrumbs';
+import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}`} name={provider?.name} current={current} />
+  name: ({ provider }: { provider: any }) => provider?.name,
+  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/providers/${provider?.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

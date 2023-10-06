@@ -13,15 +13,16 @@ import Alert, { Level } from '~/components/alert';
 import { Table } from '~/components';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import classnames from '~/helpers/classnames';
 import pluralize from '~/helpers/pluralize';
 
 export const handle = {
-  breadcrumb: ({ milestoneSet, current }: { milestoneSet: any, current: boolean }) => 
-    <Breadcrumb to={`/milestones/${milestoneSet.id}/edit`} name="edit" current={current} />
+  name: () => "edit",
+  breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/milestones/${milestoneSet.id}/edit`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

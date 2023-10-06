@@ -65,7 +65,7 @@ const App = ({ user, flash, lang, dir, children }: any) => {
 
   useEffect(() => {
     createToast(flash);
-  }, [flash]);
+  }, [flash, createToast]);
 
   return (
     <html lang={lang} dir={dir} className="h-full bg-white">

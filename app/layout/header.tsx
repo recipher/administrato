@@ -74,7 +74,6 @@ export const Search = () => {
 export default function Header({ user, onClickHelp }: Props & { onClickHelp: MouseEventHandler<HTMLDivElement> }) {
   const { t } = useTranslation();
   const submit = useSubmit();
-  const { pathname: redirectTo } = useLocation();
   const modal = useRef<RefModal>(null);
 
   const handleStopImpersonation = () => {

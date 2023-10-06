@@ -2,12 +2,13 @@ import { LoaderArgs, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import Alert, { Level } from "~/components/alert";
 
 export const handle = {
-  breadcrumb: ({ current }: { current: boolean }) => 
-    <Breadcrumb Icon={BellIcon} to='/notifications' name="my-notifications" current={current} />
+  name: () => "my-notifications",
+  breadcrumb: ({ current, name }: BreadcrumbProps) => 
+    <Breadcrumb Icon={BellIcon} to='/notifications' name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -11,15 +11,16 @@ import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import HolidayList from '~/components/holidays/list';
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import toNumber from '~/helpers/to-number';
 import Tabs from '~/components/tabs';
 import { Level } from '~/components/toast';
 
 export const handle = {
-  breadcrumb: ({ provider, current }: { provider: any, current: boolean }) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}/holidays`} name="holidays" current={current} />
+  name: () => "holidays",
+  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/providers/${provider?.id}/holidays`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

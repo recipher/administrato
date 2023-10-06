@@ -19,15 +19,16 @@ import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/selector';
 import Alert, { Level } from '~/components/alert';
 
-import { Breadcrumb } from "~/layout/breadcrumbs";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import ButtonGroup, { type ButtonGroupButton } from '~/components/button-group';
 import { Layout, Heading } from '~/components/info/info';
 
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  breadcrumb: ({ user, current }: { user: User, current: boolean }) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name="profile" current={current} />
+  name: () => "authorizations",
+  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
+    <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
 };
 
 type Authorizable = (LegalEntity | Client | Provider | ServiceCentre);

@@ -78,7 +78,7 @@ export const Title = ({ title, subtitle, icon, navigation }: TitleProps) => {
     <>
       {icon && <div className="mr-4 mt-2 flex-shrink-0">{icon}</div>}
       <div className="h-8 group">
-        {navigation?.length === 0 ? <Text /> : <Navigation />}
+        {!navigation?.length ? <Text /> : <Navigation />}
         {subtitle && <p className="text-sm text-gray-500">
           {t(subtitle)}
         </p>} 
