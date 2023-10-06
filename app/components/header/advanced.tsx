@@ -176,7 +176,7 @@ export const Filter = ({ filterTitle, filterParam, allowSort, sort, filter, addi
             />
             <input type="submit" hidden />
             {additionalFilters && 
-              <input type="hidden" name={additionalFilters.filterParam} value={additionalFilters.selected} />}
+              <input type="hidden" name={additionalFilters.filterParam} value={additionalFilters.selected || ""} />}
           </Form>
         </div>
         {allowSort && <Sort sort={sort} />}

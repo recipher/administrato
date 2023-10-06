@@ -12,6 +12,7 @@
   "scheduler": "Scheduler",
   "schedule": "Schedule",
   "schedules": "Schedules",
+  "generate-schedule": "Generate a Schedule",
   "add-holiday": "Add a Holiday",
   "region": "Region",
   "regions": "Regions",
