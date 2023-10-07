@@ -18,7 +18,7 @@ import toNumber from "~/helpers/to-number";
 const LIMIT = 10;
 
 export const handle = {
-  name: () => "search",
+  name: "search",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb Icon={MagnifyingGlassIcon} to='/search' name={name} current={current} />
 };

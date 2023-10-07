@@ -11,7 +11,7 @@ import { requireUser } from '~/auth/auth.server';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  name: () => "groups",
+  name: "groups",
   breadcrumb: ({ client, current, name }: { client: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/clients/${client?.id}/groups`} name={name} current={current} />
 };

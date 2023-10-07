@@ -12,7 +12,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { scheduler } from '~/auth/permissions';
 
 export const handle = {
-  name: ({ milestoneSet }: { milestoneSet: any }) => {milestoneSet?.identifier},
+  name: ({ milestoneSet }: { milestoneSet: any }) => milestoneSet?.identifier,
   breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/milestones/${milestoneSet?.id}`} name={name} current={current} />
 };

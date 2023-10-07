@@ -22,7 +22,7 @@ import i18n from "~/i18n";
 
 export const handle = {
   i18n: "language",
-  name: () => "my-profile",
+  name: "my-profile",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb Icon={UserCircleIcon} to='/profile' name={name} current={current} />
 };

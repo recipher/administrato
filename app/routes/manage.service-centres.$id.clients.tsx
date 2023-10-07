@@ -19,7 +19,7 @@ import toNumber from '~/helpers/to-number';
 const LIMIT = 6;
 
 export const handle = {
-  name: () => "clients",
+  name: "clients",
   breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/clients`} name={name} current={current} />
 };

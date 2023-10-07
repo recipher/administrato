@@ -7,7 +7,7 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export const handle = {
-  name: () => "access",
+  name: "access",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to='/access' name={name} current={current} />
 };

@@ -22,7 +22,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { useActionData } from '@remix-run/react';
 
 export const handle = {
-  name: () => "add-group",
+  name: "add-group",
   breadcrumb: ({ client, current, name }: { client: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/clients/${client.id}/groups/add`} name={name} current={current} />
 };

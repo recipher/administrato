@@ -152,28 +152,26 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
 
   return (
     <>
-      <div>
-        <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
-          {label}
-        </label>
-        <div className="inline-block relative mt-2 rounded-md shadow-sm">
-          <input
-            type="text"
-            {...getInputProps({ id: name })}
-            placeholder={placeholder}
-            value={date && format(date, 'dd MMMM yyyy')}
-            className={classnames(
-              error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
-              "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
-          />
-          <div className="group absolute inset-y-0 right-0 flex items-center cursor-pointer" onClick={() => setOpen(!open)}>
-            <CalendarDaysIcon className="mx-2 h-5 w-5 text-gray-400 group-hover:text-indigo-400" aria-hidden="true" />
-          </div>
+      <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
+        {label}
+      </label>
+      <div className="inline-block relative mt-2 rounded-md shadow-sm">
+        <input
+          type="text"
+          {...getInputProps({ id: name })}
+          placeholder={placeholder}
+          value={(date && format(date, 'dd MMMM yyyy')) || ""}
+          className={classnames(
+            error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
+            "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
+        />
+        <div className="group absolute inset-y-0 right-0 flex items-center cursor-pointer" onClick={() => setOpen(!open)}>
+          <CalendarDaysIcon className="mx-2 h-5 w-5 text-gray-400 group-hover:text-indigo-400" aria-hidden="true" />
         </div>
-        <div className={classnames(open ? "block" : "hidden", "z-10 absolute")}>
-          <div className="w-[24rem] mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow">
-            <Calendar date={date || defaultValue} onSelect={handleSelect} />
-          </div>
+      </div>
+      <div className={classnames(open ? "block" : "hidden", "z-10 absolute")}>
+        <div className="w-[24rem] mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow">
+          <Calendar date={date || defaultValue} onSelect={handleSelect} />
         </div>
       </div>
       <ErrorMessage name={name} error={error} />

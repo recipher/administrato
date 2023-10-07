@@ -2,7 +2,7 @@ import { useFetcher, useLocation } from '@remix-run/react';
 import { useState, PropsWithChildren, useEffect, useContext } from 'react';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
-import { useBreadcrumbs, usePage } from '~/hooks';
+import { useBreadcrumbs, useName } from '~/hooks';
 import ToastContext from '~/hooks/use-toast';
 
 import Breadcrumbs from './breadcrumbs';
@@ -28,7 +28,7 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
   }) || helps.at(helps.length-1))?.identifier || "app")
 
   const breadcrumbs = useBreadcrumbs();
-  const page = usePage();
+  const page = useName();
   const [ sidebarOpen, setSidebarOpen ] = useState(false)
 
   const handleClickHelp = () => setHelpOpen(true);
@@ -71,7 +71,7 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
 
           <main className="py-6">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <Breadcrumbs breadcrumbs={breadcrumbs} page={page} 
+              <Breadcrumbs breadcrumbs={breadcrumbs} page={page} submitting={fetcher.state === 'submitting'}
                 favourites={user?.settings.favourites} onFavourite={handleFavourite} />
               <div className="mt-6">{children}</div>
             </div>

@@ -44,7 +44,7 @@ export default function Person() {
 
   const icon = person.photo 
     ? person.photo 
-    : <UserCircleIcon className="h-12 w-12 text-indigo-500" aria-hidden="true" />
+    : <UserCircleIcon className="h-12 w-12 text-indigo-300" aria-hidden="true" />
 
   return (
     <>

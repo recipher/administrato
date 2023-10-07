@@ -15,7 +15,7 @@ import { Layout, Heading, Section, Field } from '~/components/info/info';
 import { configs } from './manage.people';
 
 export const handle = {
-  name: () => "info",
+  name: "info",
   breadcrumb: ({ worker, current, name }: { worker: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name={name} current={current} />
 };

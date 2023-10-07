@@ -16,7 +16,7 @@ import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import classnames from '~/helpers/classnames';
 
 export const handle = {
-  name: () => "start",
+  name: "start",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to={`/start`} name={name} current={current} Icon={GlobeAmericasIcon} />
 };

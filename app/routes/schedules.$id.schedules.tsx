@@ -13,7 +13,7 @@ import Tabs from '~/components/tabs';
 import toNumber from '~/helpers/to-number';
 
 export const handle = {
-  name: () => "schedules",
+  name: "schedules",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/schedules/${legalEntity?.id}/schedules`} name={name} current={current} />
 };

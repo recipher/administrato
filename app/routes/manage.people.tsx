@@ -14,7 +14,7 @@ export const configs = new Map<string, Config>([
 ]);
 
 export const handle = {
-  name: () => "people",
+  name: "people",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to={`/manage/people/worker`} name={name} current={current} />
 };

@@ -10,7 +10,7 @@ type Props = {
     id: string;
     name: string;
   } | undefined;
-  placeholder: string;
+  placeholder?: string;
   disabled?: boolean;
   icon?: any;
   onClick: Function;

@@ -15,12 +15,8 @@ import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import { requireUser } from '~/auth/auth.server';
 
-import { ValidatedForm as Form, validationError } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
-
-import { Cancel, DatePicker, Input, Submit,
+import { Form, validationError, withZod, zfd, z,
+         Cancel, DatePicker, Input, Submit,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
@@ -29,7 +25,7 @@ import toNumber from '~/helpers/to-number';
 import pluralize from '~/helpers/pluralize';
 
 export const handle = {
-  name: () => "add",
+  name: "add",
   breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
     <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name={name} current={current} />
 };

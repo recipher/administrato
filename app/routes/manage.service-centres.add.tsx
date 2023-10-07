@@ -21,7 +21,7 @@ import { manage } from '~/auth/permissions';
 import { useActionData } from '@remix-run/react';
 
 export const handle = {
-  name: () => "add-service-centre",
+  name: "add-service-centre",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to='/manage/service-centres/add' name={name} current={current} />
 };

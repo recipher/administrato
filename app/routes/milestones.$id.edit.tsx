@@ -20,7 +20,7 @@ import classnames from '~/helpers/classnames';
 import pluralize from '~/helpers/pluralize';
 
 export const handle = {
-  name: () => "edit",
+  name: "edit",
   breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/milestones/${milestoneSet.id}/edit`} name={name} current={current} />
 };

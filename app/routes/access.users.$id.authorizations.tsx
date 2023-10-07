@@ -26,7 +26,7 @@ import { Layout, Heading } from '~/components/info/info';
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  name: () => "authorizations",
+  name: "authorizations",
   breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
 };

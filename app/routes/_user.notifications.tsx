@@ -6,7 +6,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import Alert, { Level } from "~/components/alert";
 
 export const handle = {
-  name: () => "my-notifications",
+  name: "my-notifications",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb Icon={BellIcon} to='/notifications' name={name} current={current} />
 };

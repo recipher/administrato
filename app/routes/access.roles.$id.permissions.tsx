@@ -22,7 +22,7 @@ import { Layout, Heading } from '~/components/info/info';
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  name: () => "permissions",
+  name: "permissions",
   breadcrumb: ({ role, current, name }: { role: Role } & BreadcrumbProps) =>
     <Breadcrumb key={role?.id} to={`/access/roles/${role?.id}/permissions`} name={name} current={current} />
 };

@@ -12,7 +12,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  name: () => "profile",
+  name: "profile",
   breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
 };

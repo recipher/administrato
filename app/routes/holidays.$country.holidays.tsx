@@ -14,7 +14,7 @@ import HolidayList from '~/components/holidays/list';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
-  name: () => "holidays",
+  name: "holidays",
   breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
     <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name={name} current={current} />
 };

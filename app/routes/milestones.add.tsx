@@ -17,7 +17,7 @@ import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Level } from '~/components/toast';
 
 export const handle = {
-  name: () => "add-milestone-set",
+  name: "add-milestone-set",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to='/milestones/add' name={name} current={current} />
 };

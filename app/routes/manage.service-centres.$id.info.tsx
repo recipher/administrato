@@ -11,7 +11,7 @@ import { notFound, badRequest } from '~/utility/errors';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  name: () => "info",
+  name: "info",
   breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name={name} current={current} />
 };

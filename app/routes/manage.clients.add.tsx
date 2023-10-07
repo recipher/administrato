@@ -29,7 +29,7 @@ import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  name: () => "add-client",
+  name: "add-client",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to='/manage/clients/add' name={name} current={current} />
 };

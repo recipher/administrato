@@ -52,7 +52,7 @@ export default function Provider() {
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=provider&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.provider },
   ];
 
-  const icon = logo || <CurrencyYenIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;
+  const icon = logo || <CurrencyYenIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />;
 
   return (
     <>

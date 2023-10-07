@@ -24,17 +24,17 @@ type SearchOptions = {
   providerId?: string | null | undefined;
 } & BaseSearchOptions;
 
-export const frequencies = [
-  'monthly',
-  'weekly',
-  'bi-weekly',
-  'tri-weekly',
-  'four-weekly',
-  'semi-monthly',
-  'quarterly',
-  'half-yearly',
-  'yearly',
-];
+export enum Frequency {
+  Monthly = 'monthly',
+  Weekly = 'weekly',
+  BiWeekly = 'bi-weekly',
+  TriWeekly = 'tri-weekly',
+  FourWeekly = 'four-weekly',
+  SemiMonthly = 'semi-monthly',
+  Quarterly = 'quarterly',
+  HalfYearly = 'half-yearly',
+  Yearly = 'yearly',
+};
 
 const service = (u: User) => {
   const getLatest = async (legalEntity: s.legalEntities.Insertable) => {

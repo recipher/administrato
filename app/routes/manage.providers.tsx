@@ -7,7 +7,7 @@ import withAuthorization from "~/auth/with-authorization";
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  name: () => "providers",
+  name: "providers",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb Icon={CurrencyYenIcon} to='/manage/providers' name={name} current={current} />
 };

@@ -10,7 +10,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { badRequest } from '~/utility/errors';
 
 export const handle = {
-  name: () => "regions",
+  name: "regions",
   breadcrumb: ({ country, current, name }: { country: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/holidays/${country?.isoCode}/regions`} name={name} current={current} />
 };

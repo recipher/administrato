@@ -23,7 +23,7 @@ import { Level } from '~/components/toast';
 const ENTITIES = [ "service-centre", "provider", "client", "legal-entity" ];
 
 export const handle = {
-  name: () => "add-milestone",
+  name: "add-milestone",
   breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/milestones/${milestoneSet.id}/add`} name={name} current={current} />
 };

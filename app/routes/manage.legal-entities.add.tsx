@@ -15,7 +15,7 @@ import { IdentificationIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
-import LegalEntityService, { create, frequencies } from '~/models/manage/legal-entities.server';
+import LegalEntityService, { create, Frequency } from '~/models/manage/legal-entities.server';
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import { type Provider } from '~/models/manage/providers.server';
 
@@ -33,7 +33,7 @@ import { manage } from '~/auth/permissions';
 
 export const handle = {
   i18n: "schedule",
-  name: () => "add-legal-entity",
+  name: "add-legal-entity",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to='/manage/legal-entities/add' name={name} current={current} />
 };
@@ -46,6 +46,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = ServiceCentreService(u);
   const serviceCentre = id ? await service.getServiceCentre({ id }) : undefined;
+
+  const frequencies = Object.values(Frequency).filter(item => isNaN(Number(item)));
 
   return json({ serviceCentre, frequencies });
 };

@@ -18,7 +18,7 @@ import Tabs from '~/components/tabs';
 import { Level } from '~/components/toast';
 
 export const handle = {
-  name: () => "holidays",
+  name: "holidays",
   breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/serviceCentres/${serviceCentre?.id}/holidays`} name={name} current={current} />
 };

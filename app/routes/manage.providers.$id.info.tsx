@@ -11,7 +11,7 @@ import { requireUser } from '~/auth/auth.server';
 import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
-  name: () => "info",
+  name: "info",
   breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/providers/${provider?.id}/info`} name={name} current={current} />
 };

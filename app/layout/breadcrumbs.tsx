@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as SelectedStarIcon } from "@heroicons/react/24/solid";
+
+import Spinner from "~/components/spinner";
 import classnames from '~/helpers/classnames';
 
 type PageProps = {
@@ -16,12 +18,14 @@ type PageProps = {
 type Favourite = { pathname: string; name: string };
 type FavouriteProps = {
   favourites: Array<Favourite>;
+  submitting: boolean;
   onFavourite: Function;
 };
 
 type Props = {
   breadcrumbs: Array<ReactNode>;
   page: Array<string>;
+  submitting: boolean;
 } & FavouriteProps;
 
 export type BreadcrumbProps = {
@@ -58,8 +62,11 @@ export const Separator = () => (
   </svg>
 );
 
-const Favourite = ({ favourites, pathname, onFavourite }: FavouriteProps & { pathname: string }) => {
+const Favourite = ({ favourites, pathname, submitting, onFavourite }: FavouriteProps & { pathname: string }) => {
   const favourited = favourites?.map((f: Favourite) => f.pathname).includes(pathname);
+  
+  if (submitting) return <Spinner size={4} />
+
   return (
     favourited 
       ? <SelectedStarIcon onClick={() => onFavourite()} 
@@ -69,7 +76,7 @@ const Favourite = ({ favourites, pathname, onFavourite }: FavouriteProps & { pat
   );
 };
 
-export default function Breadcrumbs({ breadcrumbs, page, favourites, onFavourite }: Props) {
+export default function Breadcrumbs({ breadcrumbs, page, favourites, submitting, onFavourite }: Props) {
   const { t } = useTranslation();
   const { pathname } = useLocation();
 
@@ -90,7 +97,8 @@ export default function Breadcrumbs({ breadcrumbs, page, favourites, onFavourite
             </span>
           </li>
         ))}
-        <Favourite favourites={favourites} pathname={pathname} onFavourite={handleFavourite} />
+        <Favourite favourites={favourites} pathname={pathname} submitting={submitting}
+          onFavourite={handleFavourite} />
       </ol>
     </nav>
   );

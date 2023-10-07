@@ -32,18 +32,18 @@ type NavItem = {
 
 export const navigation = [
   { name: 'scheduler', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule,
-  children: [
-    { name: 'summary', to: '/schedules/summary' },
-    { name: 'schedules', to: '/schedules' },
-    { name: 'approvals', to: '/schedules/approvals' },
-    { name: 'settings', to: '/schedules/settings' },
-  ]
-},
+    children: [
+      { name: 'summary', to: '/schedules/summary' },
+      { name: 'schedules', to: '/schedules' },
+      { name: 'approvals', to: '/schedules/approvals' },
+      { name: 'settings', to: '/schedules/settings' },
+    ]
+  },
   { name: 'holidays', to: '/holidays', icon: GlobeEuropeAfricaIcon, permission: scheduler.read.holiday },
   { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
   { name: 'manage', to: '/manage', icon: CircleStackIcon,
     children: [
-      { name: 'people', to: '/manage/people/worker', icon: CubeIcon, permission: manage.read.worker,
+      { name: 'people', to: '/manage/people', icon: CubeIcon, permission: manage.read.worker,
         children: [
           { name: 'workers', to: '/manage/people/worker' },
           { name: 'employees', to: '/manage/people/employee' },

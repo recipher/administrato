@@ -30,7 +30,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  name: () => "add-provider",
+  name: "add-provider",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb to='/manage/providers/add' name={name} current={current} />
 };

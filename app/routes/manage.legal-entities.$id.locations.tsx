@@ -11,7 +11,7 @@ import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
-  name: () => "locations",
+  name: "locations",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/locations`} name={name} current={current} />
 };

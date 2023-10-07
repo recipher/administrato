@@ -22,7 +22,7 @@ import ToastContext from '~/hooks/use-toast';
 import { security } from '~/auth/permissions';
 
 export const handle = {
-  name: () => "roles",
+  name: "roles",
   breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/roles`} name={name} current={current} />
 };

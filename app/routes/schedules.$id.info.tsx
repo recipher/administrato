@@ -41,14 +41,10 @@ const Info = () => {
       <Layout>
         <Heading heading={t('info')} explanation={`Manage ${legalEntity.name}'s information.`} />
         <Section>
-        <Field title="Legal Entity Name">
-            <p className="text-gray-900">{legalEntity.name}</p>
-            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
-              Update
-            </button>
-          </Field>
           <Field title="Schedule Frequency">
             {t(legalEntity.frequency, { ns: "schedule" })}
+          </Field>
+          <Field title="Schedule Pay Date">
           </Field>
           <Field title="Provider">
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>
