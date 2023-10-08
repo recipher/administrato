@@ -15,7 +15,7 @@ export const Body = ({ children }: PropsWithChildren<{}>) => {
 export const Section = ({ heading, explanation, size = "lg" }: { heading?: string, explanation?: string, size?: string }) => {
   return (
     <div>
-      <h2 className={`text-${size} font-semibold leading-7 text-gray-900`}>
+      <h2 className={classnames(size !== "lg" ? "font-medium" : "font-semibold", `text-${size} leading-7 text-gray-900`)}>
         {heading}
       </h2>
       <p className="mt-1 text-sm leading-6 text-gray-600">
@@ -33,9 +33,9 @@ export const Group = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export const Field = ({ span = 4, width, children }: PropsWithChildren<{ span?: number, width?: string }>) => {
+export const Field = ({ span = 4, width, className = "", children }: PropsWithChildren<{ span?: number, className?: string, width?: string }>) => {
   return (
-    <div className={classnames(width ? `w-${width}` : "", `sm:col-span-${span}`)}>
+    <div className={classnames(className, width ? `w-${width}` : "", `sm:col-span-${span}`)}>
       {children}
     </div>
   );

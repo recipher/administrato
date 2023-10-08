@@ -5,7 +5,7 @@ create table
     identifier text not null,
     logo text null,
     frequency text null default 'monthly'::text,
-    "targetDay" text null default 'last'::text,
+    "target" text null default 'last'::text,
     "serviceCentreId" text not null,
     "providerId" text null,
     "clientId" text null,

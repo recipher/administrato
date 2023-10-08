@@ -13,4 +13,4 @@ export { default as TextArea } from './text-area';
 export { default as Toggle } from './toggle';
 export { default as UniqueInput } from './unique-input';
 export { Body, Section, Group, Field, Footer } from './layout';
-export { Form, validationError, useFormContext, withZod, zfd, z } from './form';
+export { Form, validationError, useFormContext, useFieldArray, FieldArray, withZod, zfd, z } from './form';

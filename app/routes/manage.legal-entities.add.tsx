@@ -1,27 +1,26 @@
-import { useRef, useState, FormEvent } from 'react';
+import { useRef, useState, FormEvent, Fragment, useEffect } from 'react';
 import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useActionData, useLoaderData } from '@remix-run/react'
 import { useTranslation } from 'react-i18next';
-import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, useFormContext, withZod, zfd, z, useFieldArray } from '~/components/form';
 
 import { CameraIcon } from '@heroicons/react/24/solid';
 import { IdentificationIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { createSupabaseUploadHandler } from '~/models/supabase.server';
 
-import LegalEntityService, { create, Frequency } from '~/models/manage/legal-entities.server';
+import LegalEntityService, { create } from '~/models/manage/legal-entities.server';
+import { Frequency, Target, Weekday, toTarget } from '~/models/scheduler/schedules.server';
+
 import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
 import { type Provider } from '~/models/manage/providers.server';
 
 import { requireUser } from '~/auth/auth.server';
 
-import { UniqueInput, Select, Cancel, Submit, Checkbox, Image,
+import { Input, UniqueInput, Select, Cancel, Submit, Checkbox, Image,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
@@ -48,9 +47,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const serviceCentre = id ? await service.getServiceCentre({ id }) : undefined;
 
   const frequencies = Object.values(Frequency).filter(item => isNaN(Number(item)));
+  const targets = Object.values(Target).filter(item => isNaN(Number(item)));
+  const weekdays = Object.values(Weekday).filter(item => isNaN(Number(item)));
 
-  return json({ serviceCentre, frequencies });
+  return json({ serviceCentre, frequencies, targets, weekdays });
 };
+
+const idSchema = z.object({ id: z.string() });
+const numberSchema = (min: number, max: number, message: string) => 
+  z.coerce.number().min(min, message).max(max, message).optional();
 
 const schema = 
   zfd.formData({
@@ -72,6 +77,20 @@ const schema =
       .string()
       .nonempty("The provider is required"),
     logo: z.any(),
+    frequency: idSchema,
+    targets: z
+      .array(
+        z.object({
+          target: idSchema,
+          day: idSchema.optional(),
+          date: numberSchema(0, 31, "Date must be between 1 and 31"),
+          offset: numberSchema(0, 30, "Offset must be between 0 and 30")
+        })
+      ),
+    // target: repeatableIdSchema,
+    // targetDate: repeatableNumberSchema(0, 31, "Date must be between 1 and 31"),
+    // targetDay: repeatableIdSchema,
+    // targetOffset: repeatableNumberSchema(0, 30, "Offset must be between 0 and 30")
   });
 
 export const clientValidator = withZod(schema);
@@ -119,11 +138,18 @@ export const action = async ({ request }: ActionArgs) => {
     return buildValidationError(result.error, result.submittedData.localities);
   }
 
-  const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
+  const { data: { 
+    frequency: { id: frequency }, targets,
+    localities: { id: codes }, identifier = "", ...data }} = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
+  // const target = toTarget({ target: targetType, date: targetDate, day: targetDay, offset: targetOffset });
+
+  console.log(targets);
+
   const service = LegalEntityService(u);
-  const legalEntity = await service.addLegalEntity(create({ localities, identifier, ...data }));
+  const legalEntity = 
+    await service.addLegalEntity(create({ localities, identifier, frequency, ...data }));
   
   return legalEntity
     ? redirect(`/manage/legal-entities/${legalEntity.id}/info`)
@@ -132,12 +158,17 @@ export const action = async ({ request }: ActionArgs) => {
 
 const Add = () => {
   const data = useActionData();
-  const { t } = useTranslation();
-  const { frequencies, ...loaderData } = useLoaderData();
+  const { t } = useTranslation("schedule");
+  const { frequencies, targets, weekdays, ...loaderData } = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
   const [ provider, setProvider ] = useState<Provider>();
   const [ serviceCentre, setServiceCentre ] = useState<ServiceCentre>(loaderData.serviceCentre);
+
+  const [ target, setTarget ] = useState<Array<string>>([ "last", "last", "last" ]);
+  const [ items, { push, remove } ] = useFieldArray("targets", {
+    formId: "add-legal-entity",
+  });
 
   const context = useFormContext("add-legal-entity");
 
@@ -151,9 +182,39 @@ const Add = () => {
     setAutoGenerateIdentifier(e.currentTarget.checked);
   };
 
+  const handleChangeTarget = (t: { id: string }, index: number) => {
+    target[index] = t.id;
+    setTarget(() => [...target]);
+  };
+
+  const handleChangeFrequency = (frequency: { id: string }) => {
+    const count = frequency.id === "semi-monthly" ? 2 : frequency.id === "tri-monthly" ? 3 : 1;
+
+    if (count > items.length)
+      for (let i = items.length; i < count; i++)
+        push({ target: { id: "last" }});
+    
+    if (count < items.length)
+      for (let i = items.length-1; i >= count; i--)
+        remove(i);
+  };
+
+  const targetData = targets?.map((target: string) => ({ id: target, name: t(target, { ns: "schedule" }) }));
+  const weekdayData = weekdays?.map((w: string) => ({ id: w, name: t(w, { ns: "schedule" }) }));
+  const frequencyData = frequencies?.map((f: string) => ({ id: f, name: t(f, { ns: "schedule" }) }));
+
+  const ordinal = (key: number) =>
+    key === 0 ? "First" : key === 1 ? "Second" : key === 2 ? "Third" : "";
+  const targetLabel = (key: number) => {
+    const label = 'Target Due Day';
+    if (items.length === 1) return label;
+    return `${ordinal(key)} ${label}`;
+  };
+
   return (
     <>
-      <Form method="post" validator={clientValidator} id="add-legal-entity" encType="multipart/form-data">
+      <Form method="post" defaultValues={{ targets: [ { target: { id: "last" }}]}}
+        validator={clientValidator} id="add-legal-entity" encType="multipart/form-data">
         <Body>
           <Section heading='New Legal Entity' explanation='Please enter the new legal entity details.' />
           <Group>
@@ -174,9 +235,6 @@ const Add = () => {
             <Field>
               <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
             </Field>
-            <Field span={3}>
-              <Select label="Schedule Frequency" name="frequency" data={frequencies?.map((f: string) => ({ id: f, name: t(f, { ns: "schedule" }) }))} />
-            </Field>
           </Group>
           <Section size="md" />
           <Group>
@@ -189,6 +247,33 @@ const Add = () => {
                 icon={IdentificationIcon} value={provider} placeholder="Select a Provider" />
             </Field>
           </Group>
+          <Section size="md" heading="Schedule Generate" explanation="Specify schedule generation rules." />
+          <Group>
+            <Field span={3}>
+              <Select label="Schedule Frequency" name="frequency" defaultValue={frequencyData.at(0)}
+                data={frequencyData} onChange={handleChangeFrequency} />
+            </Field>
+          </Group>
+          {items.map(({ defaultValue, key }, index) => (
+            <Fragment key={key}>
+              <Section size="md" />
+              <Group>
+                <Field span={3}>
+                  <Select label={targetLabel(index)} name={`targets[${index}].target`} onChange={(value: any) => handleChangeTarget(value, index)} 
+                    data={targetData} defaultValue={targetData.at(0)} />
+                </Field>
+                <Field span={2} className={target[index] === "day" ? "" : "hidden"}>
+                  <Select label="Weekday" name={`targets[${index}].day`} data={weekdayData} defaultValue={weekdayData.at(0)} />
+                </Field>
+                <Field span={1} className={target[index] === "date" || target[index] === "following" ? "" : "hidden"}>
+                  <Input label="Date" name={`targets[${index}].date`}/>
+                </Field>
+                <Field span={1} className={target[index] === "last" ? "" : "hidden"}>
+                  <Input label="Offset" name={`targets[${index}].offset`} />
+                </Field>
+              </Group>
+            </Fragment>
+          ))}
           <CountryFormManager context={context} data={data} />
         </Body>
         <Footer>

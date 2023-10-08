@@ -18,11 +18,19 @@ type Props = {
   label: string;
   data?: DataProps;
   defaultValue?: ItemProps | undefined | null;
+  onChange?: Function;
 };
 
-export default function Select({ name, label, data = [], defaultValue = null }: Props) {
+const noOp = () => null!
+
+export default function Select({ name, label, data = [], defaultValue = null, onChange = noOp }: Props) {
   const { error, getInputProps } = useField(name);
   const [selected, setSelected] = useState<ItemProps | null>(defaultValue);
+
+  const handleChange = (value: ItemProps) => {
+    onChange(value);
+    setSelected(value);
+  };
 
   return (
     <>
@@ -30,7 +38,7 @@ export default function Select({ name, label, data = [], defaultValue = null }: 
       <Listbox
         // @ts-ignore
         {...getInputProps({ id: name })}
-        value={selected} onChange={setSelected}>
+        value={selected} onChange={handleChange}>
         {({ open }) => (
           <>
             <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">

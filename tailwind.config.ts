@@ -33,6 +33,8 @@ export default {
     'border-yellow-400',
     'border-blue-400',
     'border-green-400',
+    'sm:col-span-3',
+    'sm:col-span-2',
   ],
   plugins: [
     require('@tailwindcss/forms'),

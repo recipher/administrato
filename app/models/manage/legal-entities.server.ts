@@ -24,18 +24,6 @@ type SearchOptions = {
   providerId?: string | null | undefined;
 } & BaseSearchOptions;
 
-export enum Frequency {
-  Monthly = 'monthly',
-  Weekly = 'weekly',
-  BiWeekly = 'bi-weekly',
-  TriWeekly = 'tri-weekly',
-  FourWeekly = 'four-weekly',
-  SemiMonthly = 'semi-monthly',
-  Quarterly = 'quarterly',
-  HalfYearly = 'half-yearly',
-  Yearly = 'yearly',
-};
-
 const service = (u: User) => {
   const getLatest = async (legalEntity: s.legalEntities.Insertable) => {
     const query = db.sql<db.SQL>`${'serviceCentreId'} = ${db.param(legalEntity.serviceCentreId)}`;

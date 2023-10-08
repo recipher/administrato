@@ -33,7 +33,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Info = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("schedule");
   const { legalEntity } = useLoaderData();
 
   return (
@@ -49,6 +49,12 @@ const Info = () => {
           </Field>
           <Field title="Schedule Frequency">
             {t(legalEntity.frequency, { ns: "schedule" })}
+          </Field>
+          <Field title="Target Due Day">
+            {legalEntity.target.split(',').map((target: string) => {
+              const [ type, value ] = target.split(' ');
+              return `${t(type)} ${value == null ? "" : t(value)}`;
+            }).join(' and ')}
           </Field>
           <Field title="Provider">
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>

@@ -4,11 +4,8 @@ import { type ActionArgs, type LoaderArgs, redirect, json, type UploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react'
-import { ValidatedForm as Form, validationError } from 'remix-validated-form';
+import { Form, validationError, withZod, zfd, z } from '~/components/form';
 import { useTranslation } from 'react-i18next';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
 
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 

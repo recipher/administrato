@@ -1,4 +1,4 @@
-import { json, type LoaderArgs, type ActionArgs } from '@remix-run/node';
+import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
 import { useLoaderData, Outlet, useSearchParams, useSubmit } from '@remix-run/react';
 
 import { WalletIcon, PlusIcon } from '@heroicons/react/24/outline';
@@ -46,10 +46,12 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData();
   const result = await validator.validate(formData);
   
+  if (result.error) return;
+
   const service = ScheduleService(u);
   await service.generate(result.data);
 
-  return null;
+  return redirect('schedules');
 };
 
 export default function Provider() {

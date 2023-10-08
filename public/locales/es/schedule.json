@@ -2,10 +2,21 @@
   "monthly" : "Monthly",
   "weekly" : "Weekly",
   "bi-weekly" : "Bi-weekly",
-  "tri-weekly" : "Tri-weekly",
   "four-weekly" : "Four-weekly",
+  "tri-monthly" : "Tri-weekly",
   "semi-monthly" : "Semi-monthly",
   "quarterly" : "Quarterly",
   "half-yearly" : "Half-yearly",
-  "yearly": "Yearly"
+  "yearly": "Yearly",
+  "last": "Last",
+  "following": "Following",
+  "day": "Day",
+  "date": "Date",
+  "monday": "Monday",
+  "tuesday": "Tuesday",
+  "wednesday": "Wednesday",
+  "thursday": "Thursday",
+  "friday": "Friday",
+  "saturday": "Saturday",
+  "sunday": "Sunday"
 }

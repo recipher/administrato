@@ -1,15 +1,15 @@
-import { formatISO9075 } from 'date-fns';
+import { formatISO9075, startOfWeek as sow } from 'date-fns';
 
 export const adjustForUTCOffset = (date: Date) => {
   return new Date(
     date.getUTCFullYear(),
     date.getUTCMonth(),
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds(),
+    date.getUTCDate()
   );
 };
+
+export const startOfMonth = (d: Date) => new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1));
+export const startOfWeek = (d: Date) => adjustForUTCOffset(sow(d, { weekStartsOn: 1 }))
 
 export const format = (date: Date) => formatISO9075(adjustForUTCOffset(date), { representation: 'date' });
 

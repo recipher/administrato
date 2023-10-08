@@ -7,8 +7,9 @@ import withAuthorization from "~/auth/with-authorization";
 import { manage } from '~/auth/permissions';
 
 export const handle = {
+  name: "legal-entities",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={WalletIcon} to="/manage/legal-entities" name="legal-entities" current={current} />
+    <Breadcrumb Icon={WalletIcon} to="/manage/legal-entities" name={name} current={current} />
 };
 
 const LegalEntities = () => <Outlet />;
