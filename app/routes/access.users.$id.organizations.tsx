@@ -9,7 +9,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Organization, mapProfileToUser, requireUser } from '~/auth/auth.server';
-import UserService, { type User } from '~/models/access/users.server';
+import UserService, { type User } from '~/services/access/users.server';
 
 import { useUser } from '~/hooks';
 

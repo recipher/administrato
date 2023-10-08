@@ -1,11 +1,8 @@
 import { useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json, LoaderArgs } from '@remix-run/node';
-import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, useFormContext, withZod, zfd, z } from '~/components/form';
 
-import ClientService, { create } from '~/models/manage/clients.server';
+import ClientService, { create } from '~/services/manage/clients.server';
 
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';

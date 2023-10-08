@@ -3,7 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import ServiceCentreService, { ServiceCentre } from '~/models/manage/service-centres.server';
+import ServiceCentreService, { ServiceCentre } from '~/services/manage/service-centres.server';
 
 import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';

@@ -1,9 +1,9 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import ServiceCentreService from '~/models/manage/service-centres.server';
-import ClientService, { Client } from '~/models/manage/clients.server';
-import CountryService from '~/models/countries.server';
+import ServiceCentreService from '~/services/manage/service-centres.server';
+import ClientService, { Client } from '~/services/manage/clients.server';
+import CountryService from '~/services/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { List, ListItem, ListContext } from '~/components/list';
 import Pagination from '~/components/pagination';

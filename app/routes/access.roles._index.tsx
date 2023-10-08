@@ -1,6 +1,6 @@
 import { LoaderArgs } from '@remix-run/node';
 
-import RoleService from '~/models/access/roles.server';
+import RoleService from '~/services/access/roles.server';
 
 import Header from '~/components/header/basic-with-actions';
 import Alert, { Level } from '~/components/alert';

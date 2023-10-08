@@ -2,9 +2,9 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
-import LegalEntityService, { type LegalEntity } from '~/models/manage/legal-entities.server';
-import CountryService from '~/models/countries.server';
+import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import LegalEntityService, { type LegalEntity } from '~/services/manage/legal-entities.server';
+import CountryService from '~/services/countries.server';
 
 import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';

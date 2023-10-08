@@ -6,10 +6,10 @@ import { Menu, Transition } from "@headlessui/react";
 
 import { MapIcon, WalletIcon, CurrencyYenIcon, IdentificationIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
-import { type Client } from '~/models/manage/clients.server';
-import { type Provider } from '~/models/manage/providers.server';
-import { type ServiceCentre } from '~/models/manage/service-centres.server';
-import { type LegalEntity } from '~/models/manage/legal-entities.server';
+import { type Client } from '~/services/manage/clients.server';
+import { type Provider } from '~/services/manage/providers.server';
+import { type ServiceCentre } from '~/services/manage/service-centres.server';
+import { type LegalEntity } from '~/services/manage/legal-entities.server';
 
 import Modal, { RefModal } from "../modals/modal";
 import Filter from "../filter";

@@ -7,7 +7,7 @@ import { badRequest } from '~/utility/errors';
 
 import { requireUser } from '~/auth/auth.server';
 
-import MilestoneService, { type Milestone } from '~/models/scheduler/milestones.server';
+import MilestoneService, { type Milestone } from '~/services/scheduler/milestones.server';
 import Alert, { Level } from '~/components/alert';
 
 import { Table } from '~/components';

@@ -4,19 +4,16 @@ import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useActionData, useLoaderData } from '@remix-run/react'
-import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, useFormContext, withZod, zfd, z } from '~/components/form';
 
 import { IdentificationIcon } from '@heroicons/react/24/solid';
 import { MapIcon } from '@heroicons/react/24/outline';
 
-import { createSupabaseUploadHandler } from '~/models/supabase.server';
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { requireUser } from '~/auth/auth.server';
 
-import ClientService, { create } from '~/models/manage/clients.server';
-import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
+import ClientService, { create } from '~/services/manage/clients.server';
+import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
 
 import { UniqueInput, Cancel, Submit, Checkbox, Image,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';

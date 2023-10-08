@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { CurrencyYenIcon, IdentificationIcon, WalletIcon, MapIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
-import CountryService from '~/models/countries.server';
-import HolidayService, { create } from '~/models/scheduler/holidays.server';
-import ProviderService, { Provider } from '~/models/manage/providers.server';
-import ClientService, { Client } from '~/models/manage/clients.server';
-import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
-import ServiceCentreService, { ServiceCentre } from '~/models/manage/service-centres.server';
+import CountryService from '~/services/countries.server';
+import HolidayService, { create } from '~/services/scheduler/holidays.server';
+import ProviderService, { Provider } from '~/services/manage/providers.server';
+import ClientService, { Client } from '~/services/manage/clients.server';
+import LegalEntityService, { LegalEntity } from '~/services/manage/legal-entities.server';
+import ServiceCentreService, { ServiceCentre } from '~/services/manage/service-centres.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import { requireUser } from '~/auth/auth.server';

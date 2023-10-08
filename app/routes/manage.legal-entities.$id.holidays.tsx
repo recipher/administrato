@@ -3,9 +3,9 @@ import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
-import CountryService, { Country } from '~/models/countries.server';
-import HolidayService from '~/models/scheduler/holidays.server';
+import LegalEntityService from '~/services/manage/legal-entities.server';
+import CountryService, { Country } from '~/services/countries.server';
+import HolidayService from '~/services/scheduler/holidays.server';
 
 import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';

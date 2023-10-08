@@ -6,7 +6,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ClientService, { Client } from '~/models/manage/clients.server';
+import ClientService, { Client } from '~/services/manage/clients.server';
 import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';

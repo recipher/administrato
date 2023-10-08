@@ -1,7 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import CountryService from '~/models/countries.server';
+import CountryService from '~/services/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { Basic as List } from '~/components/list';
 

@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import ClientService from '~/models/manage/clients.server';
+import ClientService from '~/services/manage/clients.server';
 import Stats from '~/components/stats';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";

@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { type LegalEntity } from '~/models/manage/legal-entities.server';
+import { type LegalEntity } from '~/services/manage/legal-entities.server';
 
 import Modal, { type RefModal } from '~/components/modals/modal';
 import { Lookup, DatePicker, Form, withZod, zfd, z, validationError, useFormContext } from '../form';

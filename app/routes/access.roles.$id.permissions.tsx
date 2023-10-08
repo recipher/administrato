@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import RoleService, { type Role, namespaces } from '~/models/access/roles.server';
+import RoleService, { type Role, namespaces } from '~/services/access/roles.server';
 
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { requireUser } from '~/auth/auth.server';

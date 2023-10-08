@@ -2,7 +2,7 @@ import { intlFormatDistance } from 'date-fns';
 import { type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import UserService, { type BasicUser as User } from '~/models/access/users.server';
+import UserService, { type BasicUser as User } from '~/services/access/users.server';
 import { requireUser } from '~/auth/auth.server';
 
 import Header from '~/components/header/basic-with-filter';

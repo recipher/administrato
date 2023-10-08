@@ -1,9 +1,9 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
-import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
-import PersonService, { Person, Classifier } from '~/models/manage/people.server';
-import CountryService from '~/models/countries.server';
+import LegalEntityService, { LegalEntity } from '~/services/manage/legal-entities.server';
+import PersonService, { Person, Classifier } from '~/services/manage/people.server';
+import CountryService from '~/services/countries.server';
 import Alert, { Level } from '~/components/alert';
 import { List, ListItem, ListContext } from '~/components/list';
 import Pagination from '~/components/pagination';

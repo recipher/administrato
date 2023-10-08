@@ -1,6 +1,6 @@
 import { LoaderArgs, json } from '@remix-run/node';
 
-import OrganizationService from '~/models/access/organizations.server';
+import OrganizationService from '~/services/access/organizations.server';
 
 import Header from '~/components/header/basic-with-actions';
 import Alert, { Level } from '~/components/alert';

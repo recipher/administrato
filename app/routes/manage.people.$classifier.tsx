@@ -6,7 +6,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from "~/auth/with-authorization";
 
 import { manage } from '~/auth/permissions';
-import { Classifier } from "~/models/manage/people.server";
+import { Classifier } from "~/services/manage/people.server";
 import pluralize from "~/helpers/pluralize";
 
 export const handle = {

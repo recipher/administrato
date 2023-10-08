@@ -1,13 +1,10 @@
 import { type ActionArgs, redirect, json, LoaderArgs } from '@remix-run/node';
 import { useTranslation } from 'react-i18next';
-import { ValidatedForm as Form, validationError } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, validationError, withZod, zfd, z } from '~/components/form';
 
 import { badRequest } from '~/utility/errors';
 
-import MilestoneService, { create } from '~/models/scheduler/milestones.server';
+import MilestoneService, { create } from '~/services/scheduler/milestones.server';
 
 import { Input, TextArea, Checkbox, CheckboxGroup, Cancel, Submit,
          Body, Section, Group, Field, Footer } from '~/components/form';

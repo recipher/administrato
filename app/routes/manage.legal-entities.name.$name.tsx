@@ -3,7 +3,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import LegalEntityService from '~/services/manage/legal-entities.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { name } = params;

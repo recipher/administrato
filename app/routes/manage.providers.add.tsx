@@ -4,21 +4,17 @@ import { type ActionArgs, redirect, json, type LoaderArgs, type UploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useActionData, useLoaderData } from '@remix-run/react'
-import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, useFormContext, withZod, zfd, z } from '~/components/form';
 
-import { CameraIcon } from '@heroicons/react/24/solid';
-import { MapIcon } from '@heroicons/react/24/outline';
+import { MapIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 
-import { createSupabaseUploadHandler } from '~/models/supabase.server';
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 
 import withAuthorization from '~/auth/with-authorization';
 import { requireUser } from '~/auth/auth.server';
 
-import ProviderService, { create } from '~/models/manage/providers.server';
-import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
+import ProviderService, { create } from '~/services/manage/providers.server';
+import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
 import { UniqueInput, Cancel, Submit, Checkbox, Image, 
@@ -159,7 +155,7 @@ const Add = () => {
               </div>
             </Field>
             <Field>
-              <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
+              <Image label="Upload Logo" name="logo" accept="image/*" Icon={GlobeAltIcon} />
             </Field>
             <Field span={3}>
               <Lookup label="Service Centre" name="serviceCentreId" onClick={showServiceCentreModal} 

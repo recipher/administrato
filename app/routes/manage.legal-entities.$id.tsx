@@ -6,7 +6,7 @@ import { WalletIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import LegalEntityService, { LegalEntity } from '~/models/manage/legal-entities.server';
+import LegalEntityService, { LegalEntity } from '~/services/manage/legal-entities.server';
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 

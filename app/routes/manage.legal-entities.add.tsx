@@ -7,16 +7,15 @@ import { useActionData, useLoaderData } from '@remix-run/react'
 import { useTranslation } from 'react-i18next';
 import { Form, useFormContext, withZod, zfd, z, useFieldArray } from '~/components/form';
 
-import { CameraIcon } from '@heroicons/react/24/solid';
-import { IdentificationIcon, MapIcon } from '@heroicons/react/24/outline';
+import { IdentificationIcon, MapIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 
-import { createSupabaseUploadHandler } from '~/models/supabase.server';
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 
-import LegalEntityService, { create } from '~/models/manage/legal-entities.server';
-import { Frequency, Target, Weekday, toTarget } from '~/models/scheduler/schedules.server';
+import LegalEntityService, { create } from '~/services/manage/legal-entities.server';
+import { Frequency, Target, Weekday, toTarget } from '~/services/scheduler/schedules.server';
 
-import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
-import { type Provider } from '~/models/manage/providers.server';
+import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import { type Provider } from '~/services/manage/providers.server';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -53,6 +52,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ serviceCentre, frequencies, targets, weekdays });
 };
 
+z.setErrorMap((issue, ctx) => {
+  if (issue.code === "invalid_type") {
+    if (issue.expected === "number")
+      return { message: "Not a number" };
+  }
+  return { message: ctx.defaultError };
+});
+
 const idSchema = z.object({ id: z.string() });
 const numberSchema = (min: number, max: number, message: string) => 
   z.coerce.number().min(min, message).max(max, message).optional();
@@ -87,10 +94,6 @@ const schema =
           offset: numberSchema(0, 30, "Offset must be between 0 and 30")
         })
       ),
-    // target: repeatableIdSchema,
-    // targetDate: repeatableNumberSchema(0, 31, "Date must be between 1 and 31"),
-    // targetDay: repeatableIdSchema,
-    // targetOffset: repeatableNumberSchema(0, 30, "Offset must be between 0 and 30")
   });
 
 export const clientValidator = withZod(schema);
@@ -231,7 +234,7 @@ const Add = () => {
               </div>
             </Field>
             <Field>
-              <Image label="Upload Logo" name="logo" accept="image/*" Icon={CameraIcon} />
+              <Image label="Upload Logo" name="logo" accept="image/*" Icon={GlobeAltIcon} />
             </Field>
           </Group>
           <Section size="md" />

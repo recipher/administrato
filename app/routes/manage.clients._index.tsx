@@ -2,9 +2,9 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
-import ClientService, { type Client } from '~/models/manage/clients.server';
-import CountryService, { type Country } from '~/models/countries.server';
+import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import ClientService, { type Client } from '~/services/manage/clients.server';
+import CountryService, { type Country } from '~/services/countries.server';
 
 import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';

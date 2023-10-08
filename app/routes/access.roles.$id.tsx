@@ -6,7 +6,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import Header from '~/components/header/advanced';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import RoleService, { type Role } from '~/models/access/roles.server';
+import RoleService, { type Role } from '~/services/access/roles.server';
 
 export const handle = {
   name: ({ role }: { role: Role }) => role.description,

@@ -4,7 +4,7 @@ import { Outlet, useLoaderData } from '@remix-run/react';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import PersonService, { type Person, Classifier } from '~/models/manage/people.server';
+import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
 import Header from '~/components/header';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";

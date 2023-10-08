@@ -1,11 +1,8 @@
 import { useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json } from '@remix-run/node';
-import { ValidatedForm as Form, useFormContext } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, useFormContext, withZod, zfd, z } from '~/components/form';
 
-import ServiceCentreService, { create } from '~/models/manage/service-centres.server';
+import ServiceCentreService, { create } from '~/services/manage/service-centres.server';
 
 import { UniqueInput, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer } from '~/components/form';
@@ -44,7 +41,7 @@ const clientValidator = withZod(schema);
 
 export const action = async ({ request }: ActionArgs) => {
   const u = await requireUser(request);
-  const formData = await request.formData()
+  const formData = await request.formData();
 
   if (formData.get('intent') === 'change-codes') {
     return json(await changeCodes(String(formData.get('codes'))));

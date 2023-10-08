@@ -4,12 +4,12 @@ import { useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from 'remix-i18next';
 
-import { Country } from '~/models/countries.server';
-import { type Holiday } from '~/models/scheduler/holidays.server';
+import { Country } from '~/services/countries.server';
+import { type Holiday } from '~/services/scheduler/holidays.server';
 import Alert, { Level } from '~/components/alert';
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import Tabs from '~/components/tabs';
-import { List, ListItem, ListContext } from '~/components/list';
+import { List, ListContext } from '~/components/list';
 
 import classnames from '~/helpers/classnames';
 

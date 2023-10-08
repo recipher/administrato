@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import CountryService from '~/models/countries.server';
-import HolidayService, { type Holiday } from '~/models/scheduler/holidays.server';
+import CountryService from '~/services/countries.server';
+import HolidayService, { type Holiday } from '~/services/scheduler/holidays.server';
 import Alert, { Level } from '~/components/alert';
 import { List, ListItem, ListContext } from "~/components/list";
 import Tabs from '~/components/tabs';

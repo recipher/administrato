@@ -7,11 +7,11 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
-import UserService, { type User } from '~/models/access/users.server';
-import ServiceCentreService, { type ServiceCentre } from '~/models/manage/service-centres.server';
-import ClientService, { type Client } from '~/models/manage/clients.server';
-import LegalEntityService, { type LegalEntity } from '~/models/manage/legal-entities.server';
-import ProviderService, { type Provider } from '~/models/manage/providers.server';
+import UserService, { type User } from '~/services/access/users.server';
+import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import ClientService, { type Client } from '~/services/manage/clients.server';
+import LegalEntityService, { type LegalEntity } from '~/services/manage/legal-entities.server';
+import ProviderService, { type Provider } from '~/services/manage/providers.server';
 
 import { useUser } from '~/hooks';
 

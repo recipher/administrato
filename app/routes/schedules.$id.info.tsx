@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import LegalEntityService from '~/services/manage/legal-entities.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading, Section, Field } from '~/components/info/info';

@@ -9,13 +9,13 @@ import { useTranslation } from 'react-i18next';
 
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 
-import { createSupabaseUploadHandler } from '~/models/supabase.server';
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
 
-import PersonService, { create, Classifier } from '~/models/manage/people.server';
-import { type Client } from '~/models/manage/clients.server';
-import { type LegalEntity } from '~/models/manage/legal-entities.server';
-import CountryService, { type Country } from '~/models/countries.server';
+import PersonService, { create, Classifier } from '~/services/manage/people.server';
+import { type Client } from '~/services/manage/clients.server';
+import { type LegalEntity } from '~/services/manage/legal-entities.server';
+import CountryService, { type Country } from '~/services/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
 

@@ -2,8 +2,8 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import PersonService from '~/models/manage/people.server';
-import CountryService from '~/models/countries.server';
+import PersonService from '~/services/manage/people.server';
+import CountryService from '~/services/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
 

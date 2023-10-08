@@ -1,6 +1,6 @@
 import { useEffect, RefObject, useState } from 'react';
 import { useFetcher } from '@remix-run/react'
-import { type Country } from '~/models/countries.server';
+import { type Country } from '~/services/countries.server';
 import Modal, { type RefModal } from '~/components/modals/modal';
 import { List } from '~/components/list';
 

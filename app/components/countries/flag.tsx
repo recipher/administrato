@@ -1,4 +1,4 @@
-import { type Country } from '~/models/countries.server';
+import { type Country } from '~/services/countries.server';
 import Image from '~/components/image';
 import classnames from '~/helpers/classnames';
 

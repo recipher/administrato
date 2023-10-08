@@ -6,8 +6,8 @@ import { WalletIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ScheduleService from '~/models/scheduler/schedules.server';
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import ScheduleService from '~/services/scheduler/schedules.server';
+import LegalEntityService from '~/services/manage/legal-entities.server';
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { GenerateSingleModal, validator } from '~/components/scheduler/generate';

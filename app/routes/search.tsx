@@ -4,7 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import { requireUser } from "~/auth/auth.server";
 import { useTranslation } from "react-i18next";
 
-import SearchService from "~/models/manage/search.server";
+import SearchService from "~/services/manage/search.server";
 
 import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';

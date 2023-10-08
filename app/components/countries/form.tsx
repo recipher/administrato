@@ -5,7 +5,7 @@ import { FormContextValue, ValidationResult, ValidatorError, validationError } f
 
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
-import CountryService, { type Country } from '~/models/countries.server';
+import CountryService, { type Country } from '~/services/countries.server';
 
 import { RefModal } from "../modals/modal";
 

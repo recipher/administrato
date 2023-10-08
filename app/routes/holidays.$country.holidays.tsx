@@ -4,8 +4,8 @@ import { useLoaderData } from '@remix-run/react';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import CountryService from '~/models/countries.server';
-import HolidayService from '~/models/scheduler/holidays.server';
+import CountryService from '~/services/countries.server';
+import HolidayService from '~/services/scheduler/holidays.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Level } from '~/components/alert';
 import toNumber from '~/helpers/to-number';

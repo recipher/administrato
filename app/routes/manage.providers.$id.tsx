@@ -6,7 +6,7 @@ import { CurrencyYenIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ProviderService from '~/models/manage/providers.server';
+import ProviderService from '~/services/manage/providers.server';
 
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';

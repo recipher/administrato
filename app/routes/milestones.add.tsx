@@ -1,10 +1,7 @@
 import { type ActionArgs, redirect, json } from '@remix-run/node';
-import { ValidatedForm as Form, validationError } from 'remix-validated-form';
-import { withZod } from '@remix-validated-form/with-zod';
-import { zfd } from 'zod-form-data';
-import { z } from 'zod';
+import { Form, validationError, withZod, zfd, z } from '~/components/form';
 
-import MilestoneService, { create } from '~/models/scheduler/milestones.server';
+import MilestoneService, { create } from '~/services/scheduler/milestones.server';
 
 import { UniqueInput, Cancel, Submit,
          Body, Section, Group, Field, Footer } from '~/components/form';

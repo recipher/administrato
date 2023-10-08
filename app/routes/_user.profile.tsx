@@ -6,7 +6,7 @@ import { useLocale } from "remix-i18next";
 
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 
-import UserService from '~/models/access/users.server';
+import UserService from '~/services/access/users.server';
 import refreshUser from '~/auth/refresh.server';
 import { storage as flash, setFlashMessage } from '~/utility/flash.server';
 

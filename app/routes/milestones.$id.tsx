@@ -5,7 +5,7 @@ import { badRequest } from '~/utility/errors';
 
 import { requireUser } from '~/auth/auth.server';
 
-import MilestoneService, { type MilestoneSet } from '~/models/scheduler/milestones.server';
+import MilestoneService, { type MilestoneSet } from '~/services/scheduler/milestones.server';
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 

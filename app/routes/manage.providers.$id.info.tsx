@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import ProviderService from '~/models/manage/providers.server';
+import ProviderService from '~/services/manage/providers.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 

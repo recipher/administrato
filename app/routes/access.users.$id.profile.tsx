@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { badRequest, notFound } from '~/utility/errors';
 
 import { mapProfileToUser } from '~/auth/auth.server';
-import UserService, { type User } from '~/models/access/users.server';
+import UserService, { type User } from '~/services/access/users.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 

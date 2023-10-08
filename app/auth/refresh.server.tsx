@@ -1,5 +1,5 @@
 import { getSession, mapProfileToUser, storage } from "./auth.server";
-import UserService from "~/models/access/users.server";
+import UserService from "~/services/access/users.server";
 
 export default async ({ id, request, headers }: { id: string, request: Request, headers?: Headers }) => {
   if (headers === undefined) headers = new Headers();

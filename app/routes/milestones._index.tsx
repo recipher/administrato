@@ -6,7 +6,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 
 import { requireUser } from '~/auth/auth.server';
 
-import MilestoneService, { type MilestoneSet } from '~/models/scheduler/milestones.server';
+import MilestoneService, { type MilestoneSet } from '~/services/scheduler/milestones.server';
 import Header from '~/components/header/advanced';
 import Alert, { Level } from '~/components/alert';
 import { List, ListContext, ListItem } from '~/components/list';

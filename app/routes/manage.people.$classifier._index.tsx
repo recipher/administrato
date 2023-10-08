@@ -4,8 +4,8 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 
 import { badRequest } from '~/utility/errors';
 
-import PersonService, { type Person, Classifier } from '~/models/manage/people.server';
-import CountryService from '~/models/countries.server';
+import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
+import CountryService from '~/services/countries.server';
 
 import Header from "~/components/header";
 import Alert, { Level } from '~/components/alert';

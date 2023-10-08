@@ -4,7 +4,7 @@ import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-r
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import LegalEntityService from '~/models/manage/legal-entities.server';
+import LegalEntityService from '~/services/manage/legal-entities.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import Alert, { Level } from '~/components/alert';

@@ -4,7 +4,7 @@ import { Outlet, useLoaderData, useSubmit } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import UserService, { type User } from '~/models/access/users.server';
+import UserService, { type User } from '~/services/access/users.server';
 import { getSession, storage, mapProfileToUser, requireUser } from '~/auth/auth.server';
 import refreshUser from '~/auth/refresh.server';
 import { storage as flash, setFlashMessage } from '~/utility/flash.server';

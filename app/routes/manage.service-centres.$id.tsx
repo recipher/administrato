@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ServiceCentreService from '~/models/manage/service-centres.server';
+import ServiceCentreService from '~/services/manage/service-centres.server';
 import Header from '~/components/header';
 import { Flag } from '~/components/countries/flag';
 import { manage } from '~/auth/permissions';
