@@ -23,17 +23,16 @@ export enum Weekday {
   Saturday = 'saturday',
   Sunday = 'sunday',
 };
-
 type TargetProps = { 
-  target: Array<string | Target>;
-  day?: Array<string | Weekday | undefined>;
-  date?: Array<number | undefined>;
-  offset?: Array<number | undefined>; 
+  target: string | Target;
+  day?: string | Weekday | undefined;
+  date?: number | undefined;
+  offset?: number | undefined; 
 };
+type TargetsProps = Array<TargetProps>;
 
-export const toTarget = ({ target, day, date, offset }: TargetProps) => {
-  return target.map((t: string, i: number) => {
-    const o = offset?.at(i), d = date?.at(i), y = day?.at(i);
+export const toTarget = (targets: TargetsProps) => {
+  return targets.map(({ target: t, offset: o, day: y, date: d }: TargetProps) => {
     return {
       [Target.Last]:      `${t} ${o === null ? 0 : o}`,
       [Target.Following]: `${t} ${d === null ? 0 : d}`,

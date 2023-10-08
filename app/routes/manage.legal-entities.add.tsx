@@ -143,13 +143,11 @@ export const action = async ({ request }: ActionArgs) => {
     localities: { id: codes }, identifier = "", ...data }} = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
-  // const target = toTarget({ target: targetType, date: targetDate, day: targetDay, offset: targetOffset });
-
-  console.log(targets);
+  const target = toTarget(targets.map((t: any) => ({ target: t.target.id, day: t.day.id, offset: t.offset, date: t.date })));
 
   const service = LegalEntityService(u);
   const legalEntity = 
-    await service.addLegalEntity(create({ localities, identifier, frequency, ...data }));
+    await service.addLegalEntity(create({ localities, identifier, frequency, target, ...data }));
   
   return legalEntity
     ? redirect(`/manage/legal-entities/${legalEntity.id}/info`)
@@ -254,7 +252,7 @@ const Add = () => {
                 data={frequencyData} onChange={handleChangeFrequency} />
             </Field>
           </Group>
-          {items.map(({ defaultValue, key }, index) => (
+          {items.map(({ key }, index) => (
             <Fragment key={key}>
               <Section size="md" />
               <Group>

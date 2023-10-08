@@ -20,8 +20,8 @@ export default function Input({ name, label, value, focus = false, disabled = fa
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (error || focus) inputRef.current?.focus();
-  }, [focus, error]);
+    if (focus) inputRef.current?.focus();
+  }, [focus]);
 
   return (
     <div className="mb-3">
