@@ -74,7 +74,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (result.error) return json({ ...validationError(result.error) });
 
   const { data: { description = null, ...data }} = result;
-  const ms = await MilestoneService(u).addMilestone(create({ description, setId: id, ...data }));
+  const ms = await MilestoneService(u).addMilestone(create({ description, setId: id, index: 0, ...data }));
 
   const message = `Milestone Added:Milestone ${ms.identifier} successfully added.`;
   const level = Level.Success;

@@ -2,10 +2,12 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import { format, getWeek, isAfter, differenceInCalendarWeeks, addWeeks, differenceInCalendarMonths, addMonths } from 'date-fns';
-import { adjustForUTCOffset, startOfWeek, startOfMonth } from './date';
+import { format, getWeek, isAfter, differenceInCalendarWeeks, addWeeks, differenceInCalendarMonths, addMonths, yearsToMonths } from 'date-fns';
+import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate } from './date';
 
-export { default as create } from '../id.server';
+import { default as create } from '../id.server';
+
+import { TxOrPool } from '../types';
 
 import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
@@ -15,6 +17,10 @@ import WorkingDayService from './working-days';
 
 export { Target, Weekday, toTarget } from './target';
 import TargetService from './target';
+
+export type Schedule = s.schedules.Selectable;
+export type ScheduleDate = s.scheduleDates.Selectable;
+export type ScheduleWithDates = Schedule & { scheduleDates: Array<ScheduleDate> };
 
 type GenerateProps = {
   legalEntityId: string;
@@ -34,14 +40,14 @@ export enum Frequency {
   Yearly = 'yearly',
 };
 
-const range = (start: number, stop: number, step = 1) => 
-  Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
-
-const byIndexDesc = (l: Milestone, r: Milestone) => (l.index || 0) - (r.index || 0);
-const byIndexAsc = (l: Milestone, r: Milestone) => (r.index || 0) - (l.index || 0);
+export enum Status {
+  Generated = 'generated',
+  Draft = 'draft',
+  Approved = 'approved',
+  Broken = 'broken',
+};
 
 const service = (u: User) => {
-
   const names = {
     week: (date: Date) => `Week ${getWeek(date)}`,
     month: (date: Date) => format(adjustForUTCOffset(date), 'LLLL'),
@@ -60,30 +66,50 @@ const service = (u: User) => {
     [Frequency.Yearly]:      names.year,
   };
 
-  // const datesFor = {
-  //   [Frequency.Weekly]: (y, ty, pe) => range(sp(pe, 1, 1), weeks(ty)).map(week => addWeeks(new Date(Date.UTC(y, 0, 2)), week)), 
-  //   [Frequency.BiWeekly]: (y, ty, pe) => range(sp(pe, 2, 3), weeks(ty), 2).map(week => addWeeks(new Date(Date.UTC(y, 0, 2)), week)),
-  //   [Frequency.Monthly]: (y, ty) => range(0, months(ty)).map(month => new Date(Date.UTC(y, month, 1))),
-  //   [Frequency.SemiMonthly]: (y, ty) => range(0, months(ty)).map(month => [ new Date(Date.UTC(y, month, 1)), new Date(Date.UTC(y, month, 15)) ]).flat(),
-  //   [Frequency.FourWeekly]: (y, ty, pe) => range(sp(pe, 4, 6), weeks(ty)).map(week => addWeeks(new Date(Date.UTC(y, 0, 2)), week)),
-  //   [Frequency.Quarterly]: (y, ty) => range(3, months(ty), 3).map(month => new Date(Date.UTC(y, month, 1))),
-  //   [Frequency.HalfYearly]: (y, ty) => range(5, months(ty), 6).map(month => new Date(Date.UTC(y, month, 1))),
-  //   [Frequency.Yearly]: (y, ty) => range(months(ty)).map(month => new Date(Date.UTC(y, month, 1))),
-  // };
-
   const weeks = (s: Date, e: Date) => differenceInCalendarWeeks(e, s, { weekStartsOn: 1 });
   const months = (s: Date, e: Date) => differenceInCalendarMonths(e, s);
 
   const datesFor = {
-    [Frequency.Weekly]: (s: Date, e: Date) => range(0, weeks(s, e)).map(week => addWeeks(startOfWeek(s), week)),
-    [Frequency.BiWeekly]: (s: Date, e: Date) => [],
-    [Frequency.Monthly]: (s: Date, e: Date) => range(0, months(s, e)).map(month => addMonths(startOfMonth(s), month)),
-    [Frequency.TriMonthly]: (s: Date, e: Date) => [],
-    [Frequency.SemiMonthly]: (s: Date, e: Date) => [],
-    [Frequency.FourWeekly]: (s: Date, e: Date) => [],
-    [Frequency.Quarterly]: (s: Date, e: Date) => [],
-    [Frequency.HalfYearly]: (s: Date, e: Date) => [],
-    [Frequency.Yearly]: (s: Date, e: Date) => [],
+    [Frequency.Weekly]: (s: Date, e: Date) => 
+      range(0, weeks(s, e)).map(week => addWeeks(startOfWeek(s), week)),
+    [Frequency.BiWeekly]: (s: Date, e: Date) => 
+      range(0, weeks(s, e), 2).map(week => addWeeks(startOfWeek(s), week)),
+    [Frequency.Monthly]: (s: Date, e: Date) => 
+      range(0, months(s, e)).map(month => addMonths(startOfMonth(s), month)),
+    [Frequency.TriMonthly]: (s: Date, e: Date) => 
+      range(0, months(s, e)).map(month => 
+        [ addMonths(startOfMonth(s), month), 
+          setDate(addMonths(startOfMonth(s), month), 15) ]).flat(),
+    [Frequency.SemiMonthly]: (s: Date, e: Date) => 
+      range(0, months(s, e)).map(month => 
+        [ addMonths(startOfMonth(s), month), 
+          setDate(addMonths(startOfMonth(s), month), 10), 
+          setDate(addMonths(startOfMonth(s), month), 20) ]).flat(),
+    [Frequency.FourWeekly]: (s: Date, e: Date) => 
+      range(0, weeks(s, e), 4).map(week => addWeeks(startOfWeek(s), week)),
+    [Frequency.Quarterly]: (s: Date, e: Date) => 
+      range(3, months(s, e), 3).map(month => addMonths(startOfMonth(s), month)),
+    [Frequency.HalfYearly]: (s: Date, e: Date) => 
+      range(5, months(s, e), 6).map(month => addMonths(startOfMonth(s), month)),
+    [Frequency.Yearly]: (s: Date, e: Date) => 
+      range(11, months(s, e)).map(month => addMonths(startOfMonth(s), month)),
+  };
+
+  type GeneratedScheduleDate = {
+    id: string;
+    date?: Date;
+    index: number;
+    target: boolean | null;
+  };
+
+  type GSD = GeneratedScheduleDate;
+
+  type GeneratedSchedule = {
+    period: {
+      targetDate: Array<Date>;
+      name: string;
+    };
+    dates: Array<GeneratedScheduleDate>;
   };
 
   type GeneratePeriodProps = { 
@@ -98,7 +124,18 @@ const service = (u: User) => {
     name: string;
   };
 
-  const generatePeriods = async ({ legalEntity, countries, start, end }: GeneratePeriodProps) => {
+  const range = (start: number, stop: number, step = 1) => 
+    Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
+
+  const byIndexDesc = (l: GSD, r: GSD) => l.index - r.index;
+  const byIndexAsc = (l: GSD, r: GSD) => r.index - l.index;
+
+  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
+    const service = MilestoneService(u);
+    return service.getCountriesForMilestone({ milestone, legalEntityId });
+  };
+
+  const determinePeriods = async ({ legalEntity, countries, start, end }: GeneratePeriodProps) => {
     const targetService = TargetService(u);
 
     const { frequency: f, target } = legalEntity;
@@ -117,29 +154,15 @@ const service = (u: User) => {
     }));
   };
 
-  const getMilestonesForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }) => {
-    const { milestoneSetId: setId } = legalEntity;
-
-    const service = MilestoneService(u);
-    const milestones = await service.listMilestonesBySetOrDefault({ setId });
-    if (milestones.length === 0) throw new Error('No milestones found');
-    return milestones;
-  };
-
-  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
-    const service = MilestoneService(u);
-    return service.getCountriesForMilestone({ milestone, legalEntityId });
-  };
-
-  const generateSchedule = async ({ legalEntity, milestones, periods }: { legalEntity: LegalEntity, milestones: Array<Milestone>, periods: Array<Period> }) => {
+  const generateScheduleSet = async ({ legalEntity, milestones, periods }: { legalEntity: LegalEntity, milestones: Array<Milestone>, periods: Array<Period> }) => {
     const workingDayService = WorkingDayService(u);
 
     return Promise.all(periods.map(async period => {
       const target = milestones.find(m => m.target === true) || milestones.at(0);
       if (target === undefined) throw new Error("No target milestone");
 
-      const findBefore = (ms: Array<Milestone>) => ms.filter(m => (m.index || 0) >= (target.index || 0)).sort(byIndexDesc);
-      const findAfter =  (ms: Array<Milestone>) => ms.filter(m => (m.index || 0) <  (target.index || 0)).sort(byIndexAsc);
+      const findBefore = (ms: Array<Milestone>) => ms.filter(m => m.index >= target.index).sort(byIndexDesc);
+      const findAfter =  (ms: Array<Milestone>) => ms.filter(m => m.index <  target.index).sort(byIndexAsc);
         
       // Calculate milestone dates before due date
       let [ previous ] = period.targetDate;
@@ -152,7 +175,7 @@ const service = (u: User) => {
           previous = await workingDayService.determinePrevious({ countries, start: previous, days: milestone.interval || 0 });
         }
   
-        return ms;
+        return { id: ms.id, date: ms.date, target: ms.target, index: ms.index };
       }));
 
       // Calculate milestone dates after due date
@@ -161,34 +184,88 @@ const service = (u: User) => {
       const after = await Promise.all(findAfter(milestones).map(async (milestone: Milestone) => {
         const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
         next = await workingDayService.determineNext({ countries, start: next, days: milestone.interval || 0 });
-        return { ...milestone, date: next };
+        const ms = { ...milestone, date: next };
+        return { id: ms.id, date: ms.date, target: ms.target, index: ms.index };
       }));
   
-      const schedule = [ ...before, ...after ].sort(byIndexDesc);
+      const dates = [ ...before, ...after ].sort(byIndexDesc);
 
-      return { period, schedule };
+      return { period, dates };
     }));
+  };
+
+  const addSchedule = async (schedule: s.schedules.Insertable, txOrPool: TxOrPool = pool) => {
+    const [inserted] = await db.sql<s.schedules.SQL, s.schedules.Selectable[]>`
+      INSERT INTO ${'schedules'} (${db.cols(schedule)})
+      VALUES (${db.vals(schedule)}) RETURNING *
+    `.run(txOrPool);
+    return inserted;
+  };
+
+  const addScheduleDate = async (scheduleDate: s.scheduleDates.Insertable, txOrPool: TxOrPool = pool) => {
+    const [inserted] = await db.sql<s.scheduleDates.SQL, s.scheduleDates.Selectable[]>`
+      INSERT INTO ${'scheduleDates'} (${db.cols(scheduleDate)})
+      VALUES (${db.vals(scheduleDate)}) RETURNING *
+    `.run(txOrPool);
+    return inserted;
+  };
+
+  const saveScheduleSet = async ({ set, legalEntity }: { set: Array<GeneratedSchedule>, legalEntity: LegalEntity }) => {
+    return db.serializable(pool, async tx => {
+      await Promise.all(set.map(async (schedule) => {
+        const { id } = await addSchedule(create({
+          legalEntityId: legalEntity.id,
+          name: schedule.period.name,
+          date: schedule.period.targetDate,
+          status: Status.Generated,
+          version: 0,
+        }), tx);
+
+        await Promise.all(schedule.dates.map(async (date: any) => {
+          await addScheduleDate(create({
+            scheduleId: id,
+            milestoneId: date.id,
+            date: date.date,
+            status: Status.Generated,
+            index: date.index,
+            target: date.target,
+          }), tx);
+        }));
+      }));
+    });
   };
 
   const generate = async ({ legalEntityId, start, end }: GenerateProps) => {
     const service = LegalEntityService(u);
     const legalEntity = await service.getLegalEntity({ id: legalEntityId });
     
-    const milestones = await getMilestonesForLegalEntity({ legalEntity });
+    const milestoneService = MilestoneService(u);
+    const milestones = await milestoneService.listMilestonesForLegalEntity({ legalEntity });
     const targetMilestone = milestones.find(m => m.target === true) || milestones.at(0);
     if (targetMilestone === undefined) throw new Error('No target milestone');
     const countries = await getCountriesForMilestone({ milestone: targetMilestone, legalEntityId });
 
     const dates = isAfter(start, end) ? { start: end, end: start } : { start, end };
-    const periods = await generatePeriods({ legalEntity, countries, ...dates });
-    const schedule = await generateSchedule({ legalEntity, milestones, periods });
+    const periods = await determinePeriods({ legalEntity, countries, ...dates });
+    const set = await generateScheduleSet({ legalEntity, milestones, periods });
 
-    console.log(JSON.stringify(schedule, null, 2));
+    await saveScheduleSet({ set, legalEntity });
   };
 
-  return {
-    generate,
-  }
+  const listSchedulesByLegalEntity = async ({ legalEntityId, year }: { legalEntityId: string; year: number }) => {
+    return db.sql<s.schedules.SQL | s.scheduleDates.SQL, s.schedules.Selectable[] & { scheduleDates: s.scheduleDates.Selectable[] }>`
+      SELECT ${'schedules'}.*, jsonb_agg(${"scheduleDates"}.*) AS ${'scheduleDates'}
+      FROM ${'schedules'} JOIN ${'scheduleDates'}
+      ON ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
+      WHERE 
+        ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
+        DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)}
+      GROUP BY ${'schedules'}.${'id'}
+      ORDER BY ${'schedules'}.${'date'} ASC
+    `.run(pool);
+  };
+
+  return { generate, listSchedulesByLegalEntity };
 };
 
 export default service;

@@ -5,9 +5,9 @@ import pool from '../db.server';
 export { default as create } from '../id.server';
 
 import { type User } from '../access/users.server';
-import { ASC } from '../types';
+import { ASC, DESC, QueryOptions } from '../types';
 
-import LegalEntityService from '../manage/legal-entities.server';
+import LegalEntityService, { type LegalEntity } from '../manage/legal-entities.server';
 import ClientService from '../manage/clients.server';
 import ServiceCentreService from '../manage/service-centres.server';
 import ProviderService from '../manage/providers.server';
@@ -61,12 +61,13 @@ const service = (u: User) => {
     return milestoneSet;
   };
 
-  const listMilestonesByDefaultSet = async () => {
+  const listMilestonesByDefaultSet = async ({ sortDirection }: QueryOptions = { sortDirection: DESC }) => {
+    if (sortDirection == null) sortDirection = DESC;
     const milestones = await db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       LEFT JOIN ${'milestoneSets'} ON ${'milestoneSets'}.${'id'} = ${'milestones'}.${'setId'}
       WHERE ${'milestoneSets'}.${'isDefault'} = TRUE
-      ORDER BY ${'index'} DESC
+      ORDER BY ${'index'} ${db.raw(sortDirection)}
     `.run(pool);
 
     if (milestones.length) return milestones;
@@ -78,20 +79,28 @@ const service = (u: User) => {
         FROM ${'milestoneSets'} 
         LIMIT 1
       )
-      ORDER BY ${'index'} DESC
+      ORDER BY ${'index'} ${db.raw(sortDirection)}
     `.run(pool);
   };
 
-  const listMilestonesBySet = async ({ setId }: { setId: string }) => {
+  const listMilestonesBySet = async ({ setId }: { setId: string }, { sortDirection }: QueryOptions = { sortDirection: DESC }) => {
+    if (sortDirection == null) sortDirection = DESC;
     return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}}
-      ORDER BY ${'index'} DESC
+      ORDER BY ${'index'} ${db.raw(sortDirection)}
     `.run(pool);
   };
 
-  const listMilestonesBySetOrDefault = async ({ setId }: { setId: string | null }) => {
-    return setId === null ? listMilestonesByDefaultSet() : listMilestonesBySet({ setId });
+  const listMilestonesBySetOrDefault = async ({ setId }: { setId: string | null }, options: QueryOptions = {}) => {
+    return setId === null ? listMilestonesByDefaultSet(options) : listMilestonesBySet({ setId }, options);
+  };
+
+  const listMilestonesForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }, options: QueryOptions = {}) => {
+    const { milestoneSetId: setId } = legalEntity;
+    const milestones = await listMilestonesBySetOrDefault({ setId }, options);
+    if (milestones.length === 0) throw new Error('No milestones found');
+    return milestones;
   };
 
   const getMilestonesBySetAboveIndex = async ({ setId, index }: { setId: string, index: number }, txOrPool: TxOrPool = pool) => {
@@ -247,6 +256,7 @@ const service = (u: User) => {
     listMilestonesBySet,
     listMilestonesByDefaultSet,
     listMilestonesBySetOrDefault,
+    listMilestonesForLegalEntity,
     removeMilestone,
     increaseMilestoneIndex,
     decreaseMilestoneIndex,

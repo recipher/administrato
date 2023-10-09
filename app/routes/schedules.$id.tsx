@@ -42,6 +42,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
+  const url = new URL(request.url);
+  const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
+
   const u = await requireUser(request);
   const formData = await request.formData();
   const result = await validator.validate(formData);
@@ -51,7 +54,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const service = ScheduleService(u);
   await service.generate(result.data);
 
-  return redirect('schedules');
+  return redirect(`schedules?year=${year}`);
 };
 
 export default function Provider() {
@@ -62,7 +65,7 @@ export default function Provider() {
   const modal = useRef<RefModal>(null);
 
   const handleGenerate = (data: FormData) => {
-    submit(data, { method: "POST", action: `/schedules/${legalEntity.id}` });
+    submit(data, { method: "POST", action: `/schedules/${legalEntity.id}?year=${year}` });
   };
 
   const tabs = [

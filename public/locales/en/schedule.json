@@ -18,5 +18,9 @@
   "thursday": "Thursday",
   "friday": "Friday",
   "saturday": "Saturday",
-  "sunday": "Sunday"
+  "sunday": "Sunday",
+  "generated": "Generated",
+  "draft": "Draft",
+  "approved": "Approved",
+  "broken": "Broken"
 }

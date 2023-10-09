@@ -88,7 +88,8 @@ const service = (u: User) => {
         ${{locality}} AND 
         ${'entityId'} IS NULL AND 
         DATE_PART('year', ${'date'}) = ${db.param(year)}
-      ORDER BY ${'date'} ASC`.run(pool);
+      ORDER BY ${'date'} ASC`
+    .run(pool);
   };
 
   type customHolidaysSQL = 
@@ -111,7 +112,8 @@ const service = (u: User) => {
         ${{locality}} AND 
         ${'entityId'} IS NOT NULL AND (${'isRemoved'} IS NULL OR ${'isRemoved'} = FALSE) AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
-      ORDER BY ${'date'} ASC`.run(pool);
+      ORDER BY ${'date'} ASC`
+    .run(pool);
   };
 
   const listHolidaysByCountryForEntity = async ({ year, locality, entityId }: ListOptions & EntityOptions) => {
@@ -127,7 +129,8 @@ const service = (u: User) => {
         ${{locality}} AND 
         ${{entityId}} AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
-      ORDER BY ${'date'} ASC`.run(pool);
+      ORDER BY ${'date'} ASC`
+    .run(pool);
 
     return holidays.reduce((holidays: Array<Holiday>, holiday: Holiday) => {
       const existing = holidays.find(h => isSameDate(h.date, holiday.date));

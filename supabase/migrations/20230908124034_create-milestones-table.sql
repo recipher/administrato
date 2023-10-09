@@ -3,7 +3,7 @@ create table
     id text not null,
     identifier text null,
     description text null,
-    index integer null,
+    index integer not null,
     interval integer null,
     time timetz null,
     target boolean null,
