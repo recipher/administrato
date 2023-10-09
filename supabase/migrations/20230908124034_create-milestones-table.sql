@@ -6,7 +6,7 @@ create table
     index integer null,
     interval integer null,
     time timetz null,
-    pivot boolean null,
+    target boolean null,
     entities text[] null,
     "setId" text not null,
     "createdAt" timestamp with time zone not null default now(),

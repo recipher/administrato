@@ -34,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = MilestoneService(u);
   const milestoneSet = await service.getMilestoneSetById({ id });
-  const milestones = await service.getMilestonesBySet({ setId: id });
+  const milestones = await service.listMilestonesBySet({ setId: id });
 
   return json({ milestoneSet, milestones });
 };
@@ -111,7 +111,7 @@ export default function MilestoneSets() {
       <span className="text-sm text-gray-300 pt-1 pr-3">
         {(milestone.index || 0)+1}
       </span> 
-      <span className={classnames(milestone.pivot?.toString() === "true" ? "text-red-500": "", "text-gray-500")}>{milestone.identifier}</span>
+      <span className={classnames(milestone.target?.toString() === "true" ? "text-red-500": "", "text-gray-500")}>{milestone.identifier}</span>
     </>
   );
 

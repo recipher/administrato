@@ -34,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const service = MilestoneService(u);
   const milestoneSet = await service.getMilestoneSetById({ id });
-  const milestones = await service.getMilestonesBySet({ setId: id });
+  const milestones = await service.listMilestonesBySet({ setId: id });
 
   return json({ milestoneSet, milestones });
 };
@@ -46,7 +46,7 @@ const validator = withZod(zfd.formData({
   description: z
     .string()
     .optional(),
-  pivot: z
+  target: z
     .coerce.boolean(),
   interval: z
     .coerce.number()
@@ -108,10 +108,10 @@ const Add = () => {
               <Input label="Deadline" name="time" />
             </Field> */}
           </Group>
-          <Section size="md" heading='Pivot Milestone' explanation='One milestone should be marked as the pivot, which determines where the first date should be calculated when schedules are generated.' />
+          <Section size="md" heading='Target Milestone' explanation='One milestone should be marked as the target, which determines where the first date should be calculated when schedules are generated.' />
           <Group>
             <Field>
-              <Checkbox label="Pivot?" name="pivot" />
+              <Checkbox label="Target?" name="target" />
             </Field>
           </Group>
           <Section size="md" heading='Preceding Interval' explanation='Select how many days precede this milestone. The first milestone will always have an interval of zero days.' />

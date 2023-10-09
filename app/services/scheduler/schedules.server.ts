@@ -9,10 +9,10 @@ export { default as create } from '../id.server';
 
 import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
+import MilestoneService, { Milestone } from './milestones.server';
 
 export { Target, Weekday, toTarget } from './target';
-
-// import determineTargetDate from './due';
+import TargetService from './target';
 
 type GenerateProps = {
   legalEntityId: string;
@@ -81,8 +81,17 @@ const service = (u: User) => {
     [Frequency.Yearly]: (s: Date, e: Date) => [],
   };
 
-  const generatePeriods = async ({ legalEntity, start, end }: { legalEntity: LegalEntity, start: Date, end: Date }) => {
-    const { frequency: f, targetDay: due } = legalEntity;
+  type GeneratePeriodProps = { 
+    legalEntity: LegalEntity;
+    countries: Array<{ id: string, countries: Array<string>}>;
+    start: Date;
+    end: Date;
+  };
+
+  const generatePeriods = async ({ legalEntity, countries, start, end }: GeneratePeriodProps) => {
+    const targetService = TargetService(u);
+
+    const { frequency: f, target } = legalEntity;
 
     const frequency = f as Frequency;
     if (frequency === null) throw new Error('No schedule frequency specified');
@@ -90,31 +99,40 @@ const service = (u: User) => {
     const dates = datesFor[frequency](start, end);
 
     return Promise.all(dates.map(async (date: Date) => {
+      const targetDate = await targetService.determineTargetDate({ countries, date, frequency, target });
       return {
-        // targetDate: await determineTargetDate(),
-        name: nameFor[frequency](date)
+        targetDate,
+        name: nameFor[frequency](date),
       }
     }));
+  };
 
-    // console.log(dates, dates.map(titles.week));
-    // return Promise.all(datesFor[period](year, taxYear, periodEnd), async (date, index) => {
-    //   const { when, day } = Array.isArray(due) ? due.find(d => d.index === index % 2) : due;
-    //   return {
-    //     dueDate: await determineDue(country, date, period, when, day),
-    //     period: titleFor[period](date),
-    //   }
-    // });
+  const getTargetMilestoneForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }) => {
+    const { milestoneSetId: setId } = legalEntity;
+
+    const service = MilestoneService(u);
+    const milestones = await service.listMilestonesBySetOrDefault({ setId });
+    if (milestones.length === 0) throw new Error('No milestones found');
+    return milestones.find(m => m.target === true) || milestones.at(0);
+  };
+
+  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
+    const service = MilestoneService(u);
+    return service.getCountriesForMilestone({ milestone, legalEntityId });
   };
 
   const generate = async ({ legalEntityId, start, end }: GenerateProps) => {
     const service = LegalEntityService(u);
     const legalEntity = await service.getLegalEntity({ id: legalEntityId });
+    
+    const targetMilestone = await getTargetMilestoneForLegalEntity({ legalEntity });
+    if (targetMilestone === undefined) throw new Error('No target milestone');
+    const countries = await getCountriesForMilestone({ milestone: targetMilestone, legalEntityId });
 
     const dates = isAfter(start, end) ? { start: end, end: start } : { start, end };
+    const periods = await generatePeriods({ legalEntity, countries, ...dates });
 
-    const periods = await generatePeriods({ legalEntity, ...dates });
-
-    console.log(periods);
+    console.log(JSON.stringify(periods, null, 2));
   };
 
   return {

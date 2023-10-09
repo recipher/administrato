@@ -21,7 +21,6 @@ type ListOptions = {
 };
 
 type EntityOptions = {
-  entity: string;
   entityId: string;
 };
 
@@ -66,7 +65,7 @@ const service = (u: User) => {
   const reinstateHolidayById = async (id: string, entity: EntityOptions) => {
     if (entity) {
       const holiday = await getHolidayById({ id });
-      if (holiday.entity) {
+      if (holiday.entityId) {
         return db.sql<s.holidays.SQL>`DELETE FROM ${'holidays'} WHERE ${{id}}`.run(pool);
       }
     }
@@ -115,7 +114,7 @@ const service = (u: User) => {
       ORDER BY ${'date'} ASC`.run(pool);
   };
 
-  const listHolidaysByCountryForEntity = async ({ year, locality, entity, entityId }: ListOptions & EntityOptions) => {
+  const listHolidaysByCountryForEntity = async ({ year, locality, entityId }: ListOptions & EntityOptions) => {
     const holidays = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
       SELECT * FROM ${'holidays'} 
       WHERE 
@@ -126,7 +125,7 @@ const service = (u: User) => {
       SELECT * from ${'holidays'}
       WHERE 
         ${{locality}} AND 
-        ${{entity}} AND ${{entityId}} AND
+        ${{entityId}} AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`.run(pool);
 

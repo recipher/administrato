@@ -28,3 +28,10 @@ export const parseISO = (date: string) => {
 
   return new Date(Date.UTC(parseInt(y), parseInt(m)-1, parseInt(d)));
 };
+
+export const setDate = (date: Date, d: number, m?: number) => {
+  const copy = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  copy.setUTCDate(d);
+  if (m) copy.setUTCMonth(m);
+  return copy;
+};

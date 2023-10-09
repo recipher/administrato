@@ -29,8 +29,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const milestoneService = MilestoneService(u);
   const milestones = setId === null
-    ? milestoneService.getDefaultSet()
-    : milestoneService.getMilestonesBySet({ setId })
+    ? milestoneService.listMilestonesByDefaultSet()
+    : milestoneService.listMilestonesBySet({ setId })
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 

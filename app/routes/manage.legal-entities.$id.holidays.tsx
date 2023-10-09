@@ -49,7 +49,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (locality === undefined) return badRequest('Invalid legal entity data');
 
   const holidayService = HolidayService(u);
-  let holidays = await holidayService.listHolidaysByCountryForEntity({ locality, year, entity: 'legal-entity', entityId: id });
+  let holidays = await holidayService.listHolidaysByCountryForEntity({ locality, year, entityId: id });
 
   if (holidays.length === 0) {
     const synced = await holidayService.syncHolidays({ year, locality });
@@ -74,8 +74,8 @@ export async function action({ request }: ActionArgs) {
   };
 
   if (intent === "reinstate") {
-    const { holiday, entity: { id: entityId, type: entity }} = data;
-    await service.reinstateHolidayById(holiday.id, { entity, entityId });
+    const { holiday, entity: { id: entityId }} = data;
+    await service.reinstateHolidayById(holiday.id, { entityId });
     message = `Holiday Reinstated Successfully:${holiday.name}, ${year} has been reinstated.`;
   };
  
