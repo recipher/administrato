@@ -96,9 +96,7 @@ const service = (u: User) => {
     return holidays.flat().map(h => h.observed || h.date);
   };
 
-  const determinePrevious = async ({ countries, start, days = 1 }: DetermineProps) => {
-    const compare = (p: number, d: number) => p < d;
-
+  const determine = async ({ countries, start, days = 1 }: DetermineProps, { compare, find }: { compare: Function, find: Function }) => {
     const year = start.getUTCFullYear();
     
     const workingDays = WorkingDays.Standard; // getWorkingDays(countries);
@@ -109,7 +107,7 @@ const service = (u: User) => {
 
     if (days === 0) days = 1;
 
-    let date = previousDay(start), next = date;
+    let date = find(start), next = date;
 
     if (compare(next.getUTCFullYear(), start.getUTCFullYear())) {
       holidays = await listHolidays({ countries, year: next.getUTCFullYear() });
@@ -118,7 +116,7 @@ const service = (u: User) => {
     while (days > 0) {
       if (isWorkingDay(date, holidays, workingDays)) days--;
 
-      if (days > 0) next = previousDay(date);
+      if (days > 0) next = find(date);
 
       if (compare(next.getUTCFullYear(), date.getUTCFullYear())) {
         holidays = await listHolidays({ countries, year: next.getUTCFullYear() });
@@ -130,7 +128,13 @@ const service = (u: User) => {
     return date;
   };
 
-  return { determinePrevious };
+  const determinePrevious = (params: DetermineProps) =>
+    determine(params, { compare: (p: number, d: number) => p < d, find: previousDay });
+
+  const determineNext = (params: DetermineProps) =>
+    determine(params, { compare: (n: number, d: number) => n > d, find: nextDay });
+
+  return { determinePrevious, determineNext };
 };
 
 export default service;

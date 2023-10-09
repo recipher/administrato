@@ -11,6 +11,8 @@ import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
 import MilestoneService, { Milestone } from './milestones.server';
 
+import WorkingDayService from './working-days';
+
 export { Target, Weekday, toTarget } from './target';
 import TargetService from './target';
 
@@ -34,6 +36,9 @@ export enum Frequency {
 
 const range = (start: number, stop: number, step = 1) => 
   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
+
+const byIndexDesc = (l: Milestone, r: Milestone) => (l.index || 0) - (r.index || 0);
+const byIndexAsc = (l: Milestone, r: Milestone) => (r.index || 0) - (l.index || 0);
 
 const service = (u: User) => {
 
@@ -88,6 +93,11 @@ const service = (u: User) => {
     end: Date;
   };
 
+  type Period = {
+    targetDate: Array<Date>;
+    name: string;
+  };
+
   const generatePeriods = async ({ legalEntity, countries, start, end }: GeneratePeriodProps) => {
     const targetService = TargetService(u);
 
@@ -107,13 +117,13 @@ const service = (u: User) => {
     }));
   };
 
-  const getTargetMilestoneForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }) => {
+  const getMilestonesForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }) => {
     const { milestoneSetId: setId } = legalEntity;
 
     const service = MilestoneService(u);
     const milestones = await service.listMilestonesBySetOrDefault({ setId });
     if (milestones.length === 0) throw new Error('No milestones found');
-    return milestones.find(m => m.target === true) || milestones.at(0);
+    return milestones;
   };
 
   const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
@@ -121,18 +131,59 @@ const service = (u: User) => {
     return service.getCountriesForMilestone({ milestone, legalEntityId });
   };
 
+  const generateSchedule = async ({ legalEntity, milestones, periods }: { legalEntity: LegalEntity, milestones: Array<Milestone>, periods: Array<Period> }) => {
+    const workingDayService = WorkingDayService(u);
+
+    return Promise.all(periods.map(async period => {
+      const target = milestones.find(m => m.target === true) || milestones.at(0);
+      if (target === undefined) throw new Error("No target milestone");
+
+      const findBefore = (ms: Array<Milestone>) => ms.filter(m => (m.index || 0) >= (target.index || 0)).sort(byIndexDesc);
+      const findAfter =  (ms: Array<Milestone>) => ms.filter(m => (m.index || 0) <  (target.index || 0)).sort(byIndexAsc);
+        
+      // Calculate milestone dates before due date
+      let [ previous ] = period.targetDate;
+  
+      const before = await Promise.all(findBefore(milestones).map(async (milestone: Milestone) => {
+        const ms = { ...milestone, date: previous };
+  
+        if (milestone.interval !== undefined && !Number.isNaN(milestone.interval)) {
+          const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
+          previous = await workingDayService.determinePrevious({ countries, start: previous, days: milestone.interval || 0 });
+        }
+  
+        return ms;
+      }));
+
+      // Calculate milestone dates after due date
+      let [ next ] = period.targetDate;
+  
+      const after = await Promise.all(findAfter(milestones).map(async (milestone: Milestone) => {
+        const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
+        next = await workingDayService.determineNext({ countries, start: next, days: milestone.interval || 0 });
+        return { ...milestone, date: next };
+      }));
+  
+      const schedule = [ ...before, ...after ].sort(byIndexDesc);
+
+      return { period, schedule };
+    }));
+  };
+
   const generate = async ({ legalEntityId, start, end }: GenerateProps) => {
     const service = LegalEntityService(u);
     const legalEntity = await service.getLegalEntity({ id: legalEntityId });
     
-    const targetMilestone = await getTargetMilestoneForLegalEntity({ legalEntity });
+    const milestones = await getMilestonesForLegalEntity({ legalEntity });
+    const targetMilestone = milestones.find(m => m.target === true) || milestones.at(0);
     if (targetMilestone === undefined) throw new Error('No target milestone');
     const countries = await getCountriesForMilestone({ milestone: targetMilestone, legalEntityId });
 
     const dates = isAfter(start, end) ? { start: end, end: start } : { start, end };
     const periods = await generatePeriods({ legalEntity, countries, ...dates });
+    const schedule = await generateSchedule({ legalEntity, milestones, periods });
 
-    console.log(JSON.stringify(periods, null, 2));
+    console.log(JSON.stringify(schedule, null, 2));
   };
 
   return {
