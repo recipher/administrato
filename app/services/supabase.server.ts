@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { ulid } from 'ulid';
 
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './settings.server';
-import { UploadHandler, UploadHandlerPart } from '@remix-run/node';
+import { UploadHandler } from '@remix-run/node';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

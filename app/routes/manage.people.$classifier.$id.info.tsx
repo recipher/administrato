@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import PersonService from '~/services/manage/people.server';
+import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
 import CountryService from '~/services/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -16,8 +16,8 @@ import { configs } from './manage.people';
 
 export const handle = {
   name: "info",
-  breadcrumb: ({ worker, current, name }: { worker: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/workers/${worker?.id}/info`} name={name} current={current} />
+  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
