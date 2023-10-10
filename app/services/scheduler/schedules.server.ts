@@ -1,6 +1,7 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
+import { mapSeries } from 'bluebird';
 
 import { format, getWeek, isAfter, differenceInCalendarWeeks, addWeeks, differenceInCalendarMonths, addMonths, yearsToMonths } from 'date-fns';
 import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate } from './date';
@@ -95,6 +96,12 @@ const service = (u: User) => {
       range(11, months(s, e)).map(month => addMonths(startOfMonth(s), month)),
   };
 
+  type Period = {
+    date: Date;
+    targetDate: Array<Date>;
+    name: string;
+  };
+
   type GeneratedScheduleDate = {
     id: string;
     date?: Date;
@@ -105,10 +112,7 @@ const service = (u: User) => {
   type GSD = GeneratedScheduleDate;
 
   type GeneratedSchedule = {
-    period: {
-      targetDate: Array<Date>;
-      name: string;
-    };
+    period: Period;
     dates: Array<GeneratedScheduleDate>;
   };
 
@@ -119,16 +123,11 @@ const service = (u: User) => {
     end: Date;
   };
 
-  type Period = {
-    targetDate: Array<Date>;
-    name: string;
-  };
-
   const range = (start: number, stop: number, step = 1) => 
     Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
 
-  const byIndexDesc = (l: GSD, r: GSD) => l.index - r.index;
-  const byIndexAsc = (l: GSD, r: GSD) => r.index - l.index;
+  const byIndexAsc = (l: GSD, r: GSD) => l.index - r.index;
+  const byIndexDesc = (l: GSD, r: GSD) => r.index - l.index;
 
   const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
     const service = MilestoneService(u);
@@ -148,6 +147,7 @@ const service = (u: User) => {
     return Promise.all(dates.map(async (date: Date) => {
       const targetDate = await targetService.determineTargetDate({ countries, date, frequency, target });
       return {
+        date,
         targetDate,
         name: nameFor[frequency](date),
       }
@@ -161,32 +161,32 @@ const service = (u: User) => {
       const target = milestones.find(m => m.target === true) || milestones.at(0);
       if (target === undefined) throw new Error("No target milestone");
 
-      const findBefore = (ms: Array<Milestone>) => ms.filter(m => m.index >= target.index).sort(byIndexDesc);
-      const findAfter =  (ms: Array<Milestone>) => ms.filter(m => m.index <  target.index).sort(byIndexAsc);
+      const findBefore = (ms: Array<Milestone>) => ms.filter(m => m.index <= target.index).sort(byIndexDesc);
+      const findAfter =  (ms: Array<Milestone>) => ms.filter(m => m.index >  target.index).sort(byIndexAsc);
         
       // Calculate milestone dates before due date
       let [ previous ] = period.targetDate;
   
-      const before = await Promise.all(findBefore(milestones).map(async (milestone: Milestone) => {
+      const before = await mapSeries(findBefore(milestones), async (milestone: Milestone) => {
         const ms = { ...milestone, date: previous };
-  
+
         if (milestone.interval !== undefined && !Number.isNaN(milestone.interval)) {
           const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
           previous = await workingDayService.determinePrevious({ countries, start: previous, days: milestone.interval || 0 });
         }
   
         return { id: ms.id, date: ms.date, target: ms.target, index: ms.index };
-      }));
+      });
 
       // Calculate milestone dates after due date
       let [ next ] = period.targetDate;
   
-      const after = await Promise.all(findAfter(milestones).map(async (milestone: Milestone) => {
+      const after = await mapSeries(findAfter(milestones), async (milestone: Milestone) => {
         const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
         next = await workingDayService.determineNext({ countries, start: next, days: milestone.interval || 0 });
         const ms = { ...milestone, date: next };
-        return { id: ms.id, date: ms.date, target: ms.target, index: ms.index };
-      }));
+        return { id: ms.id, name: ms.identifier, date: ms.date, target: ms.target, index: ms.index };
+      });
   
       const dates = [ ...before, ...after ].sort(byIndexDesc);
 
@@ -195,19 +195,17 @@ const service = (u: User) => {
   };
 
   const addSchedule = async (schedule: s.schedules.Insertable, txOrPool: TxOrPool = pool) => {
-    const [inserted] = await db.sql<s.schedules.SQL, s.schedules.Selectable[]>`
-      INSERT INTO ${'schedules'} (${db.cols(schedule)})
-      VALUES (${db.vals(schedule)}) RETURNING *
-    `.run(txOrPool);
-    return inserted;
+    return await db.upsert('schedules', schedule, 
+      [ 'legalEntityId', 'date', 'status' ],
+      { updateColumns: [ 'legalEntityId', 'name', 'date', 'status', 'version' ] }
+    ).run(txOrPool);
   };
 
   const addScheduleDate = async (scheduleDate: s.scheduleDates.Insertable, txOrPool: TxOrPool = pool) => {
-    const [inserted] = await db.sql<s.scheduleDates.SQL, s.scheduleDates.Selectable[]>`
-      INSERT INTO ${'scheduleDates'} (${db.cols(scheduleDate)})
-      VALUES (${db.vals(scheduleDate)}) RETURNING *
-    `.run(txOrPool);
-    return inserted;
+    return await db.upsert('scheduleDates', scheduleDate, 
+      [ 'scheduleId', 'milestoneId' ],
+      { updateColumns: [ 'scheduleId', 'milestoneId', 'date', 'status', 'index', 'target' ] }
+    ).run(txOrPool);
   };
 
   const saveScheduleSet = async ({ set, legalEntity }: { set: Array<GeneratedSchedule>, legalEntity: LegalEntity }) => {
@@ -216,7 +214,7 @@ const service = (u: User) => {
         const { id } = await addSchedule(create({
           legalEntityId: legalEntity.id,
           name: schedule.period.name,
-          date: schedule.period.targetDate,
+          date: schedule.period.date,
           status: Status.Generated,
           version: 0,
         }), tx);
@@ -255,7 +253,8 @@ const service = (u: User) => {
   const listSchedulesByLegalEntity = async ({ legalEntityId, year }: { legalEntityId: string; year: number }) => {
     return db.sql<s.schedules.SQL | s.scheduleDates.SQL, s.schedules.Selectable[] & { scheduleDates: s.scheduleDates.Selectable[] }>`
       SELECT ${'schedules'}.*, jsonb_agg(${"scheduleDates"}.*) AS ${'scheduleDates'}
-      FROM ${'schedules'} JOIN ${'scheduleDates'}
+      FROM ${'schedules'} 
+      LEFT JOIN ${'scheduleDates'}
       ON ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
       WHERE 
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 

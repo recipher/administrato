@@ -82,7 +82,7 @@ export default function Provider() {
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
   ];
 
-  const icon = (logo.length && logo) || <WalletIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />;
+  const icon = (logo?.length && logo) || <WalletIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />;
 
   return (
     <>

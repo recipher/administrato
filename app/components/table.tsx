@@ -92,7 +92,9 @@ export default function Table({ data, columns, actions, showHeadings = false, id
             {showHeadings && data.length > 0 && <tr>
               {columns.map((column: ColumnProps, index) => (
                 <th key={index} scope="col" className={classnames(column.headingClassName || "", column.stack ? `hidden ${column.stack}:table-cell` : "", "py-3.5 pr-3 text-left text-sm font-medium text-gray-900")}>
-                  {t(column.label || column.name)}
+                  { typeof (column.label || column.name) === 'string' 
+                      ? t(column.label || column.name)
+                      : column.label || column.name}
                 </th>
               ))}
               <th scope="col" className="relative py-3.5 pl-3 pr-0">
@@ -102,10 +104,10 @@ export default function Table({ data, columns, actions, showHeadings = false, id
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {data.map((item) => (
-              <tr key={item[idKey]} className="group">
+              <tr key={item[idKey]} className="group text-sm font-normal text-gray-900">
                 {columns.map((column: ColumnProps, ci) => (
-                  <td key={ci} className={classnames(column.stack ? `hidden ${column.stack}:table-cell` : "", column.className || "", 
-                                          "py-4 pr-3 text-sm font-medium text-gray-900")}>
+                  <td key={ci} className={classnames(column.stack ? `hidden ${column.stack}:table-cell` : "",  
+                                          "py-4 pr-3", column.className || "")}>
                     {column.display ? column.display(item, column) : item[column.name]}
                     {ci === 0 && columns.filter(c => c.stack !== undefined).length > 0 && (
                       <dl className="font-normal lg:hidden">

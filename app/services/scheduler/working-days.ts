@@ -103,11 +103,15 @@ const service = (u: User) => {
 
     let holidays = await listHolidays({ countries, year });
 
+    // console.log('initial', start, days);
+
     if (days === 0 && isWorkingDay(start, holidays, workingDays)) return start;
 
     if (days === 0) days = 1;
 
     let date = find(start), next = date;
+
+    // console.log('next', date);
 
     if (compare(next.getUTCFullYear(), start.getUTCFullYear())) {
       holidays = await listHolidays({ countries, year: next.getUTCFullYear() });
@@ -115,6 +119,8 @@ const service = (u: User) => {
 
     while (days > 0) {
       if (isWorkingDay(date, holidays, workingDays)) days--;
+
+      // console.log('is working', isWorkingDay(date, holidays, workingDays), date, days);
 
       if (days > 0) next = find(date);
 
@@ -124,7 +130,7 @@ const service = (u: User) => {
 
       date = next;
     };
-
+// console.log('return', date);
     return date;
   };
 

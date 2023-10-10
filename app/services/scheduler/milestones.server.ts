@@ -64,7 +64,7 @@ const service = (u: User) => {
   const listMilestonesByDefaultSet = async ({ sortDirection }: QueryOptions = { sortDirection: DESC }) => {
     if (sortDirection == null) sortDirection = DESC;
     const milestones = await db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
+      SELECT ${'milestones'}.* FROM ${'milestones'} 
       LEFT JOIN ${'milestoneSets'} ON ${'milestoneSets'}.${'id'} = ${'milestones'}.${'setId'}
       WHERE ${'milestoneSets'}.${'isDefault'} = TRUE
       ORDER BY ${'index'} ${db.raw(sortDirection)}
@@ -73,7 +73,7 @@ const service = (u: User) => {
     if (milestones.length) return milestones;
 
     return db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
-      SELECT * FROM ${'milestones'} 
+      SELECT ${'milestones'}.* FROM ${'milestones'} 
       WHERE ${'setId'} = (
         SELECT ${'id'} 
         FROM ${'milestoneSets'} 

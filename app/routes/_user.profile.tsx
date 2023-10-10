@@ -85,7 +85,9 @@ const Languages = () => {
   const [ current, setCurrent ] = useState<string | undefined>();
 
   const languages = i18n.supportedLngs
-    .map((lng: string) => lng === 'en' ? { lng, country: 'us' } : { lng, country: lng });
+    .map((lng: string) => lng === 'en' 
+      ? { lng, country: 'us' }
+      : { lng, country: lng });
 
   const setLanguage = ((lng: string) => {
     const t = getFixedT(lng, "language"); // Have to use the new language to translate

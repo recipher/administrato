@@ -51,6 +51,11 @@ const Info = () => {
               }).join(' and ')}
           </Field>
           <Field title="Provider">
+            <Link className="text-indigo-900" to={`/milestones/${legalEntity.milestoneSetId}/edit`}>
+              {legalEntity.milestoneSetId}
+            </Link>
+          </Field>
+          <Field title="Provider">
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>
               {legalEntity.provider}
             </Link>

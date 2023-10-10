@@ -3,6 +3,8 @@ import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-r
 import { useTranslation } from 'react-i18next';
 import { useLocale } from 'remix-i18next';
 
+import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid';
+
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
@@ -16,6 +18,8 @@ import Tabs from '~/components/tabs';
 import Table, { ColumnProps } from '~/components/table';
 
 import toNumber from '~/helpers/to-number';
+import pluralize from '~/helpers/pluralize';
+import classnames from '~/helpers/classnames';
 
 export const handle = {
   name: "schedules",
@@ -67,13 +71,22 @@ const Schedules = () => {
   
   const targetClassName = (m: Milestone) => m.target === true ? "text-indigo-800 font-semibold": "";
 
+  const labelFor = (m: Milestone) => m.index === 0 
+    ? m.description 
+    : <span className={classnames(m.interval === 1 ? "-ml-[5rem]" : "-ml-[5.5rem]")}>
+        <ArrowLongLeftIcon className="h-4 w-4 inline" />
+        <span className="text-sm font-normal">{m.interval} {pluralize('day', m.interval as number)}</span>
+        <ArrowLongRightIcon className="h-4 w-4 inline" />
+        <span className="ml-3">{m.description}</span>
+      </span>;
+
   const columns = [
-    { name: "name", label: "Period" },
-      ...milestones.map((m: Milestone) => ({ name: m.id, label: `(${m.interval}) ${m.description}`, 
+    { name: "name", label: "Period", className: "text-md font-medium" },
+      ...milestones.map((m: Milestone) => ({ name: m.id, label: labelFor(m), 
         headingClassName: targetClassName(m), className: targetClassName(m),
         display: (schedule: ScheduleWithDates, column: ColumnProps) => {
-          const date = schedule.scheduleDates.find(d => d.milestoneId === column.name)?.date;
-          return date && new Date(date).toLocaleDateString(locale);
+          const date = schedule.scheduleDates.find(d => d?.milestoneId === column.name)?.date;
+          return date && new Date(date).toLocaleDateString(locale === 'en' ? 'gb' : locale);
         }})),
     { name: "status", label: "Status", display: ({ status }: { status: string }) => t(status) },
   ];

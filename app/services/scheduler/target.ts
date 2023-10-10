@@ -111,7 +111,6 @@ type Props = {
 };
 
 const service = (u: User) => {
-
   const determineTargetDate = async ({ countries, date, frequency, target }: Props) => {
     const workingDayService = WorkingDayService(u);
 
