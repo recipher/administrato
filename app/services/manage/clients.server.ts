@@ -26,7 +26,7 @@ type SearchOptions = {
   serviceCentreId?: string | null | undefined;
 } & BaseSearchOptions;
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const getLatest = async (client: s.clients.Insertable) => {
     const query = client.parentId 
       ? db.sql<db.SQL>`${'parentId'} = ${db.param(client.parentId)}`
@@ -174,4 +174,4 @@ const service = (u: User) => {
   };
 };
 
-export default service;
+export default Service;

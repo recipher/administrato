@@ -17,4 +17,4 @@ create table
     constraint scheduleDates_milestoneId_fkey foreign key ("milestoneId") references milestones (id) on delete cascade,
     constraint scheduleDates_scheduleId_milestoneId_uniq unique ("scheduleId", "milestoneId")
   ) tablespace pg_default;
-alter table public."scheduleDates" ENABLE ROW LEVEL SECURITY;
+alter table public."scheduleDates" enable row level security;

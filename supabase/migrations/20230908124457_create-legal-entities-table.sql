@@ -22,4 +22,4 @@ create table
     constraint legalEntities_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id),
     constraint legalEntities_milestoneSetId_fkey foreign key ("milestoneSetId") references "milestoneSets" (id)
   ) tablespace pg_default;
-alter table public."legalEntities" ENABLE ROW LEVEL SECURITY;
+alter table public."legalEntities" enable row level security;

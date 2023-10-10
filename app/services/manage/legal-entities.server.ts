@@ -24,7 +24,7 @@ type SearchOptions = {
   providerId?: string | null | undefined;
 } & BaseSearchOptions;
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const getLatest = async (legalEntity: s.legalEntities.Insertable) => {
     const query = db.sql<db.SQL>`${'serviceCentreId'} = ${db.param(legalEntity.serviceCentreId)}`;
 
@@ -164,4 +164,4 @@ const service = (u: User) => {
   };
 };
 
-export default service;
+export default Service;

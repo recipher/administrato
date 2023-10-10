@@ -14,10 +14,10 @@ import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
 import MilestoneService, { Milestone } from './milestones.server';
 
-import WorkingDayService from './working-days';
+import WorkingDayService from './working-days.server';
 
-export { Target, Weekday, toTarget } from './target';
-import TargetService from './target';
+export { Target, Weekday, toTarget } from './target.server';
+import TargetService from './target.server';
 
 export type Schedule = s.schedules.Selectable;
 export type ScheduleDate = s.scheduleDates.Selectable;
@@ -48,7 +48,7 @@ export enum Status {
   Broken = 'broken',
 };
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const names = {
     week: (date: Date) => `Week ${getWeek(date)}`,
     month: (date: Date) => format(adjustForUTCOffset(date), 'LLLL'),
@@ -267,4 +267,4 @@ const service = (u: User) => {
   return { generate, listSchedulesByLegalEntity };
 };
 
-export default service;
+export default Service;

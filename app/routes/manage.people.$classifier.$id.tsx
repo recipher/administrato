@@ -8,7 +8,9 @@ import PersonService, { type Person, Classifier } from '~/services/manage/people
 import Header from '~/components/header';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
+
+import { manage } from '~/auth/permissions';
 
 export const handle = {
   name: ({ person }: { person: Person }) => `${person?.firstName} ${person?.lastName}`,
@@ -42,13 +44,19 @@ export default function Person() {
     { name: 'documents', to: 'documents' },
   ];
 
+  const actions = [
+    { title: 'add-document', to: 'add-document', default: true, icon: PlusIcon, permission: manage.edit.worker },
+    { title: 'add-contact', to: 'add-contact', permission: manage.edit.worker },
+    { title: 'add-salary', to: 'add-salary', permission: manage.edit.worker },
+  ];
+
   const icon = person.photo 
     ? person.photo 
     : <UserCircleIcon className="h-12 w-12 text-indigo-300" aria-hidden="true" />
 
   return (
     <>
-      <Header title={`${person.firstName} ${person.lastName}`} 
+      <Header title={`${person.firstName} ${person.lastName}`} actions={actions} group={true}
         tabs={tabs.filter((tab) => tab.classifier === undefined || tab.classifier.includes(classifier))} icon={icon} />
       <Outlet />
     </>

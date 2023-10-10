@@ -3,6 +3,7 @@ export { default as Checkbox } from './checkbox';
 export { default as CheckboxGroup } from './checkbox-group';
 export { default as Combo } from './combo';
 export { default as DatePicker, Calendar } from './date';
+export { default as File } from './file';
 export { default as Image } from './image';
 export { default as Hidden } from './hidden';
 export { default as Input } from './input';

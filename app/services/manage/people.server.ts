@@ -69,7 +69,7 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
   return db.sql<db.SQL>`(${byKeys})`;
 };
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const getLatestForClient = async (person: s.people.Insertable) => {
     const query = db.sql<db.SQL>`${'clientId'} = ${db.param(person.clientId)}`;
 
@@ -249,4 +249,4 @@ const service = (u: User) => {
   };
 };
 
-export default service;
+export default Service;

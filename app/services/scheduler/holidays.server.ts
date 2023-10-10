@@ -36,7 +36,7 @@ type QueryOptions = {
 const isSameDate = (left: Date, right: Date) =>
   isSameDay(left, right) && isSameMonth(left, right) && isSameYear(left, right);
  
-const service = (u: User) => {
+const Service = (u: User) => {
   const addHoliday = async (holiday: s.holidays.Insertable) => {
     const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
       INSERT INTO ${'holidays'} (${db.cols(holiday)})
@@ -171,4 +171,4 @@ const service = (u: User) => {
   };
 };
 
-export default service;
+export default Service;

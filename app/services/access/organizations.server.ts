@@ -8,7 +8,7 @@ type Id = {
 
 export type Org = { id: string, auth0id: string, displayName: string };
 
-const service = () => {
+const Service = () => {
 
   const toOrganization = ({ id: auth0id, name, display_name: displayName, metadata: { id }}: any) => ({
     id,
@@ -28,4 +28,4 @@ const service = () => {
   return { getOrganization, listOrganizations };
 };
 
-export default service;
+export default Service;

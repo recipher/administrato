@@ -12,4 +12,4 @@ create table
     constraint schedules_legalEntityId_fkey foreign key ("legalEntityId") references "legalEntities" (id) on delete cascade,
     constraint schedules_legalEntityId_date_status_uniq unique ("legalEntityId", date, status)
   ) tablespace pg_default;
-alter table public.schedules ENABLE ROW LEVEL SECURITY;
+alter table public.schedules enable row level security;

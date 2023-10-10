@@ -1,12 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
-import { randomUUID } from 'crypto';
+import { ulid } from 'ulid';
 
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './settings.server';
-import { UploadHandler } from '@remix-run/node';
+import { UploadHandler, UploadHandlerPart } from '@remix-run/node';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function convertToFile(data: AsyncIterable<Uint8Array>) {
+async function convertToImageFile(data: AsyncIterable<Uint8Array>) {
   const chunks = [];
   for await (const chunk of data) {
     chunks.push(chunk);
@@ -26,6 +26,15 @@ async function convertToFile(data: AsyncIterable<Uint8Array>) {
     .toBuffer();
 };
 
+async function convertToFile(data: AsyncIterable<Uint8Array>) {
+  const chunks = [];
+  for await (const chunk of data) {
+    chunks.push(chunk);
+  }
+
+  return Buffer.concat(chunks);
+};
+
 const getPublicFileURL = (filePath: string, bucket: string) => {
   const { data: url } = supabase
     .storage.from(bucket)
@@ -40,8 +49,11 @@ type UploadOptions = {
   contentType: string;
 };
 
+const isImage = (contentType: string) => contentType.startsWith('image');
+
 async function uploadFile(data: AsyncIterable<Uint8Array>, { filename, contentType, bucket }: UploadOptions) {
-  const file = await convertToFile(data);
+  const convert = isImage(contentType) ? convertToImageFile : convertToFile;
+  const file = await convert(data);
 
   const { error } = await supabase
     .storage.from(bucket)
@@ -58,7 +70,7 @@ export function createSupabaseUploadHandler({ bucket }: { bucket: string }): Upl
     if (!filename) return undefined;
 
     return uploadFile(data, {
-      filename: randomUUID(), contentType, bucket
+      filename: ulid(), contentType, bucket
     });
   };
 };

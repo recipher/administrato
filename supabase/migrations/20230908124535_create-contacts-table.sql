@@ -3,6 +3,7 @@ create table
     id text not null,
     value text not null,
     classifier text not null,
+    sub text null,
     "isPrimary" boolean null,
     "entityId" text not null,
     entity text not null,
@@ -10,4 +11,4 @@ create table
     "updatedAt" timestamp with time zone not null default now(),
     constraint contact_pkey primary key (id)
   ) tablespace pg_default;
-alter table public.contacts ENABLE ROW LEVEL SECURITY;
+alter table public.contacts enable row level security;

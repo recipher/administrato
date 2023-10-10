@@ -10,4 +10,4 @@ create table
     "updatedAt" timestamp with time zone not null default now(),
     constraint authorizations_pkey primary key (id)
   ) tablespace pg_default;
-alter table public.authorizations ENABLE ROW LEVEL SECURITY;
+alter table public.authorizations enable row level security;

@@ -16,4 +16,4 @@ create table
     constraint clients_parentId_fkey foreign key ("parentId") references clients (id) on delete cascade,
     constraint clients_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id)
   ) tablespace pg_default;
-alter table public.clients ENABLE ROW LEVEL SECURITY;
+alter table public.clients enable row level security;

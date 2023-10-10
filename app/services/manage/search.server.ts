@@ -10,7 +10,7 @@ import { type User } from '../access/users.server';
 import { whereKeys, extractKeys } from './shared.server';
 import { whereLegalEntityKeys, whereClientKeys } from './people.server';
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const searchProviders = (search: SearchOptions) => {  
     const searchQuery = ({ search }: SearchOptions) => {
       return search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
@@ -94,4 +94,4 @@ const service = (u: User) => {
   return { search };
 }
 
-export default service;
+export default Service;

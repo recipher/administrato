@@ -22,7 +22,7 @@ type KeyQueryOptions = BaseKeyQueryOptions & {
 
 export type ServiceCentre = s.serviceCentres.Selectable & { groupCount?: number };
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const getLatest = async (parentId: string | null) => {
     const whereParent = parentId
       ? db.sql`${'parentId'} = ${db.param(parentId)}`
@@ -156,4 +156,4 @@ const service = (u: User) => {
   };
 };
 
-export default service;
+export default Service;

@@ -13,4 +13,4 @@ create table
     "updatedAt" timestamp with time zone not null default now(),
     constraint providers_pkey primary key (id)
   ) tablespace pg_default;
-alter table public.providers ENABLE ROW LEVEL SECURITY;
+alter table public.providers enable row level security;

@@ -14,4 +14,4 @@ create table
     constraint milestones_pkey primary key (id),
     constraint milestones_setId_fkey foreign key ("setId") references "milestoneSets" (id) on delete cascade
   ) tablespace pg_default;
-alter table public."milestones" ENABLE ROW LEVEL SECURITY;
+alter table public."milestones" enable row level security;

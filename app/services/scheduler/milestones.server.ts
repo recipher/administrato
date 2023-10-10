@@ -17,7 +17,7 @@ import { TxOrPool } from '../types';
 export type Milestone = s.milestones.Selectable;
 export type MilestoneSet = s.milestoneSets.Selectable & { milestones: Array<Milestone>};
 
-const service = (u: User) => {
+const Service = (u: User) => {
   const addMilestoneSet = async (milestoneSet: s.milestoneSets.Insertable) => {
     const [inserted] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       INSERT INTO ${'milestoneSets'} (${db.cols(milestoneSet)})
@@ -265,4 +265,4 @@ const service = (u: User) => {
   };
 };
 
-export default service;
+export default Service;

@@ -38,7 +38,7 @@ export type BasicUser = {
   settings: any;
 };
 
-const service = (u?: User) => {
+const Service = (u?: User) => {
   const organization = u?.organization;
 
   const toUser = ({ user_id: id, name, picture, email, last_login: lastLogin, user_metadata: settings }: any) => ({
@@ -291,4 +291,4 @@ const service = (u?: User) => {
   };
 };
 
-export default service;
+export default Service;

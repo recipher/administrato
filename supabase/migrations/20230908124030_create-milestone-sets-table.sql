@@ -7,4 +7,4 @@ create table
     "updatedAt" timestamp with time zone not null default now(),
     constraint milestoneSets_pkey primary key (id)
   ) tablespace pg_default;
-alter table public."milestoneSets" ENABLE ROW LEVEL SECURITY;
+alter table public."milestoneSets" enable row level security;

@@ -13,4 +13,4 @@ create table
     constraint holiday_pkey primary key (id),
     constraint holidays_locality_fkey foreign key (locality) references localities ("isoCode")
   ) tablespace pg_default;
-alter table public.holidays ENABLE ROW LEVEL SECURITY;
+alter table public.holidays enable row level security;

@@ -23,4 +23,4 @@ create table
     constraint people_clientId_fkey foreign key ("clientId") references clients (id) on delete set null,
     constraint people_legalEntityId_fkey foreign key ("legalEntityId") references "legalEntities" (id) on delete set null
   ) tablespace pg_default;
-alter table public.people ENABLE ROW LEVEL SECURITY;
+alter table public.people enable row level security;

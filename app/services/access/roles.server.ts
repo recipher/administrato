@@ -20,7 +20,7 @@ type Id = {
   id: string;
 };
 
-const service = () => {
+const Service = () => {
   const getRole = async ({ id }: Id) => {
     return client.getRole({ id });
   };
@@ -68,4 +68,4 @@ const service = () => {
   };
 };
 
-export default service;
+export default Service;
