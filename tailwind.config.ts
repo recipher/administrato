@@ -13,6 +13,10 @@ export default {
   },
   safelist: [
     'fill-indigo-600',
+    'opacity-50',
+    'opacity-60',
+    'opacity-70',
+    'opacity-80',
     'bg-red-50',
     'bg-yellow-50',
     'bg-blue-50',

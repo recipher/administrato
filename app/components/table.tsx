@@ -20,6 +20,7 @@ type ActionProps = {
   to?: string;
   onClick?: Function;
   className?: Function;
+  row?: boolean;
 };
 
 type Props = {
@@ -48,6 +49,10 @@ const ContextMenu = ({ actions, item }: { actions: Array<ActionProps>, item: any
   const { t } = useTranslation();
   const navigate = useNavigate();
   
+  actions = actions?.filter(action => !action.row);
+
+  if (actions.length === 0) return;
+
   return (
     <Menu as="div" className="relative flex-none">
       <Menu.Button className="-m-2.5 block py-2.5 text-gray-500 hover:text-gray-900 outline-none">
@@ -84,6 +89,8 @@ const ContextMenu = ({ actions, item }: { actions: Array<ActionProps>, item: any
 export default function Table({ data, columns, actions, showHeadings = false, idKey="id" }: Props) {
   const { t } = useTranslation();
 
+  const rowAction = actions?.find(action => action.row === true);
+
   return (
     <div className="px-4">
       <div className="-mx-4 mt-3 sm:-mx-4">
@@ -104,7 +111,8 @@ export default function Table({ data, columns, actions, showHeadings = false, id
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {data.map((item) => (
-              <tr key={item[idKey]} className="group text-sm font-normal text-gray-900">
+              <tr key={item[idKey]} onClick={() => rowAction?.onClick && rowAction?.onClick(item)}
+                className={classnames(rowAction ? "cursor-pointer" : "", "group text-sm font-normal text-gray-900")}>
                 {columns.map((column: ColumnProps, ci) => (
                   <td key={ci} className={classnames(column.stack ? `hidden ${column.stack}:table-cell` : "",  
                                           "py-4 pr-3", column.className || "")}>
@@ -127,7 +135,9 @@ export default function Table({ data, columns, actions, showHeadings = false, id
                         <ContextMenu actions={actions} item={item} />
                       </td>
                       <td className="py-4 pl-3 text-right text-sm hidden sm:table-cell">
-                        {actions.map((action: ActionProps) => <Action key={action.name} action={action} item={item} />)}
+                        {actions.filter(action => !action.row)
+                          .map((action: ActionProps) => 
+                            <Action key={action.name} action={action} item={item} />)}
                       </td>
                     </>
                   : <td>{' '}</td>}
@@ -137,6 +147,6 @@ export default function Table({ data, columns, actions, showHeadings = false, id
         </table>
       </div>
     </div>
-  )
-}
+  );
+};
               
