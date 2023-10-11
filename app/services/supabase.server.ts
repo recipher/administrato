@@ -75,4 +75,8 @@ export function createSupabaseUploadHandler({ bucket }: { bucket: string }): Upl
   };
 };
 
+export function download({ bucket, fileURL }: { bucket: string, fileURL: string }) {
+  return supabase.storage.from(bucket).download(fileURL);
+};
+
 export default supabase;
