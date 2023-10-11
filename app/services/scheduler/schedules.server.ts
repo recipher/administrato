@@ -251,7 +251,10 @@ const Service = (u: User) => {
     await saveScheduleSet({ set, legalEntity });
   };
 
-  const listSchedulesByLegalEntity = async ({ legalEntityId, year }: { legalEntityId: string; year: number }) => {
+  type ListProps = { legalEntityId: string; year: number, status: Status | null };
+
+  const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Generated }: ListProps) => {
+    if (!status) status = Status.Generated;
     return db.sql<s.schedules.SQL | s.scheduleDates.SQL, s.schedules.Selectable[] & { scheduleDates: s.scheduleDates.Selectable[] }>`
       SELECT ${'schedules'}.*, jsonb_agg(${"scheduleDates"}.*) AS ${'scheduleDates'}
       FROM ${'schedules'} 
@@ -259,7 +262,8 @@ const Service = (u: User) => {
       ON ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
       WHERE 
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
-        DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)}
+        DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)} AND
+        ${'schedules'}.${'status'} = ${db.param(status)}
       GROUP BY ${'schedules'}.${'id'}
       ORDER BY ${'schedules'}.${'date'} ASC
     `.run(pool);

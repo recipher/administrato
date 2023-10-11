@@ -19,7 +19,7 @@ type Props = {
   buildTo?(props: ToProps): string;
 };
 
-export const ListItem = ({ className = "", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
+export const ListItem = ({ className = "text-md font-semibold", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
   if (typeof image === "string") 
     image = image.length 
       ? <Image src={image} className="h-12 w-12 rounded-full" />
@@ -29,7 +29,7 @@ export const ListItem = ({ className = "", image, data, sub }: { className?: str
     <>
       {image}
       <div className={classnames(className, "min-w-0 flex-auto")}>
-        <p className="text-md font-semibold leading-6 text-gray-900">
+        <p className="leading-6 text-gray-900">
           {data}
         </p>
         <p className="mt-1 flex text-sm leading-5 text-gray-500">

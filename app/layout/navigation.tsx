@@ -34,7 +34,7 @@ export const navigation = [
   { name: 'scheduler', to: '/schedules', icon: CalendarDaysIcon, permission: scheduler.read.schedule,
     children: [
       { name: 'summary', to: '/schedules/summary' },
-      { name: 'schedules', to: '/schedules' },
+      { name: 'schedules', to: '/schedules/legal-entities' },
       { name: 'approvals', to: '/schedules/approvals' },
       { name: 'settings', to: '/schedules/settings' },
     ]

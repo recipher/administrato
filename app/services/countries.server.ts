@@ -39,9 +39,11 @@ const service = (u?: User) => {
     const codes = isoCodes.map(code => `'${code}'`).join(',');
 
     const localities = await db.sql<s.localities.SQL, s.localities.Selectable[]>`
-      SELECT ${'localities'}.${'isoCode'}, p.${'isoCode'} AS "parentIsoCode" FROM ${'localities'} 
-      LEFT JOIN ${'localities'} AS p ON ${'localities'}.${'parent'} = p.${'isoCode'}
-      WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
+      SELECT ${'localities'}.${'isoCode'}, p.${'isoCode'} AS "parentIsoCode" 
+      FROM ${'localities'} 
+      LEFT JOIN ${'localities'} AS p 
+      ON ${'localities'}.${'parent'} = p.${'isoCode'}
+      WHERE ${'localities'}.${'isoCode'} IN (${db.param(codes)})
     `.run(pool);
 
     return localities.map((locality: any) => {

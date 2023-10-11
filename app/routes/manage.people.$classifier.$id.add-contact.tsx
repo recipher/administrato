@@ -71,10 +71,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { classifier: { id: contactClassifier },  ...data }} = result;
+  const { data: { 
+    classifier: { id: contactClassifier }, 
+    sub: subData, 
+    ...data }} = result;
   
+  // @ts-ignore
+  const sub = subData.hasOwnProperty('id') ? subData.id : subData;
+
   const service = ContactService(u);
-  await service.addContact(create({ entityId: id, entity: classifier, classifier: contactClassifier, ...data }));
+  await service.addContact(create({ entityId: id, entity: classifier, sub, classifier: contactClassifier, ...data }));
   
   return redirect('../contacts');
 };

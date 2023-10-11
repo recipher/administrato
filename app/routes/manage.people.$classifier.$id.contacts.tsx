@@ -39,11 +39,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Contacts = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("contacts");
   const { person, contacts } = useLoaderData();
 
-  const Item = (contact: Contact) => <ListItem data={contact.value} />;
-  const Context = (contact: Contact) => <ListContext />;
+  const Item = (contact: Contact) => <ListItem data={<a>{contact.value}</a>} className="font-medium"  />;
+  const Context = (contact: Contact) => <ListContext data={t(contact.sub || "")} sub={t(contact.classifier)} select={false} />;
 
   const name = `${person.firstName} ${person.lastName}`;
 

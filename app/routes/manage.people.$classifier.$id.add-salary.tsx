@@ -36,12 +36,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 const validator = withZod(
   zfd.formData({
-    firstName: z
+    amount: z
       .string()
-      .nonempty("First name is required"),
-    lastName: z
-      .string()
-      .nonempty("Last name is required"),
+      .nonempty("Amount is required"),
   })
 );
 
@@ -75,10 +72,7 @@ const Add = () => {
           <Section heading='New Salary' explanation='Please enter the new salary data.' />
           <Group>
             <Field span={3}>
-              <Input label="First Name" name="firstName" />
-            </Field>
-            <Field span={3}>
-              <Input label="Last Name" name="lastName" />
+              <Input label="Amount" name="amount" />
             </Field>
           </Group>
         </Body>

@@ -121,14 +121,16 @@ export default function Table({ data, columns, actions, showHeadings = false, id
                     )}
                   </td>
                 ))}
-                {actions && <>
-                  <td className="py-4 pl-3 text-right text-sm table-cell sm:hidden">
-                    <ContextMenu actions={actions} item={item} />
-                  </td>
-                  <td className="py-4 pl-3 text-right text-sm hidden sm:table-cell">
-                    {actions.map((action: ActionProps) => <Action key={action.name} action={action} item={item} />)}
-                  </td>
-                </>}
+                {actions 
+                  ? <>
+                      <td className="py-4 pl-3 text-right text-sm table-cell sm:hidden">
+                        <ContextMenu actions={actions} item={item} />
+                      </td>
+                      <td className="py-4 pl-3 text-right text-sm hidden sm:table-cell">
+                        {actions.map((action: ActionProps) => <Action key={action.name} action={action} item={item} />)}
+                      </td>
+                    </>
+                  : <td>{' '}</td>}
               </tr>
             ))}
           </tbody>

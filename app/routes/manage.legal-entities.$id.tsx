@@ -44,7 +44,7 @@ export default function Provider() {
     { name: 'people', to: 'people/worker' },
     { name: 'locations', to: 'locations' },
     { name: 'milestones', to: 'milestones' },
-    { name: 'schedules', to: 'schedules' },
+    { name: 'schedules', to: `/schedules/${id}/schedules` },
     { name: 'holidays', to: 'holidays' },
   ];
 
@@ -53,7 +53,7 @@ export default function Provider() {
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=legal-entity&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.legalEntity },
   ];
 
-  const icon = (logo.length && logo) || <WalletIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;
+  const icon = (logo?.length && logo) || <WalletIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;
 
   return (
     <>

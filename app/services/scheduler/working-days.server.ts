@@ -31,11 +31,37 @@ type DetermineProps = {
   days?: number | undefined;
 };
 
+type WorkingDays = s.workingDays.Selectable;
+
 const Service = (u: User) => {
-  const getWorkingDays = (countries: Array<string>) => WorkingDays.Standard;
-    // compact(countries)
-    //   .map((country: string) => WorkingDays[country] || WorkingDays.Standard)
-    //   .reduce((a: Array<Array<number>>, b: Array<number>) => a.filter(c => b.includes(c)));
+  const addWorkingDays = (workingDays: s.workingDays.Insertable) => {
+    db.insert('workingDays', workingDays).run(pool);
+  };
+
+  const removeWorkingDays = ({ country }: { country: string }) => {
+    db.deletes('workingDays', { country }).run(pool);
+  };
+
+  const listWorkingDays = () => {
+    return db.select('workingDays', db.all).run(pool);
+  };
+
+  const getWorkingDays = async (countries: Array<string>) => {
+    const codes = countries.map(code => `'${code}'`).join(',');
+
+    const workingDays = await db.select('workingDays',
+      db.sql<s.workingDays.SQL>`${'country'} IN (${db.param(codes)})`,
+      { columns: [ 'days' ] }
+    ).run(pool);
+
+    if (workingDays.length === 0) return WorkingDays.Standard;
+
+    const wds = workingDays.map(({ days }) => days);
+
+    return [ ...Array(7).keys() ].reduce((wd: Array<number>, day: number) =>
+      wds.reduce((include: boolean, wd: Array<number>) =>
+        wd.includes(day) && include, true) ? [ ...wd, day ] : wd, []);
+  };
 
   const isWorkingDay = (date: Date, holidays: Array<Date>, workingDays: Array<number>) => {
     const isHoliday = holidays.map(h => format(h)).includes(format(date));
@@ -59,7 +85,8 @@ const Service = (u: User) => {
   const determine = async ({ countries, start, days = 1 }: DetermineProps, { compare, find }: { compare: Function, find: Function }) => {
     const year = start.getUTCFullYear();
     
-    const workingDays = WorkingDays.Standard; // getWorkingDays(countries);
+    const codes = countries.map(c => c.countries).flat();
+    const workingDays = await getWorkingDays(codes);
 
     let holidays = await listHolidays({ countries, year });
 
@@ -80,7 +107,6 @@ const Service = (u: User) => {
       if (compare(next.getUTCFullYear(), date.getUTCFullYear())) {
         holidays = await listHolidays({ countries, year: next.getUTCFullYear() });
       }
-
       date = next;
     };
 
@@ -93,7 +119,14 @@ const Service = (u: User) => {
   const determineNext = (params: DetermineProps) =>
     determine(params, { compare: (n: number, d: number) => n > d, find: nextDay });
 
-  return { determinePrevious, determineNext };
+  return { 
+    determinePrevious, 
+    determineNext, 
+    addWorkingDays, 
+    removeWorkingDays,
+    getWorkingDays,
+    listWorkingDays 
+  };
 };
 
 export default Service;

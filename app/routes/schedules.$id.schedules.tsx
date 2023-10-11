@@ -9,7 +9,7 @@ import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import LegalEntityService from '~/services/manage/legal-entities.server';
-import ScheduleService, { ScheduleWithDates } from '~/services/scheduler/schedules.server';
+import ScheduleService, { ScheduleWithDates, Status } from '~/services/scheduler/schedules.server';
 import MilestoneService, { type Milestone } from '~/services/scheduler/milestones.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
@@ -34,6 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
+  const status = url.searchParams.get("status") || Status.Generated;
 
   const u = await requireUser(request);
 
@@ -45,27 +46,29 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const milestones = await milestoneService.listMilestonesForLegalEntity({ legalEntity }, { sortDirection: "ASC" });
 
   const scheduleService = ScheduleService(u);
-  const schedules = await scheduleService.listSchedulesByLegalEntity({ legalEntityId: id, year });
+  const schedules = await scheduleService.listSchedulesByLegalEntity({ legalEntityId: id, year, status: status as Status });
 
-  return json({ legalEntity, schedules, milestones, year });
+  const statuses = Object.values(Status).filter(item => isNaN(Number(item)));
+
+  return json({ legalEntity, schedules, milestones, year, status, statuses });
 };
 
 const Schedules = () => {
   const { t } = useTranslation("schedule");
   const locale = useLocale();
 
-  const { legalEntity, schedules, milestones, year } = useLoaderData();
+  const { schedules, milestones, year, status, statuses } = useLoaderData();
 
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
 
-  const years = (year: number) => [...Array(5).keys()].map(index => year + index - 1);
-
-  const tabs = years(new Date().getUTCFullYear())
+  const yearData = ((year: number) => [...Array(5).keys()].map(index => year + index - 1))(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
-
-  const handleClick = (year: string ) => {
-    searchParams.set("year", year);
+  const statusData = statuses.map((status: Status) => ({ name: t(status), value: status }));
+  const handleYearClick = (year: string) => handleClick("year", year);
+  const handleStatusClick = (status: string) => handleClick("status", status);
+  const handleClick = (param: string, value: string ) => {
+    searchParams.set(param, value);
     navigate(`?${searchParams.toString()}`);
   };
   
@@ -73,11 +76,13 @@ const Schedules = () => {
 
   const labelFor = (m: Milestone) => m.index === 0 
     ? m.description 
-    : <span className={classnames(m.interval === 1 ? "-ml-[5rem]" : "-ml-[5.5rem]")}>
-        <ArrowLongLeftIcon className="h-4 w-4 inline" />
-        <span className="text-sm font-normal">{m.interval} {pluralize('day', m.interval as number)}</span>
-        <ArrowLongRightIcon className="h-4 w-4 inline" />
-        <span className="ml-3">{m.description}</span>
+    : <span className={classnames(m.interval === 1 ? "lg:-ml-[4.5rem]" : "lg:-ml-[5rem]")}>
+        <span className="hidden lg:inline">
+          <ArrowLongLeftIcon className="h-4 w-4 inline" />
+          <span className="text-sm font-normal">{m.interval} {pluralize('day', m.interval as number)}</span>
+          <ArrowLongRightIcon className="h-4 w-4 inline" />
+        </span>
+        <span className="lg:ml-1.5">{m.description}</span>
       </span>;
 
   const columns = [
@@ -93,7 +98,8 @@ const Schedules = () => {
 
   return (
     <>
-      <Tabs tabs={tabs} selected={year.toString()} onClick={handleClick} />
+      <Tabs tabs={yearData} selected={year.toString()} onClick={handleYearClick} />
+      <Tabs tabs={statusData} selected={status} onClick={handleStatusClick} />
 
       {schedules.length === 0 && <Alert level={Level.Info} title={`No schedules for ${year}`} />}
     
