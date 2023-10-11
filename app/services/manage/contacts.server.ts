@@ -1,0 +1,51 @@
+import type * as s from 'zapatos/schema';
+import * as db from 'zapatos/db';
+import pool from '../db.server';
+
+export { default as create } from '../id.server';
+
+import { TxOrPool, type IdProp } from '../types';
+import { type User } from '../access/users.server';
+
+export type Contact = s.contacts.Selectable;
+
+export enum Classifier {
+  Phone = "phone",
+  Email = "email",
+  Social = "social",
+  Web = "web",
+};
+
+export const Subs = {
+  [Classifier.Phone]: [ "personal", "work", "other" ],
+  [Classifier.Email]: [ "personal", "work", "other" ],
+  [Classifier.Social]: [ "twitter", "facebook", "whatsapp", "snapchat", "linkedin", "instagram" ],
+  [Classifier.Web]: [],
+};
+
+const Service = (u: User) => {
+  const addContact = (contact: s.contacts.Insertable, txOrPool: TxOrPool = pool) => {
+    return db.insert('contacts', contact).run(txOrPool);
+  };
+
+  const getContact = ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+    return db.selectExactlyOne('contacts', { id }).run(txOrPool);
+  };
+
+  const deleteContact = ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+    return db.deletes('contacts', { id }).run(txOrPool);
+  };
+
+  const listContactsByEntityId = ({ entityId }: { entityId: string }, txOrPool: TxOrPool = pool) => {
+    return db.select('contacts', { entityId }).run(txOrPool);
+  };
+
+  return {
+    addContact,
+    deleteContact,
+    getContact,
+    listContactsByEntityId,
+  }
+};
+
+export default Service;

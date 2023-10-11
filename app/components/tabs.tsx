@@ -1,3 +1,4 @@
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import classnames from '~/helpers/classnames';
 
@@ -6,8 +7,10 @@ const MAX_MOBILE_TABS = 3;
 type Props = {
   tabs: Array<{
     name: string;
+    icon?: any;
     value?: string;
     count?: string;
+    selectable?: boolean;
   }>;
   selected: string;
   onClick: Function;
@@ -23,14 +26,15 @@ const Tabs = ({ tabs, selected, onClick }: Props) => {
             key={tab.name}
             onClick={() => onClick(tab.value === undefined ? tab.name : tab.value)}
             className={classnames(
-              (tab.value === undefined ? tab.name : tab.value) == selected
-                ? 'border-indigo-500 text-indigo-600'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+              ((tab.value === undefined ? tab.name : tab.value) == selected) &&
+                tab.selectable !== false
+                ? 'border-indigo-500 text-indigo-600 hover:text-indigo-500 hover:border-indigo-400'
+                : tab.selectable === false ? 'text-gray-500 hover:text-gray-700 border-transparent' : 'text-gray-500 hover:text-gray-700 border-transparent hover:border-gray-300',
               'flex whitespace-nowrap border-b-2 pt-4 pb-2 text-md hover:cursor-pointer'
             )}
             aria-current={tab.value === selected ? 'page' : undefined}
           >
-            {t(tab.name)}
+            {tab.icon ? <tab.icon className="mt-1 h-4 w-4" /> : t(tab.name)}
             {tab.count ? (
               <div
                 className={classnames(

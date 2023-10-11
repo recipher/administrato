@@ -1,0 +1,23 @@
+{
+  "phone": "Phone",
+  "email": "Email Address",
+  "social-media": "Social Media",
+  "web": "Web Address",
+  "phone-value": "Phone Number",
+  "email-value": "Email Address",
+  "social-media-value": "Account",
+  "web-value": "URL",
+  "phone-sub": "Phone Type",
+  "email-sub": "Email Type",
+  "social-sub": "Social Network",
+  "web-sub": "Site Name",
+  "personal": "Personal",
+  "work": "Work",
+  "other": "Other",
+  "twitter": "Twitter / X",
+  "facebook": "Facebook",
+  "whatsapp": "WhatsApp",
+  "snapchat": "Snapchat",
+  "instagram": "Instagram",
+  "linkedin": "LinkedIn"
+}
