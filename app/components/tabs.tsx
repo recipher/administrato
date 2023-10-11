@@ -21,9 +21,9 @@ const Tabs = ({ tabs, selected, onClick }: Props) => {
         {tabs.map((tab) => (
           <div
             key={tab.name}
-            onClick={() => onClick(tab.value || tab.name)}
+            onClick={() => onClick(tab.value === undefined ? tab.name : tab.value)}
             className={classnames(
-              (tab.value || tab.name) == selected
+              (tab.value === undefined ? tab.name : tab.value) == selected
                 ? 'border-indigo-500 text-indigo-600'
                 : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
               'flex whitespace-nowrap border-b-2 pt-4 pb-2 text-md hover:cursor-pointer'
