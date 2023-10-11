@@ -125,7 +125,7 @@ const Documents = () => {
   return (
     <Layout>
       <Heading heading={t('documents')} explanation={`Manage ${name}'s documents.`} />
-      <Tabs tabs={tabs} selected={folder} onClick={handleClick} />
+      {folders.length > 0 && <Tabs tabs={tabs} selected={folder} onClick={handleClick} />}
 
       <Filter className="pt-6" filterTitle='Search documents' filterParam='q' allowSort={true} sort={sort} filter={search} />
 

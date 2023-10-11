@@ -1,6 +1,8 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 
+import { PlusIcon } from '@heroicons/react/24/outline';
+
 import { badRequest } from '~/utility/errors';
 
 import { requireUser } from '~/auth/auth.server';
@@ -34,7 +36,7 @@ export default function MilestoneSet() {
   const { milestoneSet: { id, identifier }} = useLoaderData();
 
   const actions = [
-    { title: 'add-milestone', to: `/milestones/${id}/add`, permission: scheduler.edit.milestone },
+    { title: 'add-milestone', icon: PlusIcon, to: `/milestones/${id}/add`, permission: scheduler.edit.milestone },
   ];
 
   return (

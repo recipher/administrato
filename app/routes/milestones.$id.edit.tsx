@@ -111,7 +111,7 @@ export default function MilestoneSets() {
       <span className="text-sm text-gray-300 pt-1 pr-3">
         {(milestone.index || 0)+1}
       </span> 
-      <span className={classnames(milestone.target?.toString() === "true" ? "text-red-500": "", "text-gray-500")}>{milestone.identifier}</span>
+      <span className={classnames(milestone.target === true ? "text-indigo-500 font-medium": "", "text-gray-500")}>{milestone.identifier}</span>
     </>
   );
 

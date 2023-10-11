@@ -44,7 +44,7 @@ export const Flags = ({ localities, countries }: FlagsProps) => {
         const code = locality?.parent ? locality.parent : isoCode;
         return (
           <span key={code} className="mr-4">
-            <span className="mr-2 text-base float-left">
+            <span className="mr-2 text-base font-normal float-left">
               {locality?.name}
             </span>
             <Flag size={6} country={locality?.name} isoCode={code} className="float-right" />

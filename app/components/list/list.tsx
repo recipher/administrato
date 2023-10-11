@@ -29,10 +29,10 @@ export const ListItem = ({ className = "text-md font-semibold", image, data, sub
     <>
       {image}
       <div className={classnames(className, "min-w-0 flex-auto")}>
-        <p className="leading-6 text-gray-900">
+        <p className="leading-6 text-gray-900 font-medium">
           {data}
         </p>
-        <p className="mt-1 flex text-sm leading-5 text-gray-500">
+        <p className="mt-1 flex text-sm leading-5 font-normal text-gray-500">
           {sub}
         </p>
       </div>
