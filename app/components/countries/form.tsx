@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 import { useSubmit, useActionData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { FormContextValue, ValidationResult, ValidatorError, validationError } from "remix-validated-form";
@@ -104,7 +104,7 @@ export function CountryFormManager({ context, data }: Props) {
     <>
       <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
       <Group>
-        <Field>
+        <Field className="mb-3">
           <Button title="Select a Country" 
             icon={MagnifyingGlassIcon} 
             type={ButtonType.Secondary} 
@@ -124,8 +124,8 @@ export function CountryFormManager({ context, data }: Props) {
           const countryAndRegions = country && regions ? [ country ].concat(regions) : [];
 
           return (
-            <>
-              <Field span={3} key={code}>
+            <Fragment key={code}>
+              <Field span={3}>
                 <Select 
                   label='Select Country or a Region'
                   name="localities" 
@@ -138,7 +138,7 @@ export function CountryFormManager({ context, data }: Props) {
                   {t('remove')}
                 </button>
               </Field>
-            </>
+            </Fragment>
           )})}
       </Group>
       <CountriesModal modal={modal} country={country}

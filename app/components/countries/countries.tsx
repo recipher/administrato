@@ -30,9 +30,10 @@ type SearchProps = {
   onSelectRegion: Function;
   onBack: Function;
   country?: Country | undefined; 
+  showRegions: boolean;
 };
 
-export const CountriesSearch = ({ onSelect, onSelectRegion, onBack, country }: SearchProps) => {
+export const CountriesSearch = ({ onSelect, onSelectRegion, onBack, country, showRegions }: SearchProps) => {
   const fetcher = useFetcher();
   const title = country ? `Search regions of ${country.name}` : "Search countries";
   const entity = country ? "region" : "country";
@@ -85,7 +86,7 @@ export const CountriesSearch = ({ onSelect, onSelectRegion, onBack, country }: S
 
       return (
         <>
-          {!country.parent &&
+          {!country.parent && showRegions &&
             <button onClick={handleClick}
               className="hidden sm:flex sm:flex-col sm:items-end">
               {country.regionCount} {pluralize('region', country.regionCount)}
@@ -123,7 +124,7 @@ export const CountriesSearch = ({ onSelect, onSelectRegion, onBack, country }: S
 type CountryProps = { 
   modal: RefObject<RefModal>, 
   onSelect: Function, 
-  onSelectRegion: Function, 
+  onSelectRegion?: Function, 
   country?: Country | undefined 
 };
 
@@ -134,17 +135,21 @@ export const CountriesModal = ({ modal, onSelect, onSelectRegion, country }: Cou
   };
 
   const handleSelectRegion = (country: Country) => {
-    if (country?.regionCount && country.regionCount > 0) 
+    if (country?.regionCount && country.regionCount > 0 && onSelectRegion !== undefined) 
       onSelectRegion(country);
     else
       handleSelect(country);
   };
 
+  const handleBack = () => {
+    if (onSelectRegion !== undefined) onSelectRegion();
+  };
+
   return (
     <Modal ref={modal}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[27rem]">
-        <CountriesSearch onSelect={handleSelect} onBack={onSelectRegion}
-          onSelectRegion={handleSelectRegion} country={country} />
+        <CountriesSearch onSelect={handleSelect} onBack={handleBack}
+          onSelectRegion={handleSelectRegion} country={country} showRegions={onSelectRegion !== undefined} />
       </div>
     </Modal>
   );

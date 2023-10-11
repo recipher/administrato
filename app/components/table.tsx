@@ -19,7 +19,7 @@ type ActionProps = {
   name?: string;
   to?: string;
   onClick?: Function;
-  className: Function;
+  className?: Function;
 };
 
 type Props = {

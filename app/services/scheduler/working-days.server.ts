@@ -2,23 +2,17 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+import { ASC } from '../types';
+export { default as create } from '../id.server';
+
 import HolidayService from './holidays.server';
 
 import { type User } from '../access/users.server';
 import { format, previousDay, nextDay } from './date';
 
-const WorkingDays = {
-  bh: [ 0, 1, 2, 3, 4 ],
-  kw: [ 0, 1, 2, 3, 4 ],
-  om: [ 0, 1, 2, 3, 4 ],
-  qa: [ 0, 1, 2, 3, 4 ],
-  sa: [ 0, 1, 2, 3, 4 ],
-  Standard: [ 1, 2, 3, 4, 5 ],
-};
+const STANDARD = [ 1, 2, 3, 4, 5 ];
 
-const compact = (set: Array<any>) => set.reduce((acc, next) => next === undefined ? acc : acc.concat([next]), []);
-
-type CountryData = { id: string, countries: Array<string>};
+export type CountryData = { id: string, countries: Array<string>};
 
 type HolidayProps = {
   countries: Array<CountryData>;
@@ -31,30 +25,37 @@ type DetermineProps = {
   days?: number | undefined;
 };
 
-type WorkingDays = s.workingDays.Selectable;
+export type WorkingDays = s.workingDays.Selectable & { locality: s.localities.Selectable };
+export type Country = s.localities.Selectable;
 
 const Service = (u: User) => {
-  const addWorkingDays = (workingDays: s.workingDays.Insertable) => {
-    db.insert('workingDays', workingDays).run(pool);
+  const saveWorkingDays = async (workingDays: s.workingDays.Insertable) => {
+    if (workingDays.days === undefined) workingDays.days = STANDARD;
+    return db.upsert('workingDays', workingDays, [ 'country' ]).run(pool);
   };
 
-  const removeWorkingDays = ({ country }: { country: string }) => {
+  const removeWorkingDays = async ({ country }: { country: string }) => {
     db.deletes('workingDays', { country }).run(pool);
   };
 
-  const listWorkingDays = () => {
-    return db.select('workingDays', db.all).run(pool);
+  const listWorkingDays = async () => {
+    return db.select('workingDays', db.all, { 
+      lateral: {
+        locality: db.selectExactlyOne('localities', { isoCode: db.parent('country' )}) 
+      },
+      order: [ { by: 'country', direction: ASC }]
+    }).run(pool);
   };
 
   const getWorkingDays = async (countries: Array<string>) => {
     const codes = countries.map(code => `'${code}'`).join(',');
 
     const workingDays = await db.select('workingDays',
-      db.sql<s.workingDays.SQL>`${'country'} IN (${db.param(codes)})`,
+      db.sql<s.workingDays.SQL>`${'country'} IN (${db.raw(codes)})`,
       { columns: [ 'days' ] }
     ).run(pool);
 
-    if (workingDays.length === 0) return WorkingDays.Standard;
+    if (workingDays.length === 0) return STANDARD;
 
     const wds = workingDays.map(({ days }) => days);
 
@@ -113,16 +114,16 @@ const Service = (u: User) => {
     return date;
   };
 
-  const determinePrevious = (params: DetermineProps) =>
+  const determinePrevious = async (params: DetermineProps) =>
     determine(params, { compare: (p: number, d: number) => p < d, find: previousDay });
 
-  const determineNext = (params: DetermineProps) =>
+  const determineNext = async (params: DetermineProps) =>
     determine(params, { compare: (n: number, d: number) => n > d, find: nextDay });
 
   return { 
     determinePrevious, 
     determineNext, 
-    addWorkingDays, 
+    saveWorkingDays, 
     removeWorkingDays,
     getWorkingDays,
     listWorkingDays 

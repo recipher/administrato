@@ -43,7 +43,7 @@ const service = (u?: User) => {
       FROM ${'localities'} 
       LEFT JOIN ${'localities'} AS p 
       ON ${'localities'}.${'parent'} = p.${'isoCode'}
-      WHERE ${'localities'}.${'isoCode'} IN (${db.param(codes)})
+      WHERE ${'localities'}.${'isoCode'} IN (${db.raw(codes)})
     `.run(pool);
 
     return localities.map((locality: any) => {
