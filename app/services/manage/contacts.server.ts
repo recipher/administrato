@@ -9,20 +9,6 @@ import { type User } from '../access/users.server';
 
 export type Contact = s.contacts.Selectable;
 
-export enum Classifier {
-  Phone = "phone",
-  Email = "email",
-  Social = "social",
-  Web = "web",
-};
-
-export const Subs = {
-  [Classifier.Phone]: [ "personal", "work", "other" ],
-  [Classifier.Email]: [ "personal", "work", "other" ],
-  [Classifier.Social]: [ "twitter", "facebook", "whatsapp", "snapchat", "linkedin", "instagram" ],
-  [Classifier.Web]: [],
-};
-
 const Service = (u: User) => {
   const addContact = (contact: s.contacts.Insertable, txOrPool: TxOrPool = pool) => {
     return db.insert('contacts', contact).run(txOrPool);

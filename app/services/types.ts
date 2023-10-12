@@ -1,3 +1,6 @@
+import * as db from 'zapatos/db';
+import pool from './db.server';
+
 export type QueryOptions = {
   offset?: number | undefined;
   limit?: number | undefined;
@@ -37,3 +40,5 @@ export type KeyQueryOptions = {
   keys?: SecurityKeys;
   isArchived?: boolean;
 } & QueryOptions & BypassKeyCheck;
+
+export type TxOrPool = typeof pool | db.TxnClientForSerializable;

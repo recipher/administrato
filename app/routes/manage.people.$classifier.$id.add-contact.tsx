@@ -10,7 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { badRequest } from '~/utility/errors';
 
 import { Classifier } from '~/services/manage/people.server';
-import ContactService, { create, Classifier as ContactClassifier, Subs } from '~/services/manage/contacts.server';
+import ContactService, { create } from '~/services/manage/contacts.server';
+import { ContactClassifier, Subs } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
 

@@ -26,7 +26,7 @@ export default function Header({ title, subtitle, actions = [], icon, group = fa
         <div className="mb-4 flex items-center">
           <Title title={title} subtitle={subtitle} icon={icon} />
         </div>
-        <div className="ml-4 flex flex-shrink-0">
+        <div className="ml-4 mb-4 flex flex-shrink-0">
           <Buttons actions={actions} group={group} />
         </div>
       </div>

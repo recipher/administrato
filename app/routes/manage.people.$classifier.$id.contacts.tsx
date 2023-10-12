@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
 import ContactService, { Contact } from '~/services/manage/contacts.server';
+import { ContactClassifier } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -38,11 +39,31 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ person, classifier, contacts });
 };
 
+const ContactLink = ({ contact }: { contact: Contact }) => {
+  const { value, classifier, sub } = contact;
+  
+  const href = {
+    [ContactClassifier.Email]: `mailto:${value}`,
+    [ContactClassifier.Phone]: `tel:${value}`,
+    [ContactClassifier.Web]: value,
+    [ContactClassifier.Social]: {
+      "twitter": `https://twitter.com/${value}`,
+      "facebook": `https://facebook.com/${value}`,
+      "instagram": `https://instagram.com/${value}`,
+      "whatsapp": `https://wa.me/${value}`,
+      "snapchat": `https://snapchat.com/add/${value}`,
+      "linkedin": `https://linkedin.com/in/${value}`,
+    }[sub as string],
+  }[classifier as ContactClassifier];
+
+  return <a href={href} target="_blank">{value}</a>;
+};
+
 const Contacts = () => {
   const { t } = useTranslation("contacts");
   const { person, contacts } = useLoaderData();
 
-  const Item = (contact: Contact) => <ListItem data={<a>{contact.value}</a>} className="font-medium"  />;
+  const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} className="font-medium" />;
   const Context = (contact: Contact) => <ListContext data={t(contact.sub || "")} sub={t(contact.classifier)} select={false} />;
 
   const name = `${person.firstName} ${person.lastName}`;

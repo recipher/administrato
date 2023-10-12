@@ -15,7 +15,8 @@
     "test:e2e:install": "npx playwright install chromium --with-deps",
     "typecheck": "tsc",
     "validate": "run-p \"test -- --run\" lint typecheck test",
-    "zapatos": "node -r dotenv/config zapatos.js"
+    "zapatos": "node -r dotenv/config zapatos.js",
+    "test": "node bin/test.mjs"
   },
   "prettier": {},
   "eslintIgnore": [
