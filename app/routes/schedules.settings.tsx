@@ -50,6 +50,10 @@ export const action = async ({ request }: ActionArgs) => {
     await service.saveWorkingDays(create({ country: data.country }));
   }
   
+  if (intent === "remove-country") {
+    await service.removeWorkingDays({ country: data.country });
+  }
+  
   if (intent === "change-setting") {
     const { workingDays, day } = data;
     const days = Days.reduce((acc: number[], d: number) =>
@@ -77,12 +81,14 @@ export default () => {
   const { workingDays } = useLoaderData();
      
   const showCountriesModal = () => modal.current?.show();
-  const handleSelectCountry = (country: Country) => {
+  const handleSelectCountry = (country: Country) =>
     submit({ intent: "save-country", country: country.isoCode }, { method: "POST", encType: "application/json" });
-  };
 
   const handleSelect = ({ country: code }: WorkingDays) =>
     setCountry(country === code ? undefined : code);
+
+  const handleRemove = ({ country: code }: WorkingDays) =>
+    submit({ intent: "remove-country", country: code }, { method: "POST", encType: "application/json" });
 
   useEffect(() => {
     if (fetcher.state === "idle") setChanging(undefined);
@@ -123,6 +129,7 @@ export default () => {
 
   const actions = [
     { name: "select", onClick: handleSelect, row: true },
+    { name: "remove", onClick: handleRemove },
   ];
 
   const hasPermission = (p: string) => u.permissions.includes(p);

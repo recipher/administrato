@@ -118,9 +118,7 @@ export default function MilestoneSets() {
   const days = (days: number | null) => `${days || 0} ${pluralize('Day', days || 0)}`
 
   const columns = [
-    { 
-      name: "identifier", display: (ms: Milestone) => <Identifier milestone={ms} />
-    }, 
+    { name: "identifier", display: (ms: Milestone) => <Identifier milestone={ms} /> }, 
     { name: "description", className: "text-md w-full max-w-0 sm:w-auto sm:max-w-none", stack: "sm" },
     { name: "entities", display: (ms: Milestone) => ms.entities?.map(e => t(e)).join(', '), stack: "sm" },
     { name: "interval", type: "number", className: "w-16", display: (ms: Milestone) => days(ms.interval) },
@@ -140,7 +138,7 @@ export default function MilestoneSets() {
     },
     { 
       name: "remove", 
-      className: () => "font-medium text-red-600 hover:text-red-500",
+      // className: () => "font-medium text-red-600 hover:text-red-500",
       onClick: (ms: Milestone) => handleRemove(ms) 
     }
   ];

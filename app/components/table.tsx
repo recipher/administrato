@@ -37,9 +37,15 @@ const Action = ({ action, item }: { action: ActionProps, item: any }) => {
   
   if (action.to) action.onClick = () => navigate(action.to as string);
 
+  const handleClick = (e: any) => {
+    e.stopPropagation();
+    action.onClick && action.onClick(item);
+  };
+
   return (
-    <button type="button" onClick={() => action.onClick && action.onClick(item)}
-      className={classnames(action.className ? action.className(item) : "", "group-hover:visible invisible pr-3")}>
+    <button type="button" onClick={handleClick}
+      className={classnames(action.className ? action.className(item) : "font-medium text-red-600 hover:text-red-500", 
+        "group-hover:visible invisible pr-3")}>
       {t(action.name || "")}
     </button>                  
   );
