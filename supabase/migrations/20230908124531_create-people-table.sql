@@ -9,8 +9,6 @@ create table
     gender text null,
     dob date null,
     photo text null,
-    "clientId" text null,
-    "legalEntityId" text null,
     "isArchived" boolean null default false,
     "clientKeyStart" bigint null,
     "clientKeyEnd" bigint null,
@@ -19,8 +17,6 @@ create table
     locality text null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint person_pkey primary key (id),
-    constraint people_clientId_fkey foreign key ("clientId") references clients (id) on delete set null,
-    constraint people_legalEntityId_fkey foreign key ("legalEntityId") references "legalEntities" (id) on delete set null
+    constraint person_pkey primary key (id)
   ) tablespace pg_default;
 alter table public.people enable row level security;

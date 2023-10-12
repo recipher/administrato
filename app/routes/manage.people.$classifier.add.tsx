@@ -103,10 +103,12 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator(config).validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { locality: { id: isoCode }, ...data }} = result;
+  const { data: { locality: { id: isoCode }, clientId, legalEntityId, ...data }} = result;
   
   const service = PersonService(u);
-  const person = await service.addPerson(create({ locality: isoCode, identifier: "", classifier, ...data }));
+  const person = await service.addPerson(
+    create({ locality: isoCode, identifier: "", classifier, ...data }), 
+    { clientId, legalEntityId });
   
   return redirect(`/manage/people/${classifier}/${person.id}/info`);
 };

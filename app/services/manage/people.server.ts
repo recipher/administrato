@@ -2,6 +2,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+import { default as create } from '../id.server';
 export { default as create } from '../id.server';
 
 import ClientService from './clients.server';
@@ -71,10 +72,11 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 
 const Service = (u: User) => {
   const getLatestForClient = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
-    const query = db.sql<db.SQL>`${'clientId'} = ${db.param(person.clientId)}`;
+    const query = db.sql<db.SQL>`cp.${'clientId'} = ${db.param(person.clientId)}`;
 
-    const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+    const [ latest ] = await db.sql<s.people.SQL | s.clientPeople.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
+      LEFT JOIN ${'clientPeople'} AS cp ON cp.${'personId'} = ${'people'}.${'id'}
       WHERE ${'clientKeyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'clientKeyEnd'} DESC
       LIMIT 1
@@ -83,10 +85,11 @@ const Service = (u: User) => {
   };
 
   const getLatestForLegalEntity = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
-    const query = db.sql<db.SQL>`${'legalEntityId'} = ${db.param(person.legalEntityId)}`;
+    const query = db.sql<db.SQL>`lep.${'legalEntityId'} = ${db.param(person.legalEntityId)}`;
 
-    const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+    const [ latest ] = await db.sql<s.people.SQL | s.legalEntityPeople.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
+      LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
       WHERE ${'legalEntityKeyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'legalEntityKeyEnd'} DESC
       LIMIT 1
@@ -94,14 +97,18 @@ const Service = (u: User) => {
     return latest;
   };
 
-  const generateKeys = async (person: s.people.Insertable, txOrPool: TxOrPool = pool): Promise<PersonSecurityKey> => {
+  type Connections = { clientId?: string | null; legalEntityId?: string | null };
+
+  const generateKeys = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool): Promise<PersonSecurityKey> => {
     let clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd;
 
     const maxEntities = 10000; // Move to constants
 
-    if (person.clientId) {
+    const { clientId, legalEntityId } = connections;
+
+    if (clientId) {
       const clientService = ClientService(u);
-      const client = await clientService.getClient({ id: person.clientId as string }, { bypassKeyCheck: true }, txOrPool)
+      const client = await clientService.getClient({ id: clientId as string }, { bypassKeyCheck: true }, txOrPool)
       const latestForClient = await getLatestForClient(person, txOrPool);
 
       if (client === undefined) 
@@ -111,9 +118,9 @@ const Service = (u: User) => {
       clientKeyEnd = clientKeyStart + Number(Math.round(client.keyEnd as unknown as number / maxEntities));
     }
 
-    if (person.legalEntityId) {
+    if (legalEntityId) {
       const legalEntityService = LegalEntityService(u);
-      const legalEntity = await legalEntityService.getLegalEntity({ id: person.legalEntityId as string }, { bypassKeyCheck: true }, txOrPool)
+      const legalEntity = await legalEntityService.getLegalEntity({ id: legalEntityId as string }, { bypassKeyCheck: true }, txOrPool)
       const latestForLegalEntity = await getLatestForLegalEntity(person, txOrPool);
 
       if (legalEntity === undefined) 
@@ -125,33 +132,52 @@ const Service = (u: User) => {
     
     return { clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd };
   };
-
-  const addPerson = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
-    const keys = await generateKeys(person);
+    
+  const addPerson = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) => {
+    const keys = await generateKeys(person, connections);
     const withKeys = { ...person, ...keys, identifier: generateIdentifier(person) };
 
-    const [inserted] = await db.sql<s.people.SQL, s.people.Selectable[]>`
-      INSERT INTO ${'people'} (${db.cols(withKeys)})
-      VALUES (${db.vals(withKeys)}) RETURNING *`
-    .run(txOrPool);
+    return await db.serializable(txOrPool, async tx => {
+      const [ person ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+        INSERT INTO ${'people'} (${db.cols(withKeys)})
+        VALUES (${db.vals(withKeys)}) RETURNING *`
+      .run(tx);
 
-    return inserted;
+      if (person === undefined) throw new Error('Error adding person');
+
+      const startOn = new Date();
+      const { clientId, legalEntityId } = connections;
+      if (clientId) await db.insert('clientPeople', create({ clientId, personId: person.id, startOn })).run(tx);
+      if (legalEntityId) await db.insert('legalEntityPeople', create({ legalEntityId, personId: person.id, startOn })).run(tx);
+
+      return person;
+    });
   };
 
-  const addWorker = async (worker: s.people.Insertable, txOrPool: TxOrPool = pool) =>
-    addPerson({ ...worker, classifier: Classifier.Worker }, txOrPool);
+  const addWorker = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...person, classifier: Classifier.Worker }, connections, txOrPool);
 
-  const addContractor = async (worker: s.people.Insertable, txOrPool: TxOrPool = pool) =>
-    addPerson({ ...worker, classifier: Classifier.Contractor }, txOrPool);
+  const addContractor = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...person, classifier: Classifier.Contractor }, connections, txOrPool);
 
-  const addEmployee = async (worker: s.people.Insertable, txOrPool: TxOrPool = pool) =>
-    addPerson({ ...worker, classifier: Classifier.Employee }, txOrPool);
+  const addEmployee = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...person, classifier: Classifier.Employee }, connections, txOrPool);
+
+  type peopleSQL = 
+    s.people.SQL | 
+    s.legalEntities.SQL | s.legalEntityPeople.SQL | 
+    s.clients.SQL | s.clientPeople.SQL;
 
   const listPeople = async (txOrPool: TxOrPool = pool) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
-    return db.sql<s.people.SQL, s.people.Selectable[]>`
-      SELECT * FROM ${'people'}
+    return db.sql<peopleSQL, s.people.Selectable[]>`
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
+      FROM ${'people'}
+      LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'legalEntities'} AS le ON lep.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clientPeople'} AS cp ON cp.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'clients'} AS c ON cp.${'clientId'} = c.${'id'}
       WHERE (${whereClientKeys({ keys: clientKeys })} OR 
              ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(txOrPool);
@@ -163,9 +189,9 @@ const Service = (u: User) => {
        LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
 
     const client = clientId == null ? db.sql``
-      : db.sql<db.SQL>`AND ${'people'}.${'clientId'} = ${db.param(clientId)}`;
+      : db.sql<db.SQL>`AND cp.${'clientId'} = ${db.param(clientId)}`;
     const legalEntity = legalEntityId == null ? db.sql``
-      : db.sql<db.SQL>`AND ${'people'}.${'legalEntityId'} = ${db.param(legalEntityId)}`;
+      : db.sql<db.SQL>`AND lep.${'legalEntityId'} = ${db.param(legalEntityId)}`;
     const classification = classifier == null ? db.sql``
       : db.sql<db.SQL>`AND ${'people'}.${'classifier'} = ${db.param(classifier)}`;
 
@@ -175,8 +201,10 @@ const Service = (u: User) => {
   const countPeople = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
-    const [ item ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
+    const [ item ] = await db.sql<peopleSQL, s.people.Selectable[]>`
       SELECT COUNT(${'people'}.${'id'}) AS count FROM ${'people'}
+      LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'clientPeople'} AS cp ON cp.${'personId'} = ${'people'}.${'id'}
       WHERE 
         ${searchQuery(search)} AND 
         (${whereClientKeys({ keys: clientKeys })} OR 
@@ -192,10 +220,13 @@ const Service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const people = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
-      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'people'}
-      LEFT JOIN ${'legalEntities'} AS le ON ${'people'}.${'legalEntityId'} = le.${'id'}
-      LEFT JOIN ${'clients'} AS c ON ${'people'}.${'clientId'} = c.${'id'}
+    const people = await db.sql<peopleSQL, s.people.Selectable[]>`
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
+      FROM ${'people'}
+      LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'legalEntities'} AS le ON lep.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clientPeople'} AS cp ON cp.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'clients'} AS c ON cp.${'clientId'} = c.${'id'}
       WHERE 
         ${searchQuery(search)} AND 
         (${whereClientKeys({ keys: clientKeys })} OR 
@@ -222,10 +253,13 @@ const Service = (u: User) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
-    const [ person ] = await db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
-      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" FROM ${'people'}
-      LEFT JOIN ${'legalEntities'} AS le ON ${'people'}.${'legalEntityId'} = le.${'id'}
-      LEFT JOIN ${'clients'} AS c ON ${'people'}.${'clientId'} = c.${'id'}
+    const [ person ] = await db.sql<peopleSQL, s.people.Selectable[]>`
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
+      FROM ${'people'}
+      LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'legalEntities'} AS le ON lep.${'legalEntityId'} = le.${'id'}
+      LEFT JOIN ${'clientPeople'} AS cp ON cp.${'personId'} = ${'people'}.${'id'}
+      LEFT JOIN ${'clients'} AS c ON cp.${'clientId'} = c.${'id'}
       WHERE 
         (${'people'}.${'id'} = ${db.param(id)} OR LOWER(${'people'}.${'identifier'}) = ${db.param(id.toLowerCase())}) AND
         (${whereClientKeys({ keys: clientKeys })} OR 

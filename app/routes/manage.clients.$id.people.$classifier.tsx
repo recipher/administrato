@@ -68,7 +68,7 @@ const Workers = () => {
   
   const plural = pluralize(classifier);
 
-  const tabs = [ "worker", "employee", "contractor" ].map(value => ({ name: pluralize(value), value }));
+  const tabs = [ "worker", "contractor" ].map(value => ({ name: pluralize(value), value }));
 
   return (
     <>
