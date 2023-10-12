@@ -2,7 +2,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
-import type { SearchOptions, QueryOptions } from '../types';
+import type { SearchOptions, QueryOptions, TxOrPool } from '../types';
 import { ASC, DESC } from '../types';
 
 import { type User } from '../access/users.server';
@@ -70,7 +70,7 @@ const Service = (u: User) => {
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}`
     };
 
-  const search = (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {
+  const search = (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {
     const clients = searchClients(search);
     const people = searchPeople(search);
     const providers = searchProviders(search);
@@ -88,7 +88,8 @@ const Service = (u: User) => {
       ${legalEntities}
       ORDER BY ${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
-      LIMIT ${db.param(limit)}`.run(pool);
+      LIMIT ${db.param(limit)}
+    `.run(txOrPool);
   };
 
   return { search };

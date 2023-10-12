@@ -7,7 +7,7 @@ export { default as create } from '../id.server';
 import ClientService from './clients.server';
 import LegalEntityService from './legal-entities.server';
 
-import type { SearchOptions as BaseSearchOptions, Count,
+import type { SearchOptions as BaseSearchOptions, Count, TxOrPool,
   QueryOptions, IdProp, KeyQueryOptions } from '../types';
 import { ASC, DESC } from '../types';
   
@@ -70,7 +70,7 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 const Service = (u: User) => {
-  const getLatestForClient = async (person: s.people.Insertable) => {
+  const getLatestForClient = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
     const query = db.sql<db.SQL>`${'clientId'} = ${db.param(person.clientId)}`;
 
     const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
@@ -78,11 +78,11 @@ const Service = (u: User) => {
       WHERE ${'clientKeyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'clientKeyEnd'} DESC
       LIMIT 1
-      `.run(pool);
+    `.run(txOrPool);
     return latest;
   };
 
-  const getLatestForLegalEntity = async (person: s.people.Insertable) => {
+  const getLatestForLegalEntity = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
     const query = db.sql<db.SQL>`${'legalEntityId'} = ${db.param(person.legalEntityId)}`;
 
     const [ latest ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
@@ -90,19 +90,19 @@ const Service = (u: User) => {
       WHERE ${'legalEntityKeyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'legalEntityKeyEnd'} DESC
       LIMIT 1
-      `.run(pool);
+    `.run(txOrPool);
     return latest;
   };
 
-  const generateKeys = async (person: s.people.Insertable): Promise<PersonSecurityKey> => {
+  const generateKeys = async (person: s.people.Insertable, txOrPool: TxOrPool = pool): Promise<PersonSecurityKey> => {
     let clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd;
 
     const maxEntities = 10000; // Move to constants
 
     if (person.clientId) {
       const clientService = ClientService(u);
-      const client = await clientService.getClient({ id: person.clientId as string })
-      const latestForClient = await getLatestForClient(person);
+      const client = await clientService.getClient({ id: person.clientId as string }, { bypassKeyCheck: true }, txOrPool)
+      const latestForClient = await getLatestForClient(person, txOrPool);
 
       if (client === undefined) 
         throw new Error('Error generating security key');
@@ -113,8 +113,8 @@ const Service = (u: User) => {
 
     if (person.legalEntityId) {
       const legalEntityService = LegalEntityService(u);
-      const legalEntity = await legalEntityService.getLegalEntity({ id: person.legalEntityId as string })
-      const latestForLegalEntity = await getLatestForLegalEntity(person);
+      const legalEntity = await legalEntityService.getLegalEntity({ id: person.legalEntityId as string }, { bypassKeyCheck: true }, txOrPool)
+      const latestForLegalEntity = await getLatestForLegalEntity(person, txOrPool);
 
       if (legalEntity === undefined) 
         throw new Error('Error generating security key');
@@ -126,34 +126,35 @@ const Service = (u: User) => {
     return { clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd };
   };
 
-  const addPerson = async (person: s.people.Insertable) => {
+  const addPerson = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
     const keys = await generateKeys(person);
     const withKeys = { ...person, ...keys, identifier: generateIdentifier(person) };
 
     const [inserted] = await db.sql<s.people.SQL, s.people.Selectable[]>`
       INSERT INTO ${'people'} (${db.cols(withKeys)})
-      VALUES (${db.vals(withKeys)}) RETURNING *`.run(pool);
+      VALUES (${db.vals(withKeys)}) RETURNING *`
+    .run(txOrPool);
 
     return inserted;
   };
 
-  const addWorker = async (worker: s.people.Insertable) =>
-    addPerson({ ...worker, classifier: Classifier.Worker });
+  const addWorker = async (worker: s.people.Insertable, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...worker, classifier: Classifier.Worker }, txOrPool);
 
-  const addContractor = async (worker: s.people.Insertable) =>
-    addPerson({ ...worker, classifier: Classifier.Contractor });
+  const addContractor = async (worker: s.people.Insertable, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...worker, classifier: Classifier.Contractor }, txOrPool);
 
-  const addEmployee = async (worker: s.people.Insertable) =>
-    addPerson({ ...worker, classifier: Classifier.Employee });
+  const addEmployee = async (worker: s.people.Insertable, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...worker, classifier: Classifier.Employee }, txOrPool);
 
-  const listPeople = async () => {
+  const listPeople = async (txOrPool: TxOrPool = pool) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     return db.sql<s.people.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
       WHERE (${whereClientKeys({ keys: clientKeys })} OR 
              ${whereLegalEntityKeys({ keys: legalEntityKeys })})
-    `.run(pool);
+    `.run(txOrPool);
   };
 
   const searchQuery = ({ search, clientId, legalEntityId, classifier }: SearchOptions) => {
@@ -171,7 +172,7 @@ const Service = (u: User) => {
     return db.sql<db.SQL>`${name} ${client} ${legalEntity} ${classification}`;    
   };
 
-  const countPeople = async (search: SearchOptions) => {
+  const countPeople = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     const [ item ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
@@ -180,13 +181,13 @@ const Service = (u: User) => {
         ${searchQuery(search)} AND 
         (${whereClientKeys({ keys: clientKeys })} OR 
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
-    `.run(pool);
+    `.run(txOrPool);
 
     const { count } = item as unknown as Count;
     return count;
   };
 
-  const searchPeople = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  const searchPeople = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {  
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
@@ -202,22 +203,22 @@ const Service = (u: User) => {
       ORDER BY ${'people'}.${'lastName'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
-      `.run(pool);
-    const count = await countPeople(search);
+    `.run(txOrPool);
+    const count = await countPeople(search, txOrPool);
 
     return { people, metadata: { count }};
   };
 
-  const searchWorkers =  async (search: SearchOptions, meta: QueryOptions) =>
-    searchPeople({ ...search, classifier: Classifier.Worker }, meta); 
+  const searchWorkers =  async (search: SearchOptions, meta: QueryOptions, txOrPool: TxOrPool = pool) =>
+    searchPeople({ ...search, classifier: Classifier.Worker }, meta, txOrPool); 
 
-  const searchContractors =  async (search: SearchOptions, meta: QueryOptions) =>
-    searchPeople({ ...search, classifier: Classifier.Contractor }, meta); 
+  const searchContractors =  async (search: SearchOptions, meta: QueryOptions, txOrPool: TxOrPool = pool) =>
+    searchPeople({ ...search, classifier: Classifier.Contractor }, meta, txOrPool); 
 
-  const searchEmployees =  async (search: SearchOptions, meta: QueryOptions) =>
-    searchPeople({ ...search, classifier: Classifier.Employee }, meta); 
+  const searchEmployees =  async (search: SearchOptions, meta: QueryOptions, txOrPool: TxOrPool = pool) =>
+    searchPeople({ ...search, classifier: Classifier.Employee }, meta, txOrPool); 
 
-  const getPerson = async ({ id }: IdProp) => {
+  const getPerson = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     const clientKeys = extractKeys(u, "serviceCentre", "client");
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
@@ -229,7 +230,7 @@ const Service = (u: User) => {
         (${'people'}.${'id'} = ${db.param(id)} OR LOWER(${'people'}.${'identifier'}) = ${db.param(id.toLowerCase())}) AND
         (${whereClientKeys({ keys: clientKeys })} OR 
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
-      `.run(pool);
+    `.run(txOrPool);
 
     return person;
   };

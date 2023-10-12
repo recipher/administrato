@@ -6,7 +6,7 @@ export { default as create } from '../id.server';
 
 import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
 
-import type { SecurityKey, SearchOptions as BaseSearchOptions, Count,
+import type { SecurityKey, SearchOptions as BaseSearchOptions, Count, TxOrPool,
   QueryOptions, IdProp, NameProp, KeyQueryOptions as BaseKeyQueryOptions, BypassKeyCheck } from '../types';
 import { ASC, DESC } from '../types';
   
@@ -27,7 +27,7 @@ type SearchOptions = {
 } & BaseSearchOptions;
 
 const Service = (u: User) => {
-  const getLatest = async (client: s.clients.Insertable) => {
+  const getLatest = async (client: s.clients.Insertable, txOrPool: TxOrPool = pool) => {
     const query = client.parentId 
       ? db.sql<db.SQL>`${'parentId'} = ${db.param(client.parentId)}`
       : db.sql<db.SQL>`${'serviceCentreId'} = ${db.param(client.serviceCentreId)}`;
@@ -37,20 +37,20 @@ const Service = (u: User) => {
       WHERE ${'keyEnd'} IS NOT NULL AND ${query}
       ORDER BY ${'keyEnd'} DESC
       LIMIT 1
-      `.run(pool);
+      `.run(txOrPool);
     return latest;
   };
 
-  const generateKey = async (client: s.clients.Insertable): Promise<SecurityKey> => {
+  const generateKey = async (client: s.clients.Insertable, txOrPool: TxOrPool = pool): Promise<SecurityKey> => {
     const service = ServiceCentreService(u);
 
     const parent = client.parentId
-      ? await getClient({ id: client.parentId as string })
-      : await service.getServiceCentre({ id: client.serviceCentreId as string })
+      ? await getClient({ id: client.parentId as string }, { bypassKeyCheck: true }, txOrPool)
+      : await service.getServiceCentre({ id: client.serviceCentreId as string }, { bypassKeyCheck: true }, txOrPool)
  
     const maxEntities = client.parentId ? 100 : 1000000; // Move to constants
 
-    const latest = await getLatest(client);
+    const latest = await getLatest(client, txOrPool);
 
     if (parent === undefined) throw new Error('Error generating security key');
 
@@ -60,18 +60,18 @@ const Service = (u: User) => {
     return { keyStart, keyEnd };
   };
 
-  const addClient = async (client: s.clients.Insertable) => {
-    const key = await generateKey(client);
+  const addClient = async (client: s.clients.Insertable, txOrPool: TxOrPool = pool) => {
+    const key = await generateKey(client, txOrPool);
     const withKey = { ...client, ...key, identifier: generateIdentifier(client) };
 
     const [inserted] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       INSERT INTO ${'clients'} (${db.cols(withKey)})
-      VALUES (${db.vals(withKey)}) RETURNING *`.run(pool);
+      VALUES (${db.vals(withKey)}) RETURNING *`.run(txOrPool);
 
     return inserted;
   };
 
-  const listClients = async (query: KeyQueryOptions = { isArchived: false }) => {
+  const listClients = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "client"); 
     const whereParent = query.parentId 
       ? db.sql`main.${'parentId'} = ${db.param(query.parentId)}`
@@ -79,7 +79,7 @@ const Service = (u: User) => {
     return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT main.* FROM ${'clients'} AS main
       WHERE ${whereParent} AND ${whereKeys({ keys, ...query })}
-      `.run(pool);
+      `.run(txOrPool);
   };
 
   const searchQuery = ({ search, serviceCentreId, parentId }: SearchOptions) => {
@@ -94,19 +94,19 @@ const Service = (u: User) => {
       : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
-  const countClients = async (search: SearchOptions) => {
+  const countClients = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
     const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "client");
 
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'clients'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
-    `.run(pool);
+    `.run(txOrPool);
 
     const { count } = item as unknown as Count;
     return count;
   };
 
-  const searchClients = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions) => {  
+  const searchClients = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {  
     const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "client");
 
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
@@ -121,14 +121,14 @@ const Service = (u: User) => {
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
       LIMIT ${db.param(limit)}
-      `.run(pool);
+    `.run(txOrPool);
 
-    const count = await countClients(search);
+    const count = await countClients(search, txOrPool);
 
     return { clients, metadata: { count }};
   };
 
-  const getClient = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
+  const getClient = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
     const keys = extractKeys(u, "serviceCentre", "client");
 
     const [ client ] = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
@@ -138,29 +138,29 @@ const Service = (u: User) => {
       LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
-      `.run(pool);
+    `.run(txOrPool);
 
     return client;
   };
 
-  const getClientByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}) => {
+  const getClientByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
     const keys = u.keys.client;
 
     const [ client ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT main.* FROM ${'clients'} AS main
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(main.${'name'}) = ${db.param(name.toLowerCase())}
-      `.run(pool);
+    `.run(txOrPool);
 
     return client;
   };
 
   // Required to determine exactly which entities a user has authorization for
-  const listClientsForKeys = async ({ keys }: KeyQueryOptions) => {
+  const listClientsForKeys = async ({ keys }: KeyQueryOptions, txOrPool: TxOrPool = pool) => {
     if (keys === undefined) return [];
     return await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT main.* FROM ${'clients'} AS main
       WHERE ${whereExactKeys({ keys })}
-      `.run(pool);
+    `.run(txOrPool);
   };
 
   return {

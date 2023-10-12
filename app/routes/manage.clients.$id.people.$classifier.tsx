@@ -81,7 +81,7 @@ const Workers = () => {
       </div>
 
       {count <= 0 && <Alert title={`No ${plural} found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
-      <List data={people} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/workers/${props.item.id}/info`} />
+      <List data={people} renderItem={Item} renderContext={Context} buildTo={(props: any) => `/manage/people/${classifier}/${props.item.id}/info`} />
       <Pagination entity={classifier} totalItems={count} offset={offset} limit={limit} />
     </>
   );
