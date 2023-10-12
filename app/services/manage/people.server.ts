@@ -71,8 +71,8 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 const Service = (u: User) => {
-  const getLatestForClient = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
-    const query = db.sql<db.SQL>`cp.${'clientId'} = ${db.param(person.clientId)}`;
+  const getLatestForClient = async (clientId: string, txOrPool: TxOrPool = pool) => {
+    const query = db.sql<db.SQL>`cp.${'clientId'} = ${db.param(clientId)}`;
 
     const [ latest ] = await db.sql<s.people.SQL | s.clientPeople.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
@@ -84,8 +84,8 @@ const Service = (u: User) => {
     return latest;
   };
 
-  const getLatestForLegalEntity = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) => {
-    const query = db.sql<db.SQL>`lep.${'legalEntityId'} = ${db.param(person.legalEntityId)}`;
+  const getLatestForLegalEntity = async (legalEntityId: string, txOrPool: TxOrPool = pool) => {
+    const query = db.sql<db.SQL>`lep.${'legalEntityId'} = ${db.param(legalEntityId)}`;
 
     const [ latest ] = await db.sql<s.people.SQL | s.legalEntityPeople.SQL, s.people.Selectable[]>`
       SELECT * FROM ${'people'}
@@ -109,7 +109,7 @@ const Service = (u: User) => {
     if (clientId) {
       const clientService = ClientService(u);
       const client = await clientService.getClient({ id: clientId as string }, { bypassKeyCheck: true }, txOrPool)
-      const latestForClient = await getLatestForClient(person, txOrPool);
+      const latestForClient = await getLatestForClient(clientId, txOrPool);
 
       if (client === undefined) 
         throw new Error('Error generating security key');
@@ -121,7 +121,7 @@ const Service = (u: User) => {
     if (legalEntityId) {
       const legalEntityService = LegalEntityService(u);
       const legalEntity = await legalEntityService.getLegalEntity({ id: legalEntityId as string }, { bypassKeyCheck: true }, txOrPool)
-      const latestForLegalEntity = await getLatestForLegalEntity(person, txOrPool);
+      const latestForLegalEntity = await getLatestForLegalEntity(legalEntityId, txOrPool);
 
       if (legalEntity === undefined) 
         throw new Error('Error generating security key');
@@ -183,7 +183,7 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, clientId, legalEntityId, classifier }: SearchOptions) => {
+  const searchQuery = ({ search, clientId, legalEntityId, classifier, isArchived }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`${'lastName'} IS NOT NULL` : db.sql<db.SQL>`
       (LOWER(${'people'}.${'firstName'}) LIKE LOWER(${db.param(`${search}%`)}) OR
        LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
@@ -195,7 +195,9 @@ const Service = (u: User) => {
     const classification = classifier == null ? db.sql``
       : db.sql<db.SQL>`AND ${'people'}.${'classifier'} = ${db.param(classifier)}`;
 
-    return db.sql<db.SQL>`${name} ${client} ${legalEntity} ${classification}`;    
+    const archived = db.sql` AND ${'people'}.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
+
+    return db.sql<db.SQL>`${name} ${archived} ${client} ${legalEntity} ${classification}`;    
   };
 
   const countPeople = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {

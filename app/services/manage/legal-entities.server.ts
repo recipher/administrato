@@ -74,7 +74,7 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, serviceCentreId, providerId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId, providerId, isArchived }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
@@ -83,7 +83,9 @@ const Service = (u: User) => {
     const whereProvider = providerId == null ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
       : db.sql<db.SQL>`main.${'providerId'} = ${db.param(providerId)}`;
 
-    return db.sql<db.SQL>`${name} AND ${whereServiceCentre} AND ${whereProvider}`;    
+    const archived = db.sql` AND main.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
+
+    return db.sql<db.SQL>`${name} ${archived} AND ${whereServiceCentre} AND ${whereProvider}`;    
   };
 
   const countLegalEntities = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {

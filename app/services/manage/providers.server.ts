@@ -69,12 +69,15 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, serviceCentreId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId, isArchived }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return serviceCentreId == null ? name 
-      : db.sql<db.SQL>`${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    const archived = db.sql` AND main.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
+
+    const base = db.sql`${name} ${archived}`;
+    return serviceCentreId == null ? base
+      : db.sql<db.SQL>`${base} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countProviders = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {

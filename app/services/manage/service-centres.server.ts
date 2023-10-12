@@ -103,11 +103,13 @@ const Service = (u: User) => {
       ? db.sql`main.${'parentId'} = ${db.param(query.parentId)}`
       : db.sql`main.${'parentId'} IS NULL`;
 
+    const archived = db.sql` AND main.${'isArchived'} = ${db.raw(query.isArchived ? 'TRUE' : 'FALSE')}`;
+
     const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
       SELECT main.*, COUNT(g.${'id'}) AS "groupCount" 
       FROM ${'serviceCentres'} AS main
       LEFT JOIN ${'serviceCentres'} AS g ON main.${'id'} = g.${'parentId'}
-      WHERE ${whereKeys({ keys, ...query })} AND ${whereParent}
+      WHERE ${whereKeys({ keys, ...query })} AND ${whereParent} ${archived}
       GROUP BY main.${'id'}
     `.run(txOrPool);
 

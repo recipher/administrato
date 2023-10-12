@@ -82,16 +82,19 @@ const Service = (u: User) => {
       `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, serviceCentreId, parentId }: SearchOptions) => {
+  const searchQuery = ({ search, serviceCentreId, parentId, isArchived }: SearchOptions) => {
     const parent = parentId 
       ? db.sql`main.${'parentId'} = ${db.param(parentId)}`
       : db.sql`main.${'parentId'} IS NULL`;
 
-      const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
-        AND LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
+    const name = search == null ? db.sql<db.SQL>`` : db.sql<db.SQL>`
+      AND LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    return !serviceCentreId ? db.sql`${parent} ${name}`
-      : db.sql<db.SQL>`${parent} ${name} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    const archived = db.sql` AND main.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
+
+    const base = db.sql`${parent} ${name} ${archived}`;
+    return !serviceCentreId ? base
+      : db.sql<db.SQL>`${base} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
   };
 
   const countClients = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {

@@ -10,6 +10,7 @@ export type QueryOptions = {
 
 export type SearchOptions = {
   search: string | null | undefined;
+  isArchived?: boolean | null | undefined;
 };
 
 export const ASC = 'ASC'
