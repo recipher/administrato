@@ -1,11 +1,18 @@
-import { json, type LoaderArgs } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
+
+import { type ActionArgs, type LoaderArgs, json, type UploadHandler,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
+
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
 import Header from '~/components/header';
+import { EditablePhoto } from '~/components';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
@@ -33,6 +40,26 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ person, classifier });
 };
 
+export const action = async ({ request, params }: ActionArgs) => {
+  const u = await requireUser(request);
+  const { id } = params;
+  if (id === undefined) return badRequest('Invalid request');
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    createSupabaseUploadHandler({ bucket: "images" }),
+    createMemoryUploadHandler()
+  );
+
+  const formData = await parseMultipartFormData(request, uploadHandler);
+
+  if (formData.get("intent") === "change-photo") {
+    const service = PersonService(u);
+    const { photo } = await service.updatePerson({ id, photo: formData.get('photo') as string });
+    return json({ photo });
+  }
+  return null;
+};
+
 export default function Person() {
   const { person, classifier } = useLoaderData();
 
@@ -50,14 +77,10 @@ export default function Person() {
     { title: 'add-salary', to: 'add-salary', permission: manage.edit.worker },
   ];
 
-  const icon = person.photo 
-    ? person.photo 
-    : <UserCircleIcon className="h-12 w-12 text-indigo-300" aria-hidden="true" />
-
   return (
     <>
       <Header title={`${person.firstName} ${person.lastName}`} actions={actions} group={true}
-        tabs={tabs.filter((tab) => tab.classifier === undefined || tab.classifier.includes(classifier))} icon={icon} />
+        tabs={tabs.filter((tab) => tab.classifier === undefined || tab.classifier.includes(classifier))} icon={<EditablePhoto photo={person.photo} Icon={UserCircleIcon} />} />
       <Outlet />
     </>
   );

@@ -163,6 +163,12 @@ const Service = (u: User) => {
   const addEmployee = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) =>
     addPerson({ ...person, classifier: Classifier.Employee }, connections, txOrPool);
 
+  const updatePerson = async (person: s.people.Updatable, txOrPool: TxOrPool = pool) => {
+    const [ update ] = 
+      await db.update('people', person, { id: person.id as string }).run(txOrPool);
+    return update;
+  };
+
   type peopleSQL = 
     s.people.SQL | 
     s.legalEntities.SQL | s.legalEntityPeople.SQL | 
@@ -276,6 +282,7 @@ const Service = (u: User) => {
     addWorker,
     addContractor,
     addEmployee,
+    updatePerson,
     getPerson,
     searchPeople,
     searchWorkers,
