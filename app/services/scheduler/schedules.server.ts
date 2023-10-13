@@ -99,7 +99,7 @@ const Service = (u: User) => {
 
   type Period = {
     date: Date;
-    targetDate: Array<Date>;
+    targetDate: Date;
     name: string;
   };
 
@@ -146,6 +146,9 @@ const Service = (u: User) => {
     const dates = datesFor[frequency](start, end);
 
     return Promise.all(dates.map(async (date: Date) => {
+
+      // target.split(",").map(async (t: string) => {
+
       const targetDate = await targetService.determineTargetDate({ countries, date, frequency, target });
       return {
         date,
@@ -166,7 +169,7 @@ const Service = (u: User) => {
       const findAfter =  (ms: Array<Milestone>) => ms.filter(m => m.index >  target.index).sort(byIndexAsc);
         
       // Calculate milestone dates before due date
-      let [ previous ] = period.targetDate;
+      let previous = period.targetDate;
   
       const before = await mapSeries(findBefore(milestones), async (milestone: Milestone) => {
         const ms = { ...milestone, date: previous };
@@ -180,7 +183,7 @@ const Service = (u: User) => {
       });
 
       // Calculate milestone dates after due date
-      let [ next ] = period.targetDate;
+      let next = period.targetDate;
   
       const after = await mapSeries(findAfter(milestones), async (milestone: Milestone) => {
         const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });

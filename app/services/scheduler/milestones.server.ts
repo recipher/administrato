@@ -61,6 +61,15 @@ const Service = (u: User) => {
     return milestoneSet;
   };
 
+  const getDefaultMilestoneSet = async () => {
+    const [ milestoneSet ] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
+      SELECT * FROM ${'milestoneSets'} 
+      ORDER BY ${'isDefault'} DESC
+      LIMIT 1
+    `.run(pool);
+    return milestoneSet;
+  };
+
   const listMilestonesByDefaultSet = async ({ sortDirection }: QueryOptions = { sortDirection: DESC }) => {
     if (sortDirection == null) sortDirection = DESC;
     const milestones = await db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
@@ -90,6 +99,10 @@ const Service = (u: User) => {
       WHERE ${{setId}}
       ORDER BY ${'index'} ${db.raw(sortDirection)}
     `.run(pool);
+  };
+
+  const getMilestoneSetByIdOrDefault = async ({ id }: { id: string | null }) => {
+    return id === null ? getDefaultMilestoneSet() : getMilestoneSetById({ id });
   };
 
   const listMilestonesBySetOrDefault = async ({ setId }: { setId: string | null }, options: QueryOptions = {}) => {
@@ -253,6 +266,7 @@ const Service = (u: User) => {
     addMilestone,
     addMilestoneSet,
     getMilestoneSetById,
+    getMilestoneSetByIdOrDefault,
     listMilestonesBySet,
     listMilestonesByDefaultSet,
     listMilestonesBySetOrDefault,

@@ -3,6 +3,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/services/manage/legal-entities.server';
+import MilestoneService from '~/services/scheduler/milestones.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading, Section, Field } from '~/components/info/info';
@@ -29,12 +30,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 
-  return json({ legalEntity });
+  const milestoneService = MilestoneService(u);
+  const milestoneSet = await milestoneService.getMilestoneSetByIdOrDefault({ id: legalEntity.milestoneSetId });
+
+  return json({ legalEntity, milestoneSet });
 };
 
 const Info = () => {
   const { t } = useTranslation("schedule");
-  const { legalEntity } = useLoaderData();
+  const { legalEntity, milestoneSet } = useLoaderData();
 
   return (
     <>
@@ -50,9 +54,9 @@ const Info = () => {
                 return `${t(type)} ${value == null ? "" : t(value)}`;
               }).join(' and ')}
           </Field>
-          <Field title="Provider">
-            <Link className="text-indigo-900" to={`/milestones/${legalEntity.milestoneSetId}/edit`}>
-              {legalEntity.milestoneSetId}
+          <Field title="Milestone Set">
+            <Link className="text-indigo-900" to={`/milestones/${milestoneSet.id}/edit`}>
+              {milestoneSet.identifier}
             </Link>
           </Field>
           <Field title="Provider">

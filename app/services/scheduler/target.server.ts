@@ -115,27 +115,24 @@ const Service = (u: User) => {
     const workingDayService = WorkingDayService(u);
 
     if (target === null) target = "";
-
-    return Promise.all(target.split(",").map(async (t: string) => {
-      const [ target, data ] = t.split(' ');
+    const [ t, data ] = target.split(' ');
     
-      const suggestion = {
-        [Target.Last]: () => endOf[frequency](date),
-        [Target.Date]: () => {
-          const suggestion = setDate(date, parseInt(data));
-          return suggestion.getUTCMonth() === suggestion.getUTCMonth() 
-            ? suggestion 
-            : endOf[frequency](date);
-        },
-        [Target.Day]: () => lastDayOf(frequency, date)[data as Weekday],
-        [Target.Following]: () => followingOf[frequency](date),
-      }[target];
+    const suggestion = {
+      [Target.Last]: () => endOf[frequency](date),
+      [Target.Date]: () => {
+        const suggestion = setDate(date, parseInt(data));
+        return suggestion.getUTCMonth() === suggestion.getUTCMonth() 
+          ? suggestion 
+          : endOf[frequency](date);
+      },
+      [Target.Day]: () => lastDayOf(frequency, date)[data as Weekday],
+      [Target.Following]: () => followingOf[frequency](date),
+    }[t];
 
-      if (suggestion === undefined) throw new Error("Invalid target data");
+    if (suggestion === undefined) throw new Error("Invalid target data");
 
-      const days = parseInt(data);
-      return workingDayService.determinePrevious({ countries, start: suggestion(), days: isNaN(days) ? undefined : days })
-    }));
+    const days = parseInt(data);
+    return workingDayService.determinePrevious({ countries, start: suggestion(), days: isNaN(days) ? undefined : days })
   };
 
   return { determineTargetDate };
