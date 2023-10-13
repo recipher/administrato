@@ -35,7 +35,7 @@ export const Group = ({ children }: PropsWithChildren<{}>) => {
 
 export const Field = ({ span = 4, width, className = "", children }: PropsWithChildren<{ span?: number, className?: string, width?: string }>) => {
   return (
-    <div className={classnames(className, width ? `w-${width}` : "", `sm:col-span-${span} mt-1`)}>
+    <div className={classnames(className, width ? `w-${width}` : "", `sm:col-span-${span}`)}>
       {children}
     </div>
   );

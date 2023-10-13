@@ -44,7 +44,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 const actions = [
-  { title: "generate-schedules", to: "generate", icon: PlusIcon, permission: scheduler.create.schedule },
+  { title: "generate-schedules", to: "../generate", icon: PlusIcon, permission: scheduler.create.schedule },
 ];
 
 export default function Schedules() {

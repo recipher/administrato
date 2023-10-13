@@ -107,21 +107,21 @@ type Props = {
   countries: Array<{ id: string, countries: Array<string>}>;
   date: Date;
   frequency: Frequency;
-  target: string | null;
+  target: string | undefined | null;
 };
 
 const Service = (u: User) => {
   const determineTargetDate = async ({ countries, date, frequency, target }: Props) => {
     const workingDayService = WorkingDayService(u);
 
-    if (target === null) target = "";
+    if (target == null) target = Target.Last;
     const [ t, data ] = target.split(' ');
     
     const suggestion = {
       [Target.Last]: () => endOf[frequency](date),
       [Target.Date]: () => {
         const suggestion = setDate(date, parseInt(data));
-        return suggestion.getUTCMonth() === suggestion.getUTCMonth() 
+        return suggestion.getUTCMonth() === date.getUTCMonth() 
           ? suggestion 
           : endOf[frequency](date);
       },
@@ -131,8 +131,14 @@ const Service = (u: User) => {
 
     if (suggestion === undefined) throw new Error("Invalid target data");
 
-    const days = parseInt(data);
-    return workingDayService.determinePrevious({ countries, start: suggestion(), days: isNaN(days) ? undefined : days })
+    const days = {
+      [Target.Last]: parseInt(data),
+      [Target.Date]: 0,
+      [Target.Day]: 0,
+      [Target.Following]: parseInt(data),
+    }[t];
+
+    return workingDayService.determinePrevious({ countries, start: suggestion(), days })
   };
 
   return { determineTargetDate };

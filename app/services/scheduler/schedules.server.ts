@@ -18,7 +18,7 @@ import MilestoneService, { Milestone } from './milestones.server';
 import WorkingDayService from './working-days.server';
 
 export { Target, Weekday, toTarget } from './target.server';
-import TargetService from './target.server';
+import TargetService, { Target } from './target.server';
 
 export type Schedule = s.schedules.Selectable;
 export type ScheduleDate = s.scheduleDates.Selectable;
@@ -78,11 +78,11 @@ const Service = (u: User) => {
       range(0, weeks(s, e), 2).map(week => addWeeks(startOfWeek(s), week)),
     [Frequency.Monthly]: (s: Date, e: Date) => 
       range(0, months(s, e)).map(month => addMonths(startOfMonth(s), month)),
-    [Frequency.TriMonthly]: (s: Date, e: Date) => 
+    [Frequency.SemiMonthly]: (s: Date, e: Date) => 
       range(0, months(s, e)).map(month => 
         [ addMonths(startOfMonth(s), month), 
           setDate(addMonths(startOfMonth(s), month), 15) ]).flat(),
-    [Frequency.SemiMonthly]: (s: Date, e: Date) => 
+    [Frequency.TriMonthly]: (s: Date, e: Date) => 
       range(0, months(s, e)).map(month => 
         [ addMonths(startOfMonth(s), month), 
           setDate(addMonths(startOfMonth(s), month), 10), 
@@ -144,12 +144,12 @@ const Service = (u: User) => {
     if (frequency === null) throw new Error('No schedule frequency specified');
 
     const dates = datesFor[frequency](start, end);
+    const targets = (target || Target.Last).split(',');
 
-    return Promise.all(dates.map(async (date: Date) => {
-
-      // target.split(",").map(async (t: string) => {
-
+    return Promise.all(dates.map(async (date: Date, index: number) => {
+      const target = targets.at(index % targets.length);
       const targetDate = await targetService.determineTargetDate({ countries, date, frequency, target });
+      
       return {
         date,
         targetDate,

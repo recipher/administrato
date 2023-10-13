@@ -42,7 +42,8 @@ values
 insert into "legalEntities" (id, name, identifier, frequency, target, "keyStart", "keyEnd", localities, "providerId", "serviceCentreId", "milestoneSetId")
 values
   ('01HCBK65Q9M5JPZNYGP9BRN2SV', 'Recipher One', 'recipher-one', 'monthly', 'last 0', 0, 9007199255, ARRAY ['DE'], '01HCBK188VQ1XJVKPVE7A2NKFZ', '01HCBJVVNC04DA94ZYXEEXX75C', '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
-  ('01HCBK71C77MHV3ZG2K8CHMDAA', 'Recipher Two', 'recipher-two', 'weekly', 'date friday', 90071992547411, 90090006945920, ARRAY ['ES'], '01HCBK0NA4QEK673M0BYEB5STQ', '01HCBJWYAGFTDT8E8RZ3SVSB5A', null);
+  ('01HCBK71C77MHV3ZG2K8CHMDAA', 'Recipher Two', 'recipher-two', 'weekly', 'day friday', 90071992547411, 90090006945920, ARRAY ['ES'], '01HCBK0NA4QEK673M0BYEB5STQ', '01HCBJWYAGFTDT8E8RZ3SVSB5A', null),
+  ('01HCM8VP0S823GTVGTK275A9XZ', 'Recipher Three', 'recipher-three', 'semi-monthly', 'date 15,last 0', 90090006945921, 90108021344430, ARRAY ['DE'], '01HCBK0NA4QEK673M0BYEB5STQ', '01HCBJWYAGFTDT8E8RZ3SVSB5A', '01HCBKHNQX9D061VY631505CJZ');
 
 insert into clients (id, name, identifier, "keyStart", "keyEnd", localities, "serviceCentreId")
 values

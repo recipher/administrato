@@ -16,7 +16,8 @@
     "typecheck": "tsc",
     "validate": "run-p \"test -- --run\" lint typecheck test",
     "zapatos": "node -r dotenv/config zapatos.js",
-    "test": "node bin/test.mjs"
+    "test": "node bin/test.mjs",
+    "id": "node generate-id"
   },
   "prettier": {},
   "eslintIgnore": [
