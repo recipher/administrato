@@ -11,3 +11,9 @@ create table
     constraint authorizations_pkey primary key (id)
   ) tablespace pg_default;
 alter table public.authorizations enable row level security;
+
+-- select user from authorizations 
+-- where 
+--   (entity = 'service-centre' or entity = 'legal-entity') and
+--   (keyStart <= le.ks and keyend >= le.ke)
+  

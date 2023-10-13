@@ -138,7 +138,8 @@ const Service = (u: User) => {
       [Target.Following]: parseInt(data),
     }[t];
 
-    return workingDayService.determinePrevious({ countries, start: suggestion(), days })
+    const previous = await workingDayService.determinePrevious({ countries, start: suggestion(), days });
+    return previous.date;
   };
 
   return { determineTargetDate };

@@ -11,6 +11,7 @@ create table
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
     constraint holiday_pkey primary key (id),
-    constraint holidays_locality_fkey foreign key (locality) references localities ("isoCode")
+    constraint holidays_locality_fkey foreign key (locality) references localities ("isoCode"),
+    constraint holidays_locality_name_date_entity_uniq unique (locality, name, date, entity, "entityId")
   ) tablespace pg_default;
 alter table public.holidays enable row level security;

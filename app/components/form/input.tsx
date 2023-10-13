@@ -12,10 +12,11 @@ type Props = {
   focus?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  type?: string | undefined;
   width?: string;
 };
 
-export default function Input({ name, label, value, focus = false, disabled = false, placeholder, width }: Props) {
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder, type = "text", width }: Props) {
   const { error, getInputProps } = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -41,6 +42,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           autoCorrect="off"
           autoCapitalize="off"
           autoComplete="off"
+          type={type}
           className={classnames(
             error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
             disabled ? "text-gray-400 bg-gray-100" : "",

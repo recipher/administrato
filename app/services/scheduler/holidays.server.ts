@@ -3,21 +3,28 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+import { isSameDate } from './date';
+
+import { type User } from '../access/users.server';
+import { TxOrPool } from '../types';
+
 export { default as create } from '../id.server';
 import { default as create } from '../id.server';
-
-import { isSameDay, isSameMonth, isSameYear } from 'date-fns';
 
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
 export type Holiday = s.holidays.Selectable;
 
-import { type User } from '../access/users.server';
-
 type ListOptions = { 
+  month?: number | undefined | null;
   year: number;
   locality: string;
+};
+
+type RangeOptions = { 
+  start: Date;
+  end: Date;
 };
 
 type EntityOptions = {
@@ -32,9 +39,6 @@ type OptionalEntityOptions = {
 type QueryOptions = { 
   shouldDelete?: boolean;
 };
-
-const isSameDate = (left: Date, right: Date) =>
-  isSameDay(left, right) && isSameMonth(left, right) && isSameYear(left, right);
  
 const Service = (u: User) => {
   const addHoliday = async (holiday: s.holidays.Insertable) => {
@@ -43,6 +47,11 @@ const Service = (u: User) => {
       VALUES (${db.vals(holiday)}) RETURNING *`.run(pool);
 
     return inserted;
+  };
+
+  const addHolidays = async (holidays: Array<s.holidays.Insertable>, txOrPool: TxOrPool = pool) => {
+    return db.upsert('holidays', holidays, 
+      [ 'name', 'date', 'locality', 'entity', 'entityId' ]).run(txOrPool);
   };
 
   const getHolidayById = async ({ id }: { id: string }) => {
@@ -110,25 +119,28 @@ const Service = (u: User) => {
       LEFT JOIN ${'serviceCentres'} ON ${'entityId'} = ${'serviceCentres'}.${'id'} AND ${'entity'} = 'service-centre'
       WHERE 
         ${{locality}} AND 
-        ${'entityId'} IS NOT NULL AND (${'isRemoved'} IS NULL OR ${'isRemoved'} = FALSE) AND
+        ${'entityId'} IS NOT NULL AND  
+        ${'entity'} IN ('service-centre', 'legal-entity', 'client', 'provider') AND 
+        (${'isRemoved'} IS NULL OR ${'isRemoved'} = FALSE) AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`
     .run(pool);
   };
 
-  const listHolidaysByCountryForEntity = async ({ year, locality, entityId }: ListOptions & EntityOptions) => {
+  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }: ListOptions & EntityOptions) => {
+    const byYear = db.sql`DATE_PART('year', ${'date'}) = ${db.param(year)}`;
+    const byMonth = month === undefined ? db.sql`` 
+      : db.sql`AND DATE_PART('month', ${'date'}) = ${db.param(month)}`;
     const holidays = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
       SELECT * FROM ${'holidays'} 
       WHERE 
-        ${{locality}} AND 
-        ${'entityId'} IS NULL AND 
-        DATE_PART('year', ${'date'}) = ${db.param(year)}
+        ${{locality}} AND ${'entityId'} IS NULL AND 
+        ${byYear} ${byMonth}
       UNION ALL
       SELECT * from ${'holidays'}
       WHERE 
-        ${{locality}} AND 
-        ${{entityId}} AND
-        DATE_PART('year', ${'date'}) = ${db.param(year)}
+        ${{locality}} AND ${{entityId}} AND
+        ${byYear} ${byMonth}
       ORDER BY ${'date'} ASC`
     .run(pool);
 
@@ -149,10 +161,12 @@ const Service = (u: User) => {
     if (holidays.length === 0) return;
 
     await db.insert('holidays', holidays.map(holiday => (
-      create({ name: holiday.name, 
+      create({ 
+        name: holiday.name, 
         date: new Date(holiday.date), 
         observed: new Date(holiday.observed), 
-        locality: holiday.country })
+        locality: holiday.country 
+      })
     ))).run(pool);
 
     return listHolidaysByCountry({ year, locality });
@@ -160,6 +174,7 @@ const Service = (u: User) => {
 
   return {
     addHoliday,
+    addHolidays,
     deleteHolidayById,
     reinstateHolidayById,
     deleteHolidaysByCountry,

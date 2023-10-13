@@ -67,15 +67,21 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return { country, year, entityType, entity };
 };
 
+z.setErrorMap((issue, ctx) => {
+  if (issue.code === "invalid_date") {
+    if (issue.path.includes("date"))
+      return { message: "Holiday date is required" };
+  }
+  return { message: ctx.defaultError };
+});
+
 export const validator = withZod(
   zfd.formData({
     name: z
       .string()
       .nonempty("Holiday name is required"),
     date: z
-      .string()
-      .nonempty('Holiday date is required')
-      .transform(date => new Date(date)),
+      .coerce.date(),
     entityId: z
       .string()
       .optional()

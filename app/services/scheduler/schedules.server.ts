@@ -4,8 +4,8 @@ import pool from '../db.server';
 
 import { mapSeries } from 'bluebird';
 
-import { format, getWeek, isAfter, differenceInCalendarWeeks, addWeeks, differenceInCalendarMonths, addMonths, yearsToMonths } from 'date-fns';
-import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate } from './date';
+import { format, getWeek, isAfter, differenceInCalendarWeeks, addWeeks, differenceInCalendarMonths, addMonths } from 'date-fns';
+import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate, isSameDate } from './date';
 
 import { default as create } from '../id.server';
 
@@ -16,9 +16,11 @@ import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server
 import MilestoneService, { Milestone } from './milestones.server';
 
 import WorkingDayService from './working-days.server';
+import HolidaysService from './holidays.server';
 
 export { Target, Weekday, toTarget } from './target.server';
 import TargetService, { Target } from './target.server';
+import { type Holiday } from './holidays.server';
 
 export type Schedule = s.schedules.Selectable;
 export type ScheduleDate = s.scheduleDates.Selectable;
@@ -115,6 +117,7 @@ const Service = (u: User) => {
   type GeneratedSchedule = {
     period: Period;
     dates: Array<GeneratedScheduleDate>;
+    holidays: Array<Holiday>;
   };
 
   type GeneratePeriodProps = { 
@@ -158,6 +161,19 @@ const Service = (u: User) => {
     }));
   };
 
+  const extractDates = (before: { date: GSD }[], after: { date: GSD }[]) => [ 
+    ...before.map(b => b.date), 
+    ...after.map(a => a.date) ].sort(byIndexDesc)
+
+  const extractHolidays = (before: { holidays: Holiday[] }[], after: { holidays: Holiday[] }[]) => [ 
+    ...before.map(b => b.holidays), 
+    ...after.map(a => a.holidays) ].flat().reduce((holidays: Holiday[], holiday) =>
+      holidays.find(h => 
+        isSameDate(h.date, holiday.date) &&
+        h.locality == holiday.locality &&
+        h.name === holiday.name) ? holidays : [ ...holidays, holiday ]
+    , []);
+
   const generateScheduleSet = async ({ legalEntity, milestones, periods }: { legalEntity: LegalEntity, milestones: Array<Milestone>, periods: Array<Period> }) => {
     const workingDayService = WorkingDayService(u);
 
@@ -172,14 +188,17 @@ const Service = (u: User) => {
       let previous = period.targetDate;
   
       const before = await mapSeries(findBefore(milestones), async (milestone: Milestone) => {
+        let holidays: Array<Holiday> = [];
         const ms = { ...milestone, date: previous };
 
         if (milestone.interval !== undefined && !Number.isNaN(milestone.interval)) {
           const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
-          previous = await workingDayService.determinePrevious({ countries, start: previous, days: milestone.interval || 0 });
+          const result = await workingDayService.determinePrevious({ countries, start: previous, days: milestone.interval || 0 });
+          previous = result.date;
+          holidays = result.holidays;
         }
   
-        return { id: ms.id, date: ms.date, target: ms.target, index: ms.index };
+        return { holidays, date: { id: ms.id, date: ms.date, target: ms.target, index: ms.index }};
       });
 
       // Calculate milestone dates after due date
@@ -187,14 +206,17 @@ const Service = (u: User) => {
   
       const after = await mapSeries(findAfter(milestones), async (milestone: Milestone) => {
         const countries = await getCountriesForMilestone({ milestone, legalEntityId: legalEntity.id });
-        next = await workingDayService.determineNext({ countries, start: next, days: milestone.interval || 0 });
+        const { date, holidays } = await workingDayService.determineNext({ countries, start: next, days: milestone.interval || 0 });
+        next = date;
         const ms = { ...milestone, date: next };
-        return { id: ms.id, name: ms.identifier, date: ms.date, target: ms.target, index: ms.index };
+        return { holidays, date: { id: ms.id, name: ms.identifier, date: ms.date, target: ms.target, index: ms.index }};
       });
   
-      const dates = [ ...before, ...after ].sort(byIndexDesc);
-
-      return { period, dates };
+      return { 
+        period, 
+        dates: extractDates(before, after), 
+        holidays: extractHolidays(before, after) 
+      };
     }));
   };
 
@@ -213,6 +235,8 @@ const Service = (u: User) => {
   };
 
   const saveScheduleSet = async ({ set, legalEntity }: { set: Array<GeneratedSchedule>, legalEntity: LegalEntity }) => {
+    const holidayService = HolidaysService(u);
+
     return db.serializable(pool, async tx => {
       await Promise.all(set.map(async (schedule) => {
         const { id } = await addSchedule(create({
@@ -222,6 +246,10 @@ const Service = (u: User) => {
           status: Status.Generated,
           version: 0,
         }), tx);
+
+        await holidayService.addHolidays(schedule.holidays.map(({ name, date, observed, locality }) => (
+          create({ name, date, observed, locality, entity: "schedule", entityId: id })
+        )), tx);
 
         await Promise.all(schedule.dates.map(async (date: any) => {
           await addScheduleDate(create({

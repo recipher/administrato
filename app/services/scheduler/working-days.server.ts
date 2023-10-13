@@ -16,6 +16,7 @@ export type CountryData = { id: string, countries: Array<string>};
 
 type HolidayProps = {
   countries: Array<CountryData>;
+  month: number;
   year: number;
 };
 
@@ -71,47 +72,48 @@ const Service = (u: User) => {
     return (isHoliday === false && isWorkDay === true);
   };
 
-  const listHolidays = async ({ countries, year }: HolidayProps) => {
+  const listHolidays = async ({ countries, month, year }: HolidayProps) => {
     const holidays = await Promise.all(countries.map(async country => {
       const holidayService = HolidayService(u);
       const { id: entityId, countries } = country;
       const holidays = await Promise.all(countries.map(async locality => {
-        return holidayService.listHolidaysByCountryForEntity({ year, locality, entityId });
+        return holidayService.listHolidaysByCountryForEntity({ month, year, locality, entityId });
       }));
       return holidays.flat();
     }));
-    return holidays.flat().map(h => h.observed || h.date);
+    return holidays.flat();
   };
 
   const determine = async ({ countries, start, days = 1 }: DetermineProps, { compare, find }: { compare: Function, find: Function }) => {
-    const year = start.getUTCFullYear();
+    const month = start.getUTCMonth() + 1, year = start.getUTCFullYear();
     
     const codes = countries.map(c => c.countries).flat();
     const workingDays = await getWorkingDays(codes);
 
-    let holidays = await listHolidays({ countries, year });
+    let holidays = await listHolidays({ countries, month, year });
 
-    if (days === 0 && isWorkingDay(start, holidays, workingDays)) return start;
+    if (days === 0 && isWorkingDay(start, holidays.map(h => h.observed || h.date), workingDays)) 
+      return { date: start, holidays };
     if (days === 0) days = 1;
 
     let date = find(start), next = date;
 
-    if (compare(next.getUTCFullYear(), start.getUTCFullYear())) {
-      holidays = await listHolidays({ countries, year: next.getUTCFullYear() });
+    if (compare(next.getUTCMonth(), start.getUTCMonth())) {
+      holidays = await listHolidays({ countries, month: next.getUTCMonth()+1, year: next.getUTCFullYear() });
     }
 
     while (days > 0) {
-      if (isWorkingDay(date, holidays, workingDays)) days--;
+      if (isWorkingDay(date, holidays.map(h => h.observed || h.date), workingDays)) days--;
 
       if (days > 0) next = find(date);
 
-      if (compare(next.getUTCFullYear(), date.getUTCFullYear())) {
-        holidays = await listHolidays({ countries, year: next.getUTCFullYear() });
+      if (compare(next.getUTCMonth(), date.getUTCMonth())) {
+        holidays = await listHolidays({ countries, month: next.getUTCMonth()+1, year: next.getUTCFullYear() });
       }
       date = next;
     };
 
-    return date;
+    return { date, holidays };
   };
 
   const determinePrevious = async (params: DetermineProps) =>

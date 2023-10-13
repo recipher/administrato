@@ -3,6 +3,8 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from './db.server';
 
+import countryData from './data/countries.json';
+
 import type { QueryOptions, Count, SearchOptions } from './types';
 import { ASC, DESC } from './types';
 
@@ -120,8 +122,9 @@ const service = (u?: User) => {
     if (countries.length === 0) return;
 
     return Promise.all(countries.map(async country => {
+      const data = countryData.find(c => c.isoCode === country.code);
       await db.upsert('localities', 
-        { name: country.name, isoCode: country.code }, 'isoCode').run(pool);
+        { name: country.name, isoCode: country.code, diallingCode: data?.diallingCode as string }, 'isoCode').run(pool);
 
       return db.upsert('localities', country.subdivisions.map(sub => (
         { name: sub.name, isoCode: sub.code, parent: country.code }

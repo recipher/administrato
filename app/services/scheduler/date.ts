@@ -1,4 +1,5 @@
-import { formatISO9075, startOfWeek as sow } from 'date-fns';
+import { formatISO9075, startOfWeek as sow,
+         isSameDay, isSameMonth, isSameYear } from 'date-fns';
 
 export const adjustForUTCOffset = (date: Date) => {
   return new Date(
@@ -35,3 +36,6 @@ export const setDate = (date: Date, d: number, m?: number) => {
   if (m) copy.setUTCMonth(m);
   return copy;
 };
+
+export const isSameDate = (left: Date, right: Date) =>
+  isSameDay(left, right) && isSameMonth(left, right) && isSameYear(left, right);

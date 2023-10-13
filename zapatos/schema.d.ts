@@ -2942,6 +2942,12 @@ declare module 'zapatos/schema' {
       */
       name: string;
       /**
+      * **localities.diallingCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      diallingCode: string | null;
+      /**
       * **localities.parent**
       * - `text` in database
       * - Nullable, no default
@@ -2961,6 +2967,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       name: string;
+      /**
+      * **localities.diallingCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      diallingCode: string | null;
       /**
       * **localities.parent**
       * - `text` in database
@@ -2982,6 +2994,12 @@ declare module 'zapatos/schema' {
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **localities.diallingCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      diallingCode?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **localities.parent**
       * - `text` in database
       * - Nullable, no default
@@ -3002,6 +3020,12 @@ declare module 'zapatos/schema' {
       */
       name: string | db.Parameter<string> | db.SQLFragment;
       /**
+      * **localities.diallingCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      diallingCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **localities.parent**
       * - `text` in database
       * - Nullable, no default
@@ -3021,6 +3045,12 @@ declare module 'zapatos/schema' {
       * - `NOT NULL`, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **localities.diallingCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      diallingCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **localities.parent**
       * - `text` in database

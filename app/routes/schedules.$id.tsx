@@ -78,7 +78,7 @@ export default function Schedules() {
   ];
 
   const actions = [
-    { title: 'generate-schedules', to: 'generate',
+    { title: 'generate-schedules', to: 'schedules/generate',
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
   ];
 
