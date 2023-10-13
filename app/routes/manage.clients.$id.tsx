@@ -1,4 +1,9 @@
-import { json, type LoaderArgs } from '@remix-run/node';
+import { type ActionArgs, type LoaderArgs, json, type UploadHandler,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
+
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 
 import { IdentificationIcon } from '@heroicons/react/24/solid';
 import { PlusIcon } from '@heroicons/react/24/outline';
@@ -10,6 +15,7 @@ import ClientService, { Client } from '~/services/manage/clients.server';
 import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
+import { EditableImage } from '~/components';
 
 import { manage } from '~/auth/permissions';
 
@@ -43,6 +49,26 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ client, parent });
 };
 
+export const action = async ({ request, params }: ActionArgs) => {
+  const u = await requireUser(request);
+  const { id } = params;
+  if (id === undefined) return badRequest('Invalid request');
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    createSupabaseUploadHandler({ bucket: "images" }),
+    createMemoryUploadHandler()
+  );
+
+  const formData = await parseMultipartFormData(request, uploadHandler);
+
+  if (formData.get("intent") === "change-logo") {
+    const service = ClientService(u);
+    const { logo } = await service.updateClient({ id, logo: formData.get('logo') as string });
+    return json({ logo });
+  }
+  return null;
+};
+
 export default () => {
   const [ searchParams ] = useSearchParams();
   const { client: { id, name, localities, logo, parentId }} = useLoaderData();
@@ -62,11 +88,10 @@ export default () => {
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=client&entity-id=${id}`, icon: PlusIcon, default: true, permission: manage.edit.client },
   ];
 
-  const icon = logo || <IdentificationIcon className="h-12 w-12 text-gray-400" aria-hidden="true" />;
-
   return (
     <>
-      <Header title={name} tabs={tabs} actions={actions} group={true} icon={icon} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} 
+        icon={<EditableImage name="logo" image={logo} Icon={IdentificationIcon} intent="change-logo" />} />
       <Outlet />
     </>
   );

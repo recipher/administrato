@@ -71,6 +71,12 @@ const Service = (u: User) => {
     return inserted;
   };
 
+  const updateClient = async ({ id, ...client }: s.clients.Updatable, txOrPool: TxOrPool = pool) => {
+    const [ update ] = 
+      await db.update('clients', client, { id: id as string }).run(txOrPool);
+    return update;
+  };
+
   const listClients = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "client"); 
     const whereParent = query.parentId 
@@ -168,6 +174,7 @@ const Service = (u: User) => {
 
   return {
     addClient,
+    updateClient,
     getClient,
     getClientByName,
     searchClients,

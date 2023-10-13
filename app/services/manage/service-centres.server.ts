@@ -80,6 +80,12 @@ const Service = (u: User) => {
     return inserted;
   };
 
+  const updateServiceCentre = async ({ id, ...serviceCentre }: s.serviceCentres.Updatable, txOrPool: TxOrPool = pool) => {
+    const [ update ] = 
+      await db.update('serviceCentres', serviceCentre, { id: id as string }).run(txOrPool);
+    return update;
+  };
+  
   const checkForFullAccess = (keys: Array<SecurityKey>, serviceCentres: Array<ServiceCentre>) => {
     return (keys.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
       ? [ create({ 
@@ -154,6 +160,7 @@ const Service = (u: User) => {
 
   return {
     addServiceCentre,
+    updateServiceCentre,
     getServiceCentre,
     getServiceCentreByName,
     listServiceCentres,

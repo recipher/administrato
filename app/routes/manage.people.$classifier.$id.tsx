@@ -12,7 +12,7 @@ import { requireUser } from '~/auth/auth.server';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
 import Header from '~/components/header';
-import { EditablePhoto } from '~/components';
+import { EditableImage } from '~/components';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
@@ -80,7 +80,8 @@ export default function Person() {
   return (
     <>
       <Header title={`${person.firstName} ${person.lastName}`} actions={actions} group={true}
-        tabs={tabs.filter((tab) => tab.classifier === undefined || tab.classifier.includes(classifier))} icon={<EditablePhoto photo={person.photo} Icon={UserCircleIcon} />} />
+        tabs={tabs.filter((tab) => tab.classifier === undefined || tab.classifier.includes(classifier))} 
+          icon={<EditableImage name="photo" image={person.photo} Icon={UserCircleIcon} intent="change-photo" />} />
       <Outlet />
     </>
   );

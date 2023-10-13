@@ -1,7 +1,12 @@
-import { json, type LoaderArgs } from '@remix-run/node';
+import { type ActionArgs, type LoaderArgs, json, type UploadHandler,
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { Outlet, useLoaderData, useSearchParams } from '@remix-run/react';
 
 import { CurrencyYenIcon, PlusIcon } from '@heroicons/react/24/outline';
+
+import { createSupabaseUploadHandler } from '~/services/supabase.server';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -10,6 +15,7 @@ import ProviderService from '~/services/manage/providers.server';
 
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
+import { EditableImage } from '~/components';
 
 import { manage } from '~/auth/permissions';
 
@@ -36,6 +42,26 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ provider });
 };
 
+export const action = async ({ request, params }: ActionArgs) => {
+  const u = await requireUser(request);
+  const { id } = params;
+  if (id === undefined) return badRequest('Invalid request');
+
+  const uploadHandler: UploadHandler = composeUploadHandlers(
+    createSupabaseUploadHandler({ bucket: "images" }),
+    createMemoryUploadHandler()
+  );
+
+  const formData = await parseMultipartFormData(request, uploadHandler);
+
+  if (formData.get("intent") === "change-logo") {
+    const service = ProviderService(u);
+    const { logo } = await service.updateProvider({ id, logo: formData.get('logo') as string });
+    return json({ logo });
+  }
+  return null;
+};
+
 export default function Provider() {
   const [ searchParams ] = useSearchParams();
   const { provider: { id, name, localities, logo }} = useLoaderData();
@@ -52,11 +78,10 @@ export default function Provider() {
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=provider&entity-id=${id}`, default: true, icon: PlusIcon, permission: manage.edit.provider },
   ];
 
-  const icon = logo || <CurrencyYenIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />;
-
   return (
     <>
-      <Header title={name} tabs={tabs} actions={actions} group={true} icon={icon} />
+      <Header title={name} tabs={tabs} actions={actions} group={true} 
+        icon={<EditableImage name="logo" image={logo} Icon={CurrencyYenIcon} intent="change-logo" />} />
       <Outlet />
     </>
   );

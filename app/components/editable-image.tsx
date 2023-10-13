@@ -7,22 +7,23 @@ import { Spinner, Image } from '~/components';
 import classnames from '~/helpers/classnames';
 
 type Props = { 
-  photo: string | null;
+  image: string | null;
+  name: string;
   Icon: any;
-  intent?: string; 
+  intent: string; 
   action?: string;
 };
 
-export default ({ photo, Icon, intent = "change-photo", action = "." }: Props) => {
+export default ({ image, name, Icon, intent, action = "." }: Props) => {
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const fileRef = useRef(null);
   const [_, setSelectedFile] = useState<Blob>();
-  const [preview, setPreview] = useState<string | null>(photo);
+  const [preview, setPreview] = useState<string | null>(image);
   
   useEffect(() => {
-    if (fetcher.data?.photo) {
-      setPreview(fetcher.data.photo);
+    if (fetcher.data?.[name]) {
+      setPreview(fetcher.data[name]);
       setSelectedFile(undefined);
     }
   }, [fetcher.data]);
@@ -50,7 +51,7 @@ export default ({ photo, Icon, intent = "change-photo", action = "." }: Props) =
               "h-12 w-12 rounded-full")} />}
         <fetcher.Form encType="multipart/form-data" method="POST" action={action}>  
           <input type="hidden" name="intent" value={intent} />   
-          <input type="file" ref={fileRef} name="photo"
+          <input type="file" ref={fileRef} name={name}
             onChange={handleSelectFile} accept="image/*" className="hidden" />
         </fetcher.Form>
       </div>

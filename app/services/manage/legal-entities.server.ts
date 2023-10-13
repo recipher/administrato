@@ -64,6 +64,12 @@ const Service = (u: User) => {
     return inserted;
   };
 
+  const updateLegalEntity = async ({ id, ...legalEntity }: s.legalEntities.Updatable, txOrPool: TxOrPool = pool) => {
+    const [ update ] = 
+      await db.update('legalEntities', legalEntity, { id: id as string }).run(txOrPool);
+    return update;
+  };
+
   const listLegalEntities = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "legalEntity"); 
     
@@ -158,6 +164,7 @@ const Service = (u: User) => {
 
   return {
     addLegalEntity,
+    updateLegalEntity,
     getLegalEntity,
     getLegalEntityByName,
     searchLegalEntities,

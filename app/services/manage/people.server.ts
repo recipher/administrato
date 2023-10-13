@@ -163,9 +163,9 @@ const Service = (u: User) => {
   const addEmployee = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) =>
     addPerson({ ...person, classifier: Classifier.Employee }, connections, txOrPool);
 
-  const updatePerson = async (person: s.people.Updatable, txOrPool: TxOrPool = pool) => {
+  const updatePerson = async ({ id, ...person }: s.people.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('people', person, { id: person.id as string }).run(txOrPool);
+      await db.update('people', person, { id: id as string }).run(txOrPool);
     return update;
   };
 

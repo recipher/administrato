@@ -61,6 +61,12 @@ const Service = (u: User) => {
     return inserted;
   };
 
+  const updateProvider = async ({ id, ...provider }: s.providers.Updatable, txOrPool: TxOrPool = pool) => {
+    const [ update ] = 
+      await db.update('providers', provider, { id: id as string }).run(txOrPool);
+    return update;
+  };
+
   const listProviders = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
     const keys = query.keys || extractKeys(u, "serviceCentre", "provider"); 
     return await db.sql<s.providers.SQL, s.providers.Selectable[]>`
@@ -143,6 +149,7 @@ const Service = (u: User) => {
 
   return {
     addProvider,
+    updateProvider,
     getProvider,
     getProviderByName,
     searchProviders,
