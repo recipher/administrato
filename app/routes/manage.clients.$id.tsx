@@ -78,13 +78,15 @@ export default () => {
     { name: 'summary', to: 'summary' },
     { name: 'groups', to: 'groups', hidden: parentId !== null },
     { name: 'people', to: 'people/worker' },
+    { name: 'legal-entities', to: 'legal-entities' },
     { name: 'locations', to: 'locations' },
     { name: 'holidays', to: 'holidays' },
   ];
 
   const locality = searchParams.get("locality") || localities.at(0);
   const actions = [
-    { title: 'add-group', to: `/manage/clients/${id}/add-group`, hidden: parentId !== null, permission: manage.edit.client },
+    { title: 'add-group', to: `/manage/clients/${id}/groups/add`, hidden: parentId !== null, permission: manage.edit.client },
+    { title: 'add-legal-entity', to: `/manage/clients/${id}/legal-entities/add`, permission: manage.edit.client },
     { title: 'add-holiday', to: `/holidays/${locality}/add?entity=client&entity-id=${id}`, icon: PlusIcon, default: true, permission: manage.edit.client },
   ];
 

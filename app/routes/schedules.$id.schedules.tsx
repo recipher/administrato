@@ -101,7 +101,7 @@ const Schedules = () => {
       <Tabs tabs={yearData} selected={year.toString()} onClick={handleYearClick} />
       <Tabs tabs={statusData} selected={status} onClick={handleStatusClick} />
 
-      {schedules.length === 0 && <Alert level={Level.Info} title={`No schedules for ${year}`} />}
+      {schedules.length === 0 && <Alert level={Level.Info} title={`No ${t(status).toLowerCase()} schedules for ${year}`} />}
     
       <Table data={schedules} columns={columns} showHeadings={true} />
     </>

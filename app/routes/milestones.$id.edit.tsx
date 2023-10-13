@@ -115,13 +115,14 @@ export default function MilestoneSets() {
     </>
   );
 
-  const days = (days: number | null) => `${days || 0} ${pluralize('Day', days || 0)}`
+  const days = (days: number | null, index: number) => 
+    index === 0 ? "" : <span className="absolute top-10">{`${days || 0} ${pluralize('Day', days || 0)}`}</span>
 
   const columns = [
     { name: "identifier", display: (ms: Milestone) => <Identifier milestone={ms} /> }, 
     { name: "description", className: "text-md w-full max-w-0 sm:w-auto sm:max-w-none", stack: "sm" },
+    { name: "interval", type: "number", className: "w-24 relative", display: (ms: Milestone) => days(ms.interval, ms.index) },
     { name: "entities", display: (ms: Milestone) => ms.entities?.map(e => t(e)).join(', '), stack: "sm" },
-    { name: "interval", type: "number", className: "w-16", display: (ms: Milestone) => days(ms.interval) },
   ];
 
   const actions = [
@@ -147,8 +148,7 @@ export default function MilestoneSets() {
     <>
       {milestones.length <= 0 && <Alert title={`No milestones`} level={Level.Warning} />}
 
-      <Table data={milestones} columns={columns} actions={actions} showHeadings={false} />
-
+      <Table data={milestones} columns={columns} actions={actions} showHeadings={false} className="bg-white" />
       <ConfirmModal ref={confirm} onYes={onConfirmRemove} />
     </>
   );

@@ -57,7 +57,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   return redirect(`schedules?year=${year}`);
 };
 
-export default function Provider() {
+export default function Schedules() {
   const submit = useSubmit();
   const [ searchParams ] = useSearchParams();
   const { legalEntity: { logo, ...legalEntity }, year } = useLoaderData();
@@ -78,7 +78,7 @@ export default function Provider() {
   ];
 
   const actions = [
-    { title: 'generate-schedules', onClick: () => modal.current?.show(),
+    { title: 'generate-schedules', to: 'generate',
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
   ];
 

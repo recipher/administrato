@@ -199,7 +199,7 @@ export default function Header({ title, navigation = [], subtitle, icon, tabs = 
   const sort = searchParams.get('sort');
 
   if (typeof icon === "string") 
-    icon = <Image src={icon} className="h-12 w-12 rounded-lg" />;
+    icon = <Image src={icon} className="h-12 w-12 rounded-full" />;
 
   return (
     <div className="border-b border-gray-200 bg-white">

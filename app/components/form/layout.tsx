@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 
 import classnames from "~/helpers/classnames";
 
@@ -12,7 +12,7 @@ export const Body = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export const Section = ({ heading, explanation, size = "lg" }: { heading?: string, explanation?: string, size?: string }) => {
+export const Section = ({ heading, explanation, size = "lg" }: { heading?: string, explanation?: string | ReactNode, size?: string }) => {
   return (
     <div>
       <h2 className={classnames(size !== "lg" ? "font-medium" : "font-semibold", `text-${size} leading-7 text-gray-900`)}>
@@ -35,7 +35,7 @@ export const Group = ({ children }: PropsWithChildren<{}>) => {
 
 export const Field = ({ span = 4, width, className = "", children }: PropsWithChildren<{ span?: number, className?: string, width?: string }>) => {
   return (
-    <div className={classnames(className, width ? `w-${width}` : "", `sm:col-span-${span}`)}>
+    <div className={classnames(className, width ? `w-${width}` : "", `sm:col-span-${span} mt-1`)}>
       {children}
     </div>
   );

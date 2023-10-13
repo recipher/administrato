@@ -37,7 +37,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Info = () => {
-  const { t } = useTranslation("schedule");
+  const { t } = useTranslation();
+  const { t: ts } = useTranslation("schedule");
   const { legalEntity, milestoneSet } = useLoaderData();
 
   return (
@@ -46,12 +47,12 @@ const Info = () => {
         <Heading heading={t('info')} explanation={`Manage ${legalEntity.name}'s information.`} />
         <Section>
           <Field title="Schedule Frequency">
-            {t(legalEntity.frequency, { ns: "schedule" })}
+            {ts(legalEntity.frequency, { ns: "schedule" })}
           </Field>
           <Field title="Schedule Pay Date">
             {legalEntity.target.split(',').map((target: string) => {
                 const [ type, value ] = target.split(' ');
-                return `${t(type)} ${value == null ? "" : t(value)}`;
+                return `${ts(type)} ${value == null ? "" : ts(value)}`;
               }).join(' and ')}
           </Field>
           <Field title="Milestone Set">

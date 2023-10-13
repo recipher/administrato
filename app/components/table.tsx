@@ -29,6 +29,7 @@ type Props = {
   actions?: Array<ActionProps>;
   showHeadings?: boolean;
   idKey?: string;
+  className?: string | undefined;
 };
 
 const Action = ({ action, item }: { action: ActionProps, item: any }) => {
@@ -92,7 +93,7 @@ const ContextMenu = ({ actions, item }: { actions: Array<ActionProps>, item: any
   );
 };
 
-export default function Table({ data, columns, actions, showHeadings = false, idKey="id" }: Props) {
+export default function Table({ data, columns, actions, showHeadings = false, idKey="id", className }: Props) {
   const { t } = useTranslation();
 
   const rowAction = actions?.find(action => action.row === true);
@@ -115,7 +116,7 @@ export default function Table({ data, columns, actions, showHeadings = false, id
               </th>
             </tr>}
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
+          <tbody className={classnames(className || "divide-y divide-gray-200 bg-white")}>
             {data.map((item) => (
               <tr key={item[idKey]} onClick={() => rowAction?.onClick && rowAction?.onClick(item)}
                 className={classnames(rowAction ? "cursor-pointer" : "", "group text-sm font-normal text-gray-900")}>

@@ -57,7 +57,7 @@ export default function ServiceCentre() {
 
   const locality = searchParams.get("locality") || localities.at(0);
   const actions = [
-    { title: 'add-group', to: `/manage/service-centres/${id}/add-group`, hidden: parentId !== null, permission: manage.edit.serviceCentre },
+    { title: 'add-group', to: `/manage/service-centres/${id}/groups/add`, hidden: parentId !== null, permission: manage.edit.serviceCentre },
     { title: 'add-client', to: `/manage/clients/add?service-centre=${id}`, default: true, icon: PlusIcon, permission: manage.create.client },
     { title: 'add-legal-entity', to: `/manage/legal-entities/add?service-centre=${id}`, permission: manage.create.legalEntity },
     { title: 'add-provider', to: `/manage/providers/add?service-centre=${id}`, permission: manage.create.provider },
