@@ -229,7 +229,7 @@ const Service = (u: User) => {
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const people = await db.sql<peopleSQL, s.people.Selectable[]>`
-      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity", c.id AS "clientId", le.id AS "legalEntityId"  
       FROM ${'people'}
       LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
       LEFT JOIN ${'legalEntities'} AS le ON lep.${'legalEntityId'} = le.${'id'}
@@ -262,7 +262,7 @@ const Service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
     const [ person ] = await db.sql<peopleSQL, s.people.Selectable[]>`
-      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
+      SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity", c.id AS "clientId", le.id AS "legalEntityId" 
       FROM ${'people'}
       LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
       LEFT JOIN ${'legalEntities'} AS le ON lep.${'legalEntityId'} = le.${'id'}

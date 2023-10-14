@@ -52,6 +52,10 @@ export default function Search() {
   const Context = (item: any) => 
     <ListContext select={true} />
 
+  const link = (item: any) =>
+    item.parentType === "people" ? `people/${item.type}`
+      : pluralize(item.type)
+
   return (
     <>
       <h2>
@@ -60,7 +64,7 @@ export default function Search() {
       </h2>
 
       {results.length <= 0 && <Alert title={`No search results found`} level={Level.Warning} />}
-      <List data={results} renderItem={Item} renderContext={Context} buildTo={({ item }: any) => `/manage/${pluralize(t(item.type))}/${item.id}/info`} />
+      <List data={results} renderItem={Item} renderContext={Context} buildTo={({ item }: any) => `/manage/${link(item)}/${item.id}/info`} />
       <Pagination entity='result' totalItems={NO_COUNT} count={results.length} offset={offset} limit={limit} />
     </>
   );

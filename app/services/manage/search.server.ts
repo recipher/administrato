@@ -20,7 +20,8 @@ const Service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "provider");
 
     return db.sql<s.providers.SQL, s.providers.Selectable[]>`
-      SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'provider' AS type FROM ${'providers'} AS main
+      SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'provider' AS type, NULL AS "parentType" 
+      FROM ${'providers'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}`;
   };
 
@@ -35,7 +36,7 @@ const Service = (u: User) => {
     const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
 
     return db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
-      SELECT ${'people'}.id, CONCAT(${'people'}."firstName", ' ', ${'people'}."lastName") AS name, ${'people'}.${'photo'} AS image, classifier AS type 
+      SELECT ${'people'}.id, CONCAT(${'people'}."firstName", ' ', ${'people'}."lastName") AS name, ${'people'}.${'photo'} AS image, classifier AS type, 'people' AS "parentType"
       FROM ${'people'}
       WHERE 
         ${searchQuery(search)} AND 
@@ -52,7 +53,8 @@ const Service = (u: User) => {
   
     const keys = extractKeys(u, "serviceCentre", "client");
     return db.sql<s.clients.SQL, s.clients.Selectable[]>`
-      SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'client' AS type FROM ${'clients'} AS main
+      SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'client' AS type, NULL AS "parentType"
+      FROM ${'clients'} AS main
       WHERE main.${'parentId'} IS NULL ${searchQuery(search)} AND ${whereKeys({ keys })}`;
   };
 
@@ -65,7 +67,7 @@ const Service = (u: User) => {
     const keys = extractKeys(u, "serviceCentre", "legalEntity");
 
     return db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'legal-entity' AS type 
+      SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'legal-entity' AS type, NULL AS "parentType" 
       FROM ${'legalEntities'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}`
     };

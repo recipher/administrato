@@ -1,7 +1,7 @@
 import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
 import { useLoaderData, Outlet, useSearchParams, useSubmit } from '@remix-run/react';
 
-import { WalletIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { WalletIcon, PlusIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -16,6 +16,7 @@ import { scheduler } from '~/auth/permissions';
 import { useRef } from 'react';
 import { RefModal } from '~/components/modals/modal';
 import toNumber from '~/helpers/to-number';
+import { ButtonType } from '~/components';
 
 export const handle = {
   name: ({ legalEntity }: { legalEntity: any }) => legalEntity?.name,
@@ -78,6 +79,8 @@ export default function Schedules() {
   ];
 
   const actions = [
+    { title: 'download-schedule-file', to: 'schedules/download',
+      icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
     { title: 'generate-schedules', to: 'schedules/generate',
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
   ];
@@ -86,7 +89,7 @@ export default function Schedules() {
 
   return (
     <>
-      <Header title={legalEntity.name} tabs={tabs} actions={actions} group={true} icon={icon} />
+      <Header title={legalEntity.name} tabs={tabs} actions={actions} group={false} icon={icon} />
       <Outlet />
       <GenerateSingleModal modal={modal} onGenerate={handleGenerate}
         legalEntity={legalEntity} year={year} />
