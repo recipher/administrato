@@ -1,3 +1,4 @@
+export { default as Alert, Level } from './alert';
 export { default as Image } from './image';
 export { default as EditableImage } from './editable-image';
 export { default as Button, ButtonType } from './button';

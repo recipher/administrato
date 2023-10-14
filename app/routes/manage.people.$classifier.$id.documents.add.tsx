@@ -95,7 +95,7 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={clientValidator} id="add-document" encType="multipart/form-data" className="mt-5">
+      <Form method="post" validator={clientValidator} id="add-document" encType="multipart/form-data" className="mt-6">
         <Body>
           <Section heading='New Document' explanation='Please enter the new document details.' />
           <Group>

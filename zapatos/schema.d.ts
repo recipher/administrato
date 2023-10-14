@@ -43,22 +43,46 @@ declare module 'zapatos/schema' {
       entity: string;
       /**
       * **approvals.entityId**
+      * - `_text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string[];
+      /**
+      * **approvals.userId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      entityId: string;
+      userId: string;
       /**
-      * **approvals.required**
+      * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      required: db.JSONValue;
+      userData: db.JSONValue;
       /**
-      * **approvals.optional**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvals.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
       */
-      optional: db.JSONValue;
+      isOptional: boolean | null;
+      /**
+      * **approvals.setId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      setId: string;
+      /**
+      * **approvals.status**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      status: string;
+      /**
+      * **approvals.notes**
+      * - `json` in database
+      * - Nullable, no default
+      */
+      notes: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -75,22 +99,46 @@ declare module 'zapatos/schema' {
       entity: string;
       /**
       * **approvals.entityId**
+      * - `_text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string[];
+      /**
+      * **approvals.userId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      entityId: string;
+      userId: string;
       /**
-      * **approvals.required**
+      * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      required: db.JSONValue;
+      userData: db.JSONValue;
       /**
-      * **approvals.optional**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvals.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
       */
-      optional: db.JSONValue;
+      isOptional: boolean | null;
+      /**
+      * **approvals.setId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      setId: string;
+      /**
+      * **approvals.status**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      status: string;
+      /**
+      * **approvals.notes**
+      * - `json` in database
+      * - Nullable, no default
+      */
+      notes: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -107,22 +155,46 @@ declare module 'zapatos/schema' {
       entity?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **approvals.entityId**
+      * - `_text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.userId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      entityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      userId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **approvals.required**
+      * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      required?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **approvals.optional**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvals.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
       */
-      optional?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      isOptional?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.setId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      setId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.status**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      status?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.notes**
+      * - `json` in database
+      * - Nullable, no default
+      */
+      notes?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -139,22 +211,46 @@ declare module 'zapatos/schema' {
       entity: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **approvals.entityId**
+      * - `_text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string[] | db.Parameter<string[]> | db.SQLFragment;
+      /**
+      * **approvals.userId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      entityId: string | db.Parameter<string> | db.SQLFragment;
+      userId: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **approvals.required**
+      * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      required?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment;
+      userData: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
       /**
-      * **approvals.optional**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvals.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
       */
-      optional?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment;
+      isOptional?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvals.setId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      setId: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **approvals.status**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      status: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **approvals.notes**
+      * - `json` in database
+      * - Nullable, no default
+      */
+      notes?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -171,24 +267,48 @@ declare module 'zapatos/schema' {
       entity?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **approvals.entityId**
+      * - `_text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId?: string[] | db.Parameter<string[]> | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment>;
+      /**
+      * **approvals.userId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      entityId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      userId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **approvals.required**
+      * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      required?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment>;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
       /**
-      * **approvals.optional**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvals.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
       */
-      optional?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment>;
+      isOptional?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvals.setId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      setId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **approvals.status**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      status?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **approvals.notes**
+      * - `json` in database
+      * - Nullable, no default
+      */
+      notes?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'approvals_pkey';
+    export type UniqueIndex = 'approvals_entityid_userid_uniq' | 'approvals_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -221,17 +341,23 @@ declare module 'zapatos/schema' {
       */
       entityId: string;
       /**
-      * **approvers.required**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvers.userId**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      required: db.JSONValue;
+      userId: string;
       /**
-      * **approvers.optional**
+      * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      optional: db.JSONValue;
+      userData: db.JSONValue;
+      /**
+      * **approvers.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isOptional: boolean | null;
     }
     export interface JSONSelectable {
       /**
@@ -253,17 +379,23 @@ declare module 'zapatos/schema' {
       */
       entityId: string;
       /**
-      * **approvers.required**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvers.userId**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      required: db.JSONValue;
+      userId: string;
       /**
-      * **approvers.optional**
+      * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      optional: db.JSONValue;
+      userData: db.JSONValue;
+      /**
+      * **approvers.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isOptional: boolean | null;
     }
     export interface Whereable {
       /**
@@ -285,17 +417,23 @@ declare module 'zapatos/schema' {
       */
       entityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **approvers.required**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvers.userId**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      required?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      userId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **approvers.optional**
+      * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      optional?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvers.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isOptional?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -317,17 +455,23 @@ declare module 'zapatos/schema' {
       */
       entityId: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **approvers.required**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvers.userId**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      required?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment;
+      userId: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **approvers.optional**
+      * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      optional?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment;
+      userData: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
+      /**
+      * **approvers.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isOptional?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -349,19 +493,25 @@ declare module 'zapatos/schema' {
       */
       entityId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **approvers.required**
-      * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * **approvers.userId**
+      * - `text` in database
+      * - `NOT NULL`, no default
       */
-      required?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment>;
+      userId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **approvers.optional**
+      * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, default: `'[]'::json`
+      * - `NOT NULL`, no default
       */
-      optional?: db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.DefaultType | db.SQLFragment>;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
+      /**
+      * **approvers.isOptional**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isOptional?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'approvers_pkey';
+    export type UniqueIndex = 'approvers_entityid_userid_uniq' | 'approvers_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2179,7 +2329,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'holiday_pkey';
+    export type UniqueIndex = 'holiday_pkey' | 'holidays_locality_name_date_entity_uniq';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;

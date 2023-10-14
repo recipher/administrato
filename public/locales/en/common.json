@@ -15,6 +15,7 @@
   "schedule": "Schedule",
   "schedules": "Schedules",
   "generate-schedules": "Generate Schedules",
+  "select-approvers": "Select Approvers",
   "download-schedule-file": "Download Schedules",
   "approvals": "Approvals",
   "approvers": "Approvers",

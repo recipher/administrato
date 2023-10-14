@@ -34,7 +34,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
-  const status = url.searchParams.get("status") || Status.Generated;
+  const status = url.searchParams.get("status") || Status.Draft;
 
   const u = await requireUser(request);
 

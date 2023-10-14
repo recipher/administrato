@@ -65,9 +65,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (result.error) return;
 
   const service = ScheduleService(u);
-  await service.generate(result.data);
+  const setId = await service.generate(result.data);
 
-  return redirect('approvals');
+  return redirect(`approvers?set=${setId}`);
 };
 
 const noOp = () => null!
@@ -76,18 +76,21 @@ export default function Provider() {
   const { legalEntity: { logo, ...legalEntity }, year } = useLoaderData();
 
   return (
-    <Form validator={validator} id="generate" method="POST" className="mt-5">
+    <Form validator={validator} id="generate" method="POST" className="mt-6">
       <Body>
         <Section heading='Generate Schedules' 
-          explanation={<><div>Are you sure you want to generate schedules for this legal entity?</div> 
-            <div>Please select start and end dates. 
-            Take note, this will generate a draft, and will not 
-            overwrite any existing schedules.</div></>} />
+          explanation='Are you sure you want to generate schedules for this legal entity?' />
         <Group>
           <Field>
             <Lookup label='Legal Entity' name="legalEntityId" onClick={noOp} 
               value={legalEntity} />
           </Field>
+        </Group>
+        <Section 
+          explanation='Please select start and end dates. 
+            Take note, this will generate a draft, and will not 
+            overwrite any existing schedules.' />
+        <Group>
           <Field span={3}>
             <DatePicker label="Start" name="start" value={new Date(year, 0, 1)} />
           </Field>

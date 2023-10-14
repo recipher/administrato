@@ -94,7 +94,7 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={validator} id="add-milestone" className="mt-5">
+      <Form method="post" validator={validator} id="add-milestone" className="mt-6">
         <Body>
           <Section heading='New Milestone' explanation='Please enter the new milestone details.' />
           <Group>

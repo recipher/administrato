@@ -51,7 +51,7 @@ export const CountriesSearch = ({ onSelect, onSelectRegion, onBack, country, sho
     const [ countries, setCountries ] = useState(data.slice(0, LIMIT));
 
     const ensureSize = (items: Array<Country> = []) => {
-      const EMPTY = { name: '', isoCode: '', regionCount: undefined, parent: '', createdAt: new Date() };
+      const EMPTY = { name: '', isoCode: '', regionCount: undefined, parent: '', diallingCode: '', createdAt: new Date() };
       
       if (items.length < LIMIT) {
         const empty = [...Array(LIMIT - items.length).keys()].map(_ => EMPTY);

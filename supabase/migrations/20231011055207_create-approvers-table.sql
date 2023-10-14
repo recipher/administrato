@@ -3,8 +3,10 @@ create table
     id text not null,
     entity text not null,
     "entityId" text not null,
-    required json not null default '[]'::json,
-    optional json not null default '[]'::json,
-    constraint approvers_pkey primary key (id)
+    "userId" text not null,
+    "userData" json not null,
+    "isOptional" boolean null,
+    constraint approvers_pkey primary key (id),
+    constraint approvers_entityId_userId_uniq unique ("entityId", "userId")
   ) tablespace pg_default;
 alter table public.approvers enable row level security;

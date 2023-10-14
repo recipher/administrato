@@ -67,7 +67,7 @@ const Add = () => {
 
   return (
     <>
-      <Form method="POST" validator={validator} id="add-salary" className="mt-5">
+      <Form method="POST" validator={validator} id="add-salary" className="mt-6">
         <Body>
           <Section heading='New Salary' explanation='Please enter the new salary data.' />
           <Group>

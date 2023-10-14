@@ -149,7 +149,7 @@ export default function Add() {
 
   return (
     <>
-      <Form method="post" validator={validator} id="add-holiday" className="mt-5">
+      <Form method="post" validator={validator} id="add-holiday" className="mt-6">
         <Body>
           <Section heading={`New Holiday for ${country.name}`} explanation='Please enter the holiday information.' />
           <Group>

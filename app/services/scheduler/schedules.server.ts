@@ -17,6 +17,7 @@ import MilestoneService, { Milestone } from './milestones.server';
 
 import WorkingDayService from './working-days.server';
 import HolidaysService from './holidays.server';
+import ApprovalsService, { type Approver, type Approval} from './approvals.server';
 
 export { Target, Weekday, toTarget } from './target.server';
 import TargetService, { Target } from './target.server';
@@ -45,9 +46,9 @@ export enum Frequency {
 };
 
 export enum Status {
-  Generated = 'generated',
   Draft = 'draft',
   Approved = 'approved',
+  Rejected = 'rejected',
   Broken = 'broken',
 };
 
@@ -236,16 +237,25 @@ const Service = (u: User) => {
 
   const saveScheduleSet = async ({ set, legalEntity }: { set: Array<GeneratedSchedule>, legalEntity: LegalEntity }) => {
     const holidayService = HolidaysService(u);
+    const approvalsService = ApprovalsService(u);
 
     return db.serializable(pool, async tx => {
+      const approvers = await approvalsService.listApproversByEntityId({ entityId: legalEntity.id }, tx);
+      
+      const { id: setId } = create();
       await Promise.all(set.map(async (schedule) => {
         const { id } = await addSchedule(create({
           legalEntityId: legalEntity.id,
           name: schedule.period.name,
           date: schedule.period.date,
-          status: Status.Generated,
+          status: Status.Draft,
           version: 0,
         }), tx);
+
+        await approvalsService.addApprovals(approvers.map(({ userId, userData, isOptional }: Approver) => create({
+          entity: "schedule,legal-entity", entityId: [ id, legalEntity.id ], 
+          userId, userData, isOptional, setId, status: Status.Draft
+        })), tx);
 
         await holidayService.addHolidays(schedule.holidays.map(({ name, date, observed, locality }) => (
           create({ name, date, observed, locality, entity: "schedule", entityId: id })
@@ -256,12 +266,14 @@ const Service = (u: User) => {
             scheduleId: id,
             milestoneId: date.id,
             date: date.date,
-            status: Status.Generated,
+            status: Status.Draft,
             index: date.index,
             target: date.target,
           }), tx);
         }));
       }));
+
+      return setId;
     });
   };
 
@@ -279,13 +291,13 @@ const Service = (u: User) => {
     const periods = await determinePeriods({ legalEntity, countries, ...dates });
     const set = await generateScheduleSet({ legalEntity, milestones, periods });
 
-    await saveScheduleSet({ set, legalEntity });
+    return saveScheduleSet({ set, legalEntity });
   };
 
   type ListProps = { legalEntityId: string; year: number, status: Status | null };
 
-  const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Generated }: ListProps) => {
-    if (!status) status = Status.Generated;
+  const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps) => {
+    if (!status) status = Status.Draft;
     return db.sql<s.schedules.SQL | s.scheduleDates.SQL, s.schedules.Selectable[] & { scheduleDates: s.scheduleDates.Selectable[] }>`
       SELECT ${'schedules'}.*, jsonb_agg(${"scheduleDates"}.*) AS ${'scheduleDates'}
       FROM ${'schedules'} 

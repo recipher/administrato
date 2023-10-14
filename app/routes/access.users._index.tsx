@@ -1,5 +1,5 @@
 import { intlFormatDistance } from 'date-fns';
-import { type LoaderArgs } from '@remix-run/node';
+import { type LoaderArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import UserService, { type BasicUser as User } from '~/services/access/users.server';
@@ -25,7 +25,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const organization = u.organization?.auth0id;
   const users = await service.searchUsers({ search }, { offset, limit: LIMIT });
 
-  return { users, offset, limit: LIMIT, search, organization };
+  return json({ users, offset, limit: LIMIT, search, organization });
 };
 
 const User = (user: User) => 

@@ -56,7 +56,7 @@ export default function Provider() {
   const { year } = useLoaderData();
 
   return (
-    <Form validator={validator} id="generate" method="POST" className="mt-5">
+    <Form validator={validator} id="generate" method="POST" className="mt-6">
       <Body>
         <Section heading='Generate Schedules' 
           explanation={<><div>Are you sure you want to generate schedules?</div> 
