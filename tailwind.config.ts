@@ -12,6 +12,7 @@ export default {
     },
   },
   safelist: [
+    'w-[8rem]',
     'fill-indigo-600',
     'opacity-50',
     'opacity-60',

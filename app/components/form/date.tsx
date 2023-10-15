@@ -174,7 +174,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
           value={(date && format(date, displayFormat)) || ""}
           className={classnames(`w-[${width}rem]`,
             error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
-            "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
+            "block rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
         />
         <div className="group absolute inset-y-0 right-0 flex items-center cursor-pointer" onClick={handleClick}>
           <CalendarDaysIcon className="mx-2 h-5 w-5 text-gray-400 group-hover:text-indigo-400" aria-hidden="true" />

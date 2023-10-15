@@ -107,6 +107,8 @@ const Schedules = () => {
   const [ editingDate, setEditingDate ] = useState<{ row: string, col: string }>();
   const [ submittingDate, setSubmittingDate ] = useState<{ row: string, col: string }>();
 
+  const hasPermission = (p: string) => user.permissions.includes(p);
+
   const yearData = ((year: number) => [...Array(5).keys()].map(index => year + index - 1))(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
   const statusData = statuses.map((status: Status) => ({ name: t(status), value: status }));
@@ -132,15 +134,21 @@ const Schedules = () => {
         <span className="lg:ml-1.5">{m.description}</span>
       </span>;
 
-  const displayDate = (schedule: ScheduleWithDates, column: ColumnProps) => {
+  const DisplayDate = ({ schedule, column }: { schedule: ScheduleWithDates, column: ColumnProps }) => {
     const scheduledDate = schedule.scheduleDates.find(d => d?.milestoneId === column.name)?.date;
     if (scheduledDate === undefined) return;
-    const asLocaleDate = new Date(scheduledDate).toLocaleDateString(locale === 'en' ? 'gb' : locale);
+    const asLocaleDate = format(new Date(scheduledDate), "dd/MM/yyyy"); //.toLocaleDateString(locale);
+    const allowEdit = hasPermission(scheduler.edit.schedule); // && schedule.status === "approved";
     const row = schedule.id, col = column.name, 
           isEditing = editingDate?.row === row && editingDate?.col === col,
           isSubmitting = submittingDate?.row === row && submittingDate?.col === col;
 
+    useEffect(() => {
+      if (fetcher.state === "idle") setSubmittingDate(undefined);
+    }, [ fetcher.state ]);
+      
     const handleClick = (e: any) => {
+      if (allowEdit === false) return;
       e.stopPropagation();
       setEditingDate(isEditing ? undefined : { row, col });
     };
@@ -152,15 +160,11 @@ const Schedules = () => {
       }, { method: "POST", encType: "application/json" });
     };
 
-    useEffect(() => {
-      if (fetcher.state === "idle") setSubmittingDate(undefined);
-    }, [ fetcher.state ]);
-
     return isEditing
       ? <Form validator={withZod(z.any())} className="-mt-4 -mb-2 -ml-3 -mr-9" onClick={handleClick}>
           <DatePicker value={new Date(scheduledDate)} label={null} displayFormat="dd/MM/yyyy" width={8} onChange={handleChange} />
         </Form>
-      : <span className={classnames(isSubmitting ? "opacity-50" : "", "inline-block")} 
+      : <span className={classnames(allowEdit ? "cursor-pointer" : "", isSubmitting ? "opacity-50" : "", "inline-block")} 
           onClick={handleClick}>
           {asLocaleDate}
         </span>;
@@ -170,7 +174,8 @@ const Schedules = () => {
     { name: "name", label: "Period", className: "text-md font-medium" },
       ...milestones.map((m: Milestone) => ({ name: m.id, label: labelFor(m), 
         headingClassName: targetClassName(m), className: targetClassName(m),
-        display: displayDate })),
+        display: (schedule: ScheduleWithDates, column: ColumnProps) => 
+          <DisplayDate schedule={schedule} column={column} /> })),
     { name: "status", label: "Status", 
         display: ({ status }: ScheduleWithDates) => 
           <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-500" : ""}>
@@ -178,8 +183,6 @@ const Schedules = () => {
           </span> 
     },
   ];
-
-  const hasPermission = (p: string) => user.permissions.includes(p);
 
   const handleRemove = (schedule: ScheduleWithDates) => {
     setSchedule(schedule);
