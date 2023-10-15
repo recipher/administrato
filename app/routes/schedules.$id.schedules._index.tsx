@@ -1,4 +1,5 @@
-import { json, type LoaderArgs } from '@remix-run/node';
+import { useRef, useState } from 'react';
+import { ActionArgs, json, redirect, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from 'remix-i18next';
@@ -7,15 +8,21 @@ import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
+import { useUser } from '~/hooks';
+import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import LegalEntityService from '~/services/manage/legal-entities.server';
-import ScheduleService, { ScheduleWithDates, Status } from '~/services/scheduler/schedules.server';
+import ScheduleService, { type ScheduleWithDates, Status } from '~/services/scheduler/schedules.server';
 import MilestoneService, { type Milestone } from '~/services/scheduler/milestones.server';
+
+import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import Alert, { Level } from '~/components/alert';
 import Tabs from '~/components/tabs';
 import Table, { ColumnProps } from '~/components/table';
+
+import { scheduler } from '~/auth/permissions';
 
 import toNumber from '~/helpers/to-number';
 import pluralize from '~/helpers/pluralize';
@@ -53,7 +60,31 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ legalEntity, schedules, milestones, year, status, statuses });
 };
 
+export async function action({ request, params }: ActionArgs) {
+  const u = await requireUser(request);
+
+  let message = "", level = Level.Success;
+  const { intent, setId, ...data } = await request.json();
+
+  const service = ScheduleService(u);
+
+  if (intent === 'remove-schedule') {
+    const { schedule: { id, name } } = data;
+    try {
+      await service.deleteSchedule({ id });
+      message = `Schedule Deleted:${name} has been deleted.`;
+    } catch(e: any) {
+      message = `Schedule Delete Error:${e.message}.`;
+      level = Level.Error;
+    };
+  }
+
+  const session = await setFlashMessage({ request, message, level });
+  return redirect(`.?set=${setId}`, { headers: { "Set-Cookie": await storage.commitSession(session) } });
+};
+
 const Schedules = () => {
+  const user = useUser();
   const { t } = useTranslation("schedule");
   const locale = useLocale();
 
@@ -61,6 +92,9 @@ const Schedules = () => {
 
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
+
+  const submit = useSubmit();
+  const [ schedule, setSchedule ] = useState<ScheduleWithDates>();
 
   const yearData = ((year: number) => [...Array(5).keys()].map(index => year + index - 1))(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
@@ -73,6 +107,8 @@ const Schedules = () => {
   };
   
   const targetClassName = (m: Milestone) => m.target === true ? "text-indigo-800 font-semibold": "";
+
+  const confirm = useRef<RefConfirmModal>(null);
 
   const labelFor = (m: Milestone) => m.index === 0 
     ? m.description 
@@ -96,6 +132,37 @@ const Schedules = () => {
     { name: "status", label: "Status", display: ({ status }: { status: string }) => t(status) },
   ];
 
+  const hasPermission = (p: string) => user.permissions.includes(p);
+
+  const handleRemove = (schedule: ScheduleWithDates) => {
+    setSchedule(schedule);
+    confirm.current?.show(
+      "Remove Schedule?", 
+      "Yes, Remove", "Cancel", 
+      `Are you sure you want to remove the schedule for ${schedule.name} ${year}?`);
+  };
+
+  const onConfirmRemove = () => {
+    if (schedule === undefined) return;
+    submit({ intent: "remove-schedule", schedule: { id: schedule.id, name: `${schedule.name} ${year}` }},
+      { method: "POST", encType: "application/json" });
+  };
+
+  const actions = [
+    { name: "approve", className: () => "text-gray-500", multiSelect: true,
+      condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
+      to: (schedule: ScheduleWithDates) => `approve?schedule=${schedule.id}`,
+    },
+    { name: "reject", className: () => "text-gray-500", multiSelect: true, 
+      condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
+      to: (schedule: ScheduleWithDates) => `reject?schedule=${schedule.id}`,
+    },
+    { name: "delete", 
+      condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.delete.schedule),
+      onClick: handleRemove,
+    },
+  ];
+
   return (
     <>
       <Tabs tabs={yearData} selected={year.toString()} onClick={handleYearClick} />
@@ -103,7 +170,9 @@ const Schedules = () => {
 
       {schedules.length === 0 && <Alert level={Level.Info} title={`No ${t(status).toLowerCase()} schedules for ${year}`} />}
     
-      <Table data={schedules} columns={columns} showHeadings={true} />
+      <Table data={schedules} columns={columns} actions={actions}
+        showHeadings={true} contextMenu={true} />
+      <ConfirmModal ref={confirm} onYes={onConfirmRemove} />
     </>
   );
 };

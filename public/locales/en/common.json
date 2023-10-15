@@ -19,6 +19,8 @@
   "download-schedule-file": "Download Schedules",
   "approvals": "Approvals",
   "approvers": "Approvers",
+  "approve": "Approve",
+  "reject": "Reject",
   "add-holiday": "Add a Holiday",
   "region": "Region",
   "regions": "Regions",

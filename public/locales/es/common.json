@@ -19,6 +19,8 @@
   "download-schedule-file": "Descargar Horarios",
   "approvals": "Aprobaciones",
   "approvers": "Aprobadoras",
+  "approve": "Aprobar",
+  "reject": "Rechazar",
   "holiday": "Vacación",
   "holidays": "Vacaciones",
   "add-holiday": "Agregar un Feriado",

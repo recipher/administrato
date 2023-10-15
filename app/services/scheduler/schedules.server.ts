@@ -9,7 +9,7 @@ import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate, isSameDate } fr
 
 import { default as create } from '../id.server';
 
-import { TxOrPool } from '../types';
+import { IdProp, TxOrPool } from '../types';
 
 import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
@@ -17,7 +17,7 @@ import MilestoneService, { Milestone } from './milestones.server';
 
 import WorkingDayService from './working-days.server';
 import HolidaysService from './holidays.server';
-import ApprovalsService, { type Approver, type Approval} from './approvals.server';
+import ApprovalsService, { type Approver, type Approval } from './approvals.server';
 
 export { Target, Weekday, toTarget } from './target.server';
 import TargetService, { Target } from './target.server';
@@ -55,6 +55,10 @@ export enum Status {
 const DEFAULT = '-';
 
 const Service = (u: User) => {
+  const deleteSchedule = async({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+    return db.deletes('schedules', { id }).run(txOrPool);
+  };
+
   const names = {
     week: (date: Date) => `Week ${getWeek(date)}`,
     month: (date: Date) => format(adjustForUTCOffset(date), 'LLLL'),
@@ -318,7 +322,7 @@ const Service = (u: User) => {
     `.run(pool);
   };
 
-  return { generate, listSchedulesByLegalEntity };
+  return { generate, deleteSchedule, listSchedulesByLegalEntity };
 };
 
 export default Service;

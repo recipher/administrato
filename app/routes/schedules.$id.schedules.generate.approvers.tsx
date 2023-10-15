@@ -81,7 +81,6 @@ export async function action({ request, params }: ActionArgs) {
   return redirect(`.?set=${setId}`, { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
-
 export default function Generate() {
   const u = useUser();
   const { legalEntity, approvers, setId } = useLoaderData();

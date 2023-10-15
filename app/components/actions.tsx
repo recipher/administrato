@@ -21,12 +21,11 @@ export default function Actions({ actions = [] }: Props) {
   };
 
   return (
-      filter(actions).map(action =>
-        <span key={action.title} className="ml-3">
-          {action.to === undefined
-            ? <Button {...action} key={action.title} />
-            : <Link to={action.to} key={action.title}><Button {...action} /></Link>}
-        </span>
-      )
-  );
-}
+    filter(actions).map(action =>
+      <span key={action.title} className="ml-3">
+        {action.to === undefined
+          ? <Button {...action} key={action.title} />
+          : <Link to={action.to} key={action.title}><Button {...action} /></Link>}
+      </span>
+  ));
+};
