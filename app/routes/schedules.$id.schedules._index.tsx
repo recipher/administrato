@@ -151,11 +151,11 @@ const Schedules = () => {
   const actions = [
     { name: "approve", className: () => "text-gray-500", multiSelect: true,
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
-      to: (schedule: ScheduleWithDates) => `approve?schedule=${schedule.id}`,
+      to: (schedule: ScheduleWithDates | Array<string>) => `approve?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
     },
     { name: "reject", className: () => "text-gray-500", multiSelect: true, 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
-      to: (schedule: ScheduleWithDates) => `reject?schedule=${schedule.id}`,
+      to: (schedule: ScheduleWithDates | Array<string>) => `reject?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
     },
     { name: "delete", 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.delete.schedule),
@@ -171,7 +171,7 @@ const Schedules = () => {
       {schedules.length === 0 && <Alert level={Level.Info} title={`No ${t(status).toLowerCase()} schedules for ${year}`} />}
     
       <Table data={schedules} columns={columns} actions={actions}
-        showHeadings={true} contextMenu={true} />
+             showHeadings={true} contextMenu={true} />
       <ConfirmModal ref={confirm} onYes={onConfirmRemove} />
     </>
   );

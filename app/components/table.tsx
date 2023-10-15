@@ -20,6 +20,7 @@ export type ColumnProps = {
 type ActionProps = {
   name?: string;
   to?: string | Function;
+  multiTo?: Function;
   condition?: Function;
   onClick?: Function;
   className?: string | Function;
@@ -108,11 +109,24 @@ const ContextMenu = ({ actions, item }: { actions: Array<ActionProps>, item: any
   );
 };
 
-const Actions = ({ actions = [] }: { actions: Array<ActionProps> }) => {
+const Actions = ({ actions = [], selected }: { actions: Array<ActionProps>, selected: Array<string> }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = (e: any, action: ActionProps) => {
+    e.stopPropagation();
+    if (action.to) {
+      const to = typeof action.to === "function" ? action.to(selected) : action.to;
+      return navigate(to);
+    }
+    action.onClick && action.onClick(selected);
+  };
+
   return (
     actions.map(action =>
       <span key={action.name} className="ml-3">
-        <Button title={action.name as string} key={action.name} type={ButtonType.Secondary} />
+        <Button title={action.name as string} 
+          onClick={(e: any) => handleClick(e, action)}
+          disabled={selected.length === 0} type={ButtonType.Secondary} />
       </span>
     )
   );
@@ -161,7 +175,7 @@ export default function Table({ data, columns, actions, showHeadings = false, co
   return (
     <>
       {actions && <div className="-ml-4 mt-4">
-        <Actions actions={actions.filter(action => action.multiSelect)} />
+        <Actions actions={actions.filter(action => action.multiSelect)} selected={selected} />
       </div>}
 
       <div className="px-4">
