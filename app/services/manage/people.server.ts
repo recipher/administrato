@@ -195,9 +195,9 @@ const Service = (u: User) => {
        LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;
 
     const client = clientId == null ? db.sql``
-      : db.sql<db.SQL>`AND cp.${'clientId'} = ${db.param(clientId)}`;
+      : db.sql<db.SQL>`AND (cp.${'clientId'} = ${db.param(clientId)} AND cp.${'endOn'} IS NULL)`;
     const legalEntity = legalEntityId == null ? db.sql``
-      : db.sql<db.SQL>`AND lep.${'legalEntityId'} = ${db.param(legalEntityId)}`;
+      : db.sql<db.SQL>`AND (lep.${'legalEntityId'} = ${db.param(legalEntityId)} AND lep.${'endOn'} IS NULL)`;
     const classification = classifier == null ? db.sql``
       : db.sql<db.SQL>`AND ${'people'}.${'classifier'} = ${db.param(classifier)}`;
 

@@ -73,7 +73,8 @@ export const Approvers = ({ approvers, legalEntity, user, setId = null, classNam
 
   return (
     <>
-      {approvers.length <= 0 && <Alert title='No default approvers' level={Level.Warning} />}
+      {approvers.length <= 0 && 
+        <Alert title='No default approvers' level={Level.Warning} className="-mt-0" />}
 
       <ul role="list" className={classnames(className, "text-md leading-6")}>
         {approvers.map((approver: Approver) => (

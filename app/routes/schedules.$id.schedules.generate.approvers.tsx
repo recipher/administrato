@@ -65,6 +65,7 @@ export async function action({ request, params }: ActionArgs) {
       level = Level.Error;
     };
   }
+
   if (intent === 'remove-approver') {
     const { user, legalEntity } = data;
     try {
@@ -77,7 +78,7 @@ export async function action({ request, params }: ActionArgs) {
   }
 
   const session = await setFlashMessage({ request, message, level });
-  return redirect(".", { headers: { "Set-Cookie": await storage.commitSession(session) } });
+  return redirect(`.?set=${setId}`, { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
 

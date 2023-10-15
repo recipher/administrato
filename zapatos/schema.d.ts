@@ -50,15 +50,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId: string;
+      userId: string | null;
       /**
       * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData: db.JSONValue;
+      userData: db.JSONValue | null;
       /**
       * **approvals.isOptional**
       * - `bool` in database
@@ -106,15 +106,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId: string;
+      userId: string | null;
       /**
       * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData: db.JSONValue;
+      userData: db.JSONValue | null;
       /**
       * **approvals.isOptional**
       * - `bool` in database
@@ -162,13 +162,13 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       userId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -218,15 +218,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId: string | db.Parameter<string> | db.SQLFragment;
+      userId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
       /**
       * **approvals.isOptional**
       * - `bool` in database
@@ -274,15 +274,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      userId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **approvals.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **approvals.isOptional**
       * - `bool` in database
@@ -343,15 +343,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvers.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId: string;
+      userId: string | null;
       /**
       * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData: db.JSONValue;
+      userData: db.JSONValue | null;
       /**
       * **approvers.isOptional**
       * - `bool` in database
@@ -381,15 +381,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvers.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId: string;
+      userId: string | null;
       /**
       * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData: db.JSONValue;
+      userData: db.JSONValue | null;
       /**
       * **approvers.isOptional**
       * - `bool` in database
@@ -419,13 +419,13 @@ declare module 'zapatos/schema' {
       /**
       * **approvers.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       userId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -457,15 +457,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvers.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId: string | db.Parameter<string> | db.SQLFragment;
+      userId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
       /**
       * **approvers.isOptional**
       * - `bool` in database
@@ -495,15 +495,15 @@ declare module 'zapatos/schema' {
       /**
       * **approvers.userId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      userId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **approvers.userData**
       * - `json` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      userData?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
+      userData?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **approvers.isOptional**
       * - `bool` in database

@@ -4,6 +4,7 @@ import pool from '../db.server';
 
 import { IdProp, TxOrPool } from '../types';
 
+import { default as create } from '../id.server';
 export { default as create } from '../id.server';
 
 import { type User } from '../access/users.server';
@@ -44,16 +45,20 @@ const Service = (u: User) => {
   const listApprovalsByEntityId = async ({ entityId }: { entityId: string }, txOrPool: TxOrPool = pool) => {
     return db.sql<s.approvals.SQL, s.approvals.Selectable[]>`
       SELECT * FROM ${'approvals'} 
-      WHERE ${db.param(entityId)} = ANY(${'entityId'})`
-    .run(txOrPool);
+      WHERE
+        ${db.param(entityId)} = ANY(${'entityId'}) AND
+        ${'userId'} IS NOT NULL
+    `.run(txOrPool);
   };
   
   const listApproversBySetId = async ({ setId }: { setId: string }, txOrPool: TxOrPool = pool) => {
     const approvals = await db.sql<s.approvals.SQL, s.approvals.Selectable[]>`
       SELECT ${'userId'} AS id, ${'userId'}, ${'userData'}, ${'isOptional'} 
       FROM ${'approvals'} 
-      WHERE ${db.param(setId)} = ${'setId'}`
-    .run(txOrPool);
+      WHERE 
+        ${db.param(setId)} = ${'setId'} AND
+        ${'userId'} IS NOT NULL
+    `.run(txOrPool);
 
     return approvals.reduce((approvals: Array<Approval>, approval ) =>
       approvals.find(a => a.userId === approval.userId) ? approvals : [ ...approvals, approval ]
@@ -61,11 +66,20 @@ const Service = (u: User) => {
   };
 
   const removeApproverFromSet = async ({ setId, userId }: { setId: string, userId: string }, txOrPool: TxOrPool = pool) => {
-
+    return db.deletes('approvals', { setId, userId }).run(txOrPool);
   };
 
   const addApproverToSet = async ({ setId, userId, userData }: { setId: string, userId: string, userData: any }, txOrPool: TxOrPool = pool) => {
+    return db.serializable(txOrPool, async tx => {
+      const approvals = await db.select('approvals', { setId }).run(tx);
 
+      return Promise.all(approvals.map(async ({ entity, entityId, status }: Approval) => {
+        return db.upsert('approvals', 
+          create({ entity, entityId, setId, userId, userData, status }), 
+          [ "entityId", "userId" ])
+        .run(tx);
+      }));
+    });
   };
 
   return {

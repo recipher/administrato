@@ -17,6 +17,7 @@ type Props = {
   level?: Level;
   title: string;
   message?: string;
+  className?: string;
 };
 
 const colours = new Map<Level, string>([
@@ -33,12 +34,12 @@ const icons = new Map<Level, any>([
   [ Level.Warning, ExclamationTriangleIcon ],  
 ]);
 
-export default function Alert({ level = Level.Success, title, message }: Props) {
+export default function Alert({ level = Level.Success, title, message, className = "" }: Props) {
   const colour = colours.get(level);
   const Icon = icons.get(level);
 
   return (
-    <div className={classnames(`bg-${colour}-50 border-${colour}-400`, "border-l-4 p-4 mt-6 mb-4")}>
+    <div className={classnames(className, `bg-${colour}-50 border-${colour}-400`, "border-l-4 p-4 mt-6 mb-4")}>
       <div className="flex">
         <div className="flex-shrink-0">
           <Icon className={classnames(`text-${colour}-400`, "h-5 w-5")} aria-hidden="true" />

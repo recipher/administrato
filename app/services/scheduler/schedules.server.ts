@@ -52,6 +52,8 @@ export enum Status {
   Broken = 'broken',
 };
 
+const DEFAULT = '-';
+
 const Service = (u: User) => {
   const names = {
     week: (date: Date) => `Week ${getWeek(date)}`,
@@ -243,6 +245,8 @@ const Service = (u: User) => {
       const approvers = await approvalsService.listApproversByEntityId({ entityId: legalEntity.id }, tx);
       
       const { id: setId } = create();
+      const dummy = { id: DEFAULT, entityId: DEFAULT, entity: DEFAULT, userId: null, userData: null, isOptional: null };
+
       await Promise.all(set.map(async (schedule) => {
         const { id } = await addSchedule(create({
           legalEntityId: legalEntity.id,
@@ -252,10 +256,12 @@ const Service = (u: User) => {
           version: 0,
         }), tx);
 
-        await approvalsService.addApprovals(approvers.map(({ userId, userData, isOptional }: Approver) => create({
-          entity: "schedule,legal-entity", entityId: [ id, legalEntity.id ], 
-          userId, userData, isOptional, setId, status: Status.Draft
-        })), tx);
+        await approvalsService.addApprovals(approvers.concat(dummy)
+          .map(({ userId, userData, isOptional }: Approver) => create({
+            entity: "schedule,legal-entity", entityId: [ id, legalEntity.id ], 
+            userId, userData, isOptional, setId, status: Status.Draft
+          }))
+        , tx);
 
         await holidayService.addHolidays(schedule.holidays.map(({ name, date, observed, locality }) => (
           create({ name, date, observed, locality, entity: "schedule", entityId: id })
