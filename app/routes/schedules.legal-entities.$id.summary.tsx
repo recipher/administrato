@@ -3,20 +3,18 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 
 import LegalEntityService from '~/services/manage/legal-entities.server';
-import ApprovalsService, { create, type Approval } from '~/services/scheduler/approvals.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading, Section, Field } from '~/components/info/info';
-import { Alert, Level } from '~/components';
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   i18n: "schedule",
-  name: "approvals",
+  name: "summary",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}/approvals`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/summary`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -30,25 +28,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const legalEntity = await service.getLegalEntity({ id });
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
-  
-  const approvalsService = ApprovalsService(u);
-  const approvals = await approvalsService.listApprovalsByEntityId({ entityId: id });
 
-  return json({ legalEntity, approvals });
+  return json({ legalEntity });
 };
 
 const Holidays = () => {
   const { t } = useTranslation();
-  const { legalEntity, approvals } = useLoaderData();
+  const { legalEntity } = useLoaderData();
 
   return (
     <>
       <Layout>
-        <Heading heading={t('approvals')} explanation={`Manage ${legalEntity.name}'s schedule approvals.`} />
-      
-        {approvals.length <= 0 && <Alert title='No approvals' level={Level.Info} />}
-
-        <div>{approvals.length}</div>
+        <Heading heading={t('summary')} explanation={`Manage ${legalEntity.name}'s information.`} />
       </Layout>
     </>
   );

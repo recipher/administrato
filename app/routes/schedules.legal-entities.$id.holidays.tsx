@@ -15,7 +15,7 @@ export const handle = {
   i18n: "schedule",
   name: "holidays",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}/holidays`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/holidays`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

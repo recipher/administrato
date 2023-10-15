@@ -18,7 +18,7 @@ import toNumber from '~/helpers/to-number';
 export const handle = {
   name: "generate-schedules",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}/generate`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/generate`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

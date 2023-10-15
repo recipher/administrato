@@ -174,7 +174,7 @@ export default function Table({ data, columns, actions, showHeadings = false, co
 
   return (
     <>
-      {actions && <div className="-ml-4 mt-4">
+      {actions && data.length > 0 && <div className="-ml-3 mt-4">
         <Actions actions={actions.filter(action => action.multiSelect)} selected={selected} />
       </div>}
 

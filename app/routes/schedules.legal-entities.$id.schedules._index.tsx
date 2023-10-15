@@ -32,7 +32,7 @@ import classnames from '~/helpers/classnames';
 export const handle = {
   name: "schedules",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}/schedules`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/schedules`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -21,7 +21,7 @@ import { ButtonType } from '~/components';
 export const handle = {
   name: ({ legalEntity }: { legalEntity: any }) => legalEntity?.name,
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -60,7 +60,6 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 export default function Schedules() {
   const submit = useSubmit();
-  const [ searchParams ] = useSearchParams();
   const { legalEntity: { logo, ...legalEntity }, year } = useLoaderData();
 
   const modal = useRef<RefModal>(null);

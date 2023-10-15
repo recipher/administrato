@@ -70,7 +70,7 @@ export default function Schedules() {
 
       {count <= 0 && <Alert title={`No legal entities found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
       <List data={legalEntities} renderItem={Item} renderContext={Context} 
-        buildTo={({ item }) => `../${item.id}/schedules`} />
+        buildTo={({ item }) => `${item.id}/schedules`} />
       <Pagination entity='legal-entity' totalItems={count} offset={offset} limit={limit} />
     </>
   );
