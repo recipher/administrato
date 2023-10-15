@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from 'remix-i18next';
 
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -149,11 +150,13 @@ const Schedules = () => {
   };
 
   const actions = [
-    { name: "approve", className: () => "text-gray-500", multiSelect: true,
+    { name: "approve", icon: CheckIcon,
+      className: () => "text-gray-500", multiSelect: true,
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
       to: (schedule: ScheduleWithDates | Array<string>) => `approve?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
     },
-    { name: "reject", className: () => "text-gray-500", multiSelect: true, 
+    { name: "reject", icon: XMarkIcon,
+      className: () => "text-gray-500", multiSelect: true, 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
       to: (schedule: ScheduleWithDates | Array<string>) => `reject?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
     },

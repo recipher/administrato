@@ -20,7 +20,7 @@ export type ColumnProps = {
 type ActionProps = {
   name?: string;
   to?: string | Function;
-  multiTo?: Function;
+  icon?: any;
   condition?: Function;
   onClick?: Function;
   className?: string | Function;
@@ -124,7 +124,7 @@ const Actions = ({ actions = [], selected }: { actions: Array<ActionProps>, sele
   return (
     actions.map(action =>
       <span key={action.name} className="ml-3">
-        <Button title={action.name as string} 
+        <Button title={action.name as string} icon={action.icon}
           onClick={(e: any) => handleClick(e, action)}
           disabled={selected.length === 0} type={ButtonType.Secondary} />
       </span>
@@ -146,7 +146,7 @@ const Checkbox = ({ name = "selected", item, selected, onSelect = noOp, onChange
         <input
             name={name}
             type="checkbox"
-            defaultChecked={selected}
+            checked={selected}
             onChange={handleChange}
             className="opacity-80 border-gray-300 text-indigo-600 h-4 w-4 rounded focus:ring-indigo-600"
           />
@@ -202,7 +202,10 @@ export default function Table({ data, columns, actions, showHeadings = false, co
                   className={classnames(rowAction ? "cursor-pointer" : "", 
                     selected.includes(item[idKey]) ? "bg-gray-50" : "",
                     "group text-sm font-normal text-gray-900")}>
-                  {hasMultiSelect && <td className="px-3"><Checkbox item={item} selected={selected.includes(item.id)} onSelect={handleSelect} /></td>}
+                  {hasMultiSelect && 
+                    <td className="px-3">
+                      <Checkbox item={item} selected={selected.includes(item[idKey])} onSelect={handleSelect} />
+                    </td>}
                   {columns.map((column: ColumnProps, ci) => (
                     <td key={ci} className={classnames(column.stack ? `hidden ${column.stack}:table-cell` : "",  
                                             "py-4 pr-3", column.className || "")}>
