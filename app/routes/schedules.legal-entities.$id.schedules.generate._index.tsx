@@ -87,8 +87,8 @@ export default function Provider() {
           </Field>
         </Group>
         <Section 
-          explanation='Please select start and end dates. 
-            Take note, this will generate a draft, and will not 
+          explanation='Select start and end dates. 
+            Please note, this will generate a draft, and will not 
             overwrite any existing schedules.' />
         <Group>
           <Field span={3}>

@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ActionArgs, json, redirect, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
+import { useFetcher, useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from 'remix-i18next';
+import { format } from 'date-fns';
 
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -19,9 +20,9 @@ import MilestoneService, { type Milestone } from '~/services/scheduler/milestone
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import Alert, { Level } from '~/components/alert';
-import Tabs from '~/components/tabs';
+import { Alert, Level, Tabs } from '~/components';
 import Table, { ColumnProps } from '~/components/table';
+import { DatePicker, Form, withZod, z } from '~/components/form';
 
 import { scheduler } from '~/auth/permissions';
 
@@ -32,7 +33,7 @@ import classnames from '~/helpers/classnames';
 export const handle = {
   name: "schedules",
   breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/schedules`} name={name} current={current} />
+    <Breadcrumb to={`/schedules/${legalEntity?.id}/schedules`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -70,7 +71,7 @@ export async function action({ request, params }: ActionArgs) {
   const service = ScheduleService(u);
 
   if (intent === 'remove-schedule') {
-    const { schedule: { id, name } } = data;
+    const { schedule: { id, name }} = data;
     try {
       await service.deleteSchedule({ id });
       message = `Schedule Deleted:${name} has been deleted.`;
@@ -78,6 +79,11 @@ export async function action({ request, params }: ActionArgs) {
       message = `Schedule Delete Error:${e.message}.`;
       level = Level.Error;
     };
+  }
+
+  if (intent === "change-date") {
+    const { date, schedule: { id: scheduleId }, milestone: { id: milestoneId }} = data;
+    return service.changeDate({ scheduleId, milestoneId, date });
   }
 
   const session = await setFlashMessage({ request, message, level });
@@ -88,6 +94,7 @@ const Schedules = () => {
   const user = useUser();
   const { t } = useTranslation("schedule");
   const locale = useLocale();
+  const fetcher = useFetcher();
 
   const { schedules, milestones, year, status, statuses } = useLoaderData();
 
@@ -96,6 +103,9 @@ const Schedules = () => {
 
   const submit = useSubmit();
   const [ schedule, setSchedule ] = useState<ScheduleWithDates>();
+
+  const [ editingDate, setEditingDate ] = useState<{ row: string, col: string }>();
+  const [ submittingDate, setSubmittingDate ] = useState<{ row: string, col: string }>();
 
   const yearData = ((year: number) => [...Array(5).keys()].map(index => year + index - 1))(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
@@ -122,15 +132,51 @@ const Schedules = () => {
         <span className="lg:ml-1.5">{m.description}</span>
       </span>;
 
+  const displayDate = (schedule: ScheduleWithDates, column: ColumnProps) => {
+    const scheduledDate = schedule.scheduleDates.find(d => d?.milestoneId === column.name)?.date;
+    if (scheduledDate === undefined) return;
+    const asLocaleDate = new Date(scheduledDate).toLocaleDateString(locale === 'en' ? 'gb' : locale);
+    const row = schedule.id, col = column.name, 
+          isEditing = editingDate?.row === row && editingDate?.col === col,
+          isSubmitting = submittingDate?.row === row && submittingDate?.col === col;
+
+    const handleClick = (e: any) => {
+      e.stopPropagation();
+      setEditingDate(isEditing ? undefined : { row, col });
+    };
+
+    const handleChange = (date: Date) => {
+      setSubmittingDate({ row, col });
+      fetcher.submit({ intent: "change-date",  
+        date: format(date, "yyyy-MM-dd"), schedule: { id: row }, milestone: { id: col }, 
+      }, { method: "POST", encType: "application/json" });
+    };
+
+    useEffect(() => {
+      if (fetcher.state === "idle") setSubmittingDate(undefined);
+    }, [ fetcher.state ]);
+
+    return isEditing
+      ? <Form validator={withZod(z.any())} className="-mt-4 -mb-2 -ml-3 -mr-9" onClick={handleClick}>
+          <DatePicker value={new Date(scheduledDate)} label={null} displayFormat="dd/MM/yyyy" width={8} onChange={handleChange} />
+        </Form>
+      : <span className={classnames(isSubmitting ? "opacity-50" : "", "inline-block")} 
+          onClick={handleClick}>
+          {asLocaleDate}
+        </span>;
+  };
+
   const columns = [
     { name: "name", label: "Period", className: "text-md font-medium" },
       ...milestones.map((m: Milestone) => ({ name: m.id, label: labelFor(m), 
         headingClassName: targetClassName(m), className: targetClassName(m),
-        display: (schedule: ScheduleWithDates, column: ColumnProps) => {
-          const date = schedule.scheduleDates.find(d => d?.milestoneId === column.name)?.date;
-          return date && new Date(date).toLocaleDateString(locale === 'en' ? 'gb' : locale);
-        }})),
-    { name: "status", label: "Status", display: ({ status }: { status: string }) => t(status) },
+        display: displayDate })),
+    { name: "status", label: "Status", 
+        display: ({ status }: ScheduleWithDates) => 
+          <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-500" : ""}>
+            {t(status)}
+          </span> 
+    },
   ];
 
   const hasPermission = (p: string) => user.permissions.includes(p);

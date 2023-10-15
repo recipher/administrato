@@ -71,8 +71,8 @@ const ContextMenu = ({ actions, item }: { actions: Array<ActionProps>, item: any
   const { t } = useTranslation();
   const navigate = useNavigate();
   
-  actions = actions?.filter(action => !action.row);
-
+  actions = actions?.filter(action => !action.row && action.condition ? action.condition(item) : true);
+ 
   if (actions.length === 0) return;
 
   return (
@@ -109,13 +109,13 @@ const ContextMenu = ({ actions, item }: { actions: Array<ActionProps>, item: any
   );
 };
 
-const Actions = ({ actions = [], selected }: { actions: Array<ActionProps>, selected: Array<string> }) => {
+const Actions = ({ actions = [], selected, idKey }: { actions: Array<ActionProps>, selected: Array<any>, idKey: string }) => {
   const navigate = useNavigate();
   
   const handleClick = (e: any, action: ActionProps) => {
     e.stopPropagation();
     if (action.to) {
-      const to = typeof action.to === "function" ? action.to(selected) : action.to;
+      const to = typeof action.to === "function" ? action.to(selected.map(s => s[idKey])) : action.to;
       return navigate(to);
     }
     action.onClick && action.onClick(selected);
@@ -126,7 +126,7 @@ const Actions = ({ actions = [], selected }: { actions: Array<ActionProps>, sele
       <span key={action.name} className="ml-3">
         <Button title={action.name as string} icon={action.icon}
           onClick={(e: any) => handleClick(e, action)}
-          disabled={selected.length === 0} type={ButtonType.Secondary} />
+          disabled={selected.filter(s => action.condition ? action.condition(s) : true).length === 0} type={ButtonType.Secondary} />
       </span>
     )
   );
@@ -144,12 +144,12 @@ const Checkbox = ({ name = "selected", item, selected, onSelect = noOp, onChange
     <div className="relative flex items-start">
       <div className="flex h-6 items-center">
         <input
-            name={name}
-            type="checkbox"
-            checked={selected}
-            onChange={handleChange}
-            className="opacity-80 border-gray-300 text-indigo-600 h-4 w-4 rounded focus:ring-indigo-600"
-          />
+          name={name}
+          type="checkbox"
+          checked={selected}
+          onChange={handleChange}
+          className="opacity-80 border-gray-300 text-indigo-600 h-4 w-4 rounded focus:ring-indigo-600"
+        />
       </div>
     </div>
   );
@@ -158,24 +158,24 @@ const Checkbox = ({ name = "selected", item, selected, onSelect = noOp, onChange
 export default function Table({ data, columns, actions, showHeadings = false, contextMenu = false, idKey="id", className }: Props) {
   const { t } = useTranslation();
 
-  const [ selected, setSelected ] = useState<Array<string>>([]);
+  const [ selected, setSelected ] = useState<Array<any>>([]);
 
   const rowAction = actions?.find(action => action.row === true);
   const hasMultiSelect = !!(actions?.filter((action: ActionProps) => action.multiSelect));
 
   const handleSelect = (item: any) => {
-    setSelected(() => selected.includes(item[idKey])
-      ? selected.filter(id => id !== item[idKey]) : [ ...selected, item[idKey] ]);
+    setSelected(() => selected.map(s => s[idKey]).includes(item[idKey])
+      ? selected.filter(s => s[idKey] !== item[idKey]) : [ ...selected, item ]);
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setSelected(checked === true ? data.map(item => item[idKey]) : []);
+    setSelected(checked === true ? data : []);
   };
 
   return (
     <>
       {actions && data.length > 0 && <div className="-ml-3 mt-4">
-        <Actions actions={actions.filter(action => action.multiSelect)} selected={selected} />
+        <Actions actions={actions.filter(action => action.multiSelect)} selected={selected} idKey={idKey} />
       </div>}
 
       <div className="px-4">
@@ -200,11 +200,11 @@ export default function Table({ data, columns, actions, showHeadings = false, co
               {data.map((item) => (
                 <tr key={item[idKey]} onClick={() => rowAction?.onClick && rowAction?.onClick(item)}
                   className={classnames(rowAction ? "cursor-pointer" : "", 
-                    selected.includes(item[idKey]) ? "bg-gray-50" : "",
+                    selected.map(s => s[idKey]).includes(item[idKey]) ? "bg-gray-50" : "",
                     "group text-sm font-normal text-gray-900")}>
                   {hasMultiSelect && 
                     <td className="px-3">
-                      <Checkbox item={item} selected={selected.includes(item[idKey])} onSelect={handleSelect} />
+                      <Checkbox item={item} selected={selected.map(s => s[idKey]).includes(item[idKey])} onSelect={handleSelect} />
                     </td>}
                   {columns.map((column: ColumnProps, ci) => (
                     <td key={ci} className={classnames(column.stack ? `hidden ${column.stack}:table-cell` : "",  
@@ -222,7 +222,7 @@ export default function Table({ data, columns, actions, showHeadings = false, co
                       )}
                     </td>
                   ))}
-                  {actions?.filter(action => action.condition ? action.condition(item) : true) 
+                  {actions?.filter(action => !action.row && action.condition ? action.condition(item) : true) 
                     ? <>
                         <td className={classnames(contextMenu ? "" : "sm:hidden", "py-4 px-3 text-right text-sm table-cell")}>
                           <ContextMenu actions={actions} item={item} />

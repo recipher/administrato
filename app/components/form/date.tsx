@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'remix-validated-form';
 import { useLocale } from 'remix-i18next';
@@ -130,14 +130,19 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
 };
 
 type Props = {
-  label?: string;
+  label?: string | null;
   name?: string;
   placeholder?: string;
   value?: Date;
   defaultValue?: Date;
+  displayFormat?: string;
+  width?: number;
+  onChange? (d: Date): void;
 };
 
-export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, value, defaultValue }: Props) {
+const noOp = () => null!
+
+export default function DatePicker({ label = 'Select Date', name = 'date', placeholder, value, defaultValue, displayFormat = "dd MMMM yyyy", width = 16, onChange = noOp }: Props) {
   const locale = useLocale();
 
   const { error, getInputProps } = useField(name);
@@ -148,29 +153,35 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
   const handleSelect = (d: Date) => {
     setDate(d);
     setOpen(false);
+    onChange(d);
+  };
+
+  const handleClick = (e: any) => {
+    e.stopPropagation();
+    setOpen(!open);
   };
 
   return (
     <>
-      <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
+      {label && <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
         {label}
-      </label>
+      </label>}
       <div className="inline-block relative mt-2 rounded-md shadow-sm">
         <input
           type="text"
           {...getInputProps({ id: name })}
           placeholder={placeholder}
-          value={(date && format(date, 'dd MMMM yyyy')) || ""}
-          className={classnames(
+          value={(date && format(date, displayFormat)) || ""}
+          className={classnames(`w-[${width}rem]`,
             error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
             "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
         />
-        <div className="group absolute inset-y-0 right-0 flex items-center cursor-pointer" onClick={() => setOpen(!open)}>
+        <div className="group absolute inset-y-0 right-0 flex items-center cursor-pointer" onClick={handleClick}>
           <CalendarDaysIcon className="mx-2 h-5 w-5 text-gray-400 group-hover:text-indigo-400" aria-hidden="true" />
         </div>
       </div>
       <div className={classnames(open ? "block" : "hidden", "z-10 absolute")}>
-        <div className="w-[24rem] mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow">
+        <div className={classnames(`w-[24rem]`, "mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow")}>
           <Calendar date={date || defaultValue} onSelect={handleSelect} />
         </div>
       </div>

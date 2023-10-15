@@ -45,18 +45,21 @@ export enum Frequency {
   Yearly = 'yearly',
 };
 
-export enum Status {
-  Draft = 'draft',
-  Approved = 'approved',
-  Rejected = 'rejected',
-  Broken = 'broken',
-};
+import { Status } from './approvals.server';
+export { Status } from './approvals.server';
 
 const DEFAULT = '-';
 
 const Service = (u: User) => {
-  const deleteSchedule = async({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+  const deleteSchedule = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     return db.deletes('schedules', { id }).run(txOrPool);
+  };
+
+  const changeDate = async ({ scheduleId, milestoneId, date }: { scheduleId: string, milestoneId: string, date: Date }, txOrPool: TxOrPool = pool) => {
+    const [ update ] = await db.update('scheduleDates', 
+      { date, isManual: true }, { scheduleId, milestoneId }).run(txOrPool);
+
+    return update;
   };
 
   const names = {
@@ -322,7 +325,7 @@ const Service = (u: User) => {
     `.run(pool);
   };
 
-  return { generate, deleteSchedule, listSchedulesByLegalEntity };
+  return { generate, changeDate, deleteSchedule, listSchedulesByLegalEntity };
 };
 
 export default Service;
