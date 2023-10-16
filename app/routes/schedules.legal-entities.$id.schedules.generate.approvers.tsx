@@ -92,8 +92,8 @@ export default function Generate() {
           explanation='Add and remove approvers for this schedule set here.' />
         <Group>
           <Field span="full">
-            <Approvers className="-mt-4" setId={setId}
-              legalEntity={legalEntity} approvers={approvers} user={u} />
+            <div className="-mt-4"><Approvers setId={setId}
+              legalEntity={legalEntity} approvers={approvers} user={u} /></div>
           </Field>
         </Group>
       </Body>

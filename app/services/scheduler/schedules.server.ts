@@ -9,7 +9,7 @@ import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate, isSameDate } fr
 
 import { default as create } from '../id.server';
 
-import { IdProp, TxOrPool } from '../types';
+import { IdProp, TxOrPool, DESC } from '../types';
 
 import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
@@ -51,6 +51,16 @@ export { Status } from './approvals.server';
 const DEFAULT = '-';
 
 const Service = (u: User) => {
+  const getScheduleById = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+    return db.selectExactlyOne('schedules', { id }).run(txOrPool);
+  };
+
+  const getScheduleByIdentity = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+    const { legalEntityId, name, date } = await getScheduleById({ id }, txOrPool);
+    return db.selectExactlyOne('schedules', { legalEntityId, name, date }, 
+      { order: [ { by: 'version', direction: DESC } ], limit: 1 }).run(txOrPool);
+  };
+  
   const deleteSchedule = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     return db.deletes('schedules', { id }).run(txOrPool);
   };
@@ -232,7 +242,7 @@ const Service = (u: User) => {
 
   const addSchedule = async (schedule: s.schedules.Insertable, txOrPool: TxOrPool = pool) => {
     return await db.upsert('schedules', schedule, 
-      [ 'legalEntityId', 'date', 'status' ],
+      [ 'legalEntityId', 'date', 'status', 'version' ],
       { updateColumns: [ 'legalEntityId', 'name', 'date', 'status', 'version' ] }
     ).run(txOrPool);
   };
@@ -325,7 +335,7 @@ const Service = (u: User) => {
     `.run(pool);
   };
 
-  return { generate, changeDate, deleteSchedule, listSchedulesByLegalEntity };
+  return { generate, changeDate, getScheduleById, getScheduleByIdentity, deleteSchedule, listSchedulesByLegalEntity };
 };
 
 export default Service;

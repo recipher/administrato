@@ -240,7 +240,6 @@ const Service = (u: User) => {
     }).run(pool);
   };
 
-
   const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
     const legalEntity = await LegalEntityService(u).getLegalEntity({ id: legalEntityId });
     

@@ -9,6 +9,8 @@ export { default as create } from '../id.server';
 
 import { type User } from '../access/users.server';
 
+import SchedulesService from './schedules.server';
+
 export enum Status {
   Draft = 'draft',
   Approved = 'approved',
@@ -125,8 +127,10 @@ const Service = (u: User) => {
 
         const draft = await listApprovalsByEntityIdAndNotStatus({ entityId: scheduleId, status }, tx);
 
-        if (draft.length === 0) 
-          return db.update('schedules', { status }, { id: scheduleId }).run(tx);
+        if (draft.length === 0) {
+          const { version } = await SchedulesService(u).getScheduleByIdentity({ id: scheduleId }, tx);
+          return db.update('schedules', { status, version: version+1 }, { id: scheduleId }).run(tx);
+        }
       }));
     });
   };
