@@ -326,6 +326,14 @@ const Service = (u: User) => {
       FROM ${'schedules'} 
       LEFT JOIN ${'scheduleDates'}
       ON ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
+      INNER JOIN (
+        SELECT ${'legalEntityId'}, ${'status'}, MAX(${'version'}) AS version
+        FROM ${'schedules'} 
+        GROUP BY ${'legalEntityId'}, ${'status'}
+      ) AS "maxVersion" 
+        ON ${'schedules'}.${'legalEntityId'} = "maxVersion".${'legalEntityId'} AND 
+           ${'schedules'}.${'status'} = "maxVersion".${'status'} AND
+           ${'schedules'}.${'version'} = "maxVersion".${'version'}
       WHERE 
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
         DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)} AND
