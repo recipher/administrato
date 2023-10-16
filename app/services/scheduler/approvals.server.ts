@@ -121,8 +121,8 @@ const Service = (u: User) => {
       return Promise.all(schedules.map(async scheduleId => {
         const approvals = await listApprovalsByEntityId({ entityId: scheduleId, userId: u.id }, tx);
         
-        await Promise.all(approvals.map(async ({ id, notes }) => {
-          return db.update('approvals', { status, notes: db.param([ ...(notes as Array<any>), { user: u.id, notes } ], true) }, { id }).run(tx);
+        await Promise.all(approvals.map(async ({ id, notes: existing }) => {
+          return db.update('approvals', { status, notes: db.param([ ...existing as Array<any>, { user: u.id, notes } ], true) }, { id }).run(tx);
         }));
 
         const draft = await listApprovalsByEntityIdAndNotStatus({ entityId: scheduleId, status }, tx);

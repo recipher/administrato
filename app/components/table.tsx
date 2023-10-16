@@ -12,6 +12,7 @@ export type ColumnProps = {
   label?: string;
   type?: string;
   display?: Function;
+  condition?: boolean | undefined;
   className?: string;
   headingClassName?: string;
   stack?: string;
@@ -184,7 +185,8 @@ export default function Table({ data, columns, actions, showHeadings = false, co
             <thead>
               {showHeadings && data.length > 0 && <tr>
                 {hasMultiSelect && <th scope="col" className="w-8 px-3"><Checkbox onChange={handleSelectAll} /></th>}
-                {columns.map((column: ColumnProps, index) => (
+                {columns.filter(column => column.condition === undefined || column.condition === true)
+                  .map((column: ColumnProps, index) => (
                   <th key={index} scope="col" className={classnames(column.headingClassName || "", column.stack ? `hidden ${column.stack}:table-cell` : "", "py-3.5 pr-3 text-left text-sm font-medium text-gray-900")}>
                     { typeof (column.label || column.name) === 'string' 
                         ? t(column.label || column.name)
@@ -206,7 +208,8 @@ export default function Table({ data, columns, actions, showHeadings = false, co
                     <td className="px-3">
                       <Checkbox item={item} selected={selected.map(s => s[idKey]).includes(item[idKey])} onSelect={handleSelect} />
                     </td>}
-                  {columns.map((column: ColumnProps, ci) => (
+                  {columns.filter(column => column.condition === undefined || column.condition === true)
+                    .map((column: ColumnProps, ci) => (
                     <td key={ci} className={classnames(column.stack ? `hidden ${column.stack}:table-cell` : "",  
                                             "py-4 pr-3", column.className || "")}>
                       {column.display ? column.display(item, column) : item[column.name]}
@@ -228,7 +231,7 @@ export default function Table({ data, columns, actions, showHeadings = false, co
                           <ContextMenu actions={actions} item={item} />
                         </td>
                         <td className={classnames(contextMenu ? "" : "sm:table-cell", "py-4 px-3 text-right text-sm hidden")}>
-                          {actions.filter(action => !action.row)
+                          {actions.filter(action => !action.row && action.condition ? action.condition(item) : true)
                             .map((action: ActionProps) => 
                               <Action key={action.name} action={action} item={item} />)}
                         </td>

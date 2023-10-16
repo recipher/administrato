@@ -321,19 +321,22 @@ const Service = (u: User) => {
 
   const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps) => {
     if (!status) status = Status.Draft;
-    return db.sql<s.schedules.SQL | s.scheduleDates.SQL, s.schedules.Selectable[] & { scheduleDates: s.scheduleDates.Selectable[] }>`
-      SELECT ${'schedules'}.*, jsonb_agg(${"scheduleDates"}.*) AS ${'scheduleDates'}
+    return db.sql<s.schedules.SQL | s.scheduleDates.SQL, Array<ScheduleWithDates>>`
+      SELECT 
+        ${'schedules'}.*, 
+        JSONB_AGG(${"scheduleDates"}.*) AS ${'scheduleDates'}
       FROM ${'schedules'} 
       LEFT JOIN ${'scheduleDates'}
       ON ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
       INNER JOIN (
-        SELECT ${'legalEntityId'}, ${'status'}, MAX(${'version'}) AS version
+        SELECT ${'legalEntityId'}, ${'date'}, ${'status'}, MAX(${'version'}) AS version
         FROM ${'schedules'} 
-        GROUP BY ${'legalEntityId'}, ${'status'}
+        GROUP BY ${'legalEntityId'}, ${'date'}, ${'status'}
       ) AS "maxVersion" 
-        ON ${'schedules'}.${'legalEntityId'} = "maxVersion".${'legalEntityId'} AND 
-           ${'schedules'}.${'status'} = "maxVersion".${'status'} AND
-           ${'schedules'}.${'version'} = "maxVersion".${'version'}
+        ON ${'schedules'}.${'legalEntityId'} = "maxVersion".${'legalEntityId'} AND
+          ${'schedules'}.${'date'} = "maxVersion".${'date'} AND
+          ${'schedules'}.${'status'} = "maxVersion".${'status'} AND
+          ${'schedules'}.${'version'} = "maxVersion".${'version'}
       WHERE 
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
         DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)} AND
@@ -343,7 +346,14 @@ const Service = (u: User) => {
     `.run(pool);
   };
 
-  return { generate, changeDate, getScheduleById, getScheduleByIdentity, deleteSchedule, listSchedulesByLegalEntity };
+  return { 
+    generate, 
+    changeDate, 
+    getScheduleById, 
+    getScheduleByIdentity, 
+    deleteSchedule, 
+    listSchedulesByLegalEntity 
+  };
 };
 
 export default Service;

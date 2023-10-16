@@ -16,6 +16,7 @@ import { setFlashMessage, storage } from '~/utility/flash.server';
 import LegalEntityService from '~/services/manage/legal-entities.server';
 import ScheduleService, { type ScheduleWithDates, Status } from '~/services/scheduler/schedules.server';
 import MilestoneService, { type Milestone } from '~/services/scheduler/milestones.server';
+import { type Approval } from '~/services/scheduler/approvals.server';
 
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
@@ -135,7 +136,7 @@ const Schedules = () => {
       </span>;
 
   const DisplayDate = ({ schedule, column }: { schedule: ScheduleWithDates, column: ColumnProps }) => {
-    const scheduledDate = schedule.scheduleDates.find(d => d?.milestoneId === column.name)?.date;
+    const scheduledDate = schedule.scheduleDates?.find(d => d?.milestoneId === column.name)?.date;
     if (scheduledDate === undefined) return;
     const asLocaleDate = format(new Date(scheduledDate), "dd/MM/yyyy"); //.toLocaleDateString(locale);
     const allowEdit = hasPermission(scheduler.edit.schedule); // && schedule.status === "approved";
@@ -170,13 +171,20 @@ const Schedules = () => {
         </span>;
   };
 
+  const Approvals = ({ approvals }: { approvals: Array<Approval> }) => {
+    return (
+      <span>{approvals.length}</span>
+    );
+  };
+
   const columns = [
     { name: "name", label: "Period", className: "text-md font-medium" },
       ...milestones.map((m: Milestone) => ({ name: m.id, label: labelFor(m), 
         headingClassName: targetClassName(m), className: targetClassName(m),
         display: (schedule: ScheduleWithDates, column: ColumnProps) => 
           <DisplayDate schedule={schedule} column={column} /> })),
-    { name: "version", label: "Version" },
+    { name: "version", label: "Version", condition: status !== "draft" },
+    // { name: "approvals", label: "Approvals", display: ({ approvals }: ScheduleWithDates) => <Approvals approvals={approvals} /> },
     { name: "status", label: "Status", 
         display: ({ status }: ScheduleWithDates) => 
           <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-500" : ""}>
