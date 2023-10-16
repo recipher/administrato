@@ -9,7 +9,7 @@ import { adjustForUTCOffset, startOfWeek, startOfMonth, setDate, isSameDate } fr
 
 import { default as create } from '../id.server';
 
-import { IdProp, TxOrPool, DESC } from '../types';
+import { IdProp, TxOrPool, ASC, DESC } from '../types';
 
 import { type User } from '../access/users.server';
 import LegalEntityService, { LegalEntity } from '../manage/legal-entities.server';
@@ -25,7 +25,7 @@ import { type Holiday } from './holidays.server';
 
 export type Schedule = s.schedules.Selectable;
 export type ScheduleDate = s.scheduleDates.Selectable;
-export type ScheduleWithDates = Schedule & { scheduleDates: Array<ScheduleDate> };
+export type ScheduleWithDates = Schedule & { scheduleDates: Array<ScheduleDate>, approvals: Array<Approval> };
 
 type GenerateProps = {
   legalEntityId: string;
@@ -319,15 +319,23 @@ const Service = (u: User) => {
 
   type ListProps = { legalEntityId: string; year: number, status: Status | null };
 
-  const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps) => {
+  const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps, txOrPool: TxOrPool = pool) => {
     if (!status) status = Status.Draft;
-    return db.sql<s.schedules.SQL | s.scheduleDates.SQL, Array<ScheduleWithDates>>`
-      SELECT 
-        ${'schedules'}.*, 
-        JSONB_AGG(${"scheduleDates"}.*) AS ${'scheduleDates'}
+
+    return db.sql<s.schedules.SQL | s.scheduleDates.SQL | s.approvals.SQL, Array<ScheduleWithDates>>`
+      SELECT ${'schedules'}.*, a.*, sd.*
       FROM ${'schedules'} 
-      LEFT JOIN ${'scheduleDates'}
-      ON ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
+      LEFT JOIN LATERAL (
+        SELECT COALESCE(JSON_AGG(${'scheduleDates'}.*), '[]') AS ${'scheduleDates'}
+        FROM ${'scheduleDates'}
+        WHERE ${'schedules'}.${'id'} = ${'scheduleDates'}.${"scheduleId"}
+      ) sd ON TRUE
+      LEFT JOIN LATERAL (
+        SELECT COALESCE(JSON_AGG(${'approvals'}.*), '[]') AS ${'approvals'}
+        FROM ${'approvals'}
+        WHERE ${'schedules'}.${'id'} = ANY(${'approvals'}.${"entityId"}) AND 
+          ${'approvals'}.${'status'} = ${db.param(status)}
+      ) a ON TRUE
       INNER JOIN (
         SELECT ${'legalEntityId'}, ${'date'}, ${'status'}, MAX(${'version'}) AS version
         FROM ${'schedules'} 
@@ -341,7 +349,6 @@ const Service = (u: User) => {
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
         DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)} AND
         ${'schedules'}.${'status'} = ${db.param(status)}
-      GROUP BY ${'schedules'}.${'id'}
       ORDER BY ${'schedules'}.${'date'} ASC
     `.run(pool);
   };

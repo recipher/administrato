@@ -184,7 +184,7 @@ const Schedules = () => {
         display: (schedule: ScheduleWithDates, column: ColumnProps) => 
           <DisplayDate schedule={schedule} column={column} /> })),
     { name: "version", label: "Version", condition: status !== "draft" },
-    // { name: "approvals", label: "Approvals", display: ({ approvals }: ScheduleWithDates) => <Approvals approvals={approvals} /> },
+    { name: "approvals", label: "Approvals", display: ({ approvals }: ScheduleWithDates) => <Approvals approvals={approvals} /> },
     { name: "status", label: "Status", 
         display: ({ status }: ScheduleWithDates) => 
           <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-500" : ""}>
