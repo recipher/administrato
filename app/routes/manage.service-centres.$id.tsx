@@ -5,6 +5,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
+import CountryService from '~/services/countries.server';
 import ServiceCentreService from '~/services/manage/service-centres.server';
 import Header from '~/components/header';
 import { Flag } from '~/components/countries/flag';
@@ -38,12 +39,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (serviceCentre === undefined && !bypassKeyCheck) return notFound('Service centre not found');
 
-  return json({ serviceCentre, parent });
+  const countryService = CountryService();
+  const countries = await countryService.getCountries({ isoCodes: serviceCentre.localities || [] });
+
+  return json({ serviceCentre, parent, countries });
 };
 
 export default function ServiceCentre() {
   const [ searchParams ] = useSearchParams();
-  const { serviceCentre: { id, name, localities, parentId }} = useLoaderData();
+  const { countries, serviceCentre: { id, name, localities, parentId }} = useLoaderData();
+
+  const country = countries.at(0);
+  const isoCode = country.parent || country.isoCode;
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -66,7 +73,7 @@ export default function ServiceCentre() {
 
   return (
     <>
-      <Header title={name} icon={<Flag isoCode={localities.at(0)} />} tabs={tabs} actions={actions} group={true} />
+      <Header title={name} icon={<Flag isoCode={isoCode} />} tabs={tabs} actions={actions} group={true} />
       <Outlet />
     </>
   );

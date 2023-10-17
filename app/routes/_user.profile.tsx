@@ -15,7 +15,7 @@ import { useUser } from '~/hooks';
 import Image from '~/components/image';
 import Alert, { Level } from '~/components/alert';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import { Layout, Heading, Section, Field } from '~/components/info/info';
+import { Layout } from '~/components/info/info';
 
 import classnames from "~/helpers/classnames";
 import i18n from "~/i18n";

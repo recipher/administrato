@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'remix-validated-form';
 import { useLocale } from 'remix-i18next';
@@ -63,7 +63,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
   const onNext = () => setCurrent(addMonths(current, 1));
 
   return (
-    <div className="z-10">
+    <div className="z-10 font-normal">
       <div className="p-3 bg-gray-100 rounded-md">
         <div className="text-center lg:col-start-0 lg:col-end-6 lg:row-start-1">
           <div className="flex items-center text-gray-900">
@@ -166,7 +166,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
       {label && <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
         {label}
       </label>}
-      <div className="inline-block relative mt-2 rounded-md shadow-sm">
+      <div className="inline-block relative mt-2 rounded-md shadow-sm font-normal">
         <input
           type="text"
           {...getInputProps({ id: name })}

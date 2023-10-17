@@ -334,7 +334,8 @@ const Service = (u: User) => {
         SELECT COALESCE(JSON_AGG(${'approvals'}.*), '[]') AS ${'approvals'}
         FROM ${'approvals'}
         WHERE ${'schedules'}.${'id'} = ANY(${'approvals'}.${"entityId"}) AND 
-          ${'approvals'}.${'status'} = ${db.param(status)}
+          ${'approvals'}.${'status'} = ${db.param(status)} AND 
+          ${'approvals'}.${'userId'} IS NOT NULL
       ) a ON TRUE
       INNER JOIN (
         SELECT ${'legalEntityId'}, ${'date'}, ${'status'}, MAX(${'version'}) AS version

@@ -109,7 +109,7 @@ const Service = (u: User) => {
 
       return Promise.all(approvals.map(async ({ entity, entityId, status }: Approval) => {
         return db.upsert('approvals', 
-          create({ entity, entityId, setId, userId, userData, status }), 
+          create({ entity, entityId, setId, userId, userData, status, notes: db.param([], true) }), 
           [ "entityId", "userId" ])
         .run(tx);
       }));
@@ -122,7 +122,8 @@ const Service = (u: User) => {
         const approvals = await listApprovalsByEntityId({ entityId: scheduleId, userId: u.id }, tx);
         
         await Promise.all(approvals.map(async ({ id, notes: existing }) => {
-          return db.update('approvals', { status, notes: db.param([ ...existing as Array<any>, { user: u.id, notes } ], true) }, { id }).run(tx);
+          if (existing === null) existing = [];
+          return db.update('approvals', { status, notes: db.param([ ...(existing as Array<any>), { user: u.id, notes } ], true) }, { id }).run(tx);
         }));
 
         const draft = await listApprovalsByEntityIdAndNotStatus({ entityId: scheduleId, status }, tx);

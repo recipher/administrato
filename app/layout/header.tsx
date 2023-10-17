@@ -20,7 +20,7 @@ type Props = { user: User };
 const OrganizationModal = ({ modal, user, onSelect }: { modal: RefObject<RefModal>, onSelect: Function } & Props) => {
   const { t } = useTranslation();
   const organizations = user?.organizations || [];
-  const data = [ { id: "", displayName: "No Organization" }, ...organizations ];
+  const data = [ { id: "", displayName: "No Organization", auth0id: null }, ...organizations ];
 
   return (
     <Modal ref={modal}>

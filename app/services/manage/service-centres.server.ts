@@ -87,7 +87,7 @@ const Service = (u: User) => {
   };
   
   const checkForFullAccess = (keys: Array<SecurityKey>, serviceCentres: Array<ServiceCentre>) => {
-    return (keys.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
+    return (keys?.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
       ? [ create({ 
             name: "Full Authorization", 
             identifier: "full-authorization",

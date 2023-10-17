@@ -238,7 +238,7 @@ const Service = (u?: User) => {
   
     const { user_metadata: userMetadata } = user;
     const update = { ...userMetadata, ...settings };
-  
+    
     return client.updateUserMetadata({ id }, update);
   };
   

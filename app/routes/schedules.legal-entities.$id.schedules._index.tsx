@@ -172,8 +172,10 @@ const Schedules = () => {
   };
 
   const Approvals = ({ approvals }: { approvals: Array<Approval> }) => {
+    const filter = (status: string) => approvals.filter(a => a.status === status);
+    
     return (
-      <span>{approvals.length}</span>
+      <span>{`${filter('approved').length} / ${approvals.length}`}</span>
     );
   };
 

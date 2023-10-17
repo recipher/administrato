@@ -162,7 +162,7 @@ export default function Table({ data, columns, actions, showHeadings = false, co
   const [ selected, setSelected ] = useState<Array<any>>([]);
 
   const rowAction = actions?.find(action => action.row === true);
-  const hasMultiSelect = !!(actions?.filter((action: ActionProps) => action.multiSelect));
+  const hasMultiSelect = !!(actions?.filter((action: ActionProps) => action.multiSelect).length);
 
   const handleSelect = (item: any) => {
     setSelected(() => selected.map(s => s[idKey]).includes(item[idKey])
@@ -225,13 +225,13 @@ export default function Table({ data, columns, actions, showHeadings = false, co
                       )}
                     </td>
                   ))}
-                  {actions?.filter(action => !action.row && action.condition ? action.condition(item) : true) 
+                  {actions?.filter(action => !action.row && (action.condition ? action.condition(item) : true)) 
                     ? <>
                         <td className={classnames(contextMenu ? "" : "sm:hidden", "py-4 px-3 text-right text-sm table-cell")}>
                           <ContextMenu actions={actions} item={item} />
                         </td>
                         <td className={classnames(contextMenu ? "" : "sm:table-cell", "py-4 px-3 text-right text-sm hidden")}>
-                          {actions.filter(action => !action.row && action.condition ? action.condition(item) : true)
+                          {actions.filter(action => !action.row && (action.condition ? action.condition(item) : true))
                             .map((action: ActionProps) => 
                               <Action key={action.name} action={action} item={item} />)}
                         </td>
