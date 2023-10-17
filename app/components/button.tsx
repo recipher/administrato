@@ -48,9 +48,11 @@ export default ({ title, type = ButtonType.Primary, ...props }: ButtonProps) => 
       className={classnames(classNames.get(type) || "", "inline-flex items-center rounded-md px-3 py-2 text-sm shadow-sm",
         props.disabled ?  disabledClassNames.get(type) || "" : "")}
       >
-      {props.icon && 
-        <props.icon className={classnames(type === ButtonType.Primary ? "text-white" : "", "-ml-0.5 mr-1.5 h-5 w-5",
-          props.disabled ?  disabledClassNames.get(type) || "" : "")} aria-hidden="true" />}
+      {props.icon 
+        ? <props.icon className={classnames(type === ButtonType.Primary ? "text-white" : "", "-ml-0.5 mr-1.5 h-5 w-5",
+          props.disabled ?  disabledClassNames.get(type) || "" : "")} aria-hidden="true" />
+        : <span className="h-5" />
+      }
       {t(title)}
     </button>
   );

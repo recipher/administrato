@@ -1,5 +1,6 @@
 import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { format } from 'date-fns';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -7,6 +8,7 @@ import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import ApprovalsService from '~/services/scheduler/approvals.server';
+import SchedulesService, { type Schedule } from '~/services/scheduler/schedules.server';
 import LegalEntityService from '~/services/manage/legal-entities.server';
 
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
@@ -30,7 +32,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (id === undefined) return badRequest('Invalid request');
 
   const url = new URL(request.url);
-  const schedules = url.searchParams.get("schedule")?.split(',');
+  const ids = url.searchParams.get("schedule")?.split(',');
 
   const u = await requireUser(request);
 
@@ -38,6 +40,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const legalEntity = await service.getLegalEntity({ id });
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
+
+  const schedulesService = SchedulesService(u);
+  const schedules = await schedulesService.getSchedules({ ids });
 
   return json({ legalEntity, schedules });
 };
@@ -52,7 +57,7 @@ export const validator = withZod(
   })
 );
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request }: ActionArgs) => {
   const url = new URL(request.url);
   const schedules = url.searchParams.get("schedule")?.split(',');
 
@@ -83,11 +88,20 @@ const noOp = () => null!
 export default function Provider() {
   const { legalEntity: { logo, ...legalEntity }, schedules } = useLoaderData();
 
+  const list = schedules.map((schedule: Schedule) => (
+    <li>{`${schedule.name} ${format(new Date(schedule.date), 'yyyy')}`}</li>
+  ));
+
   return (
     <Form validator={validator} id="reject" method="POST" className="mt-6">
       <Body>
         <Section heading='Reject Schedules' 
-          explanation='Are you sure you want to reject these schedules?' />
+          explanation={
+            <>
+              <div>Are you sure you want to reject these schedules?</div>
+              <ol className="mt-6 absolute columns-2">{list}</ol>
+            </>
+          } />
         <Group>
           <Field>
             <Lookup label='Legal Entity' name="legalEntityId" onClick={noOp} 

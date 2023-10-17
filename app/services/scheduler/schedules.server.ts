@@ -55,6 +55,14 @@ const Service = (u: User) => {
     return db.selectExactlyOne('schedules', { id }).run(txOrPool);
   };
 
+  const getSchedules = async ({ ids }: { ids: Array<string> | undefined }, txOrPool: TxOrPool = pool) => {
+    if (ids === undefined) return [];
+    return db.select('schedules', 
+      db.sql<s.schedules.SQL>`${'id'} IN (${db.raw(ids.map(id => `'${id}'`).join(','))})`,
+      { order: [ { by: "date", direction: ASC } ] })
+    .run(txOrPool);
+  };
+
   const getScheduleByIdentity = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     const { legalEntityId, name, date } = await getScheduleById({ id }, txOrPool);
     return db.selectExactlyOne('schedules', { legalEntityId, name, date }, 
@@ -358,7 +366,8 @@ const Service = (u: User) => {
     generate, 
     changeDate, 
     getScheduleById, 
-    getScheduleByIdentity, 
+    getScheduleByIdentity,
+    getSchedules, 
     deleteSchedule, 
     listSchedulesByLegalEntity 
   };

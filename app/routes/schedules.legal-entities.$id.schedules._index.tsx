@@ -6,7 +6,7 @@ import { useLocale } from 'remix-i18next';
 import { format } from 'date-fns';
 
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid';
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ChatBubbleBottomCenterTextIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -21,7 +21,7 @@ import { type Approval } from '~/services/scheduler/approvals.server';
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import { Alert, Level, Tabs } from '~/components';
+import { Alert, Level, Tabs, Tooltip, TooltipLevel } from '~/components';
 import Table, { ColumnProps } from '~/components/table';
 import { DatePicker, Form, withZod, z } from '~/components/form';
 
@@ -174,8 +174,16 @@ const Schedules = () => {
   const Approvals = ({ approvals }: { approvals: Array<Approval> }) => {
     const filter = (status: string) => approvals.filter(a => a.status === status);
     
+    const message = approvals.length === 0 ? "No configured approvals" : undefined;
+    const details = approvals.length === 0 ? "error" : `${filter('approved').length} / ${approvals.length}`;
+    
     return (
-      <span>{`${filter('approved').length} / ${approvals.length}`}</span>
+      <Tooltip text={message} level={TooltipLevel.Error}>
+        <span className={classnames(
+            approvals.length === 0 ? "text-red-700" : "")}>
+          {details}
+        </span>
+      </Tooltip>
     );
   };
 
@@ -189,7 +197,7 @@ const Schedules = () => {
     { name: "approvals", label: "Approvals", display: ({ approvals }: ScheduleWithDates) => <Approvals approvals={approvals} /> },
     { name: "status", label: "Status", 
         display: ({ status }: ScheduleWithDates) => 
-          <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-500" : ""}>
+          <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-700" : ""}>
             {t(status)}
           </span> 
     },
@@ -209,6 +217,11 @@ const Schedules = () => {
       { method: "POST", encType: "application/json" });
   };
 
+  const handleUnapprove = (schedule: ScheduleWithDates) => {
+    submit({ intent: "unapprove" },
+      { method: "POST", action: `./approve?schedule=${schedule.id}`, encType: "multipart/form-data" });
+  };
+
   const actions = [
     { name: "approve", icon: CheckIcon,
       className: "text-gray-500", multiSelect: true,
@@ -218,15 +231,15 @@ const Schedules = () => {
     { name: "unapprove", icon: XMarkIcon,
       className: "text-gray-500",
       condition: (schedule: ScheduleWithDates) => ['approved', 'rejected'].includes(schedule.status) && hasPermission(scheduler.edit.schedule),
-      to: (schedule: ScheduleWithDates) => `approve?schedule=${schedule.id}`,
+      onClick: handleUnapprove
     },
     { name: "reject", icon: XMarkIcon,
       className: "text-gray-500", multiSelect: true, 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
       to: (schedule: ScheduleWithDates | Array<string>) => `reject?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
     },
-    { name: "holidays", to: 'holidays', className: "text-gray-500" },
-    { name: "approvers", to: 'approvers', className: "text-gray-500" },
+    { name: "show-holidays", to: 'holidays', className: "text-gray-500" },
+    { name: "select-approvers", to: 'approvers', className: "text-gray-500", multiSelect: true, icon: ChatBubbleBottomCenterTextIcon },
     { name: "delete", 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.delete.schedule),
       onClick: handleRemove,

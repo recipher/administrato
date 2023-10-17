@@ -44,7 +44,7 @@ export default ({ image, name, Icon, intent, action = "." }: Props) => {
           "absolute group-hover:inline text-xs text-gray-900 left-3 top-4")}>
           {fetcher.state === "submitting" ? <Spinner /> : t('edit')}
         </span>
-        {preview === null
+        {!preview
           ? <Icon className={classnames(fetcher.state === "submitting" ? "opacity-50" : "",
             "h-12 w-12 text-indigo-300")} aria-hidden="true" />
           : <Image src={preview} className={classnames(fetcher.state === "submitting" ? "opacity-50" : "",

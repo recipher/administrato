@@ -140,6 +140,10 @@ const Service = (u: User) => {
     return changeStatus({ ...params, status: Status.Approved }, txOrPool);
   };
 
+  const unapprove = async (params: { schedules: Array<string>, notes: string }, txOrPool: TxOrPool = pool) => {
+    return changeStatus({ ...params, status: Status.Draft }, txOrPool);
+  };
+
   const reject = async (params: { schedules: Array<string>, notes: string }, txOrPool: TxOrPool = pool) => {
     return changeStatus({ ...params, status: Status.Rejected }, txOrPool);
   };
@@ -154,6 +158,7 @@ const Service = (u: User) => {
     removeApproverFromSet,
     addApproverToSet,
     approve,
+    unapprove,
     reject,
     listApproversByEntityId,
     listApproversBySetId,
