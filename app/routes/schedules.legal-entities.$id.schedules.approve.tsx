@@ -53,7 +53,7 @@ export const validator = withZod(
   })
 );
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request }: ActionArgs) => {
   const u = await requireUser(request);
   const formData = await request.formData();
   const intent = formData.get("intent");
@@ -68,7 +68,13 @@ export const action = async ({ request, params }: ActionArgs) => {
     const schedulesService = SchedulesService(u);
     const schedules = await schedulesService.getSchedules({ ids });
 
-    return json({ schedules });
+    console.log(schedules.length);
+
+    if (schedules.length) return json({ schedules });
+
+    message = `No Approvals:You have no approvals pending for these schedules.`;
+    status = Status.Draft;
+    level = Level.Warning;
   }
 
   if (intent === "approve") {

@@ -78,9 +78,9 @@ export default function Schedules() {
   ];
 
   const actions = [
-    { title: 'download-schedule-file', to: 'schedules/download',
+    { title: 'download-schedule-file', to: `schedules/download?year=${year}`,
       icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
-    { title: 'generate-schedules', to: 'schedules/generate',
+    { title: 'generate-schedules', to: `schedules/generate?year=${year}`,
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
   ];
 

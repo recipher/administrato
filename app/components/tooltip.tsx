@@ -29,7 +29,7 @@ export default ({ text, level = Level.Error, children }: PropsWithChildren<Props
       <span className={classnames(text === undefined ? "" : "group-hover:opacity-100",
        `bg-${colour}-50 border-${colour}-400 text-${colour}-700`,
        `pointer-events-none z-10
-        absolute -top-8 left-0 w-max 
+        absolute -top-8 -left-1/2 w-max 
         px-2 py-1 text-sm font-normal shadow rounded
         opacity-0 transition-opacity`)}>
         {text}

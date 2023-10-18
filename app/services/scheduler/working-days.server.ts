@@ -49,10 +49,8 @@ const Service = (u: User) => {
   };
 
   const getWorkingDays = async (countries: Array<string>) => {
-    const codes = countries.map(code => `'${code}'`).join(',');
-
     const workingDays = await db.select('workingDays',
-      db.sql<s.workingDays.SQL>`${'country'} IN (${db.raw(codes)})`,
+      { country: db.conditions.isIn(countries) },
       { columns: [ 'days' ] }
     ).run(pool);
 

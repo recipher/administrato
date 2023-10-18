@@ -92,9 +92,8 @@ export async function action({ request, params }: ActionArgs) {
 };
 
 const Schedules = () => {
-  const user = useUser();
+  const u = useUser();
   const { t } = useTranslation("schedule");
-  const locale = useLocale();
   const fetcher = useFetcher();
 
   const { schedules, milestones, year, status, statuses } = useLoaderData();
@@ -108,7 +107,7 @@ const Schedules = () => {
   const [ editingDate, setEditingDate ] = useState<{ row: string, col: string }>();
   const [ submittingDate, setSubmittingDate ] = useState<{ row: string, col: string }>();
 
-  const hasPermission = (p: string) => user.permissions.includes(p);
+  const hasPermission = (p: string) => u.permissions.includes(p);
 
   const yearData = ((year: number) => [...Array(5).keys()].map(index => year + index - 1))(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
@@ -172,14 +171,22 @@ const Schedules = () => {
   };
 
   const Approvals = ({ approvals }: { approvals: Array<Approval> }) => {
-    const filter = (status: string) => approvals.filter(a => a.status === status);
-    
-    const message = approvals.length === 0 ? "No configured approvals" : undefined;
-    const details = approvals.length === 0 ? "error" : `${filter('approved').length} / ${approvals.length}`;
+    const approved = approvals.filter(a => a.status === "approved");
+    const forUser = approvals.filter(a => a.userId === u.id);
+
+    const message = approvals.length === 0 
+      ? "No configured approvals" 
+      : forUser.length === 0 ? "You have no pending approvals" : undefined;
+    const level = approvals.length === 0 
+      ? TooltipLevel.Error 
+      : forUser.length === 0 ? TooltipLevel.Warning : TooltipLevel.Info;
+    const details = approvals.length === 0 
+      ? "error" : `${approved.length} / ${approvals.length}`;
     
     return (
-      <Tooltip text={message} level={TooltipLevel.Error}>
+      <Tooltip text={message} level={level}>
         <span className={classnames(
+            forUser.length === 0 ? "opacity-50" : "",
             approvals.length === 0 ? "text-red-700" : "")}>
           {details}
         </span>
@@ -232,10 +239,14 @@ const Schedules = () => {
       { method: "POST", action: `./reject`, encType: "multipart/form-data" });
   };
 
+  const can = (permission: string, approvals: Array<Approval>) => 
+    hasPermission(permission) && 
+    approvals.filter(a => a.userId === u.id).length > 0;
+
   const actions = [
     { name: "approve", icon: CheckIcon,
       className: "text-gray-500", multiSelect: true,
-      condition: (schedule: ScheduleWithDates) => ['draft', 'rejected'].includes(schedule.status) && schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
+      condition: (schedule: ScheduleWithDates) => ['draft', 'rejected'].includes(schedule.status) && schedule.status === "draft" && can(scheduler.edit.schedule, schedule.approvals),
       onClick: handleApprove 
     },
     { name: "unapprove", icon: XMarkIcon,
@@ -245,11 +256,12 @@ const Schedules = () => {
     },
     { name: "reject", icon: XMarkIcon,
       className: "text-gray-500", multiSelect: true, 
-      condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
+      condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && can(scheduler.edit.schedule, schedule.approvals),
       onClick: handleReject
     },
     { name: "show-holidays", to: 'holidays', className: "text-gray-500" },
-    { name: "select-approvers", to: 'approvers', className: "text-gray-500", multiSelect: true, icon: ChatBubbleBottomCenterTextIcon },
+    { name: "select-approvers", to: 'approvers', condition: () => hasPermission(scheduler.edit.schedule),
+      className: "text-gray-500", multiSelect: true, icon: ChatBubbleBottomCenterTextIcon },
     { name: "delete", 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.delete.schedule),
       onClick: handleRemove,

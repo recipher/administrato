@@ -68,7 +68,11 @@ export const action = async ({ request, params }: ActionArgs) => {
     const schedulesService = SchedulesService(u);
     const schedules = await schedulesService.getSchedules({ ids });
 
-    return json({ schedules });
+    if (schedules.length) return json({ schedules });
+
+    message = `No Approvals:You have no approvals pending for these schedules.`;
+    status = Status.Draft;
+    level = Level.Warning;
   }
 
   if (intent === "reject") {

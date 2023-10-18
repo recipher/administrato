@@ -57,10 +57,22 @@ const Service = (u: User) => {
 
   const getSchedules = async ({ ids }: { ids: Array<string> | undefined }, txOrPool: TxOrPool = pool) => {
     if (ids === undefined) return [];
-    return db.select('schedules', 
-      db.sql<s.schedules.SQL>`${'id'} IN (${db.raw(ids.map(id => `'${id}'`).join(','))})`,
-      { order: [ { by: "date", direction: ASC } ] })
-    .run(txOrPool);
+
+    const schedules = await db.sql<s.schedules.SQL | s.approvals.SQL, Array<ScheduleWithDates>>`
+      SELECT ${'schedules'}.*, ${'approvals'}.*
+      FROM ${'schedules'} 
+      LEFT JOIN LATERAL (
+        SELECT COALESCE(JSON_AGG(${'approvals'}.*), '[]') AS ${'approvals'}
+        FROM ${'approvals'}
+        WHERE ${'schedules'}.${'id'} = ANY(${'approvals'}.${"entityId"}) AND 
+          ${'approvals'}.${'userId'} = ${db.param(u.id)}
+      ) ${'approvals'} ON TRUE
+      WHERE 
+        ${{ id: db.conditions.isIn(ids) }} 
+      ORDER BY ${'schedules'}.${'date'} ASC
+    `.run(txOrPool);
+
+    return schedules.filter(schedule => schedule.approvals.length > 0);
   };
 
   const getScheduleByIdentity = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
