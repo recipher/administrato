@@ -17,6 +17,7 @@ type Props = {
   renderItem(item: any): ReactNode,
   renderContext(item: any): ReactNode,
   buildTo?(props: ToProps): string;
+  noNavigate?: boolean | undefined;
 };
 
 export const ListItem = ({ className = "text-md font-semibold", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
@@ -59,7 +60,7 @@ export const ListContext = ({ data, sub, select = true, open = false }: { data?:
 
 const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey].toString();
 
-export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo }: Props) {
+export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo, noNavigate = false }: Props) {
   const Item = ({ item }: any) => (
     <div className="flex justify-between gap-x-6 py-3">
       <div className="flex min-w-0 gap-x-4">
@@ -76,10 +77,12 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
       {data.map((item: any, index: number) => (
         <li key={`${item[idKey]}-${index}`} className="group">
           {onClick 
-            ? <div className={classnames(item[idKey] ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
+            ? <div className={classnames(item[idKey] && noNavigate !== false ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
                 <Item item={item} />
               </div>
-            : <Link to={buildTo({ item, idKey })}><Item item={item} /></Link>}
+            : noNavigate === false 
+                ? <Item item={item} />
+                : <Link to={buildTo({ item, idKey })}><Item item={item} /></Link>}
         </li>
       ))}
     </ul>

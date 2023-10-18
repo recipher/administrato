@@ -14,6 +14,7 @@ import { notFound, badRequest } from '~/utility/errors';
 import { List, ListItem, ListContext } from '~/components/list';
 import Alert, { Level } from '~/components/alert';
 import { Layout, Heading } from '~/components/info/info';
+import { nullable } from 'zod';
 
 export const handle = {
   i18n: "contacts",
@@ -56,15 +57,17 @@ const ContactLink = ({ contact }: { contact: Contact }) => {
     }[sub as string],
   }[classifier as ContactClassifier];
 
-  return <a href={href} target="_blank">{value}</a>;
+  const handleClick = (e: any) => e.stopPropagation();
+
+  return <a href={href} target="_blank" onClick={handleClick}>{value}</a>;
 };
 
 const Contacts = () => {
   const { t } = useTranslation("contacts");
   const { person, contacts } = useLoaderData();
 
-  const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} className="font-medium" />;
-  const Context = (contact: Contact) => <ListContext data={t(contact.sub || "")} sub={t(contact.classifier)} select={false} />;
+  const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} sub={t(contact.classifier)} className="font-medium" />;
+  const Context = (contact: Contact) => <ListContext data={t(contact.sub || "")} select={false} />;
 
   const name = `${person.firstName} ${person.lastName}`;
 
@@ -73,7 +76,7 @@ const Contacts = () => {
       <Layout>
         <Heading heading={t('contacts')} explanation={`Manage ${name}'s contact information.`} />
         {contacts.length === 0 && <Alert title="No contacts" level={Level.Info} /> }
-        <List data={contacts} renderItem={Item} renderContext={Context} />
+        <List data={contacts} renderItem={Item} renderContext={Context} noNavigate={false} />
       </Layout>
     </>
   );
