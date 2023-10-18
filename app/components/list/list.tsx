@@ -80,7 +80,7 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
             ? <div className={classnames(item[idKey] && noNavigate !== false ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
                 <Item item={item} />
               </div>
-            : noNavigate === false 
+            : noNavigate === true 
                 ? <Item item={item} />
                 : <Link to={buildTo({ item, idKey })}><Item item={item} /></Link>}
         </li>

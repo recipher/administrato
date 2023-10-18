@@ -58,7 +58,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
-  let message = "", level = Level.Success, status;
+  let message = "", level = Level.Success, status = Status.Draft;
   const service = ApprovalsService(u);
 
   if (intent === "init") {
@@ -71,7 +71,6 @@ export const action = async ({ request, params }: ActionArgs) => {
     if (schedules.length) return json({ schedules });
 
     message = `No Approvals:You have no approvals pending for these schedules.`;
-    status = Status.Draft;
     level = Level.Warning;
   }
 
@@ -86,7 +85,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       await service.reject({ schedules: schedules.split(','), notes: result.data.notes as string });
       // TODO get count
       message = `Schedule Rejected:${schedules.length} schedules have been rejected.`;
-      status = Status.Draft;
     } catch(e: any) {
       message = `Schedule Reject Error:${e.message}`;
       level = Level.Error;

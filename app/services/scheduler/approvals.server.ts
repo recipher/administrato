@@ -8,8 +8,7 @@ import { default as create } from '../id.server';
 export { default as create } from '../id.server';
 
 import { type User } from '../access/users.server';
-
-import SchedulesService from './schedules.server';
+import ScheduleService from './schedules.server';
 
 export enum Status {
   Draft = 'draft',
@@ -60,15 +59,17 @@ const Service = (u: User) => {
   const listApprovalsByEntityIdAndStatus = async ({ entityId, userId, status, notStatus }: { entityId: string, userId?: string | undefined, status?: Status | undefined, notStatus?: string | undefined }, txOrPool: TxOrPool = pool) => {
     const userQuery = userId === undefined ? db.sql`${'userId'} IS NOT NULL`
       : db.sql`${{userId}}`;
-    
-    const statusQuery = status == null && notStatus === undefined
+
+    const statusQuery = (status == null && notStatus === undefined)
       ? db.sql`${'approvals'}.${'status'} IS NOT NULL`
       : status !== undefined
         ? db.sql`${'approvals'}.${'status'} = ${db.param(status)}` 
-        : db.sql`${'approvals'}.${'status'} != ${db.param(status)}`;
+        : db.sql`${'approvals'}.${'status'} != ${db.param(notStatus)}`;
 
     return db.sql<s.approvals.SQL | s.schedules.SQL, s.approvals.Selectable[]>`
-      SELECT ${'approvals'}.*, ${'schedules'}.* FROM ${'approvals'} 
+      SELECT ${'approvals'}.*, 
+        ${'schedules'}.${'id'} AS "scheduleId", ${'schedules'}.${'date'}, ${'schedules'}.${'name'}, ${'schedules'}.${'version'}
+      FROM ${'approvals'} 
       INNER JOIN ${'schedules'} ON ${'schedules'}.${'id'} = ANY(${'approvals'}.${'entityId'})
       WHERE
         ${db.param(entityId)} = ANY(${'entityId'}) AND
@@ -120,16 +121,19 @@ const Service = (u: User) => {
     return db.serializable(txOrPool, async tx => {
       return Promise.all(schedules.map(async scheduleId => {
         const approvals = await listApprovalsByEntityId({ entityId: scheduleId, userId: u.id }, tx);
-        
+
         await Promise.all(approvals.map(async ({ id, notes: existing }) => {
           if (existing === null) existing = [];
-          return db.update('approvals', { status, notes: db.param([ ...(existing as Array<any>), { user: u.id, notes } ], true) }, { id }).run(tx);
+          return db.update('approvals', 
+            { status, notes: db.param([ ...(existing as Array<any>), { user: u.id, notes } ], true) }, 
+            { id, userId: u.id })
+          .run(tx);
         }));
 
         const draft = await listApprovalsByEntityIdAndNotStatus({ entityId: scheduleId, status }, tx);
 
         if (draft.length === 0) {
-          const { version } = await SchedulesService(u).getScheduleByIdentity({ id: scheduleId }, tx);
+          const { version } = await ScheduleService(u).getScheduleByIdentity({ id: scheduleId }, tx);
           return db.update('schedules', { status, version: version+1 }, { id: scheduleId }).run(tx);
         }
       }));

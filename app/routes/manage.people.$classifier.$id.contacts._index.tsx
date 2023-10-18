@@ -76,7 +76,7 @@ const Contacts = () => {
       <Layout>
         <Heading heading={t('contacts')} explanation={`Manage ${name}'s contact information.`} />
         {contacts.length === 0 && <Alert title="No contacts" level={Level.Info} /> }
-        <List data={contacts} renderItem={Item} renderContext={Context} noNavigate={false} />
+        <List data={contacts} renderItem={Item} renderContext={Context} noNavigate={true} />
       </Layout>
     </>
   );

@@ -172,7 +172,7 @@ const Schedules = () => {
 
   const Approvals = ({ approvals }: { approvals: Array<Approval> }) => {
     const approved = approvals.filter(a => a.status === "approved");
-    const forUser = approvals.filter(a => a.userId === u.id);
+    const forUser = approvals.filter(a => a.userId === u.id && a.status === "draft");
 
     const message = approvals.length === 0 
       ? "No configured approvals" 
@@ -182,7 +182,7 @@ const Schedules = () => {
       : forUser.length === 0 ? TooltipLevel.Warning : TooltipLevel.Info;
     const details = approvals.length === 0 
       ? "error" : `${approved.length} / ${approvals.length}`;
-    
+
     return (
       <Tooltip text={message} level={level}>
         <span className={classnames(
@@ -241,7 +241,7 @@ const Schedules = () => {
 
   const can = (permission: string, approvals: Array<Approval>) => 
     hasPermission(permission) && 
-    approvals.filter(a => a.userId === u.id).length > 0;
+    approvals.filter(a => a.userId === u.id && a.status === "draft").length > 0;
 
   const actions = [
     { name: "approve", icon: CheckIcon,
@@ -249,9 +249,9 @@ const Schedules = () => {
       condition: (schedule: ScheduleWithDates) => ['draft', 'rejected'].includes(schedule.status) && schedule.status === "draft" && can(scheduler.edit.schedule, schedule.approvals),
       onClick: handleApprove 
     },
-    { name: "unapprove", icon: XMarkIcon,
+    { name: "unapprove",
       className: "text-gray-500",
-      condition: (schedule: ScheduleWithDates) => ['approved', 'rejected'].includes(schedule.status) && hasPermission(scheduler.edit.schedule),
+      condition: (schedule: ScheduleWithDates) => ['approved', 'rejected'].includes(schedule.status) && can(scheduler.edit.schedule, schedule.approvals),
       onClick: handleUnapprove
     },
     { name: "reject", icon: XMarkIcon,
@@ -260,7 +260,7 @@ const Schedules = () => {
       onClick: handleReject
     },
     { name: "show-holidays", to: 'holidays', className: "text-gray-500" },
-    { name: "select-approvers", to: 'approvers', condition: () => hasPermission(scheduler.edit.schedule),
+    { name: "select-approvers", to: 'approvers', condition: () => hasPermission(scheduler.edit.schedule) && status === "draft",
       className: "text-gray-500", multiSelect: true, icon: ChatBubbleBottomCenterTextIcon },
     { name: "delete", 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.delete.schedule),

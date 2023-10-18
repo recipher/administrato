@@ -55,9 +55,9 @@ const Service = (u: User) => {
     return db.selectExactlyOne('schedules', { id }).run(txOrPool);
   };
 
-  const getSchedules = async ({ ids }: { ids: Array<string> | undefined }, txOrPool: TxOrPool = pool) => {
+  const getSchedules = async ({ ids, status = Status.Draft }: { ids: Array<string> | undefined, status?: Status }, txOrPool: TxOrPool = pool) => {
     if (ids === undefined) return [];
-
+    
     const schedules = await db.sql<s.schedules.SQL | s.approvals.SQL, Array<ScheduleWithDates>>`
       SELECT ${'schedules'}.*, ${'approvals'}.*
       FROM ${'schedules'} 
@@ -65,10 +65,11 @@ const Service = (u: User) => {
         SELECT COALESCE(JSON_AGG(${'approvals'}.*), '[]') AS ${'approvals'}
         FROM ${'approvals'}
         WHERE ${'schedules'}.${'id'} = ANY(${'approvals'}.${"entityId"}) AND 
-          ${'approvals'}.${'userId'} = ${db.param(u.id)}
+          ${'approvals'}.${'userId'} = ${db.param(u.id)} AND 
+          ${'approvals'}.${'status'} = ${db.param(status)}
       ) ${'approvals'} ON TRUE
       WHERE 
-        ${{ id: db.conditions.isIn(ids) }} 
+        ${{ id: db.conditions.isIn(ids) }}
       ORDER BY ${'schedules'}.${'date'} ASC
     `.run(txOrPool);
 
@@ -354,7 +355,6 @@ const Service = (u: User) => {
         SELECT COALESCE(JSON_AGG(${'approvals'}.*), '[]') AS ${'approvals'}
         FROM ${'approvals'}
         WHERE ${'schedules'}.${'id'} = ANY(${'approvals'}.${"entityId"}) AND 
-          ${'approvals'}.${'status'} = ${db.param(status)} AND 
           ${'approvals'}.${'userId'} IS NOT NULL
       ) a ON TRUE
       INNER JOIN (

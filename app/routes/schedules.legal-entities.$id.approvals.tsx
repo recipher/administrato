@@ -7,7 +7,7 @@ import { requireUser } from '~/auth/auth.server';
 
 import LegalEntityService from '~/services/manage/legal-entities.server';
 import ApprovalsService, { Status } from '~/services/scheduler/approvals.server';
-import ScheduleService from '~/services/scheduler/schedules.server';
+import ScheduleService, { ScheduleWithDates } from '~/services/scheduler/schedules.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Layout, Heading } from '~/components/info/info';
@@ -56,9 +56,35 @@ const Holidays = () => {
       <Layout>
         <Heading heading={t('approvals')} explanation={`Manage ${legalEntity.name}'s schedule approvals.`} />
       
-        {approvals.length <= 0 && <Alert title='No approvals' level={Level.Info} />}
+        {schedules.length <= 0 && <Alert title='No approvals' level={Level.Info} />}
 
-        <div>{approvals.length} { schedules.length}</div>
+        <>
+          <ul role="list" className="">
+            {schedules.map((schedule: ScheduleWithDates) => (
+              <li key={schedule.id} className="group flex justify-between gap-x-6 py-4 cursor-pointer">
+                <div>
+                  {/* @ts-ignore */}
+                  <span className="font-medium text-md text-gray-900 pr-3">{schedule.name}</span>
+                  {/* @ts-ignore */}
+                  <span className="font-medium text-sm text-gray-500 pr-3">{schedule.date}</span>
+                </div>
+                {/* {hasPermission(scheduler.create.schedule) && <div className="hidden group-hover:block">
+                  <button onClick={() => handleRemove(approver)}
+                    type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
+                    {t('remove')}
+                  </button>
+                </div>} */}
+              </li>
+            ))}
+          </ul>
+
+          {/* {hasPermission(scheduler.create.schedule) && <div className="flex pt-3">
+            <Button icon={PlusIcon} title={t('Add an Approver')} 
+              type={ButtonType.Secondary} onClick={showModal} />
+          </div>}
+          <SelectorModal modal={modal} onSelect={handleAdd} />
+          <ConfirmModal ref={confirm} onYes={onConfirmRemove} /> */}
+        </>
       </Layout>
     </>
   );

@@ -66,9 +66,7 @@ export const action = async ({ request }: ActionArgs) => {
     if (ids === null) return badRequest('Invalid data');
 
     const schedulesService = SchedulesService(u);
-    const schedules = await schedulesService.getSchedules({ ids });
-
-    console.log(schedules.length);
+    const schedules = await schedulesService.getSchedules({ ids, status: Status.Draft });
 
     if (schedules.length) return json({ schedules });
 
@@ -92,6 +90,7 @@ export const action = async ({ request }: ActionArgs) => {
     } catch(e: any) {
       message = `Schedule Approve Error:${e.message}`;
       level = Level.Error;
+      status = Status.Draft;
     }
   }
 
@@ -106,6 +105,7 @@ export const action = async ({ request }: ActionArgs) => {
     } catch(e: any) {
       message = `Schedule Unapprove Error:${e.message}`;
       level = Level.Error;
+      status = Status.Approved;
     }
   }
 
