@@ -152,7 +152,7 @@ const Service = (u: User) => {
       return [ ...holidays, holiday ]; 
     }, []);
   };
-
+  
   const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
     if (shouldDelete) await deleteHolidaysByCountry({ year, locality });
 

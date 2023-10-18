@@ -218,15 +218,25 @@ const Schedules = () => {
   };
 
   const handleUnapprove = (schedule: ScheduleWithDates) => {
-    submit({ intent: "unapprove" },
-      { method: "POST", action: `./approve?schedule=${schedule.id}`, encType: "multipart/form-data" });
+    submit({ intent: "unapprove", schedule: schedule.id },
+      { method: "POST", action: `approve`, encType: "multipart/form-data" });
+  };
+
+  const handleApprove = (schedule: ScheduleWithDates | Array<ScheduleWithDates>) => {
+    submit({ intent: "init", schedule: Array.isArray(schedule) ? schedule.map(s => s.id) : schedule.id },
+      { method: "POST", action: `./approve`, encType: "multipart/form-data" });
+  };
+
+  const handleReject = (schedule: ScheduleWithDates | Array<ScheduleWithDates>) => {
+    submit({ intent: "init", schedule: Array.isArray(schedule) ? schedule.map(s => s.id) : schedule.id },
+      { method: "POST", action: `./reject`, encType: "multipart/form-data" });
   };
 
   const actions = [
     { name: "approve", icon: CheckIcon,
       className: "text-gray-500", multiSelect: true,
       condition: (schedule: ScheduleWithDates) => ['draft', 'rejected'].includes(schedule.status) && schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
-      to: (schedule: ScheduleWithDates | Array<string>) => `approve?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
+      onClick: handleApprove 
     },
     { name: "unapprove", icon: XMarkIcon,
       className: "text-gray-500",
@@ -236,7 +246,7 @@ const Schedules = () => {
     { name: "reject", icon: XMarkIcon,
       className: "text-gray-500", multiSelect: true, 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.edit.schedule),
-      to: (schedule: ScheduleWithDates | Array<string>) => `reject?schedule=${Array.isArray(schedule) ? schedule.join(',') : schedule.id}`,
+      onClick: handleReject
     },
     { name: "show-holidays", to: 'holidays', className: "text-gray-500" },
     { name: "select-approvers", to: 'approvers', className: "text-gray-500", multiSelect: true, icon: ChatBubbleBottomCenterTextIcon },

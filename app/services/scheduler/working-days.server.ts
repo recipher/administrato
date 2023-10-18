@@ -73,11 +73,12 @@ const Service = (u: User) => {
   };
 
   const listHolidays = async ({ countries, month, year }: HolidayProps) => {
+    const service = HolidayService(u);
+
     const holidays = await Promise.all(countries.map(async country => {
-      const holidayService = HolidayService(u);
       const { id: entityId, countries } = country;
       const holidays = await Promise.all(countries.map(async locality => {
-        return holidayService.listHolidaysByCountryForEntity({ month, year, locality, entityId });
+        return service.listHolidaysByCountryForEntity({ month, year, locality, entityId });
       }));
       return holidays.flat();
     }));

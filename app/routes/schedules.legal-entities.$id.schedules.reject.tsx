@@ -1,5 +1,5 @@
 import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useActionData, useLoaderData } from '@remix-run/react';
 import { format } from 'date-fns';
 
 import { badRequest, notFound } from '~/utility/errors';
@@ -7,16 +7,16 @@ import { requireUser } from '~/auth/auth.server';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
-import ApprovalsService from '~/services/scheduler/approvals.server';
+import ApprovalsService, { Status } from '~/services/scheduler/approvals.server';
 import SchedulesService, { type Schedule } from '~/services/scheduler/schedules.server';
 import LegalEntityService from '~/services/manage/legal-entities.server';
 
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { Level } from '~/components/toast';
 
-import { Cancel, Submit, Lookup, TextArea, 
+import { Cancel, Submit, Lookup, TextArea,
   Body, Section, Group, Field, Footer, 
-  Form, withZod, zfd, z, validationError } from '~/components/form';
+  Form, withZod, zfd, z, validationError, Hidden } from '~/components/form';
 
 import { scheduler } from '~/auth/permissions';
 
@@ -31,9 +31,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest('Invalid request');
 
-  const url = new URL(request.url);
-  const ids = url.searchParams.get("schedule")?.split(',');
-
   const u = await requireUser(request);
 
   const service = LegalEntityService(u);
@@ -41,10 +38,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 
-  const schedulesService = SchedulesService(u);
-  const schedules = await schedulesService.getSchedules({ ids });
-
-  return json({ legalEntity, schedules });
+  return json({ legalEntity });
 };
 
 export const validator = withZod(
@@ -53,43 +47,60 @@ export const validator = withZod(
       .string()
       .optional(),
     legalEntityId: z
+      .string(),
+    schedules: z
       .string()
   })
 );
 
-export const action = async ({ request }: ActionArgs) => {
-  const url = new URL(request.url);
-  const schedules = url.searchParams.get("schedule")?.split(',');
-
-  if (schedules === undefined) return badRequest('Invalid request');
-
+export const action = async ({ request, params }: ActionArgs) => {
   const u = await requireUser(request);
   const formData = await request.formData();
-  const result = await validator.validate(formData);
-  
-  if (result.error) return validationError(result.error);
+  const intent = formData.get("intent");
 
-  let message = "", level = Level.Success;
-  try {
-    const service = ApprovalsService(u);
-    await service.reject({ schedules, notes: result.data.notes as string });
-    message = `Schedules Reject:${schedules.length} schedules have been rejected.`;
-  } catch(e: any) {
-    message = `Schedule Reject Error:${e.message}`;
-    level = Level.Error;
+  let message = "", level = Level.Success, status;
+  const service = ApprovalsService(u);
+
+  if (intent === "init") {
+    const ids = formData.get("schedule")?.toString().split(',');
+    if (ids === null) return badRequest('Invalid data');
+
+    const schedulesService = SchedulesService(u);
+    const schedules = await schedulesService.getSchedules({ ids });
+
+    return json({ schedules });
+  }
+
+  if (intent === "reject") {
+    const result = await validator.validate(formData);
+    
+    if (result.error) return validationError(result.error);
+    
+    try {
+      const { schedules } = result.data;
+
+      await service.reject({ schedules: schedules.split(','), notes: result.data.notes as string });
+      // TODO get count
+      message = `Schedule Rejected:${schedules.length} schedules have been rejected.`;
+      status = Status.Draft;
+    } catch(e: any) {
+      message = `Schedule Reject Error:${e.message}`;
+      level = Level.Error;
+    }
   }
 
   const session = await setFlashMessage({ request, message, level });
-  return redirect(`../schedules?status=rejected`, { headers: { "Set-Cookie": await storage.commitSession(session) } });
+  return redirect(`../schedules?status=${status}`, { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
 const noOp = () => null!
 
 export default function Provider() {
-  const { legalEntity: { logo, ...legalEntity }, schedules } = useLoaderData();
+  const { legalEntity: { logo, ...legalEntity } } = useLoaderData();
+  const { schedules } = useActionData();
 
   const list = schedules.map((schedule: Schedule) => (
-    <li>{`${schedule.name} ${format(new Date(schedule.date), 'yyyy')}`}</li>
+    <li key={schedule.id}>{`${schedule.name} ${format(new Date(schedule.date), 'yyyy')}`}</li>
   ));
 
   return (
@@ -104,6 +115,8 @@ export default function Provider() {
           } />
         <Group>
           <Field>
+            <Hidden value="reject" name="intent" />
+              <Hidden value={schedules.map((s: Schedule) => s.id).join(',')} name="schedules" />
             <Lookup label='Legal Entity' name="legalEntityId" onClick={noOp} 
               value={legalEntity} />
           </Field>

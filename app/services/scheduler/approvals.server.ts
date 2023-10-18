@@ -57,18 +57,19 @@ const Service = (u: User) => {
     return db.select('approvers', { entityId }).run(txOrPool);
   };
 
-  const listApprovalsByEntityIdAndStatus = async ({ entityId, userId, status, notStatus }: { entityId: string, userId?: string | undefined, status?: string | undefined, notStatus?: string | undefined }, txOrPool: TxOrPool = pool) => {
+  const listApprovalsByEntityIdAndStatus = async ({ entityId, userId, status, notStatus }: { entityId: string, userId?: string | undefined, status?: Status | undefined, notStatus?: string | undefined }, txOrPool: TxOrPool = pool) => {
     const userQuery = userId === undefined ? db.sql`${'userId'} IS NOT NULL`
       : db.sql`${{userId}}`;
     
-    const statusQuery = status === undefined && notStatus === undefined
-      ? db.sql`${'status'} IS NOT NULL`
+    const statusQuery = status == null && notStatus === undefined
+      ? db.sql`${'approvals'}.${'status'} IS NOT NULL`
       : status !== undefined
-        ? db.sql`${{status}}` 
-        : db.sql`${'status'} != ${db.param(status)}`;
+        ? db.sql`${'approvals'}.${'status'} = ${db.param(status)}` 
+        : db.sql`${'approvals'}.${'status'} != ${db.param(status)}`;
 
-    return db.sql<s.approvals.SQL, s.approvals.Selectable[]>`
-      SELECT * FROM ${'approvals'} 
+    return db.sql<s.approvals.SQL | s.schedules.SQL, s.approvals.Selectable[]>`
+      SELECT ${'approvals'}.*, ${'schedules'}.* FROM ${'approvals'} 
+      INNER JOIN ${'schedules'} ON ${'schedules'}.${'id'} = ANY(${'approvals'}.${'entityId'})
       WHERE
         ${db.param(entityId)} = ANY(${'entityId'}) AND
         ${userQuery} AND
@@ -76,12 +77,11 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
-
-  const listApprovalsByEntityId = async ({ entityId, userId, status }: { entityId: string, userId?: string, status?: string }, txOrPool: TxOrPool = pool) => {
+  const listApprovalsByEntityId = async ({ entityId, userId, status }: { entityId: string, userId?: string, status?: Status }, txOrPool: TxOrPool = pool) => {
     return listApprovalsByEntityIdAndStatus({ entityId, userId, status }, txOrPool);
   };
 
-  const listApprovalsByEntityIdAndNotStatus = async ({ entityId, userId, status }: { entityId: string, userId?: string, status?: string }, txOrPool: TxOrPool = pool) => {
+  const listApprovalsByEntityIdAndNotStatus = async ({ entityId, userId, status }: { entityId: string, userId?: string, status?: Status }, txOrPool: TxOrPool = pool) => {
     return listApprovalsByEntityIdAndStatus({ entityId, userId, notStatus: status }, txOrPool);
   };
   
