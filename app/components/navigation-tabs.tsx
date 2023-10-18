@@ -1,5 +1,7 @@
+import { Fragment } from 'react';
 import { NavLink, useNavigate } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
+
 import classnames from '~/helpers/classnames';
 
 const MAX_MOBILE_TABS = 3;
@@ -9,6 +11,7 @@ export type TabsProps = Array<{
   to: string;
   disabled?: boolean;
   hidden?: boolean;
+  count?: string;
 }>;
 
 type Props = {
@@ -39,21 +42,33 @@ export default function Tabs({ tabs }: Props) {
         <div className="hidden sm:block">
           <nav className="-mb-px flex space-x-8">
             {tabs.map((tab) => (
-              tab.hidden ? null :
-                tab.disabled
-                  ? <div className="whitespace-nowrap text-gray-400 pr-4 mr-4 pb-3 text-md font-medium">
-                      {t(tab.name)}
-                    </div>
-                  : <NavLink key={tab.name} to={tab.to}>
-                      {({ isActive, isPending }) => (
-                        <div aria-current={isActive ? 'page' : undefined}
-                          className={classnames(isActive
-                            ? 'border-indigo-500 text-indigo-600'
-                            : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                          'whitespace-nowrap border-b-2 mr-4 pb-3 text-md font-medium'
-                        )}>{t(tab.name)}</div>
-                      )}
-                    </NavLink>
+              <Fragment key={tab.name}>
+                {tab.hidden ? null :
+                  tab.disabled
+                    ? <div className="whitespace-nowrap text-gray-400 pr-4 mr-4 pb-3 text-md font-medium">
+                        {t(tab.name)}
+                      </div>
+                    : <NavLink to={tab.to}>
+                        {({ isActive, isPending }) => (
+                          <div aria-current={isActive ? 'page' : undefined}
+                            className={classnames(isActive
+                              ? 'border-indigo-500 text-indigo-600'
+                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                            'whitespace-nowrap border-b-2 mr-4 pb-3 text-md font-medium'
+                          )}>
+                            {t(tab.name)}
+                            {tab.count ? (
+                              <div
+                                className={classnames(
+                                  isActive ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
+                                  'ml-3 hidden rounded-full px-2 text-md md:inline-block'
+                                )}
+                              >
+                                {tab.count}
+                              </div>) : null}
+                            </div>
+                      )}</NavLink>}
+              </Fragment>
             ))}
             {tabs.length === 0 && <div className="pb-3" />}
           </nav>

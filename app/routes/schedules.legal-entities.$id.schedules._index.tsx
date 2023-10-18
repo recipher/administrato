@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { ActionArgs, json, redirect, type LoaderArgs } from '@remix-run/node';
 import { useFetcher, useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from 'remix-i18next';
 import { format } from 'date-fns';
 
 import { ArrowLongLeftIcon, ArrowLongRightIcon } from '@heroicons/react/20/solid';
@@ -21,9 +20,11 @@ import { type Approval } from '~/services/scheduler/approvals.server';
 import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import { Alert, Level, Tabs, Tooltip, TooltipLevel } from '~/components';
+import { Alert, Level, Tabs } from '~/components';
 import Table, { ColumnProps } from '~/components/table';
 import { DatePicker, Form, withZod, z } from '~/components/form';
+
+import { ApprovalsSummary } from '~/components/scheduler/approvals';
 
 import { scheduler } from '~/auth/permissions';
 
@@ -170,30 +171,6 @@ const Schedules = () => {
         </span>;
   };
 
-  const Approvals = ({ approvals }: { approvals: Array<Approval> }) => {
-    const approved = approvals.filter(a => a.status === "approved");
-    const forUser = approvals.filter(a => a.userId === u.id && a.status === "draft");
-
-    const message = approvals.length === 0 
-      ? "No configured approvals" 
-      : forUser.length === 0 ? "You have no pending approvals" : undefined;
-    const level = approvals.length === 0 
-      ? TooltipLevel.Error 
-      : forUser.length === 0 ? TooltipLevel.Warning : TooltipLevel.Info;
-    const details = approvals.length === 0 
-      ? "error" : `${approved.length} / ${approvals.length}`;
-
-    return (
-      <Tooltip text={message} level={level}>
-        <span className={classnames(
-            forUser.length === 0 ? "opacity-50" : "",
-            approvals.length === 0 ? "text-red-700" : "")}>
-          {details}
-        </span>
-      </Tooltip>
-    );
-  };
-
   const columns = [
     { name: "name", label: "Period", className: "text-md font-medium" },
       ...milestones.map((m: Milestone) => ({ name: m.id, label: labelFor(m), 
@@ -201,7 +178,7 @@ const Schedules = () => {
         display: (schedule: ScheduleWithDates, column: ColumnProps) => 
           <DisplayDate schedule={schedule} column={column} /> })),
     { name: "version", label: "Version", condition: status !== "draft" },
-    { name: "approvals", label: "Approvals", display: ({ approvals }: ScheduleWithDates) => <Approvals approvals={approvals} /> },
+    { name: "approvals", label: "Approvals", display: ({ approvals }: ScheduleWithDates) => <ApprovalsSummary approvals={approvals} user={u} /> },
     { name: "status", label: "Status", 
         display: ({ status }: ScheduleWithDates) => 
           <span className={status === "approved" ? "text-green-700" : status === "rejected" ? "text-red-700" : ""}>

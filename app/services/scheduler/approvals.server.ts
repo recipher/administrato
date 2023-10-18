@@ -21,7 +21,6 @@ export type Approver = s.approvers.Selectable;
 export type Approval = s.approvals.Selectable;
 
 const Service = (u: User) => {
-
   const addApprover = async (approver: s.approvers.Insertable, txOrPool: TxOrPool = pool) => {
     return db.upsert('approvers', approver, [ "entityId", "userId" ]).run(txOrPool);
   };
@@ -78,6 +77,27 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
+  const listApprovalsByStatus = async ({ userId, status }: { userId?: string | undefined, status?: Status | undefined, notStatus?: string | undefined }, txOrPool: TxOrPool = pool) => {
+    const userQuery = userId === undefined ? db.sql`${'userId'} IS NOT NULL`
+      : db.sql`${{userId}}`;
+
+    const statusQuery = (status == null)
+      ? db.sql`${'approvals'}.${'status'} IS NOT NULL`
+      : db.sql`${'approvals'}.${'status'} = ${db.param(status)}`;
+
+    return db.sql<s.approvals.SQL | s.schedules.SQL | s.legalEntities.SQL, s.approvals.Selectable[]>`
+      SELECT ${'approvals'}.*, ${'legalEntities'}.${'name'} AS "legalEntity",
+        ${'schedules'}.${'id'} AS "scheduleId", ${'schedules'}.${'date'}, ${'schedules'}.${'name'}, ${'schedules'}.${'version'}, ${'schedules'}.${'legalEntityId'}
+      FROM ${'approvals'} 
+      INNER JOIN ${'schedules'} ON ${'schedules'}.${'id'} = ANY(${'approvals'}.${'entityId'})
+      INNER JOIN ${'legalEntities'} ON ${'legalEntities'}.${'id'} = ${'schedules'}.${'legalEntityId'}
+      WHERE
+        ${userQuery} AND
+        ${statusQuery}
+      ORDER BY ${'schedules'}.${'date'} ASC
+    `.run(txOrPool);
+  };
+
   const listApprovalsByEntityId = async ({ entityId, userId, status }: { entityId: string, userId?: string, status?: Status }, txOrPool: TxOrPool = pool) => {
     return listApprovalsByEntityIdAndStatus({ entityId, userId, status }, txOrPool);
   };
@@ -108,7 +128,7 @@ const Service = (u: User) => {
     return db.serializable(txOrPool, async tx => {
       const approvals = await db.select('approvals', { setId }).run(tx);
 
-      return Promise.all(approvals.map(async ({ entity, entityId, status }: Approval) => {
+      return Promise.all(approvals.map(async ({ entity, entityId, status }: any) => {
         return db.upsert('approvals', 
           create({ entity, entityId, setId, userId, userData, status, notes: db.param([], true) }), 
           [ "entityId", "userId" ])
@@ -164,6 +184,7 @@ const Service = (u: User) => {
     approve,
     unapprove,
     reject,
+    listApprovalsByStatus,
     listApproversByEntityId,
     listApproversBySetId,
     listApprovalsByEntityId,

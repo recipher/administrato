@@ -5,6 +5,7 @@ import { ActionsProps } from '../actions';
 import Image from '../image';
 
 import { Buttons, Title } from './advanced';
+import classnames from '~/helpers/classnames';
 
 type Props = {
   title: string;
@@ -21,8 +22,8 @@ export default function Header({ title, subtitle, actions = [], icon, group = fa
     icon = <Image src={icon} className="h-12 w-12 rounded-lg" />;
 
   return (
-    <div className="border-b border-gray-200 bg-white">
-      <div className="flex flex-wrap items-center justify-between sm:flex-nowrap">
+    <div className={classnames(icon ? "" : "mt-3", "border-b border-gray-200 bg-white")}>
+      <div className={classnames(icon ? "-ml-1" : "", "flex flex-wrap items-center justify-between sm:flex-nowrap")}>
         <div className="mb-4 flex items-center">
           <Title title={title} subtitle={subtitle} icon={icon} />
         </div>

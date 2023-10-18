@@ -9,3 +9,6 @@ create table
     constraint workingDays_country_uniq unique ("country")
   ) tablespace pg_default;
 alter table public."workingDays" enable row level security;
+
+create trigger update_timestamp before update on public."workingDays"
+for each row execute procedure moddatetime("updatedAt");

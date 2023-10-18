@@ -14,3 +14,6 @@ create table
     constraint service_centres_parentId_fkey foreign key ("parentId") references "serviceCentres" (id) on delete cascade
   ) tablespace pg_default;
 alter table public."serviceCentres" enable row level security;
+
+create trigger update_timestamp before update on public."serviceCentres"
+for each row execute procedure moddatetime("updatedAt");

@@ -12,3 +12,6 @@ create table
     constraint contact_pkey primary key (id)
   ) tablespace pg_default;
 alter table public.contacts enable row level security;
+
+create trigger update_timestamp before update on public.contacts
+for each row execute procedure moddatetime("updatedAt");

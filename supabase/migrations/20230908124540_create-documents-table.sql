@@ -13,3 +13,6 @@ create table
     constraint document_pkey primary key (id)
   ) tablespace pg_default;
 alter table public.documents enable row level security;
+
+create trigger update_timestamp before update on public.documents
+for each row execute procedure moddatetime("updatedAt");

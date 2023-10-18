@@ -294,8 +294,9 @@ const Service = (u: User) => {
           version: 0,
         }), tx);
 
+        // @ts-ignore
         await approvalsService.addApprovals(approvers.concat(dummy)
-          .map(({ userId, userData, isOptional }: Approver) => create({
+          .map(({ userId, userData, isOptional }: any) => create({
             entity: "schedule,legal-entity", entityId: [ id, legalEntity.id ], 
             userId, userData, isOptional, setId, status: Status.Draft
           }))
@@ -338,10 +339,13 @@ const Service = (u: User) => {
     return saveScheduleSet({ set, legalEntity });
   };
 
-  type ListProps = { legalEntityId: string; year: number, status: Status | null };
+  type ListProps = { legalEntityId: string; year?: number, status: Status | null };
 
   const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps, txOrPool: TxOrPool = pool) => {
     if (!status) status = Status.Draft;
+
+    const yearQuery = year === undefined ? db.sql``
+      : db.sql`AND DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)}`;
 
     return db.sql<s.schedules.SQL | s.scheduleDates.SQL | s.approvals.SQL, Array<ScheduleWithDates>>`
       SELECT ${'schedules'}.*, a.*, sd.*
@@ -368,10 +372,10 @@ const Service = (u: User) => {
           ${'schedules'}.${'version'} = "maxVersion".${'version'}
       WHERE 
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
-        DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)} AND
         ${'schedules'}.${'status'} = ${db.param(status)}
+        ${yearQuery}
       ORDER BY ${'schedules'}.${'date'} ASC
-    `.run(pool);
+    `.run(txOrPool);
   };
 
   return { 

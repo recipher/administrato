@@ -13,3 +13,6 @@ create table
     constraint schedules_legalEntityId_date_status_version_uniq unique ("legalEntityId", date, status, version)
   ) tablespace pg_default;
 alter table public.schedules enable row level security;
+
+create trigger update_timestamp before update on public.schedules
+for each row execute procedure moddatetime("updatedAt");

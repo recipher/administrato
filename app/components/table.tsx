@@ -182,8 +182,8 @@ export default function Table({ data, columns, actions, showHeadings = false, co
       <div className="px-4">
         <div className="-mx-4 mt-3 sm:-mx-4">
           <table className={classnames(showHeadings ? "divide-y divide-gray-300" : "", "min-w-full")}>
-            <thead>
-              {showHeadings && data.length > 0 && <tr>
+            {showHeadings && data.length > 0 && <thead>
+              <tr>
                 {hasMultiSelect && <th scope="col" className="w-8 px-3"><Checkbox onChange={handleSelectAll} /></th>}
                 {columns.filter(column => column.condition === undefined || column.condition === true)
                   .map((column: ColumnProps, index) => (
@@ -196,8 +196,8 @@ export default function Table({ data, columns, actions, showHeadings = false, co
                 <th scope="col" className="relative py-3.5 pl-3 pr-0">
                   <span className="sr-only">Action</span>
                 </th>
-              </tr>}
-            </thead>
+              </tr>
+            </thead>}
             <tbody className={classnames(className || "divide-y divide-gray-200 bg-white")}>
               {data.map((item) => (
                 <tr key={item[idKey]} onClick={() => rowAction?.onClick && rowAction?.onClick(item)}

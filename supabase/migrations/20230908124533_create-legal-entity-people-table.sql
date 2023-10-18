@@ -12,3 +12,6 @@ create table
     constraint legalEntityId_personId_fkey foreign key ("personId") references people (id) on delete cascade
   ) tablespace pg_default;
 alter table public."legalEntityPeople" enable row level security;
+
+create trigger update_timestamp before update on public."legalEntityPeople"
+for each row execute procedure moddatetime("updatedAt");

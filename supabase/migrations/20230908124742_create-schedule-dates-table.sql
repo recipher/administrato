@@ -18,3 +18,6 @@ create table
     constraint scheduleDates_scheduleId_milestoneId_uniq unique ("scheduleId", "milestoneId")
   ) tablespace pg_default;
 alter table public."scheduleDates" enable row level security;
+
+create trigger update_timestamp before update on public."scheduleDates"
+for each row execute procedure moddatetime("updatedAt");

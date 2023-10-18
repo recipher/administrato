@@ -14,3 +14,6 @@ create table
     constraint providers_pkey primary key (id)
   ) tablespace pg_default;
 alter table public.providers enable row level security;
+
+create trigger update_timestamp before update on public.providers
+for each row execute procedure moddatetime("updatedAt");

@@ -15,3 +15,6 @@ create table
     constraint holidays_locality_name_date_entity_uniq unique (locality, name, date, entity, "entityId")
   ) tablespace pg_default;
 alter table public.holidays enable row level security;
+
+create trigger update_timestamp before update on public.holidays
+for each row execute procedure moddatetime("updatedAt");

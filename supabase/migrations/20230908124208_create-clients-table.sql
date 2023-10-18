@@ -17,3 +17,6 @@ create table
     constraint clients_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id)
   ) tablespace pg_default;
 alter table public.clients enable row level security;
+
+create trigger update_timestamp before update on public.clients
+for each row execute procedure moddatetime("updatedAt");

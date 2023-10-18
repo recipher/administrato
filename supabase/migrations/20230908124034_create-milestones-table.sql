@@ -14,4 +14,7 @@ create table
     constraint milestones_pkey primary key (id),
     constraint milestones_setId_fkey foreign key ("setId") references "milestoneSets" (id) on delete cascade
   ) tablespace pg_default;
-alter table public."milestones" enable row level security;
+alter table public.milestones enable row level security;
+
+create trigger update_timestamp before update on public.milestones
+for each row execute procedure moddatetime("updatedAt");

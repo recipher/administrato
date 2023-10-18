@@ -20,3 +20,6 @@ create table
     constraint person_pkey primary key (id)
   ) tablespace pg_default;
 alter table public.people enable row level security;
+
+create trigger update_timestamp before update on public.people
+for each row execute procedure moddatetime("updatedAt");

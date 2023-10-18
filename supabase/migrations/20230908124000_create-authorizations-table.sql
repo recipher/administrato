@@ -12,6 +12,10 @@ create table
   ) tablespace pg_default;
 alter table public.authorizations enable row level security;
 
+create extension if not exists moddatetime;
+create trigger update_timestamp before update on public.authorizations
+for each row execute procedure moddatetime("updatedAt");
+
 -- select user from authorizations 
 -- where 
 --   (entity = 'service-centre' or entity = 'legal-entity') and

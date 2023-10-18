@@ -83,6 +83,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       notes: db.JSONValue | null;
+      /**
+      * **approvals.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: Date;
+      /**
+      * **approvals.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
     }
     export interface JSONSelectable {
       /**
@@ -139,6 +151,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       notes: db.JSONValue | null;
+      /**
+      * **approvals.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: db.TimestampTzString;
+      /**
+      * **approvals.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
     }
     export interface Whereable {
       /**
@@ -195,6 +219,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       notes?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -251,6 +287,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       notes?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvals.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvals.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -307,6 +355,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       notes?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvals.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvals.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'approvals_entityid_userid_uniq' | 'approvals_pkey';
     export type Column = keyof Selectable;
@@ -358,6 +418,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       isOptional: boolean | null;
+      /**
+      * **approvers.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: Date;
+      /**
+      * **approvers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
     }
     export interface JSONSelectable {
       /**
@@ -396,6 +468,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       isOptional: boolean | null;
+      /**
+      * **approvers.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: db.TimestampTzString;
+      /**
+      * **approvers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
     }
     export interface Whereable {
       /**
@@ -434,6 +518,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       isOptional?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvers.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -472,6 +568,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       isOptional?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvers.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -510,6 +618,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       isOptional?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvers.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvers.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'approvers_entityid_userid_uniq' | 'approvers_pkey';
     export type Column = keyof Selectable;

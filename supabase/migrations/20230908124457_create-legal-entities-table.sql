@@ -23,3 +23,6 @@ create table
     constraint legalEntities_milestoneSetId_fkey foreign key ("milestoneSetId") references "milestoneSets" (id)
   ) tablespace pg_default;
 alter table public."legalEntities" enable row level security;
+
+create trigger update_timestamp before update on public."legalEntities"
+for each row execute procedure moddatetime("updatedAt");
