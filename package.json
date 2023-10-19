@@ -73,12 +73,13 @@
     "zod-form-data": "^2.0.1"
   },
   "devDependencies": {
+    "@architect/plugin-typescript": "^1.1.1",
     "@faker-js/faker": "^8.0.2",
     "@playwright/test": "^1.37.1",
     "@remix-run/dev": "^1.19.3",
     "@remix-run/eslint-config": "^1.19.3",
     "@testing-library/jest-dom": "^5.16.5",
-    "@types/architect__functions": "^3.13.7",
+    "@types/architect__functions": "^3.13.10",
     "@types/auth0": "^3.3.4",
     "@types/bcryptjs": "2.4.2",
     "@types/bluebird": "^3.5.40",

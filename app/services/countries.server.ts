@@ -2,6 +2,7 @@ import { HolidayAPI } from 'holidayapi';
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from './db.server';
+import arc from '@architect/functions';
 
 import countryData from './data/countries.json';
 
@@ -125,6 +126,11 @@ const service = (u?: User) => {
       const data = countryData.find(c => c.isoCode === country.code);
       await db.upsert('localities', 
         { name: country.name, isoCode: country.code, diallingCode: data?.diallingCode as string }, 'isoCode').run(pool);
+
+      arc.queues.publish({
+        name: 'sync-holidays',
+        payload: { isoCode: country.code },
+      }, (err) => console.log(err));
 
       return db.upsert('localities', country.subdivisions.map(sub => (
         { name: sub.name, isoCode: sub.code, parent: country.code }

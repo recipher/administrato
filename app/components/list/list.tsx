@@ -77,7 +77,7 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
       {data.map((item: any, index: number) => (
         <li key={`${item[idKey]}-${index}`} className="group">
           {onClick 
-            ? <div className={classnames(item[idKey] && noNavigate !== false ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
+            ? <div className={classnames(item[idKey] && noNavigate !== true ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
                 <Item item={item} />
               </div>
             : noNavigate === true 

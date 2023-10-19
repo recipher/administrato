@@ -13,3 +13,6 @@ timeout 30
 
 @static
 
+@queues
+generate-schedule
+sync-holidays

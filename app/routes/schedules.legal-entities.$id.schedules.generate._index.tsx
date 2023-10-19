@@ -55,9 +55,6 @@ export const validator = withZod(
 );
 
 export const action = async ({ request, params }: ActionArgs) => {
-  const url = new URL(request.url);
-  const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
-
   const u = await requireUser(request);
   const formData = await request.formData();
   const result = await validator.validate(formData);
@@ -65,7 +62,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (result.error) return;
 
   const service = ScheduleService(u);
-  const setId = await service.generate(result.data);
+  const setId: string = await service.generate(result.data);
 
   return redirect(`approvers?set=${setId}`);
 };
