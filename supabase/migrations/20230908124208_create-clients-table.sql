@@ -9,12 +9,12 @@ create table
     "keyStart" bigint null,
     "keyEnd" bigint null,
     localities text[] null,
-    "serviceCentreId" text not null,
+    "securityGroupId" text not null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
     constraint clients_pkey primary key (id),
     constraint clients_parentId_fkey foreign key ("parentId") references clients (id) on delete cascade,
-    constraint clients_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id)
+    constraint clients_securityGroupId_fkey foreign key ("securityGroupId") references "securityGroups" (id)
   ) tablespace pg_default;
 alter table public.clients enable row level security;
 

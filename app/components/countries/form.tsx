@@ -102,7 +102,7 @@ export function CountryFormManager({ context, data }: Props) {
 
   return (
     <>
-      <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the centre is associated, or select a specific region.' />
+      <Section size="md" heading='Specify Countries or Regions' explanation='Enter the countries to which the group is associated, or select a specific region.' />
       <Group>
         <Field className="mb-3">
           <Button title="Select a Country" 

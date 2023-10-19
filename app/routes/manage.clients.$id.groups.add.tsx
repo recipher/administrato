@@ -101,7 +101,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   
   const service = ClientService(u);
   const parent = await service.getClient({ id: parentId });
-  await service.addClient(create({ localities, identifier, parentId, serviceCentreId: parent.serviceCentreId, ...data }));
+  await service.addClient(create({ localities, identifier, parentId, securityGroupId: parent.securityGroupId, ...data }));
   
   return redirect(`/manage/clients/${parentId}/groups`);
 };
@@ -148,4 +148,4 @@ const AddGroup = () => {
   );
 }
 
-export default withAuthorization(manage.edit.serviceCentre)(AddGroup);
+export default withAuthorization(manage.edit.securityGroup)(AddGroup);

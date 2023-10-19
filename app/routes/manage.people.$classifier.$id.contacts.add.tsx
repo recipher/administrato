@@ -132,11 +132,11 @@ const Add = () => {
         </Body>
         <Footer>
           <Cancel />
-          <Submit text="Save" submitting="Saving..." permission={manage.create.worker} />
+          <Submit text="Save" submitting="Saving..." permission={manage.edit.person} />
         </Footer>
       </Form>
     </>
   );
 }
 
-export default withAuthorization(manage.edit.worker)(Add);
+export default withAuthorization(manage.edit.person)(Add);

@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import ServiceCentreService from '~/services/manage/service-centres.server';
+import SecurityGroupService from '~/services/manage/security-groups.server';
 import { requireUser } from '~/auth/auth.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
@@ -12,8 +12,8 @@ import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
   name: "info",
-  breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/info`} name={name} current={current} />
+  breadcrumb: ({ securityGroup, current, name }: { securityGroup: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/security-groups/${securityGroup?.id}/info`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -23,34 +23,34 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = await service.getServiceCentre({ id });
+  const service = SecurityGroupService(u);
+  const securityGroup = await service.getSecurityGroup({ id });
 
-  if (serviceCentre === undefined) return notFound('Service centre not found');
+  if (securityGroup === undefined) return notFound('Security group not found');
 
-  return json({ serviceCentre });
+  return json({ securityGroup });
 };
 
 const Info = () => {
   const { t } = useTranslation();
-  const { serviceCentre } = useLoaderData();
+  const { securityGroup } = useLoaderData();
 
   return (
     <>
       <Layout>
-        <Heading heading={t('info')} explanation={`Manage ${serviceCentre.name}'s information.`} />
+        <Heading heading={t('info')} explanation={`Manage ${securityGroup.name}'s information.`} />
         <Section>
-          <Field title="Service Centre Name">
-            {!serviceCentre.parentId && <p className="text-gray-900">{serviceCentre.name}</p>}
-            {serviceCentre.parentId && <Link className="text-indigo-900" to={`/manage/service-centres/${serviceCentre.parentId}/info`}>
-              {serviceCentre.parent}
+          <Field title="Security Group Name">
+            {!securityGroup.parentId && <p className="text-gray-900">{securityGroup.name}</p>}
+            {securityGroup.parentId && <Link className="text-indigo-900" to={`/manage/security-groups/${securityGroup.parentId}/info`}>
+              {securityGroup.parent}
             </Link>}
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
           </Field>
-          {serviceCentre.parentId && <Field title="Group Name">
-            <p className="text-gray-900">{serviceCentre.name}</p>
+          {securityGroup.parentId && <Field title="Group Name">
+            <p className="text-gray-900">{securityGroup.name}</p>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>

@@ -6,7 +6,7 @@ create table
     logo text null,
     frequency text null default 'monthly'::text,
     "target" text null default 'last'::text,
-    "serviceCentreId" text not null,
+    "securityGroupId" text not null,
     "providerId" text null,
     "clientId" text null,
     "milestoneSetId" text null,
@@ -19,7 +19,7 @@ create table
     constraint legal_entities_pkey primary key (id),
     constraint legalEntities_clientId_fkey foreign key ("clientId") references clients (id),
     constraint legalEntities_providerId_fkey foreign key ("providerId") references providers (id),
-    constraint legalEntities_serviceCentreId_fkey foreign key ("serviceCentreId") references "serviceCentres" (id),
+    constraint legalEntities_securityGroupId_fkey foreign key ("securityGroupId") references "securityGroups" (id),
     constraint legalEntities_milestoneSetId_fkey foreign key ("milestoneSetId") references "milestoneSets" (id)
   ) tablespace pg_default;
 alter table public."legalEntities" enable row level security;

@@ -23,4 +23,4 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 const People = () => <Outlet />;
 
-export default withAuthorization(manage.read.worker)(People);
+export default withAuthorization(manage.read.person)(People);

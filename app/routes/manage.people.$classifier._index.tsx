@@ -64,13 +64,13 @@ export default function People() {
     <ListItem data={`${person.firstName} ${person.lastName}`} sub={<Flags localities={[person.locality]} countries={countries} />} />
 
   const actions = [
-    { title: `add-${classifier}`, to: "add", icon: PlusIcon, permission: manage.create.worker },
+    { title: `add-${classifier}`, to: "add", icon: PlusIcon, permission: manage.create.person },
   ];
 
   const navigation = [
-    { name: "workers", to: "/manage/people/worker", permission: manage.read.worker },
-    { name: "contractors", to: "/manage/people/contractor", permission: manage.read.worker },
-    { name: "employees", to: "/manage/people/employee", permission: manage.read.worker },
+    { name: "workers", to: "/manage/people/worker", permission: manage.read.person },
+    { name: "contractors", to: "/manage/people/contractor", permission: manage.read.person },
+    { name: "employees", to: "/manage/people/employee", permission: manage.read.person },
   ];
 
   const plural = pluralize(classifier);

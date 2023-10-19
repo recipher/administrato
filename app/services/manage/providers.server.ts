@@ -4,7 +4,7 @@ import pool from '../db.server';
 
 export { default as create } from '../id.server';
 
-import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from './security-groups.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count, TxOrPool,
   QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
@@ -14,16 +14,16 @@ import { type User } from '../access/users.server';
 
 import { whereKeys, whereExactKeys, extractKeys, pickKeys, generateIdentifier } from './shared.server';
 
-export type Provider = s.providers.Selectable & { serviceCentre?: string };
+export type Provider = s.providers.Selectable & { securityGroup?: string };
 
 type SearchOptions = {
-  serviceCentre?: ServiceCentre | undefined;
-  serviceCentreId?: string | undefined;
+  securityGroup?: SecurityGroup | undefined;
+  securityGroupId?: string | undefined;
 } & BaseSearchOptions;
 
 const Service = (u: User) => {
   const getLatest = async (provider: s.providers.Insertable, txOrPool: TxOrPool = pool) => {
-    const query = db.sql<db.SQL>`${'serviceCentreId'} = ${db.param(provider.serviceCentreId)}`;
+    const query = db.sql<db.SQL>`${'securityGroupId'} = ${db.param(provider.securityGroupId)}`;
 
     const [ latest ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT * FROM ${'providers'}
@@ -35,9 +35,9 @@ const Service = (u: User) => {
   };
 
   const generateKey = async (provider: s.providers.Insertable, txOrPool: TxOrPool = pool): Promise<SecurityKey> => {
-    const service = ServiceCentreService(u);
+    const service = SecurityGroupService(u);
 
-    const parent = await service.getServiceCentre({ id: provider.serviceCentreId as string }, { bypassKeyCheck: true }, txOrPool)
+    const parent = await service.getSecurityGroup({ id: provider.securityGroupId as string }, { bypassKeyCheck: true }, txOrPool)
     const maxEntities = 10000; // Move to constants
     const latest = await getLatest(provider);
 
@@ -68,26 +68,26 @@ const Service = (u: User) => {
   };
 
   const listProviders = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
-    const keys = query.keys || extractKeys(u, "serviceCentre", "provider"); 
+    const keys = query.keys || extractKeys(u, "securityGroup", "provider"); 
     return await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT main.* FROM ${'providers'} AS main
       WHERE ${whereKeys({ keys, ...query })}
     `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, serviceCentreId, isArchived }: SearchOptions) => {
+  const searchQuery = ({ search, securityGroupId, isArchived }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
     const archived = db.sql` AND main.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
 
     const base = db.sql`${name} ${archived}`;
-    return serviceCentreId == null ? base
-      : db.sql<db.SQL>`${base} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    return securityGroupId == null ? base
+      : db.sql<db.SQL>`${base} AND main.${'securityGroupId'} = ${db.param(securityGroupId)}`; 
   };
 
   const countProviders = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
-    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "provider");
+    const keys = pickKeys(search.securityGroup) || extractKeys(u, "securityGroup", "provider");
     const [ item ] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'providers'} AS main
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
@@ -98,12 +98,12 @@ const Service = (u: User) => {
   };
 
   const searchProviders = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {  
-    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "provider");
+    const keys = pickKeys(search.securityGroup) || extractKeys(u, "securityGroup", "provider");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const providers = await db.sql<s.providers.SQL | s.serviceCentres.SQL, s.providers.Selectable[]>`
-      SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'providers'} AS main
-      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
+    const providers = await db.sql<s.providers.SQL | s.securityGroups.SQL, s.providers.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "securityGroup" FROM ${'providers'} AS main
+      LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}  
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
@@ -115,11 +115,11 @@ const Service = (u: User) => {
   };
 
   const getProvider = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
-    const keys = extractKeys(u, "serviceCentre", "provider");
+    const keys = extractKeys(u, "securityGroup", "provider");
 
-    const [ provider ] = await db.sql<s.providers.SQL | s.serviceCentres.SQL, s.providers.Selectable[]>`
-      SELECT main.*, s.${'name'} AS "serviceCentre" FROM ${'providers'} AS main
-      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
+    const [ provider ] = await db.sql<s.providers.SQL | s.securityGroups.SQL, s.providers.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "securityGroup" FROM ${'providers'} AS main
+      LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
         (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
     `.run(txOrPool);

@@ -170,7 +170,7 @@ const Add = () => {
         </Body>
         <Footer>
           <Cancel />
-          <Submit text="Save" submitting="Saving..." permission={manage.create.worker} />
+          <Submit text="Save" submitting="Saving..." permission={manage.create.person} />
         </Footer>
       </Form>
       <SelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
@@ -179,4 +179,4 @@ const Add = () => {
   );
 }
 
-export default withAuthorization(manage.create.worker)(Add);
+export default withAuthorization(manage.create.person)(Add);

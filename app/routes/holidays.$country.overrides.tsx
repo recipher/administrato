@@ -71,13 +71,13 @@ export default function Holidays() {
   const entity = (holiday: any) => {
     if (holiday.client) return "client";
     if (holiday.legalEntity) return "legal-entity";
-    if (holiday.serviceCentre) return "service-centre";
+    if (holiday.securityGroup) return "security-group";
     if (holiday.provider) return "provider";
     return "";
   };
 
   const name = (holiday: any) => 
-    holiday.client || holiday.provider || holiday.serviceCentre || holiday.legalEntity
+    holiday.client || holiday.provider || holiday.securityGroup || holiday.legalEntity
 
   const Context = (holiday: any) =>
     <ListContext select={false} sub={t(entity(holiday))} data={

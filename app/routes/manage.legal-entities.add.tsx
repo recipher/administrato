@@ -14,7 +14,7 @@ import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import LegalEntityService, { create } from '~/services/manage/legal-entities.server';
 import { Frequency, Target, Weekday, toTarget } from '~/services/scheduler/schedules.server';
 
-import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from '~/services/manage/security-groups.server';
 import { type Provider } from '~/services/manage/providers.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -38,18 +38,18 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const id = url.searchParams.get("service-centre");
+  const id = url.searchParams.get("security-group");
 
   const u = await requireUser(request);
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = id ? await service.getServiceCentre({ id }) : undefined;
+  const service = SecurityGroupService(u);
+  const securityGroup = id ? await service.getSecurityGroup({ id }) : undefined;
 
   const frequencies = Object.values(Frequency).filter(item => isNaN(Number(item)));
   const targets = Object.values(Target).filter(item => isNaN(Number(item)));
   const weekdays = Object.values(Weekday).filter(item => isNaN(Number(item)));
 
-  return json({ serviceCentre, frequencies, targets, weekdays });
+  return json({ securityGroup, frequencies, targets, weekdays });
 };
 
 z.setErrorMap((issue, ctx) => {
@@ -77,7 +77,7 @@ const schema =
       .object({
         id: z.string().or(z.array(z.string()))
       }),
-    serviceCentreId: z
+    securityGroupId: z
       .string()
       .nonempty("The service centre is required"),
     providerId: z
@@ -164,7 +164,7 @@ const Add = () => {
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
   const [ provider, setProvider ] = useState<Provider>();
-  const [ serviceCentre, setServiceCentre ] = useState<ServiceCentre>(loaderData.serviceCentre);
+  const [ securityGroup, setSecurityGroup ] = useState<SecurityGroup>(loaderData.securityGroup);
 
   const [ target, setTarget ] = useState<Array<string>>([ "last", "last", "last" ]);
   const [ items, { push, remove } ] = useFieldArray("targets", {
@@ -176,8 +176,8 @@ const Add = () => {
   const providerModal = useRef<RefSelectorModal>(null);
   const showProviderModal = () => providerModal.current?.show('provider');
 
-  const serviceCentreModal = useRef<RefSelectorModal>(null);
-  const showServiceCentreModal = () => serviceCentreModal.current?.show('service-centre');
+  const securityGroupModal = useRef<RefSelectorModal>(null);
+  const showSecurityGroupModal = () => securityGroupModal.current?.show('security-group');
 
   const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
     setAutoGenerateIdentifier(e.currentTarget.checked);
@@ -240,8 +240,8 @@ const Add = () => {
           <Section size="md" />
           <Group>
             <Field span={3}>
-              <Lookup label="Service Centre" name="serviceCentreId" onClick={showServiceCentreModal} 
-                icon={MapIcon} value={serviceCentre} placeholder="Select a Service Centre" />
+              <Lookup label="Service Centre" name="securityGroupId" onClick={showSecurityGroupModal} 
+                icon={MapIcon} value={securityGroup} placeholder="Select a Service Centre" />
             </Field>
             <Field span={3}>
               <Lookup label="Provider" name="providerId" onClick={showProviderModal} 
@@ -283,8 +283,8 @@ const Add = () => {
         </Footer>
       </Form>
       <SelectorModal ref={providerModal} onSelect={setProvider} allowChange={false} />
-      <SelectorModal ref={serviceCentreModal} forAuthorization={false}
-        onSelect={setServiceCentre} allowChange={false} />
+      <SelectorModal ref={securityGroupModal} forAuthorization={false}
+        onSelect={setSecurityGroup} allowChange={false} />
     </>
   );
 }

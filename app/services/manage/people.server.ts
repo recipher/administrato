@@ -175,8 +175,8 @@ const Service = (u: User) => {
     s.clients.SQL | s.clientPeople.SQL;
 
   const listPeople = async (txOrPool: TxOrPool = pool) => {
-    const clientKeys = extractKeys(u, "serviceCentre", "client");
-    const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
+    const clientKeys = extractKeys(u, "securityGroup", "client");
+    const legalEntityKeys = extractKeys(u, "securityGroup", "legalEntity");
     return db.sql<peopleSQL, s.people.Selectable[]>`
       SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
       FROM ${'people'}
@@ -207,8 +207,8 @@ const Service = (u: User) => {
   };
 
   const countPeople = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
-    const clientKeys = extractKeys(u, "serviceCentre", "client");
-    const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
+    const clientKeys = extractKeys(u, "securityGroup", "client");
+    const legalEntityKeys = extractKeys(u, "securityGroup", "legalEntity");
     const [ item ] = await db.sql<peopleSQL, s.people.Selectable[]>`
       SELECT COUNT(${'people'}.${'id'}) AS count FROM ${'people'}
       LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
@@ -224,8 +224,8 @@ const Service = (u: User) => {
   };
 
   const searchPeople = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {  
-    const clientKeys = extractKeys(u, "serviceCentre", "client");
-    const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
+    const clientKeys = extractKeys(u, "securityGroup", "client");
+    const legalEntityKeys = extractKeys(u, "securityGroup", "legalEntity");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const people = await db.sql<peopleSQL, s.people.Selectable[]>`
@@ -258,8 +258,8 @@ const Service = (u: User) => {
     searchPeople({ ...search, classifier: Classifier.Employee }, meta, txOrPool); 
 
   const getPerson = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
-    const clientKeys = extractKeys(u, "serviceCentre", "client");
-    const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
+    const clientKeys = extractKeys(u, "securityGroup", "client");
+    const legalEntityKeys = extractKeys(u, "securityGroup", "legalEntity");
 
     const [ person ] = await db.sql<peopleSQL, s.people.Selectable[]>`
       SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity", c.id AS "clientId", le.id AS "legalEntityId" 

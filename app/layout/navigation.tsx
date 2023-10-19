@@ -43,7 +43,7 @@ export const navigation = [
   { name: 'milestones', to: '/milestones', icon: Bars3BottomLeftIcon, permission: scheduler.read.milestone },
   { name: 'manage', to: '/manage', icon: CircleStackIcon,
     children: [
-      { name: 'people', to: '/manage/people', icon: CubeIcon, permission: manage.read.worker,
+      { name: 'people', to: '/manage/people', icon: CubeIcon, permission: manage.read.person,
         children: [
           { name: 'workers', to: '/manage/people/worker' },
           { name: 'employees', to: '/manage/people/employee' },
@@ -53,7 +53,7 @@ export const navigation = [
       { name: 'clients', to: '/manage/clients', icon: IdentificationIcon, permission: manage.read.client },
       { name: 'legal-entities', to: '/manage/legal-entities', icon: WalletIcon, permission: manage.read.legalEntity },
       { name: 'providers', to: '/manage/providers', icon: CurrencyYenIcon, permission: manage.read.provider },
-      { name: 'service-centres', to: '/manage/service-centres', icon: MapIcon, permission: manage.read.serviceCentre },
+      { name: 'security-groups', to: '/manage/security-groups', icon: MapIcon, permission: manage.read.securityGroup },
     ]
   },
   { name: 'access', to: '/access', icon: KeyIcon,

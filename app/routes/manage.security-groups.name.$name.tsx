@@ -3,7 +3,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ServiceCentreService from '~/services/manage/service-centres.server';
+import SecurityGroupService from '~/services/manage/security-groups.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const { name } = params;
@@ -12,10 +12,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = await service.getServiceCentreByName({ name }, { bypassKeyCheck: true });
+  const service = SecurityGroupService(u);
+  const securityGroup = await service.getSecurityGroupByName({ name }, { bypassKeyCheck: true });
 
-  return json({ serviceCentre });
+  return json({ securityGroup });
 };
 
 export default () => null;

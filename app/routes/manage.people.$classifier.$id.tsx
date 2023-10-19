@@ -72,9 +72,9 @@ export default function Person() {
   ];
 
   const actions = [
-    { title: 'add-document', to: 'documents/add', default: true, icon: PlusIcon, permission: manage.edit.worker },
-    { title: 'add-contact', to: 'contacts/add', permission: manage.edit.worker },
-    { title: 'add-salary', to: 'salary/add', permission: manage.edit.worker },
+    { title: 'add-document', to: 'documents/add', default: true, icon: PlusIcon, permission: manage.edit.person },
+    { title: 'add-contact', to: 'contacts/add', permission: manage.edit.person },
+    { title: 'add-salary', to: 'salary/add', permission: manage.edit.person },
   ];
 
   return (

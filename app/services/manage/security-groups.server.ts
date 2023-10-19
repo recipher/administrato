@@ -21,7 +21,7 @@ type KeyQueryOptions = BaseKeyQueryOptions & {
   parentId?: string | undefined;
 };
 
-export type ServiceCentre = s.serviceCentres.Selectable & { groupCount?: number };
+export type SecurityGroup = s.securityGroups.Selectable & { groupCount?: number };
 
 const Service = (u: User) => {
   const getLatest = async (parentId: string | null, txOrPool: TxOrPool = pool) => {
@@ -29,8 +29,8 @@ const Service = (u: User) => {
       ? db.sql`${'parentId'} = ${db.param(parentId)}`
       : db.sql`${'parentId'} IS NULL`;
     
-    const [ latest ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT * FROM ${'serviceCentres'}
+    const [ latest ] = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
+      SELECT * FROM ${'securityGroups'}
       WHERE ${'keyEnd'} IS NOT NULL AND ${whereParent}
       ORDER BY ${'keyEnd'} DESC
       LIMIT 1
@@ -41,7 +41,7 @@ const Service = (u: User) => {
 
   const getParentKey = async (parentId: string | null, txOrPool: TxOrPool = pool) => {
     if (parentId) {
-      return await getServiceCentre({ id: parentId }, { bypassKeyCheck: true }, txOrPool);
+      return await getSecurityGroup({ id: parentId }, { bypassKeyCheck: true }, txOrPool);
     }
     return { keyStart: 0, keyEnd: KEY_MAX };
   };
@@ -56,12 +56,12 @@ const Service = (u: User) => {
     return { keyStart, keyEnd };
   };
 
-  const addServiceCentre = async (serviceCentre: s.serviceCentres.Insertable, txOrPool: TxOrPool = pool) => {
-    const key = await generateKey(serviceCentre.parentId as string, txOrPool);
-    const withKey = { ...serviceCentre, ...key, identifier: generateIdentifier(serviceCentre) };
+  const addSecurityGroup = async (securityGroup: s.securityGroups.Insertable, txOrPool: TxOrPool = pool) => {
+    const key = await generateKey(securityGroup.parentId as string, txOrPool);
+    const withKey = { ...securityGroup, ...key, identifier: generateIdentifier(securityGroup) };
 
-    const [inserted] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      INSERT INTO ${'serviceCentres'} (${db.cols(withKey)})
+    const [inserted] = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
+      INSERT INTO ${'securityGroups'} (${db.cols(withKey)})
       VALUES (${db.vals(withKey)}) RETURNING *`
     .run(txOrPool);
 
@@ -70,23 +70,23 @@ const Service = (u: User) => {
     const start = toNumber(String(inserted.keyStart)),
           end = toNumber(String(inserted.keyEnd));
 
-    if (!serviceCentre.parentId && start !== undefined && end !== undefined) {
+    if (!securityGroup.parentId && start !== undefined && end !== undefined) {
       const userService = UserService(u);
       await userService.addSecurityKey({ 
-        id: u.id, organization: u.organization, entity: 'service-centre', 
+        id: u.id, organization: u.organization, entity: 'security-group', 
         key: [ start, end ] });
     }
 
     return inserted;
   };
 
-  const updateServiceCentre = async ({ id, ...serviceCentre }: s.serviceCentres.Updatable, txOrPool: TxOrPool = pool) => {
+  const updateSecurityGroup = async ({ id, ...securityGroup }: s.securityGroups.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('serviceCentres', serviceCentre, { id: id as string }).run(txOrPool);
+      await db.update('securityGroups', securityGroup, { id: id as string }).run(txOrPool);
     return update;
   };
   
-  const checkForFullAccess = (keys: Array<SecurityKey>, serviceCentres: Array<ServiceCentre>) => {
+  const checkForFullAccess = (keys: Array<SecurityKey>, securityGroups: Array<SecurityGroup>) => {
     return (keys?.find(k => k.keyStart === KEY_MIN && k.keyEnd === KEY_MAX))
       ? [ create({ 
             name: "Full Authorization", 
@@ -96,14 +96,14 @@ const Service = (u: User) => {
             keyStart: KEY_MIN as unknown as db.Int8String, 
             keyEnd: KEY_MAX as unknown as db.Int8String, 
             createdAt: new Date(), 
-            isArchived: false }), ...serviceCentres ]
-      : serviceCentres;
+            isArchived: false }), ...securityGroups ]
+      : securityGroups;
   };
 
   type AllowFullAccess = { allowFullAccess?: boolean };
 
-  const listServiceCentres = async (query: KeyQueryOptions & AllowFullAccess = { isArchived: false, allowFullAccess: false }, txOrPool: TxOrPool = pool) => {
-    const keys = query.keys || u.keys.serviceCentre;
+  const listSecurityGroups = async (query: KeyQueryOptions & AllowFullAccess = { isArchived: false, allowFullAccess: false }, txOrPool: TxOrPool = pool) => {
+    const keys = query.keys || u.keys.securityGroup;
 
     const whereParent = query.parentId 
       ? db.sql`main.${'parentId'} = ${db.param(query.parentId)}`
@@ -111,60 +111,60 @@ const Service = (u: User) => {
 
     const archived = db.sql` AND main.${'isArchived'} = ${db.raw(query.isArchived ? 'TRUE' : 'FALSE')}`;
 
-    const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+    const securityGroups = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
       SELECT main.*, COUNT(g.${'id'}) AS "groupCount" 
-      FROM ${'serviceCentres'} AS main
-      LEFT JOIN ${'serviceCentres'} AS g ON main.${'id'} = g.${'parentId'}
+      FROM ${'securityGroups'} AS main
+      LEFT JOIN ${'securityGroups'} AS g ON main.${'id'} = g.${'parentId'}
       WHERE ${whereKeys({ keys, ...query })} AND ${whereParent} ${archived}
       GROUP BY main.${'id'}
     `.run(txOrPool);
 
-    return query.allowFullAccess ? checkForFullAccess(keys, serviceCentres) : serviceCentres;
+    return query.allowFullAccess ? checkForFullAccess(keys, securityGroups) : securityGroups;
   };
 
-  const getServiceCentre = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
-    const keys = u.keys.serviceCentre;
+  const getSecurityGroup = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
+    const keys = u.keys.securityGroup;
 
-    const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
+    const [ securityGroup ] = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
       SELECT main.*, p.${'name'} AS parent 
-      FROM ${'serviceCentres'} AS main
-      LEFT JOIN ${'serviceCentres'} AS p ON main.${'parentId'} = p.${'id'}
+      FROM ${'securityGroups'} AS main
+      LEFT JOIN ${'securityGroups'} AS p ON main.${'parentId'} = p.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
     `.run(txOrPool);
 
-    return serviceCentre;
+    return securityGroup;
   };
 
-  const getServiceCentreByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
-    const keys = u.keys.serviceCentre;
+  const getSecurityGroupByName = async ({ name }: NameProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
+    const keys = u.keys.securityGroup;
 
-    const [ serviceCentre ] = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT main.* FROM ${'serviceCentres'} AS main
+    const [ securityGroup ] = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
+      SELECT main.* FROM ${'securityGroups'} AS main
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND LOWER(main.${'name'}) = ${db.param(name.toLowerCase())}
     `.run(txOrPool);
 
-    return serviceCentre;
+    return securityGroup;
   };
 
   // Required to determine exactly which entities a user has authorization for
-  const listServiceCentresForKeys = async ({ keys }: KeyQueryOptions, txOrPool: TxOrPool = pool) => {
+  const listSecurityGroupsForKeys = async ({ keys }: KeyQueryOptions, txOrPool: TxOrPool = pool) => {
     if (keys === undefined) return [];
-    const serviceCentres = await db.sql<s.serviceCentres.SQL, s.serviceCentres.Selectable[]>`
-      SELECT main.* FROM ${'serviceCentres'} AS main
+    const securityGroups = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
+      SELECT main.* FROM ${'securityGroups'} AS main
       WHERE ${whereExactKeys({ keys })}
     `.run(txOrPool);
 
-    return checkForFullAccess(keys, serviceCentres);    
+    return checkForFullAccess(keys, securityGroups);    
   };
 
   return {
-    addServiceCentre,
-    updateServiceCentre,
-    getServiceCentre,
-    getServiceCentreByName,
-    listServiceCentres,
-    listServiceCentresForKeys
+    addSecurityGroup,
+    updateSecurityGroup,
+    getSecurityGroup,
+    getSecurityGroupByName,
+    listSecurityGroups,
+    listSecurityGroupsForKeys
   };
 };
 

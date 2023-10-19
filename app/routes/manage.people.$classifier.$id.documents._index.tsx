@@ -142,7 +142,7 @@ const Documents = () => {
                 {document.identifier}
               </a>
             </div>
-            {hasPermission(manage.edit.worker) && <div className="hidden group-hover:block">
+            {hasPermission(manage.edit.person) && <div className="hidden group-hover:block">
               <button onClick={() => handleArchive(document)}
                 type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
                 {t('archive')}

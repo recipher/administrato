@@ -17,7 +17,7 @@ const Service = (u: User) => {
         LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
     };
 
-    const keys = extractKeys(u, "serviceCentre", "provider");
+    const keys = extractKeys(u, "securityGroup", "provider");
 
     return db.sql<s.providers.SQL, s.providers.Selectable[]>`
       SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'provider' AS type, NULL AS "parentType" 
@@ -32,8 +32,8 @@ const Service = (u: User) => {
          LOWER(${'people'}.${'lastName'}) LIKE LOWER(${db.param(`${search}%`)}))`;  
     };
 
-    const clientKeys = extractKeys(u, "serviceCentre", "client");
-    const legalEntityKeys = extractKeys(u, "serviceCentre", "legalEntity");
+    const clientKeys = extractKeys(u, "securityGroup", "client");
+    const legalEntityKeys = extractKeys(u, "securityGroup", "legalEntity");
 
     return db.sql<s.people.SQL | s.legalEntities.SQL | s.clients.SQL, s.people.Selectable[]>`
       SELECT ${'people'}.id, CONCAT(${'people'}."firstName", ' ', ${'people'}."lastName") AS name, ${'people'}.${'photo'} AS image, classifier AS type, 'people' AS "parentType"
@@ -51,7 +51,7 @@ const Service = (u: User) => {
           LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
     };
   
-    const keys = extractKeys(u, "serviceCentre", "client");
+    const keys = extractKeys(u, "securityGroup", "client");
     return db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'client' AS type, NULL AS "parentType"
       FROM ${'clients'} AS main
@@ -64,7 +64,7 @@ const Service = (u: User) => {
         LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
     };
 
-    const keys = extractKeys(u, "serviceCentre", "legalEntity");
+    const keys = extractKeys(u, "securityGroup", "legalEntity");
 
     return db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
       SELECT main.${'id'}, main.${'name'}, main.${'logo'} AS image, 'legal-entity' AS type, NULL AS "parentType" 

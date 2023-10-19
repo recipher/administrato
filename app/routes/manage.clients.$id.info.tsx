@@ -55,9 +55,9 @@ const Info = () => {
               Update
             </button>
           </Field>}
-          <Field title="Service Centre Name">
-            <Link className="text-indigo-900" to={`/manage/service-centres/${client.serviceCentreId}/info`}>
-              {client.serviceCentre}
+          <Field title="Security Group Name">
+            <Link className="text-indigo-900" to={`/manage/security-groups/${client.securityGroupId}/info`}>
+              {client.securityGroup}
             </Link>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update

@@ -3,7 +3,7 @@ import * as s from 'zapatos/schema';
 
 import { type SecurityKey, type SecurityKeys, type KeyQueryOptions } from '../types';
 import { type User } from '../access/users.server';
-import { type ServiceCentre } from './service-centres.server';
+import { type SecurityGroup } from './security-groups.server';
 import { type LegalEntity } from './legal-entities.server';
 import { type Client } from './clients.server';
 import { type Provider } from './providers.server';
@@ -37,7 +37,7 @@ export const whereExactKeys = ({ keys }: KeyQueryOptions) => {
   return query;
 };
 
-export type Authorizable = ServiceCentre | Client | Provider | LegalEntity;
+export type Authorizable = SecurityGroup | Client | Provider | LegalEntity;
 
 export const pickKeys = (authorizable: Authorizable | undefined) => 
   authorizable ? [ { keyStart: Number(authorizable.keyStart || 0), keyEnd: Number(authorizable.keyEnd || 0) } ] : undefined;
@@ -45,11 +45,11 @@ export const pickKeys = (authorizable: Authorizable | undefined) =>
 export const concatKeys = (key: SecurityKey | undefined, extractedKeys: SecurityKeys) =>
   key ? [ key, extractedKeys ].flat() : extractedKeys;
 
-export const extractKeys = (u: User, ...sets: Array<"serviceCentre" | "client" | "provider" | "legalEntity">) =>
+export const extractKeys = (u: User, ...sets: Array<"securityGroup" | "client" | "provider" | "legalEntity">) =>
   sets.map(set => u.keys[set] || []).flat();
 
 type EntityWithNameAndIdentifier = 
-  s.serviceCentres.Insertable | s.clients.Insertable | s.legalEntities.Insertable | s.providers.Insertable;
+  s.securityGroups.Insertable | s.clients.Insertable | s.legalEntities.Insertable | s.providers.Insertable;
 
 export const generateIdentifier = ({ name, identifier }: EntityWithNameAndIdentifier) =>
   identifier !== "" && identifier != null

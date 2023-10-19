@@ -8,7 +8,7 @@ import { MapIcon, WalletIcon, CurrencyYenIcon, IdentificationIcon, ChevronDownIc
 
 import { type Client } from '~/services/manage/clients.server';
 import { type Provider } from '~/services/manage/providers.server';
-import { type ServiceCentre } from '~/services/manage/service-centres.server';
+import { type SecurityGroup } from '~/services/manage/security-groups.server';
 import { type LegalEntity } from '~/services/manage/legal-entities.server';
 
 import Modal, { RefModal } from "../modals/modal";
@@ -20,7 +20,7 @@ import pluralize from "~/helpers/pluralize";
 import classnames from "~/helpers/classnames";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 
-type Entity = Client | Provider | LegalEntity | ServiceCentre;
+type Entity = Client | Provider | LegalEntity | SecurityGroup;
 
 const LIMIT = 6;
 
@@ -29,7 +29,7 @@ export interface RefSelectorModal {
 };
 
 export const entities = new Map<string, any>([
-  [ "service-centre", { Icon: MapIcon, dataProperty: "serviceCentres" }],
+  [ "security-group", { Icon: MapIcon, dataProperty: "securityGroups" }],
   [ "legal-entity", { Icon: WalletIcon, dataProperty: "legalEntities" }],
   [ "client", { Icon: IdentificationIcon, dataProperty: "clients" }],
   [ "provider", { Icon: CurrencyYenIcon, dataProperty: "providers" }],

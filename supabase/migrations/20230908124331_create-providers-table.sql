@@ -4,7 +4,7 @@ create table
     name text not null,
     identifier text not null,
     logo text null,
-    "serviceCentreId" text not null,
+    "securityGroupId" text not null,
     "isArchived" boolean null default false,
     "keyStart" bigint null,
     "keyEnd" bigint null,

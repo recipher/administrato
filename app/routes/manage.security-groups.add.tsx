@@ -1,7 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { type ActionArgs, redirect, json } from '@remix-run/node';
 
-import ServiceCentreService, { create } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { create } from '~/services/manage/security-groups.server';
 
 import { UniqueInput, Cancel, Submit, Checkbox,
          Body, Section, Group, Field, Footer,
@@ -18,16 +18,16 @@ import { manage } from '~/auth/permissions';
 import { useActionData } from '@remix-run/react';
 
 export const handle = {
-  name: "add-service-centre",
+  name: "add-security-group",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb to='/manage/service-centres/add' name={name} current={current} />
+    <Breadcrumb to='/manage/security-groups/add' name={name} current={current} />
 };
 
 const schema = zfd.formData({
   name: z
     .string()
-    .nonempty("Service centre name is required")
-    .min(3, "Service centre name must be at least 3 characters long"),
+    .nonempty("Security group name is required")
+    .min(3, "Security group name must be at least 3 characters long"),
   identifier: z
     .string()
     .optional(),
@@ -49,10 +49,10 @@ export const action = async ({ request }: ActionArgs) => {
 
   const validator = withZod(schema.superRefine(
     async (data, ctx) => {
-      const service = ServiceCentreService(u);
+      const service = SecurityGroupService(u);
       if (data.identifier) {
-        const serviceCentre = await service.getServiceCentre({ id: data.identifier }, { bypassKeyCheck: true });
-        if (serviceCentre !== undefined) 
+        const securityGroup = await service.getSecurityGroup({ id: data.identifier }, { bypassKeyCheck: true });
+        if (securityGroup !== undefined) 
           ctx.addIssue({
             message: "This identifier is already in use",
             path: [ "identifier" ],
@@ -60,8 +60,8 @@ export const action = async ({ request }: ActionArgs) => {
           });
       }
         if (data.name) {
-          const serviceCentre = await service.getServiceCentreByName({ name: data.name }, { bypassKeyCheck: true });
-          if (serviceCentre !== undefined) 
+          const securityGroup = await service.getSecurityGroupByName({ name: data.name }, { bypassKeyCheck: true });
+          if (securityGroup !== undefined) 
             ctx.addIssue({
               message: "This name is already in use",
               path: [ "name" ],
@@ -79,21 +79,21 @@ export const action = async ({ request }: ActionArgs) => {
   const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
   
-  const service = ServiceCentreService(u);
-  const serviceCentre = await service.addServiceCentre(create({ localities, identifier, ...data }));
+  const service = SecurityGroupService(u);
+  const securityGroup = await service.addSecurityGroup(create({ localities, identifier, ...data }));
   
   const headers = await refreshUser({ id: u.id, request });
   
-  return serviceCentre
-    ? redirect(`/manage/service-centres/${serviceCentre.id}/info`, { headers })
-    : redirect(`/manage/service-centres`, { headers });
+  return securityGroup
+    ? redirect(`/manage/security-groups/${securityGroup.id}/info`, { headers })
+    : redirect(`/manage/security-groups`, { headers });
 };
 
 const Add = () => {
   const data = useActionData();
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
 
-  const context = useFormContext("add-service-centre");
+  const context = useFormContext("add-security-group");
 
   const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
     setAutoGenerateIdentifier(e.currentTarget.checked);
@@ -101,17 +101,17 @@ const Add = () => {
 
   return (
     <>
-      <Form method="post" validator={clientValidator} id="add-service-centre">
+      <Form method="post" validator={clientValidator} id="add-security-group">
         <Body>
-          <Section heading='New Service Centre' explanation='Please enter the new service centre details.' />
+          <Section heading='New Security Group' explanation='Please enter the new security group details.' />
           <Group>
             <Field>
-              <UniqueInput label="Service Centre Name" name="name" placeholder="e.g. Scotland"
-                checkUrl="/manage/service-centres/name" property="serviceCentre" message="This name is already in use" />
+              <UniqueInput label="Security Group Name" name="name" placeholder="e.g. Scotland"
+                checkUrl="/manage/security-groups/name" property="securityGroup" message="This name is already in use" />
             </Field>
             <Field span={3}>
               <UniqueInput label="Identifier" name="identifier" 
-                checkUrl="/manage/service-centres" property="serviceCentre" message="This identifier is already in use"
+                checkUrl="/manage/security-groups" property="securityGroup" message="This identifier is already in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
             </Field>
             <Field span={3}>
@@ -124,11 +124,11 @@ const Add = () => {
         </Body>
         <Footer>
           <Cancel />
-          <Submit text="Save" submitting="Saving..." permission={manage.create.serviceCentre} />
+          <Submit text="Save" submitting="Saving..." permission={manage.create.securityGroup} />
         </Footer>
       </Form>
     </>
   );
 }
 
-export default withAuthorization(manage.create.serviceCentre)(Add);
+export default withAuthorization(manage.create.securityGroup)(Add);

@@ -33,7 +33,7 @@ export type SecurityKey = {
 
 export type KeySet = {
   client: Array<SecurityKey>,
-  serviceCentre: Array<SecurityKey>,
+  securityGroup: Array<SecurityKey>,
   legalEntity: Array<SecurityKey>,
   provider: Array<SecurityKey>,
 };

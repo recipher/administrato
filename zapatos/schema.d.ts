@@ -1196,11 +1196,11 @@ declare module 'zapatos/schema' {
       */
       localities: string[] | null;
       /**
-      * **clients.serviceCentreId**
+      * **clients.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string;
+      securityGroupId: string;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
@@ -1270,11 +1270,11 @@ declare module 'zapatos/schema' {
       */
       localities: string[] | null;
       /**
-      * **clients.serviceCentreId**
+      * **clients.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string;
+      securityGroupId: string;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
@@ -1344,11 +1344,11 @@ declare module 'zapatos/schema' {
       */
       localities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **clients.serviceCentreId**
+      * **clients.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
@@ -1418,11 +1418,11 @@ declare module 'zapatos/schema' {
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **clients.serviceCentreId**
+      * **clients.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string | db.Parameter<string> | db.SQLFragment;
+      securityGroupId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
@@ -1492,11 +1492,11 @@ declare module 'zapatos/schema' {
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **clients.serviceCentreId**
+      * **clients.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **clients.createdAt**
       * - `timestamptz` in database
@@ -2500,11 +2500,11 @@ declare module 'zapatos/schema' {
       */
       target: string | null;
       /**
-      * **legalEntities.serviceCentreId**
+      * **legalEntities.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string;
+      securityGroupId: string;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -2598,11 +2598,11 @@ declare module 'zapatos/schema' {
       */
       target: string | null;
       /**
-      * **legalEntities.serviceCentreId**
+      * **legalEntities.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string;
+      securityGroupId: string;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -2696,11 +2696,11 @@ declare module 'zapatos/schema' {
       */
       target?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **legalEntities.serviceCentreId**
+      * **legalEntities.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -2794,11 +2794,11 @@ declare module 'zapatos/schema' {
       */
       target?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **legalEntities.serviceCentreId**
+      * **legalEntities.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string | db.Parameter<string> | db.SQLFragment;
+      securityGroupId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -2892,11 +2892,11 @@ declare module 'zapatos/schema' {
       */
       target?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **legalEntities.serviceCentreId**
+      * **legalEntities.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -4426,11 +4426,11 @@ declare module 'zapatos/schema' {
       */
       logo: string | null;
       /**
-      * **providers.serviceCentreId**
+      * **providers.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string;
+      securityGroupId: string;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -4494,11 +4494,11 @@ declare module 'zapatos/schema' {
       */
       logo: string | null;
       /**
-      * **providers.serviceCentreId**
+      * **providers.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string;
+      securityGroupId: string;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -4562,11 +4562,11 @@ declare module 'zapatos/schema' {
       */
       logo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **providers.serviceCentreId**
+      * **providers.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -4630,11 +4630,11 @@ declare module 'zapatos/schema' {
       */
       logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **providers.serviceCentreId**
+      * **providers.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId: string | db.Parameter<string> | db.SQLFragment;
+      securityGroupId: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -4698,11 +4698,11 @@ declare module 'zapatos/schema' {
       */
       logo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **providers.serviceCentreId**
+      * **providers.securityGroupId**
       * - `text` in database
       * - `NOT NULL`, no default
       */
-      serviceCentreId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **providers.isArchived**
       * - `bool` in database
@@ -5657,68 +5657,68 @@ declare module 'zapatos/schema' {
   }
 
   /**
-   * **serviceCentres**
+   * **securityGroups**
    * - Table in database
    */
-  export namespace serviceCentres {
-    export type Table = 'serviceCentres';
+  export namespace securityGroups {
+    export type Table = 'securityGroups';
     export interface Selectable {
       /**
-      * **serviceCentres.id**
+      * **securityGroups.id**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       id: string;
       /**
-      * **serviceCentres.name**
+      * **securityGroups.name**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       name: string;
       /**
-      * **serviceCentres.identifier**
+      * **securityGroups.identifier**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       identifier: string;
       /**
-      * **serviceCentres.parentId**
+      * **securityGroups.parentId**
       * - `text` in database
       * - Nullable, no default
       */
       parentId: string | null;
       /**
-      * **serviceCentres.isArchived**
+      * **securityGroups.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
       */
       isArchived: boolean | null;
       /**
-      * **serviceCentres.keyStart**
+      * **securityGroups.keyStart**
       * - `int8` in database
       * - Nullable, no default
       */
       keyStart: db.Int8String | null;
       /**
-      * **serviceCentres.keyEnd**
+      * **securityGroups.keyEnd**
       * - `int8` in database
       * - Nullable, no default
       */
       keyEnd: db.Int8String | null;
       /**
-      * **serviceCentres.localities**
+      * **securityGroups.localities**
       * - `_text` in database
       * - Nullable, no default
       */
       localities: string[] | null;
       /**
-      * **serviceCentres.createdAt**
+      * **securityGroups.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: Date;
       /**
-      * **serviceCentres.updatedAt**
+      * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
@@ -5726,61 +5726,61 @@ declare module 'zapatos/schema' {
     }
     export interface JSONSelectable {
       /**
-      * **serviceCentres.id**
+      * **securityGroups.id**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       id: string;
       /**
-      * **serviceCentres.name**
+      * **securityGroups.name**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       name: string;
       /**
-      * **serviceCentres.identifier**
+      * **securityGroups.identifier**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       identifier: string;
       /**
-      * **serviceCentres.parentId**
+      * **securityGroups.parentId**
       * - `text` in database
       * - Nullable, no default
       */
       parentId: string | null;
       /**
-      * **serviceCentres.isArchived**
+      * **securityGroups.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
       */
       isArchived: boolean | null;
       /**
-      * **serviceCentres.keyStart**
+      * **securityGroups.keyStart**
       * - `int8` in database
       * - Nullable, no default
       */
       keyStart: number | null;
       /**
-      * **serviceCentres.keyEnd**
+      * **securityGroups.keyEnd**
       * - `int8` in database
       * - Nullable, no default
       */
       keyEnd: number | null;
       /**
-      * **serviceCentres.localities**
+      * **securityGroups.localities**
       * - `_text` in database
       * - Nullable, no default
       */
       localities: string[] | null;
       /**
-      * **serviceCentres.createdAt**
+      * **securityGroups.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt: db.TimestampTzString;
       /**
-      * **serviceCentres.updatedAt**
+      * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
@@ -5788,61 +5788,61 @@ declare module 'zapatos/schema' {
     }
     export interface Whereable {
       /**
-      * **serviceCentres.id**
+      * **securityGroups.id**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.name**
+      * **securityGroups.name**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.identifier**
+      * **securityGroups.identifier**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.parentId**
+      * **securityGroups.parentId**
       * - `text` in database
       * - Nullable, no default
       */
       parentId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.isArchived**
+      * **securityGroups.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
       */
       isArchived?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.keyStart**
+      * **securityGroups.keyStart**
       * - `int8` in database
       * - Nullable, no default
       */
       keyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.keyEnd**
+      * **securityGroups.keyEnd**
       * - `int8` in database
       * - Nullable, no default
       */
       keyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.localities**
+      * **securityGroups.localities**
       * - `_text` in database
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string[] | db.Parameter<string[]> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.createdAt**
+      * **securityGroups.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **serviceCentres.updatedAt**
+      * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
@@ -5850,61 +5850,61 @@ declare module 'zapatos/schema' {
     }
     export interface Insertable {
       /**
-      * **serviceCentres.id**
+      * **securityGroups.id**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **serviceCentres.name**
+      * **securityGroups.name**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       name: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **serviceCentres.identifier**
+      * **securityGroups.identifier**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       identifier: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **serviceCentres.parentId**
+      * **securityGroups.parentId**
       * - `text` in database
       * - Nullable, no default
       */
       parentId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **serviceCentres.isArchived**
+      * **securityGroups.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
       */
       isArchived?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **serviceCentres.keyStart**
+      * **securityGroups.keyStart**
       * - `int8` in database
       * - Nullable, no default
       */
       keyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **serviceCentres.keyEnd**
+      * **securityGroups.keyEnd**
       * - `int8` in database
       * - Nullable, no default
       */
       keyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **serviceCentres.localities**
+      * **securityGroups.localities**
       * - `_text` in database
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **serviceCentres.createdAt**
+      * **securityGroups.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
-      * **serviceCentres.updatedAt**
+      * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
@@ -5912,67 +5912,67 @@ declare module 'zapatos/schema' {
     }
     export interface Updatable {
       /**
-      * **serviceCentres.id**
+      * **securityGroups.id**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **serviceCentres.name**
+      * **securityGroups.name**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       name?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **serviceCentres.identifier**
+      * **securityGroups.identifier**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       identifier?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **serviceCentres.parentId**
+      * **securityGroups.parentId**
       * - `text` in database
       * - Nullable, no default
       */
       parentId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **serviceCentres.isArchived**
+      * **securityGroups.isArchived**
       * - `bool` in database
       * - Nullable, default: `false`
       */
       isArchived?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **serviceCentres.keyStart**
+      * **securityGroups.keyStart**
       * - `int8` in database
       * - Nullable, no default
       */
       keyStart?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **serviceCentres.keyEnd**
+      * **securityGroups.keyEnd**
       * - `int8` in database
       * - Nullable, no default
       */
       keyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **serviceCentres.localities**
+      * **securityGroups.localities**
       * - `_text` in database
       * - Nullable, no default
       */
       localities?: string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string[] | db.Parameter<string[]> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **serviceCentres.createdAt**
+      * **securityGroups.createdAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
-      * **serviceCentres.updatedAt**
+      * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'service_centres_pkey';
+    export type UniqueIndex = 'security_groups_pkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -6155,20 +6155,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = approvals.Table | approvers.Table | authorizations.Table | clientPeople.Table | clients.Table | contacts.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | serviceCentres.Table | workingDays.Table;
-    export type Selectable = approvals.Selectable | approvers.Selectable | authorizations.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | serviceCentres.Selectable | workingDays.Selectable;
-    export type JSONSelectable = approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | serviceCentres.JSONSelectable | workingDays.JSONSelectable;
-    export type Whereable = approvals.Whereable | approvers.Whereable | authorizations.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | serviceCentres.Whereable | workingDays.Whereable;
-    export type Insertable = approvals.Insertable | approvers.Insertable | authorizations.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | serviceCentres.Insertable | workingDays.Insertable;
-    export type Updatable = approvals.Updatable | approvers.Updatable | authorizations.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | serviceCentres.Updatable | workingDays.Updatable;
-    export type UniqueIndex = approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | serviceCentres.UniqueIndex | workingDays.UniqueIndex;
-    export type Column = approvals.Column | approvers.Column | authorizations.Column | clientPeople.Column | clients.Column | contacts.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | serviceCentres.Column | workingDays.Column;
+    export type Table = approvals.Table | approvers.Table | authorizations.Table | clientPeople.Table | clients.Table | contacts.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
+    export type Selectable = approvals.Selectable | approvers.Selectable | authorizations.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
+    export type JSONSelectable = approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
+    export type Whereable = approvals.Whereable | approvers.Whereable | authorizations.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
+    export type Insertable = approvals.Insertable | approvers.Insertable | authorizations.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
+    export type Updatable = approvals.Updatable | approvers.Updatable | authorizations.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
+    export type UniqueIndex = approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
+    export type Column = approvals.Column | approvers.Column | authorizations.Column | clientPeople.Column | clients.Column | contacts.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
   
-    export type AllBaseTables = [approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, serviceCentres.Table, workingDays.Table];
+    export type AllBaseTables = [approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, serviceCentres.Table, workingDays.Table];
+    export type AllTablesAndViews = [approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
   }
 
 
@@ -6214,7 +6214,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.Selectable;
     "scheduleDates": scheduleDates.Selectable;
     "schedules": schedules.Selectable;
-    "serviceCentres": serviceCentres.Selectable;
+    "securityGroups": securityGroups.Selectable;
     "workingDays": workingDays.Selectable;
   }[T];
 
@@ -6237,7 +6237,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.JSONSelectable;
     "scheduleDates": scheduleDates.JSONSelectable;
     "schedules": schedules.JSONSelectable;
-    "serviceCentres": serviceCentres.JSONSelectable;
+    "securityGroups": securityGroups.JSONSelectable;
     "workingDays": workingDays.JSONSelectable;
   }[T];
 
@@ -6260,7 +6260,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.Whereable;
     "scheduleDates": scheduleDates.Whereable;
     "schedules": schedules.Whereable;
-    "serviceCentres": serviceCentres.Whereable;
+    "securityGroups": securityGroups.Whereable;
     "workingDays": workingDays.Whereable;
   }[T];
 
@@ -6283,7 +6283,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.Insertable;
     "scheduleDates": scheduleDates.Insertable;
     "schedules": schedules.Insertable;
-    "serviceCentres": serviceCentres.Insertable;
+    "securityGroups": securityGroups.Insertable;
     "workingDays": workingDays.Insertable;
   }[T];
 
@@ -6306,7 +6306,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.Updatable;
     "scheduleDates": scheduleDates.Updatable;
     "schedules": schedules.Updatable;
-    "serviceCentres": serviceCentres.Updatable;
+    "securityGroups": securityGroups.Updatable;
     "workingDays": workingDays.Updatable;
   }[T];
 
@@ -6329,7 +6329,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.UniqueIndex;
     "scheduleDates": scheduleDates.UniqueIndex;
     "schedules": schedules.UniqueIndex;
-    "serviceCentres": serviceCentres.UniqueIndex;
+    "securityGroups": securityGroups.UniqueIndex;
     "workingDays": workingDays.UniqueIndex;
   }[T];
 
@@ -6352,7 +6352,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.Column;
     "scheduleDates": scheduleDates.Column;
     "schedules": schedules.Column;
-    "serviceCentres": serviceCentres.Column;
+    "securityGroups": securityGroups.Column;
     "workingDays": workingDays.Column;
   }[T];
 
@@ -6375,7 +6375,7 @@ declare module 'zapatos/schema' {
     "salaries": salaries.SQL;
     "scheduleDates": scheduleDates.SQL;
     "schedules": schedules.SQL;
-    "serviceCentres": serviceCentres.SQL;
+    "securityGroups": securityGroups.SQL;
     "workingDays": workingDays.SQL;
   }[T];
 

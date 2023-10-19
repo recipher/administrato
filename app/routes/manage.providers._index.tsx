@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from '~/services/manage/security-groups.server';
 import ProviderService, { type Provider } from '~/services/manage/providers.server';
 import CountryService from '~/services/countries.server';
 
@@ -24,23 +24,23 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-  const serviceCentreId = url.searchParams.get("service-centre") ;
+  const securityGroupId = url.searchParams.get("security-group") ;
 
   const u = await requireUser(request);
   
-  const serviceCentreService = ServiceCentreService(u);
-  const serviceCentres = await serviceCentreService.listServiceCentres();
-  const serviceCentre = serviceCentreId ? serviceCentres.find((sc: ServiceCentre) => sc.id === serviceCentreId) : undefined;
+  const securityGroupService = SecurityGroupService(u);
+  const securityGroups = await securityGroupService.listSecurityGroups();
+  const securityGroup = securityGroupId ? securityGroups.find((sg: SecurityGroup) => sg.id === securityGroupId) : undefined;
 
   const service = ProviderService(u);
   const { providers, metadata: { count }} = 
-    await service.searchProviders({ search, serviceCentre }, { offset, limit, sortDirection: sort });
+    await service.searchProviders({ search, securityGroup }, { offset, limit, sortDirection: sort });
 
   const isoCodes = providers.map(s => s.localities || []).flat();
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
 
-  return json({ providers, countries, count, offset, limit, search, serviceCentres, serviceCentreId });
+  return json({ providers, countries, count, offset, limit, search, securityGroups, securityGroupId });
 };
 
 const actions = [
@@ -48,17 +48,17 @@ const actions = [
 ];
 
 export default function Providers() {
-  const { providers, countries, count, offset, limit, search, serviceCentres, serviceCentreId } = useLoaderData();
+  const { providers, countries, count, offset, limit, search, securityGroups, securityGroupId } = useLoaderData();
 
   const filter = {
-    title: "Select Service Centre",
-    filterParam: "service-centre",
-    selected: serviceCentreId,
-    filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
+    title: "Select Security Group",
+    filterParam: "security-group",
+    selected: securityGroupId,
+    filters: securityGroups.map((s: SecurityGroup) => ({ name: s.name, value: s.id }))
   };
 
   const Context = (provider: Provider) =>
-    <ListContext data={provider.serviceCentre} select={false} />;
+    <ListContext data={provider.securityGroup} select={false} />;
 
   const Item = (provider: Provider) =>
     <ListItem data={provider.name} sub={<Flags localities={provider.localities} countries={countries} />} />

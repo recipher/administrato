@@ -14,7 +14,7 @@ import withAuthorization from '~/auth/with-authorization';
 import { requireUser } from '~/auth/auth.server';
 
 import ProviderService, { create } from '~/services/manage/providers.server';
-import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from '~/services/manage/security-groups.server';
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
 import { UniqueInput, Cancel, Submit, Checkbox, Image, 
@@ -33,14 +33,14 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
-  const id = url.searchParams.get("service-centre");
+  const id = url.searchParams.get("security-group");
 
   const u = await requireUser(request);
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = id ? await service.getServiceCentre({ id }) : undefined;
+  const service = SecurityGroupService(u);
+  const securityGroup = id ? await service.getSecurityGroup({ id }) : undefined;
 
-  return json({ serviceCentre });
+  return json({ securityGroup });
 };
 
 const schema = 
@@ -56,7 +56,7 @@ const schema =
       .object({
         id: z.string().or(z.array(z.string()))
       }),
-    serviceCentreId: z
+    securityGroupId: z
       .string()
       .nonempty("The service centre is required"),
     logo: z.any(),
@@ -123,12 +123,12 @@ const Add = () => {
   const loaderData = useLoaderData();
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
-  const [ serviceCentre, setServiceCentre ] = useState<ServiceCentre>(loaderData.serviceCentre);
+  const [ securityGroup, setSecurityGroup ] = useState<SecurityGroup>(loaderData.securityGroup);
 
   const context = useFormContext("add-provider");
 
-  const serviceCentreModal = useRef<RefSelectorModal>(null);
-  const showServiceCentreModal = () => serviceCentreModal.current?.show('service-centre');
+  const securityGroupModal = useRef<RefSelectorModal>(null);
+  const showSecurityGroupModal = () => securityGroupModal.current?.show('security-group');
 
   const handleAutoGenerate = (e: FormEvent<HTMLInputElement>) => {
     setAutoGenerateIdentifier(e.currentTarget.checked);
@@ -158,8 +158,8 @@ const Add = () => {
               <Image label="Upload Logo" name="logo" accept="image/*" Icon={GlobeAltIcon} />
             </Field>
             <Field span={3}>
-              <Lookup label="Service Centre" name="serviceCentreId" onClick={showServiceCentreModal} 
-                icon={MapIcon} value={serviceCentre} placeholder="Select a Service Centre" />
+              <Lookup label="Service Centre" name="securityGroupId" onClick={showSecurityGroupModal} 
+                icon={MapIcon} value={securityGroup} placeholder="Select a Service Centre" />
             </Field>
           </Group>
           <CountryFormManager context={context} data={data} />
@@ -169,8 +169,8 @@ const Add = () => {
           <Submit text="Save" submitting="Saving..." permission={manage.create.provider} />
         </Footer>
       </Form>
-      <SelectorModal ref={serviceCentreModal} forAuthorization={false}
-        onSelect={setServiceCentre} allowChange={false} />
+      <SelectorModal ref={securityGroupModal} forAuthorization={false}
+        onSelect={setSecurityGroup} allowChange={false} />
     </>
   );
 }

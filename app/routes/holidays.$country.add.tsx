@@ -10,7 +10,7 @@ import HolidayService, { create } from '~/services/scheduler/holidays.server';
 import ProviderService, { Provider } from '~/services/manage/providers.server';
 import ClientService, { Client } from '~/services/manage/clients.server';
 import LegalEntityService, { LegalEntity } from '~/services/manage/legal-entities.server';
-import ServiceCentreService, { ServiceCentre } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { SecurityGroup } from '~/services/manage/security-groups.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -58,8 +58,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       case "provider":
         entity = await (ProviderService(u)).getProvider({ id: entityId });
         break;
-      case "service-centre":
-        entity = await (ServiceCentreService(u)).getServiceCentre({ id: entityId });
+      case "security-group":
+        entity = await (SecurityGroupService(u)).getSecurityGroup({ id: entityId });
         break;
     }
   }
@@ -139,7 +139,7 @@ export default function Add() {
   const noOp = () => null!
   
   const icons = new Map<string, any>([
-    [ "service-centre", MapIcon ],
+    [ "security-group", MapIcon ],
     [ "client", IdentificationIcon ],
     [ "legal-entity", WalletIcon ],
     [ "provider", CurrencyYenIcon ],
@@ -172,7 +172,7 @@ export default function Add() {
         </Body>
         <Footer>
           <Cancel />
-          <Submit text="Save" submitting="Saving..." permission="manage:create:service-centre" />
+          <Submit text="Save" submitting="Saving..." permission="manage:create:security-group" />
         </Footer>
       </Form>
     </>

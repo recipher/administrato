@@ -9,7 +9,7 @@ import { ASC, DESC, QueryOptions } from '../types';
 
 import LegalEntityService, { type LegalEntity } from '../manage/legal-entities.server';
 import ClientService from '../manage/clients.server';
-import ServiceCentreService from '../manage/service-centres.server';
+import SecurityGroupService from '../manage/security-groups.server';
 import ProviderService from '../manage/providers.server';
 
 import { TxOrPool } from '../types';
@@ -245,8 +245,8 @@ const Service = (u: User) => {
     
     const entities = await Promise.all((milestone.entities || []).map(async entity => {
       if (entity === "legal-entity") return legalEntity;
-      if (entity === "service-centre")
-        return ServiceCentreService(u).getServiceCentre({ id: legalEntity.serviceCentreId });
+      if (entity === "security-group")
+        return SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId });
       if (entity === "provider" && legalEntity.providerId !== null)
         return ProviderService(u).getProvider({ id: legalEntity.providerId });
       if (entity === "client" && legalEntity.clientId !== null)

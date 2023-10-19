@@ -102,7 +102,7 @@ const Service = (u: User) => {
   };
 
   type customHolidaysSQL = 
-    s.holidays.SQL | s.providers.SQL | s.clients.SQL | s.legalEntities.SQL | s.serviceCentres.SQL;
+    s.holidays.SQL | s.providers.SQL | s.clients.SQL | s.legalEntities.SQL | s.securityGroups.SQL;
 
   const listCustomHolidaysByCountry = async ({ year, locality }: ListOptions) => {
     return db.sql<customHolidaysSQL, s.holidays.Selectable[]>`
@@ -111,16 +111,16 @@ const Service = (u: User) => {
         ${'clients'}.${'name'} AS client,
         ${'providers'}.${'name'} AS provider,
         ${'legalEntities'}.${'name'} AS "legalEntity",
-        ${'serviceCentres'}.${'name'} AS "serviceCentre"
+        ${'securityGroups'}.${'name'} AS "securityGroup"
       FROM ${'holidays'} 
       LEFT JOIN ${'clients'} ON ${'entityId'} = ${'clients'}.${'id'} AND ${'entity'} = 'client'
       LEFT JOIN ${'providers'} ON ${'entityId'} = ${'providers'}.${'id'} AND ${'entity'} = 'provider'
       LEFT JOIN ${'legalEntities'} ON ${'entityId'} = ${'legalEntities'}.${'id'} AND ${'entity'} = 'legal-entity'
-      LEFT JOIN ${'serviceCentres'} ON ${'entityId'} = ${'serviceCentres'}.${'id'} AND ${'entity'} = 'service-centre'
+      LEFT JOIN ${'securityGroups'} ON ${'entityId'} = ${'securityGroups'}.${'id'} AND ${'entity'} = 'security-group'
       WHERE 
         ${{locality}} AND 
         ${'entityId'} IS NOT NULL AND  
-        ${'entity'} IN ('service-centre', 'legal-entity', 'client', 'provider') AND 
+        ${'entity'} IN ('security-group', 'legal-entity', 'client', 'provider') AND 
         (${'isRemoved'} IS NULL OR ${'isRemoved'} = FALSE) AND
         DATE_PART('year', ${'date'}) = ${db.param(year)}
       ORDER BY ${'date'} ASC`

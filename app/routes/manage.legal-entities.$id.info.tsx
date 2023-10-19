@@ -33,7 +33,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 const Info = () => {
-  const { t } = useTranslation("schedule");
+  const { t } = useTranslation();
+  const { t: ts } = useTranslation("schedule");
   const { legalEntity } = useLoaderData();
 
   return (
@@ -48,12 +49,12 @@ const Info = () => {
             </button>
           </Field>
           <Field title="Schedule Frequency">
-            {t(legalEntity.frequency, { ns: "schedule" })}
+            {ts(legalEntity.frequency, { ns: "schedule" })}
           </Field>
           <Field title="Target Due Day">
             {legalEntity.target.split(',').map((target: string) => {
               const [ type, value ] = target.split(' ');
-              return `${t(type)} ${value == null ? "" : t(value)}`;
+              return `${ts(type)} ${value == null ? "" : t(value)}`;
             }).join(' and ')}
           </Field>
           <Field title="Provider">
@@ -61,9 +62,9 @@ const Info = () => {
               {legalEntity.provider}
             </Link>
           </Field>
-          <Field title="Service Centre Name">
-            <Link className="text-indigo-900" to={`/manage/service-centres/${legalEntity.serviceCentreId}/info`}>
-              {legalEntity.serviceCentre}
+          <Field title="Security Group Name">
+            <Link className="text-indigo-900" to={`/manage/security-groups/${legalEntity.securityGroupId}/info`}>
+              {legalEntity.securityGroup}
             </Link>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update

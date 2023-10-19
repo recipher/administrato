@@ -3,7 +3,7 @@ import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 
 import { badRequest, notFound } from '~/utility/errors';
 
-import ServiceCentreService from '~/services/manage/service-centres.server';
+import SecurityGroupService from '~/services/manage/security-groups.server';
 import CountryService, { Country } from '~/services/countries.server';
 import HolidayService from '~/services/scheduler/holidays.server';
 
@@ -19,8 +19,8 @@ import { Level } from '~/components/toast';
 
 export const handle = {
   name: "holidays",
-  breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/serviceCentres/${serviceCentre?.id}/holidays`} name={name} current={current} />
+  breadcrumb: ({ securityGroup, current, name }: { securityGroup: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/securityGroups/${securityGroup?.id}/holidays`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -34,19 +34,19 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (id === undefined) return badRequest('Invalid request');
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = await service.getServiceCentre({ id });
+  const service = SecurityGroupService(u);
+  const securityGroup = await service.getSecurityGroup({ id });
 
-  if (serviceCentre === undefined) return notFound('Service centre not found');
-  if (!serviceCentre.localities?.length) return badRequest('Invalid service centre data');
+  if (securityGroup === undefined) return notFound('Security group not found');
+  if (!securityGroup.localities?.length) return badRequest('Invalid security group data');
 
   const countryService = CountryService();
-  const countries = await countryService.getCountries({ isoCodes: serviceCentre.localities });
+  const countries = await countryService.getCountries({ isoCodes: securityGroup.localities });
 
-  const locality = (isoCode == null || serviceCentre.localities.includes(isoCode) === false)
-    ? serviceCentre.localities?.at(0) : isoCode; 
+  const locality = (isoCode == null || securityGroup.localities.includes(isoCode) === false)
+    ? securityGroup.localities?.at(0) : isoCode; 
 
-  if (locality === undefined) return badRequest('Invalid service centre data');
+  if (locality === undefined) return badRequest('Invalid security group data');
 
   const holidayService = HolidayService(u);
   let holidays = await holidayService.listHolidaysByCountryForEntity({ locality, year, entityId: id });
@@ -56,7 +56,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     if (synced !== undefined) holidays = synced;
   }
 
-  return json({ serviceCentre, holidays, countries, locality, year });
+  return json({ securityGroup, holidays, countries, locality, year });
 };
 
 export async function action({ request }: ActionArgs) {
@@ -85,7 +85,7 @@ export async function action({ request }: ActionArgs) {
 };
 
 const Holidays = () => {
-  const { serviceCentre, holidays, countries, locality, year } = useLoaderData();
+  const { securityGroup, holidays, countries, locality, year } = useLoaderData();
 
   const tabs = countries.map((country: Country) => 
     ({ name: country.name, value: country.isoCode }));
@@ -101,7 +101,7 @@ const Holidays = () => {
   return (
     <>
       <Tabs tabs={tabs} selected={locality} onClick={handleClick} />
-      <HolidayList holidays={holidays} country={locality} year={year} entity={serviceCentre} entityType="service-centre" />
+      <HolidayList holidays={holidays} country={locality} year={year} entity={securityGroup} entityType="security-group" />
     </>
   );
 };

@@ -21,4 +21,4 @@ export const handle = {
 
 const People = () => <Outlet />;
 
-export default withAuthorization(manage.read.worker)(People);
+export default withAuthorization(manage.read.person)(People);

@@ -1,14 +1,14 @@
-import { useTranslation } from 'react-i18next';
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
+
+import { notFound, badRequest } from '~/utility/errors';
+import { requireUser } from '~/auth/auth.server';
 
 import LegalEntityService from '~/services/manage/legal-entities.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import { Layout, Heading, Section, Field } from '~/components/info/info';
-
-import { notFound, badRequest } from '~/utility/errors';
-import { requireUser } from '~/auth/auth.server';
+import { Stats } from '~/components';
 
 export const handle = {
   i18n: "schedule",
@@ -32,17 +32,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({ legalEntity });
 };
 
-const Holidays = () => {
+const Summary = () => {
   const { t } = useTranslation();
   const { legalEntity } = useLoaderData();
 
   return (
     <>
-      <Layout>
-        <Heading heading={t('summary')} explanation={`Manage ${legalEntity.name}'s information.`} />
-      </Layout>
+      <Stats />
     </>
   );
 };
 
-export default Holidays;
+export default Summary;

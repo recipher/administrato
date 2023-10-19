@@ -4,7 +4,7 @@ import pool from '../db.server';
 
 export { default as create } from '../id.server';
 
-import ServiceCentreService, { type ServiceCentre } from './service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from './security-groups.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count, TxOrPool,
   QueryOptions, IdProp, NameProp, KeyQueryOptions as BaseKeyQueryOptions, BypassKeyCheck } from '../types';
@@ -14,23 +14,23 @@ import { type User } from '../access/users.server';
 
 import { whereKeys, whereExactKeys, extractKeys, pickKeys, generateIdentifier } from './shared.server';
 
-export type Client = s.clients.Selectable & { groupCount?: number, serviceCentre?: string };
+export type Client = s.clients.Selectable & { groupCount?: number, securityGroup?: string };
 
 type KeyQueryOptions = {
   parentId?: string | undefined;
 } & BaseKeyQueryOptions;
 
 type SearchOptions = {
-  serviceCentre?: ServiceCentre | undefined;
+  securityGroup?: SecurityGroup | undefined;
   parentId?: string | null | undefined;
-  serviceCentreId?: string | null | undefined;
+  securityGroupId?: string | null | undefined;
 } & BaseSearchOptions;
 
 const Service = (u: User) => {
   const getLatest = async (client: s.clients.Insertable, txOrPool: TxOrPool = pool) => {
     const query = client.parentId 
       ? db.sql<db.SQL>`${'parentId'} = ${db.param(client.parentId)}`
-      : db.sql<db.SQL>`${'serviceCentreId'} = ${db.param(client.serviceCentreId)}`;
+      : db.sql<db.SQL>`${'securityGroupId'} = ${db.param(client.securityGroupId)}`;
 
     const [ latest ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT * FROM ${'clients'}
@@ -42,11 +42,11 @@ const Service = (u: User) => {
   };
 
   const generateKey = async (client: s.clients.Insertable, txOrPool: TxOrPool = pool): Promise<SecurityKey> => {
-    const service = ServiceCentreService(u);
+    const service = SecurityGroupService(u);
 
     const parent = client.parentId
       ? await getClient({ id: client.parentId as string }, { bypassKeyCheck: true }, txOrPool)
-      : await service.getServiceCentre({ id: client.serviceCentreId as string }, { bypassKeyCheck: true }, txOrPool)
+      : await service.getSecurityGroup({ id: client.securityGroupId as string }, { bypassKeyCheck: true }, txOrPool)
  
     const maxEntities = client.parentId ? 100 : 1000000; // Move to constants
 
@@ -78,7 +78,7 @@ const Service = (u: User) => {
   };
 
   const listClients = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
-    const keys = query.keys || extractKeys(u, "serviceCentre", "client"); 
+    const keys = query.keys || extractKeys(u, "securityGroup", "client"); 
     const whereParent = query.parentId 
       ? db.sql`main.${'parentId'} = ${db.param(query.parentId)}`
       : db.sql`main.${'parentId'} IS NULL`;
@@ -88,7 +88,7 @@ const Service = (u: User) => {
       `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, serviceCentreId, parentId, isArchived }: SearchOptions) => {
+  const searchQuery = ({ search, securityGroupId, parentId, isArchived }: SearchOptions) => {
     const parent = parentId 
       ? db.sql`main.${'parentId'} = ${db.param(parentId)}`
       : db.sql`main.${'parentId'} IS NULL`;
@@ -99,12 +99,12 @@ const Service = (u: User) => {
     const archived = db.sql` AND main.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
 
     const base = db.sql`${parent} ${name} ${archived}`;
-    return !serviceCentreId ? base
-      : db.sql<db.SQL>`${base} AND main.${'serviceCentreId'} = ${db.param(serviceCentreId)}`; 
+    return !securityGroupId ? base
+      : db.sql<db.SQL>`${base} AND main.${'securityGroupId'} = ${db.param(securityGroupId)}`; 
   };
 
   const countClients = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
-    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "client");
+    const keys = pickKeys(search.securityGroup) || extractKeys(u, "securityGroup", "client");
 
     const [ item ] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'clients'} AS main
@@ -116,15 +116,15 @@ const Service = (u: User) => {
   };
 
   const searchClients = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {  
-    const keys = pickKeys(search.serviceCentre) || extractKeys(u, "serviceCentre", "client");
+    const keys = pickKeys(search.securityGroup) || extractKeys(u, "securityGroup", "client");
 
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const clients = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
-      SELECT main.*, s.${'name'} AS "serviceCentre", COUNT(g.${'id'}) AS "groupCount" 
+    const clients = await db.sql<s.clients.SQL | s.securityGroups.SQL, s.clients.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "securityGroup", COUNT(g.${'id'}) AS "groupCount" 
       FROM ${'clients'} AS main
       LEFT JOIN ${'clients'} AS g ON main.${'id'} = g.${'parentId'}
-      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
+      LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
       GROUP BY main.${'id'}, s.${'name'}
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
@@ -138,13 +138,13 @@ const Service = (u: User) => {
   };
 
   const getClient = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
-    const keys = extractKeys(u, "serviceCentre", "client");
+    const keys = extractKeys(u, "securityGroup", "client");
 
-    const [ client ] = await db.sql<s.clients.SQL | s.serviceCentres.SQL, s.clients.Selectable[]>`
-      SELECT main.*, s.${'name'} AS "serviceCentre", g.${'name'} AS parent
+    const [ client ] = await db.sql<s.clients.SQL | s.securityGroups.SQL, s.clients.Selectable[]>`
+      SELECT main.*, s.${'name'} AS "securityGroup", g.${'name'} AS parent
       FROM ${'clients'} AS main
       LEFT JOIN ${'clients'} AS g ON main.${'parentId'} = g.${'id'}
-      LEFT JOIN ${'serviceCentres'} AS s ON main.${'serviceCentreId'} = s.${'id'}
+      LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND 
         (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
     `.run(txOrPool);

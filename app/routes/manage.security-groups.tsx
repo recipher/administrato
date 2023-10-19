@@ -7,11 +7,11 @@ import withAuthorization from "~/auth/with-authorization";
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  name: "service-centres",
+  name: "security-groups",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={MapIcon} to="/manage/service-centres" name={name} current={current} />
+    <Breadcrumb Icon={MapIcon} to="/manage/security-groups" name={name} current={current} />
 };
 
-const ServiceCentres = () => <Outlet />;
+const SecurityGroups = () => <Outlet />;
 
-export default withAuthorization(manage.read.serviceCentre)(ServiceCentres);
+export default withAuthorization(manage.read.securityGroup)(SecurityGroups);

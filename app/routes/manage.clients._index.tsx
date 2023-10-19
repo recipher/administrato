@@ -2,7 +2,7 @@ import { json, type LoaderArgs } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
-import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from '~/services/manage/security-groups.server';
 import ClientService, { type Client } from '~/services/manage/clients.server';
 import CountryService, { type Country } from '~/services/countries.server';
 
@@ -24,23 +24,23 @@ export const loader = async ({ request }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
-  const serviceCentreId = url.searchParams.get("service-centre") as string;
+  const securityGroupId = url.searchParams.get("security-group") as string;
 
   const u = await requireUser(request);
   
-  const serviceCentreService = ServiceCentreService(u);
-  const serviceCentres = await serviceCentreService.listServiceCentres();
-  const serviceCentre = serviceCentreId ? serviceCentres.find((sc: ServiceCentre) => sc.id === serviceCentreId) : undefined;
+  const securityGroupService = SecurityGroupService(u);
+  const securityGroups = await securityGroupService.listSecurityGroups();
+  const securityGroup = securityGroupId ? securityGroups.find((sc: SecurityGroup) => sc.id === securityGroupId) : undefined;
 
   const clientService = ClientService(u);
   const { clients, metadata: { count }} = 
-    await clientService.searchClients({ search, serviceCentre }, { offset, limit, sortDirection: sort });
+    await clientService.searchClients({ search, securityGroup }, { offset, limit, sortDirection: sort });
 
   const isoCodes = clients.map(s => s.localities || []).flat();
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
 
-  return json({ clients, countries, count, offset, limit, search, serviceCentres, serviceCentreId });
+  return json({ clients, countries, count, offset, limit, search, securityGroups, securityGroupId });
 };
 
 const actions = [
@@ -48,17 +48,17 @@ const actions = [
 ];
 
 export default function Clients() {
-  const { clients, countries, count, offset, limit, search, serviceCentres, serviceCentreId } = useLoaderData();
+  const { clients, countries, count, offset, limit, search, securityGroups, securityGroupId } = useLoaderData();
 
   const filter = {
-    title: "Select Service Centre",
-    filterParam: "service-centre",
-    selected: serviceCentreId,
-    filters: serviceCentres.map((s: ServiceCentre) => ({ name: s.name, value: s.id }))
+    title: "Select Security Group",
+    filterParam: "security-group",
+    selected: securityGroupId,
+    filters: securityGroups.map((s: SecurityGroup) => ({ name: s.name, value: s.id }))
   };
 
   const Context = (client: Client) =>
-    <ListContext data={client.serviceCentre} select={false} />;
+    <ListContext data={client.securityGroup} select={false} />;
 
   const Item = (client: Client) =>
     <ListItem data={client.name} sub={<Flags localities={client.localities} countries={countries} />} />

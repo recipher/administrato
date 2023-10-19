@@ -17,7 +17,7 @@ import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Level } from '~/components/toast';
 
-const ENTITIES = [ "service-centre", "provider", "client", "legal-entity" ];
+const ENTITIES = [ "security-group", "provider", "client", "legal-entity" ];
 
 export const handle = {
   name: "add-milestone",

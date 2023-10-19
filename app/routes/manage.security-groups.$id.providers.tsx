@@ -1,7 +1,7 @@
 import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import ServiceCentreService from '~/services/manage/service-centres.server';
+import SecurityGroupService from '~/services/manage/security-groups.server';
 import ProviderService, { Provider } from '~/services/manage/providers.server';
 import CountryService from '~/services/countries.server';
 import Alert, { Level } from '~/components/alert';
@@ -20,8 +20,8 @@ const LIMIT = 6;
 
 export const handle = {
   name: "providers",
-  breadcrumb: ({ serviceCentre, current, name }: { serviceCentre: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/service-centres/${serviceCentre?.id}/providers`} name={name} current={current} />
+  breadcrumb: ({ securityGroup, current, name }: { securityGroup: any } & BreadcrumbProps) => 
+    <Breadcrumb to={`/manage/security-groups/${securityGroup?.id}/providers`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -38,23 +38,23 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const u = await requireUser(request);
 
-  const service = ServiceCentreService(u);
-  const serviceCentre = await service.getServiceCentre({ id });
+  const service = SecurityGroupService(u);
+  const securityGroup = await service.getSecurityGroup({ id });
 
-  if (serviceCentre === undefined) return notFound('Service centre not found');
+  if (securityGroup === undefined) return notFound('Security group not found');
 
   const providerService = ProviderService(u);
   const { providers, metadata: { count }} = 
     await providerService.searchProviders({ search, 
-      serviceCentreId: all ? undefined : id,
-      serviceCentre: all ? serviceCentre : undefined
+      securityGroupId: all ? undefined : id,
+      securityGroup: all ? securityGroup : undefined
     }, { offset, limit, sortDirection: sort });
 
   const isoCodes = providers.map(p => p.localities || []).flat();
   const countryService = CountryService();
   const countries = await countryService.getCountries({ isoCodes });
   
-  return json({ serviceCentre, providers, count, offset, limit, search, sort, countries });
+  return json({ securityGroup, providers, count, offset, limit, search, sort, countries });
 };
 
 const Providers = () => {

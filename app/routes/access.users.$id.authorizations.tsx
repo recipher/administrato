@@ -8,7 +8,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { mapProfileToUser, requireUser } from '~/auth/auth.server';
 import UserService, { type User } from '~/services/access/users.server';
-import ServiceCentreService, { type ServiceCentre } from '~/services/manage/service-centres.server';
+import SecurityGroupService, { type SecurityGroup } from '~/services/manage/security-groups.server';
 import ClientService, { type Client } from '~/services/manage/clients.server';
 import LegalEntityService, { type LegalEntity } from '~/services/manage/legal-entities.server';
 import ProviderService, { type Provider } from '~/services/manage/providers.server';
@@ -31,7 +31,7 @@ export const handle = {
     <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
 };
 
-type Authorizable = (LegalEntity | Client | Provider | ServiceCentre);
+type Authorizable = (LegalEntity | Client | Provider | SecurityGroup);
 type AuthorizableWithType = Authorizable & { type: string, Icon?: any };
 
 const toAuthorizables = (type: string, authorizables: Array<Authorizable>) => {
@@ -51,17 +51,17 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
-  const serviceCentreService = ServiceCentreService(u);
+  const securityGroupService = SecurityGroupService(u);
   const clientService = ClientService(u);
   const legalEntityService = LegalEntityService(u);
   const providerService = ProviderService(u);
-  const serviceCentres = await serviceCentreService.listServiceCentresForKeys({ keys: user?.keys.serviceCentre });
+  const securityGroups = await securityGroupService.listSecurityGroupsForKeys({ keys: user?.keys.securityGroup });
   const clients = await clientService.listClientsForKeys({ keys: user?.keys.client });
   const legalEntities = await legalEntityService.listLegalEntitiesForKeys({ keys: user?.keys.legalEntity });
   const providers = await providerService.listProvidersForKeys({ keys: user?.keys.provider });
 
   return { user, profile, authorizables: [
-    ...toAuthorizables('service-centre', serviceCentres),
+    ...toAuthorizables('security-group', securityGroups),
     ...toAuthorizables('client', clients),
     ...toAuthorizables('legal-entity', legalEntities),
     ...toAuthorizables('provider', providers),

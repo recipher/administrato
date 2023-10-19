@@ -5,6 +5,7 @@ export { default as EditableImage } from './editable-image';
 export { default as Button, ButtonType } from './button';
 export { default as Pagination } from './pagination';
 export { default as Spinner } from './spinner';
+export { default as Stats } from './stats';
 export { default as Toast } from './toast';
 export { default as Table } from './table';
 export { default as Tabs } from './tabs';
