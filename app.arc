@@ -20,6 +20,8 @@ architect/plugin-typescript
 @queues
 schedule-requested
   src app/queues/schedule-requested
+schedules-generated
+  src app/queues/schedules-generated
 schedules-requested
   src app/queues/schedules-requested
 country-added

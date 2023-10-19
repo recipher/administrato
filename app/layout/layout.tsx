@@ -1,5 +1,7 @@
 import { useFetcher, useLocation } from '@remix-run/react';
 import { useState, PropsWithChildren, useEffect, useContext } from 'react';
+import { CourierProvider } from "@trycourier/react-provider";
+
 import { Bars3Icon } from '@heroicons/react/24/outline';
 
 import { useBreadcrumbs, useName } from '~/hooks';
@@ -79,5 +81,5 @@ export default function Layout({ user, children }: PropsWithChildren<Props>) {
         </div>
       </div>
     </>
-  )
-}
+  );
+};

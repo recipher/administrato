@@ -1,5 +1,5 @@
-import LegalEntityService from '../../services/manage/legal-entities.server';
-import { type Schedulable } from '../../services/scheduler/schedules.server';
+import LegalEntityService from '~/services/manage/legal-entities.server';
+import { type Schedulable } from '~/services/scheduler/schedules.server';
 import arc from '@architect/functions';
 
 export async function handler (event: any) {

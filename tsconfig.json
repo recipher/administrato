@@ -1,6 +1,6 @@
 {
   "exclude": ["./app/scheduler"],
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "zapatos.js", "mocks/index.js", "mocks/auth0.js", "mocks/index.js", "bin/test.js", "tests/browser/browser.spec.js", "tests/unit/maths.spec.js", "tests/unit/maths.spec.js", "tests/browser/browser.spec.js", "bin/test.js"],
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx", "zapatos.js", "mocks/index.js", "mocks/auth0.js", "mocks/index.js", "bin/test.js", "tests/browser/browser.spec.js", "tests/unit/maths.spec.js", "tests/unit/maths.spec.js", "tests/browser/browser.spec.js", "bin/test.js", "app/queues/sync-holidays/index.mjs", "app/queues/generate-schedule/index.mjs", "src/queues/sync-holidays/index.mjs"],
   "compilerOptions": {
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,

@@ -1,4 +1,4 @@
-import HolidaysService from '../../services/scheduler/holidays.server';
+import HolidaysService from '~/services/scheduler/holidays.server';
 
 export async function handler (event: any) {
   const year = new Date().getUTCFullYear();

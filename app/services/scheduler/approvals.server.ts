@@ -9,6 +9,10 @@ export { default as create } from '../id.server';
 
 import { type User } from '../access/users.server';
 import ScheduleService from './schedules.server';
+import LegalEntityService from '../manage/legal-entities.server';
+import UserService from '../access/users.server';
+import { mapProfileToUser, fromCookie } from '~/auth/auth.server';
+import { scheduler } from '~/auth/permissions';
 
 export enum Status {
   Draft = 'draft',
@@ -172,9 +176,43 @@ const Service = (u: User) => {
     return changeStatus({ ...params, status: Status.Rejected }, txOrPool);
   };
 
+  const addDefaultApprovers = async ({ entityId: id }: { entityId: string }, txOrPool: TxOrPool = pool) => {
+    const { keyStart, keyEnd } = await LegalEntityService(u).getLegalEntity({ id });
+
+    const authorizations = await db.sql<s.authorizations.SQL, s.authorizations.Selectable[]>`
+      SELECT * FROM ${'authorizations'}
+      WHERE ${db.param(keyStart)} >= ${'keyStart'} AND
+            ${'keyEnd'} >= ${db.param(keyEnd)} AND
+            (${'entity'} = 'legal-entity' OR ${'entity'} = 'security-group')`
+      .run(txOrPool);
+
+    const users = (await Promise.all(authorizations.map(async ({ user: id }) => {
+      const profile = await UserService(u).getTokenizedUser({ id });
+      const user = fromCookie(mapProfileToUser(id, profile) as any);
+
+      if (user.permissions.includes(scheduler.edit.schedule)) return {
+        id: user.id,
+        email: user.email,
+        name: user.name
+      };
+    })));
+
+    const approvers = users
+      .reduce((users: Array<any>, user) => user === undefined ? users : [ ...users, user ], [])
+      .map((user: any) => (create({
+        entity: 'legal-entity',
+        entityId: id,
+        userId: user.id,
+        userData: user,
+      })));
+    
+    return addApprovers(approvers, txOrPool);
+  };
+
   return {
     addApprover,
     addApprovers,
+    addDefaultApprovers,
     addApproval,
     addApprovals,
     removeApprover,

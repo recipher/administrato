@@ -12,6 +12,7 @@ import {
   useLoaderData,
   useRouteError,
 } from "@remix-run/react";
+import { CourierProvider } from "@trycourier/react-provider";
 
 import { useChangeLanguage } from "~/hooks";
 import { useTranslation } from "react-i18next";
@@ -51,16 +52,17 @@ export const loader = async ({ request }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
   const user = await authenticate("auth0", request);
   // console.log(JSON.stringify(user, null, 2));
-  
+  const courierClientKey = process.env.COURIER_CLIENT_KEY;
+
   const { flash } = await getSessionFlash(request, headers);
   headers.append("Set-Cookie", await i18nCookie.serialize(locale));
 
   if (flash) return json({ flash, user, locale }, { headers });
 
-  return json({ user, locale });
+  return json({ user, locale, courierClientKey });
 };
 
-const App = ({ user, flash, lang, dir, children }: any) => {
+const App = ({ user, flash, lang, dir, courierClientKey, children }: any) => {
   const [ toast, createToast ] = useState(flash);
 
   useEffect(() => {
@@ -77,19 +79,21 @@ const App = ({ user, flash, lang, dir, children }: any) => {
       </head>
       <body className="h-full">
         <Progress />
-        <ToastContext.Provider value={{ toast, createToast }}>
-          <Layout user={user}>
-            {children}
-            <Toast {...toast} />
-          </Layout>
-        </ToastContext.Provider>
+        <CourierProvider userId={user?.id} clientKey={courierClientKey}>
+          <ToastContext.Provider value={{ toast, createToast }}>
+            <Layout user={user}>
+              {children}
+              <Toast {...toast} />
+            </Layout>
+          </ToastContext.Provider>
+        </CourierProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>
     </html>
   );
-}
+};
 
 export default () => {
   const { locale, ...data } = useLoaderData<typeof loader>();

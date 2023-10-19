@@ -282,13 +282,22 @@ const Service = (u: User) => {
     ).run(txOrPool);
   };
 
+  const publish = (setId: string) => 
+    arc.queues.publish({
+      name: 'schedules-generated',
+      payload: { setId, meta: { user: u }}
+    });
+
   const saveScheduleSet = async ({ set, legalEntity }: { set: Array<GeneratedSchedule>, legalEntity: LegalEntity }) => {
     const holidayService = HolidaysService(u);
     const approvalsService = ApprovalsService(u);
 
     return db.serializable(pool, async tx => {
-      const approvers = await approvalsService.listApproversByEntityId({ entityId: legalEntity.id }, tx);
+      let approvers = await approvalsService.listApproversByEntityId({ entityId: legalEntity.id }, tx);
       
+      if (approvers.length === 0) 
+        approvers = await approvalsService.addDefaultApprovers({ entityId: legalEntity.id }, tx);
+
       const { id: setId } = create();
       const dummy = { id: DEFAULT, entityId: DEFAULT, entity: DEFAULT, userId: null, userData: null, isOptional: null };
 
@@ -324,6 +333,8 @@ const Service = (u: User) => {
           }), tx);
         }));
       }));
+
+      publish(setId);
 
       return setId;
     });

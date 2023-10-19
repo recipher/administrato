@@ -1,6 +1,7 @@
-import { FormEvent, Fragment, MouseEventHandler, RefObject, useRef } from 'react';
+import { FormEvent, Fragment, MouseEventHandler, RefObject, useEffect, useRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { Form, Link, useLocation, useSearchParams, useSubmit } from '@remix-run/react';
+import { Form, Link, useSearchParams, useSubmit } from '@remix-run/react';
+import { useInbox } from "@trycourier/react-hooks";
 import {
   BellIcon, QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline';
@@ -69,7 +70,35 @@ export const Search = () => {
       />
     </Form>
   );
-}
+};
+
+const Notifications = () => {
+  const inbox = useInbox();
+
+  useEffect(() => {
+    inbox.fetchMessages();
+    const interval = setInterval(() => {
+      inbox.fetchMessages();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // @ts-ignore
+  const hasUnread = inbox?.messages?.filter(m => m.read === null)?.length > 0;
+
+  return (
+    <div className="flex items-center gap-x-4 lg:gap-x-6">
+      <Link to="/notifications" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+        <span className="sr-only">View Notifications</span>
+
+        <span className="relative flex h-6 w-6">
+          <span className={classnames(hasUnread ? "" : "hidden", "animate-ping absolute inline-flex h-2 w-2 right-1 top-0 rounded-full bg-sky-400 opacity-75")} />
+          <BellIcon className="relative inline-flex h-6 w-6" />
+        </span>
+      </Link>
+    </div>
+  );
+};
 
 export default function Header({ user, onClickHelp }: Props & { onClickHelp: MouseEventHandler<HTMLDivElement> }) {
   const { t } = useTranslation();
@@ -105,15 +134,7 @@ export default function Header({ user, onClickHelp }: Props & { onClickHelp: Mou
     <>
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         <Search />
-
-        <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <Link to="/notifications" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
-            <span className="sr-only">View Notifications</span>
-            <BellIcon className="h-6 w-6" aria-hidden="true" />
-          </Link>
-
-          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
-        </div>
+        <Notifications />
 
         <div className="flex items-center gap-x-4 lg:gap-x-6">
           <div onClick={onClickHelp} className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 cursor-pointer">
