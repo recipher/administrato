@@ -28,7 +28,7 @@ type ParentOptions = {
   parent: string;
 };
 
-const service = (u?: User) => {
+const Service = (u?: User) => {
   const getCountry = async ({ isoCode }: IsoCodeOptions) => {
     const [ country ] = await db.sql<s.localities.SQL, s.localities.Selectable[]>`
       SELECT * FROM ${'localities'} WHERE ${{isoCode}} 
@@ -117,6 +117,15 @@ const service = (u?: User) => {
       SELECT * FROM ${'localities'} WHERE ${{parent}} ORDER BY ${'name'}`.run(pool);
   };
 
+  const publish = ({ country, regions }: { country: string, regions: Array<string> }) => {
+    if ([ 'FR', 'DE', 'ES', 'GB' ].includes(country) === false) return;
+
+    arc.queues.publish({
+      name: 'country-added',
+      payload: { country, regions, meta: { user: u }},
+    });
+  };
+
   const syncCountries = async () => {
     const { countries = [] } = await holidayAPI.countries();
 
@@ -127,14 +136,11 @@ const service = (u?: User) => {
       await db.upsert('localities', 
         { name: country.name, isoCode: country.code, diallingCode: data?.diallingCode as string }, 'isoCode').run(pool);
 
-      arc.queues.publish({
-        name: 'sync-holidays',
-        payload: { isoCode: country.code },
-      }, (err) => console.log(err));
+      publish({ country: country.code, regions: country.subdivisions.map(sub => sub.code) });
 
       return db.upsert('localities', country.subdivisions.map(sub => (
         { name: sub.name, isoCode: sub.code, parent: country.code }
-      )), 'isoCode').run(pool)
+      )), 'isoCode').run(pool);
     }));
   };
 
@@ -151,4 +157,4 @@ const service = (u?: User) => {
   };
 };
 
-export default service;
+export default Service;

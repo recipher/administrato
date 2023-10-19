@@ -1,32 +1,33 @@
+import { useRef, useState } from 'react';
 import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
-import { useLoaderData, useSubmit } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
+import { useTranslation } from 'react-i18next';
 
 import { requireUser } from '~/auth/auth.server';
+import { useUser } from '~/hooks';
+import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import ScheduleService from '~/services/scheduler/schedules.server';
 
-import SecurityGroupService, { type SecurityGroup } from '~/services/manage/security-groups.server';
-import ClientService, { type Client } from '~/services/manage/clients.server';
-import LegalEntityService, { type LegalEntity } from '~/services/manage/legal-entities.server';
-import ProviderService, { type Provider } from '~/services/manage/providers.server';
-
+import { type SecurityGroup } from '~/services/manage/security-groups.server';
+import { type Client } from '~/services/manage/clients.server';
+import { type LegalEntity } from '~/services/manage/legal-entities.server';
+import { type Provider } from '~/services/manage/providers.server';
 
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
 import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/selector';
 
+import { Alert, Level } from '~/components';
 import ButtonGroup, { type ButtonGroupButton } from '~/components/button-group';
 
-import { Cancel, Submit,
+import { Cancel, Submit, Hidden,
   Body, Section, Group, Field, Footer,
-  DatePicker, Form, withZod, zfd, z } from '~/components/form';
+  DatePicker, Form, withZod, zfd, z, validationError } from '~/components/form';
 
 import { scheduler } from '~/auth/permissions';
 import toNumber from '~/helpers/to-number';
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useUser } from '~/hooks';
 
 export const handle = {
   name: "generate-schedules",
@@ -34,15 +35,10 @@ export const handle = {
     <Breadcrumb to={`/schedules/${legalEntity?.id}/generate`} name={name} current={current} />
 };
 
-
 type Schedulable = (LegalEntity | Client | Provider | SecurityGroup);
 type SchedulableWithType = Schedulable & { type: string, Icon?: any };
 
-const toSchedulables = (type: string, schedulables: Array<Schedulable>) => {
-  return schedulables.map(auth => ({ ...auth, type, Icon: entities.get(type).Icon }));
-};
-
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
 
@@ -59,6 +55,8 @@ export const validator = withZod(
       .string()
       .nonempty('End date is required')
       .transform((date: string) => new Date(date)),
+    schedulables: z
+      .string(),
   })
 );
 
@@ -66,23 +64,29 @@ export const action = async ({ request, params }: ActionArgs) => {
   const u = await requireUser(request);
   const formData = await request.formData();
 
-  if (formData.get('intent') === 'add-schedulable') {
-    const entity = formData.get('entity'), keyStart = formData.get('keyStart');
-    console.log(entity, keyStart);
-    return null;
-  }
-
-  if (formData.get('intent') === 'remove-schedulable') {
-    const entity = formData.get('entity'), keyStart = formData.get('keyStart');
-    console.log(entity, keyStart);
-    return null;
-  }
-
   const result = await validator.validate(formData);
   
-  if (result.error) return null;
+  if (result.error) return json({ ...validationError(result.error) });
 
-  return redirect(`/schedules/legal-entities`);
+  const { schedulables: schedulablesJson, start, end } = result.data;
+  const schedulables = JSON.parse(schedulablesJson);
+
+  let message, level = Level.Success, redirectTo = ".";
+  if (schedulables.length === 0) {
+    message = "Schedule Generation Error:Please select legal entities to schedule for generation.";
+    level = Level.Error;
+  } else {
+    const service = ScheduleService(u);
+    await service.requestGeneration({ start, end, schedulables });
+  
+    message = "Schedule Generation Requested:A request has been submitted to generate schedules.";
+    redirectTo = "/schedules/legal-entities";
+  }
+  
+  const session = await setFlashMessage({ request, message, level });
+  return redirect(redirectTo, {
+    headers: { "Set-Cookie": await storage.commitSession(session) }
+  });
 };
 
 export default function Provider() {
@@ -90,8 +94,8 @@ export default function Provider() {
   const { t } = useTranslation();
   const { year } = useLoaderData();
   const modal = useRef<RefSelectorModal>(null);
-  const submit = useSubmit();
   const [ entity, setEntity ] = useState<SchedulableWithType>();
+  const [ schedulables, setSchedulables ] = useState<Array<SchedulableWithType>>([]);
 
   const confirm = useRef<RefConfirmModal>(null);
 
@@ -107,17 +111,12 @@ export default function Provider() {
 
   const onConfirmRemove = () => {
     if (entity === undefined) return;
-    submit({ intent: "remove-schedulable", 
-             keyStart: entity.keyStart, keyEnd: entity.keyEnd, 
-             entity: entity.name, type: entity.type }, 
-           { method: "POST", encType: "multipart/form-data" });
+    setSchedulables(() => schedulables.filter(s => s.id !== entity.id));
   };
 
   const handleAdd = (entity: SchedulableWithType, type: string) => {
-    submit({ intent: "add-schedulable", 
-             keyStart: entity.keyStart, keyEnd: entity.keyEnd, 
-             entity: entity.name, type: entity.type }, 
-           { method: "POST", encType: "multipart/form-data" });
+    if (schedulables.find(s => s.id === entity.id)) return;
+    setSchedulables(() => [ ...schedulables, { ...entity, type } ]);
   };
 
   const showModal = (entity: string) => modal.current?.show(entity);
@@ -147,6 +146,25 @@ export default function Provider() {
               security groups to generate schedules for all the legal entities in
               those groups." />
           <Group>
+            <Field span="full" className="-mt-4">
+              {schedulables.length === 0 && <Alert title='No entities selected' level={Level.Warning} className="-mt-0" />}
+              {schedulables.length > 0 && <ul role="list" className="text-md leading-6">
+                {schedulables.map((schedulable: SchedulableWithType) => (
+                  <li key={schedulable.id} className="group flex justify-between gap-x-6 py-2 cursor-pointer">
+                    <div className="text-gray-900 pr-3">
+                      {/* @ts-ignore */}
+                      <span className="font-normal">{t(schedulable.type)} {schedulable.parentId ? t('group') : null}</span>
+                      <span className="font-medium"> {schedulable.name}</span>
+                    </div>
+                      {hasPermission(scheduler.create.schedule) && <button onClick={() => handleRemove(schedulable)}
+                        type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
+                        {t('remove')}
+                      </button>}
+                  </li>
+                ))}
+              </ul>}
+              <Hidden name="schedulables" value={JSON.stringify(schedulables)} />
+            </Field>
             <Field>
               {hasPermission(scheduler.create.schedule) && 
                 <ButtonGroup title="Select for Schedule Generation"

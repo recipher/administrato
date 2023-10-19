@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/queues/generate-schedule/index.ts"],
+  "sourcesContent": ["// learn more about queue functions here: https://arc.codes/queues\nexport async function handler (event) {\n  console.log(JSON.stringify(event, null, 2))\n  return\n}"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACA,eAAsB,QAAS,OAAO;AACpC,UAAQ,IAAI,KAAK,UAAU,OAAO,MAAM,CAAC,CAAC;AAC1C;AACF;",
+  "names": []
+}

@@ -13,21 +13,21 @@ values
 
 insert into milestones (id, identifier, description, index, interval, target, entities, "setId")
 values
-  ('01HCBKQW7HGMS673JYV0YEGDKH', 'first', 'First', 0, null, FALSE, ARRAY ['provider','service-centre'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
-  ('01HCBM2T851SVXW3VN8P7FGM2', 'second', 'Second', 1, 1, FALSE, ARRAY ['provider','service-centre', 'client'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
+  ('01HCBKQW7HGMS673JYV0YEGDKH', 'first', 'First', 0, null, FALSE, ARRAY ['provider','security-group'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
+  ('01HCBM2T851SVXW3VN8P7FGM2', 'second', 'Second', 1, 1, FALSE, ARRAY ['provider','security-group', 'client'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
   ('01HCBM2T85X6J8V60MK67VCPW1', 'third', 'Third', 2, 0, FALSE, ARRAY ['provider','client'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
-  ('01HCBM3XZABZX1ZMFMSNW3453N', 'fourth', 'Fourth', 3, 3, FALSE, ARRAY ['service-centre'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
+  ('01HCBM3XZABZX1ZMFMSNW3453N', 'fourth', 'Fourth', 3, 3, FALSE, ARRAY ['security-group'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
   ('01HCBM3XZBKKBE5H7W5JWBDRJ6', 'target', 'Target', 4, 2, TRUE, ARRAY ['legal-entity'], '01HCBKHC7Z70JR4KB454HJP1Y3'),
   ('01HCBM3XZBCGNVBC2XYX0XPVJB', 'one', 'One', 0, 0, FALSE, ARRAY ['provider'], '01HCBKHNQX9D061VY631505CJZ'),
-  ('01HCBM3XZBVYB5M1SK9Y78PHA8', 'two', 'Two', 1, 1, FALSE, ARRAY ['provider','service-centre'], '01HCBKHNQX9D061VY631505CJZ'),
-  ('01HCBM3XZBNSFTQF2YSNCJPKA7', 'three', 'Three', 2, 1, FALSE, ARRAY ['service-centre'], '01HCBKHNQX9D061VY631505CJZ'),
+  ('01HCBM3XZBVYB5M1SK9Y78PHA8', 'two', 'Two', 1, 1, FALSE, ARRAY ['provider','security-group'], '01HCBKHNQX9D061VY631505CJZ'),
+  ('01HCBM3XZBNSFTQF2YSNCJPKA7', 'three', 'Three', 2, 1, FALSE, ARRAY ['security-group'], '01HCBKHNQX9D061VY631505CJZ'),
   ('01HCBM3XZB378W56ZRPA0P66Q1', 'target', 'Target', 3, 2, TRUE, ARRAY ['legal-entity'], '01HCBKHNQX9D061VY631505CJZ'),
   ('01HCBXQ1T8E9YSS4RS4NKK5H2V', 'alpha', 'Alpha', 0, null, FALSE, ARRAY ['provider'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
-  ('01HCBXQ1T80N9C65GZAAXFHT0H', 'beta', 'Beta', 1, 3, FALSE, ARRAY ['provider','service-centre'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
-  ('01HCBXQ1T88SZJKFXNECJM8S03', 'gamma', 'Gamma', 2, 1, FALSE, ARRAY ['client', 'service-centre'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
+  ('01HCBXQ1T80N9C65GZAAXFHT0H', 'beta', 'Beta', 1, 3, FALSE, ARRAY ['provider','security-group'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
+  ('01HCBXQ1T88SZJKFXNECJM8S03', 'gamma', 'Gamma', 2, 1, FALSE, ARRAY ['client', 'security-group'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
   ('01HCBXQ1T8ZKN2CH2H58T1Y81H', 'target', 'Target', 3, 2, TRUE, ARRAY ['client', 'legal-entity'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
-  ('01HCBXQ1T8E4RVFXR7BDCF5QAD', 'epsilon', 'Epsilon', 4, 3, FALSE, ARRAY ['service-centre'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
-  ('01HCBXQ1T8SRYNY3KRCSVMCJM4', 'zeta', 'Zeta', 5, 1, FALSE, ARRAY ['service-centre'], '01HCBXYRXCQ9SRWR9K3KMW1NGX');
+  ('01HCBXQ1T8E4RVFXR7BDCF5QAD', 'epsilon', 'Epsilon', 4, 3, FALSE, ARRAY ['security-group'], '01HCBXYRXCQ9SRWR9K3KMW1NGX'),
+  ('01HCBXQ1T8SRYNY3KRCSVMCJM4', 'zeta', 'Zeta', 5, 1, FALSE, ARRAY ['security-group'], '01HCBXYRXCQ9SRWR9K3KMW1NGX');
 
 insert into "securityGroups" (id, name, identifier, "keyStart", "keyEnd", localities)
 values

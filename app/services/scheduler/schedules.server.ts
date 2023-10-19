@@ -1,6 +1,7 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
+import arc from '@architect/functions';
 
 import { mapSeries } from 'bluebird';
 
@@ -49,6 +50,12 @@ import { Status } from './approvals.server';
 export { Status } from './approvals.server';
 
 const DEFAULT = '-';
+
+export type Schedulable = {
+  keyStart: number;
+  keyEnd: number;
+  type: string;
+};
 
 const Service = (u: User) => {
   const getScheduleById = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
@@ -339,6 +346,13 @@ const Service = (u: User) => {
     return saveScheduleSet({ set, legalEntity });
   };
 
+  const requestGeneration = (params: { schedulables: Array<Schedulable>, start: Date, end: Date }) => {
+    arc.queues.publish({
+      name: 'schedules-requested',
+      payload: { ...params, meta: { user: u }},      
+    });
+  };
+
   type ListProps = { legalEntityId: string; year?: number, status: Status | null };
 
   const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps, txOrPool: TxOrPool = pool) => {
@@ -381,6 +395,7 @@ const Service = (u: User) => {
   return { 
     generate, 
     changeDate, 
+    requestGeneration,
     getScheduleById, 
     getScheduleByIdentity,
     getSchedules, 

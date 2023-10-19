@@ -36,10 +36,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const holidayService = HolidayService(u);
   let holidays = await holidayService.listHolidaysByCountry({ locality: isoCode, year });
 
-  if (holidays.length === 0) {
-    const synced = await holidayService.syncHolidays({ year, locality: isoCode });
-    if (synced !== undefined) holidays = synced;
-  }
+  // if (holidays.length === 0) {
+  //   const synced = await holidayService.syncHolidays({ year, locality: isoCode });
+  //   if (synced !== undefined) holidays = synced;
+  // }
 
   return { holidays, country, year };
 };

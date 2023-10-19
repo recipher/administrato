@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { ArrowPathIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import CountryService, { type Country } from '~/services/countries.server';
 import { useUser } from '~/hooks';
+import { requireUser } from '~/auth/auth.server';
+
+import CountryService, { type Country } from '~/services/countries.server';
+
 import Header from '~/components/header/advanced';
 import Alert, { Level } from '~/components/alert';
 import Pagination from '~/components/pagination';
@@ -35,7 +38,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const action = async ({ request }: ActionArgs) => {
-  const service = CountryService();
+  const u = await requireUser(request);
+  const service = CountryService(u);
   const countries = await service.syncCountries();
 
   return { countries };

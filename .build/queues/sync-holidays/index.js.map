@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/queues/sync-holidays/index.ts"],
+  "sourcesContent": ["// learn more about queue functions here: https://arc.codes/queues\nexport async function handler (event) {\n  console.log(event);\n  return;\n};"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;AAAA;AAAA;AAAA;AAAA;AAAA;AACA,eAAsB,QAAS,OAAO;AACpC,UAAQ,IAAI,KAAK;AACjB;AACF;",
+  "names": []
+}

@@ -16,7 +16,7 @@ module.exports = {
     /^unified.*/,
     "@mdx-js/react",
   ],
-    publicPath: "/_static/build/",
+  publicPath: "/_static/build/",
   postcss: true,
   server: "./server.ts",
   serverBuildPath: "server/index.js",
