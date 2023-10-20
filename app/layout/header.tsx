@@ -88,7 +88,7 @@ const Notifications = () => {
 
   return (
     <div className="flex items-center gap-x-4 lg:gap-x-6">
-      <Link to="/notifications" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+      <Link to="/notifications/unread" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
         <span className="sr-only">View Notifications</span>
 
         <span className="relative flex h-6 w-6">

@@ -11,7 +11,7 @@ export type TabsProps = Array<{
   to: string;
   disabled?: boolean;
   hidden?: boolean;
-  count?: string;
+  count?: string | number | undefined;
 }>;
 
 type Props = {

@@ -1,21 +1,29 @@
 import { forwardRef, Fragment, Ref, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { type LoaderArgs, json } from '@remix-run/node';
 import { Dialog, Transition } from '@headlessui/react'
 import { type IInboxMessagePreview, useInbox } from '@trycourier/react-hooks';
 import { formatRelative } from 'date-fns';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
-import { BellIcon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { BellIcon, EnvelopeIcon, EnvelopeOpenIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { List, ListItem, ListContext } from '~/components/list';
 
+import Header from '~/components/header';
 import { Alert, Level } from "~/components";
 import classnames from "~/helpers/classnames";
+import { useLoaderData } from "@remix-run/react";
 
 export const handle = {
   name: "my-notifications",
   breadcrumb: ({ current, name }: BreadcrumbProps) => 
     <Breadcrumb Icon={BellIcon} to='/notifications' name={name} current={current} />
+};
+
+export const loader = async ({ params }: LoaderArgs) => {
+  const { filter } = params;
+  return json({ filter });
 };
 
 export interface RefMessageModal {
@@ -119,8 +127,14 @@ const MessageModal = forwardRef((props: Props, ref: Ref<RefMessageModal>) => {
   );
 });
 
+const Read = () => <EnvelopeOpenIcon className="h-6 w-6 text-gray-400" />;
+const Unread = () => <EnvelopeIcon className="h-6 w-6 text-indigo-600" />;
+
 export default () => {
+  const { filter } = useLoaderData();
   const [ loaded, setLoaded ] = useState(false);
+  const [ unreadCount, setUnreadCount ] = useState<number | undefined>();
+  const [ messages, setMessages ] = useState<Array<IInboxMessagePreview>>();
 
   const inbox = useInbox();
   const modal = useRef<RefMessageModal>(null);
@@ -134,15 +148,24 @@ export default () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const unread = inbox?.messages?.filter(m => m.read == null);
+    setUnreadCount(unread?.length);
+    if (filter === "unread") 
+      setMessages(() => unread ? [ ...unread ] : undefined);
+    else 
+      setMessages(() => inbox?.messages ? [ ...inbox.messages ] : undefined);
+  }, [inbox.messages, filter]);
+
   const Item = (message: IInboxMessagePreview) => 
-    <ListItem data={
-      <div className={classnames(message.read ? "font-normal text-gray-600" : "font-semibold text-gray-900")}>
+    <ListItem image={message.read ? <Read/> : <Unread/>} data={
+      <div className={classnames(message.read ? "font-normal text-gray-400" : "font-semibold text-indigo-500")}>
         {message.title}
       </div>} 
     />;
   const Context = (message: IInboxMessagePreview) => 
     <ListContext select={false} data={
-      <div className={classnames(message.read ? "font-normal text-gray-600" : "font-medium text-gray-900")}>
+      <div className={classnames(message.read ? "font-normal text-gray-400" : "font-medium text-gray-800")}>
         {formatRelative(new Date(message.created), new Date())}
       </div>} 
     />;
@@ -159,11 +182,17 @@ export default () => {
     if (message) inbox.markMessageArchived(message.messageId);
   };
 
-  if ((inbox.isLoading && !loaded) || inbox.messages === undefined) return null;
+  const tabs = [
+    { name: "Unread notifications", to: '/notifications/unread', count: unreadCount },
+    { name: "All notifications", to: '/notifications/all' },
+  ];
+
+  if ((inbox.isLoading && !loaded) || messages === undefined) return null;
   return (
     <>
-      {inbox.messages.length
-        ? <List data={inbox.messages} renderContext={Context} renderItem={Item} onClick={handleClick} idKey="messageId" />
+      <Header title="My Notifications" tabs={tabs} />
+      {messages?.length
+        ? <List data={messages} renderContext={Context} renderItem={Item} onClick={handleClick} idKey="messageId" />
         : <Alert title="No notifications" level={Level.Info} />}
 
       <MessageModal ref={modal} onArchive={handleArchive} onRead={handleRead} />
