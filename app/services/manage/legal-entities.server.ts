@@ -5,7 +5,8 @@ import pool from '../db.server';
 export { default as create } from '../id.server';
 
 import SecurityGroupService, { type SecurityGroup } from './security-groups.server';
-import { type Provider } from './providers.server';
+import ProviderService, { type Provider } from './providers.server';
+import ClientService from './clients.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count, TxOrPool,
   QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
@@ -153,6 +154,17 @@ const Service = (u: User) => {
     return legalEntity;
   };
 
+  const getRelatedEntities = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
+    return db.serializable(txOrPool, async tx => {
+      const bypass = { bypassKeyCheck: true };
+      const legalEntity = await getLegalEntity({ id }, bypass, tx);
+      const securityGroup = await SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId }, bypass, tx);
+      const provider = legalEntity.providerId ? await ProviderService(u).getProvider({ id: legalEntity.providerId }, bypass, tx) : undefined;
+      const client = legalEntity.clientId ? await ClientService(u).getClient({ id: legalEntity.clientId }, bypass, tx) : undefined;
+      return { legalEntity, securityGroup, provider, client };
+    });
+  };
+
   // Required to determine exactly which entities a user has authorization for
   const listLegalEntitiesForKeys = async ({ keys }: KeyQueryOptions, txOrPool: TxOrPool = pool) => {
     if (keys === undefined) return [];
@@ -167,6 +179,7 @@ const Service = (u: User) => {
     updateLegalEntity,
     getLegalEntity,
     getLegalEntityByName,
+    getRelatedEntities,
     searchLegalEntities,
     countLegalEntities,
     listLegalEntities,

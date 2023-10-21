@@ -6,7 +6,10 @@ import { intlFormat } from 'date-fns';
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import LegalEntityService from '~/services/manage/legal-entities.server';
+import LegalEntityService, { type LegalEntity } from '~/services/manage/legal-entities.server';
+import { type SecurityGroup } from '~/services/manage/security-groups.server';
+import { type Client } from '~/services/manage/clients.server';
+import { type Provider } from '~/services/manage/providers.server';
 import ScheduleService, { Status } from '~/services/scheduler/schedules.server';
 import { type Holiday } from '~/services/scheduler/holidays.server';
 import CountryService, { type Country } from '~/services/countries.server';
@@ -21,6 +24,8 @@ import { Flag } from '~/components/countries/flag';
 import toNumber from '~/helpers/to-number';
 import classnames from '~/helpers/classnames';
 import { useLocale } from 'remix-i18next';
+
+type HasLocality = SecurityGroup | Provider | Client | LegalEntity;
 
 export const handle = {
   i18n: "schedule",
@@ -41,7 +46,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const u = await requireUser(request);
 
   const service = LegalEntityService(u);
-  const legalEntity = await service.getLegalEntity({ id });
+  const { legalEntity, ...entities } = await service.getRelatedEntities({ id });
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 
@@ -54,22 +59,24 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const statuses = Object.values(Status).filter(item => isNaN(Number(item)));
 
-  return json({ legalEntity, holidays, year, statuses, status, countries });
+  return json({ legalEntity, ...entities, holidays, year, statuses, status, countries });
 };
 
 const noOp = () => null!
 
 const Holidays = () => {
-  const { t } = useTranslation("schedule");
+  const { t } = useTranslation();
+  const { t: ts } = useTranslation("schedule");
   const locale = useLocale();
-  const { holidays, countries, year, status, statuses } = useLoaderData();
+  const { legalEntity, client, provider, securityGroup, 
+    holidays, countries, year, status, statuses } = useLoaderData();
 
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
 
   const yearData = ((year: number) => [...Array(5).keys()].map(index => year + index - 1))(new Date().getUTCFullYear())
     .map((year: number) => ({ name: year.toString() }));
-  const statusData = statuses.map((status: Status) => ({ name: t(status), value: status }));
+  const statusData = statuses.map((status: Status) => ({ name: ts(status), value: status }));
   const handleYearClick = (year: string) => handleClick("year", year);
   const handleStatusClick = (status: string) => handleClick("status", status);
   const handleClick = (param: string, value: string ) => {
@@ -92,6 +99,19 @@ const Holidays = () => {
   const localities = holidays.reduce((localities: Array<string>, holiday: Holiday) => 
     localities.includes(holiday.locality) ? localities : [ ...localities, holiday.locality ], []);
 
+  const entities = (locality: string) => {
+    const data = new Map<string, HasLocality>([ 
+      [ "provider", provider ],
+      [ "client", client ],
+      [ "security-group", securityGroup ],
+      [ "legal-entity", legalEntity ]
+    ]);
+
+    return Array.from(data.keys()).map((entity: string) => 
+      data.get(entity)?.localities?.includes(locality) ? entity : undefined)
+      .reduce((entities: string[], e) => e === undefined ? entities: [ ...entities, e ], []);
+  };
+
   return (
     <>
       <Tabs tabs={yearData} selected={year.toString()} onClick={handleYearClick} />
@@ -108,6 +128,9 @@ const Holidays = () => {
                 <Flag size={6} isoCode={country.parentId ? country.parentId : country.isoCode} />
                 <div className="ml-3">{country.name}</div>
               </h3>
+              <ul className="flex text-md text-gray-500">
+                {entities(locality).map(e => <li key={e} className="mr-3">{t(e)}</li>)}
+              </ul>
               <List data={holidays.filter((h: Holiday) => h.locality === locality)} 
                 onClick={noOp} renderItem={Item} renderContext={() => <ListContext select={false} />} />
             </div>

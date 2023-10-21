@@ -127,7 +127,6 @@ const Service = (u: User) => {
     saveWorkingDays, 
     removeWorkingDays,
     getWorkingDays,
-    listHolidays,
     listWorkingDays 
   };
 };
