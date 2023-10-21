@@ -1,26 +1,82 @@
 import { Fragment } from 'react';
 import { NavLink, useNavigate } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
+import { Menu, Transition } from "@headlessui/react";
+
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 import classnames from '~/helpers/classnames';
 
-const MAX_MOBILE_TABS = 3;
-
-export type TabsProps = Array<{
+type TabProp = {
   name: string;
   to: string;
   disabled?: boolean;
   hidden?: boolean;
   count?: string | number | undefined;
-}>;
-
-type Props = {
-  tabs: TabsProps,
 };
+export type TabsProps = Array<TabProp>;
+type Props = { tabs: TabsProps, max?: number };
 
-export default function Tabs({ tabs }: Props) {
+const Dropdown = ({ tabs }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  if (tabs.length === 0) return null;
+
+  return (
+    <Menu as="div" className="relative">
+      <Menu.Button className="-m-2 block py-2.5 text-gray-500 hover:text-gray-900 outline-none">
+        <span className="sr-only">Open options</span>
+        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+      </Menu.Button>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 z-10 mt-4 min-w-[10rem] origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+          {tabs.map(tab => {
+            return (
+              <Menu.Item key={tab.name} >
+                <NavLink to={tab.to}>
+                  {({ isActive, isPending }) => (
+                    <div aria-current={isActive ? 'page' : undefined}
+                      className={classnames(isActive
+                        ? 'text-indigo-600'
+                        : 'text-gray-500 hover:text-gray-700',
+                      'block px-3 py-1 text-sm leading-6'
+                    )}>
+                      {t(tab.name)}
+                      {tab.count ? (
+                        <div
+                          className={classnames(
+                            isActive ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
+                            'ml-3 hidden rounded-full px-2 text-md md:inline-block'
+                          )}
+                        >
+                          {tab.count}
+                        </div>) : null}
+                    </div>
+                )}</NavLink>
+              </Menu.Item>
+            );
+          })} 
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  );
+};
+
+export default function Tabs({ tabs, max = 6 }: Props) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const primary = tabs.slice(0, max);
+  const secondary = tabs.slice(max, tabs.length);
 
   return (
     <>
@@ -39,9 +95,9 @@ export default function Tabs({ tabs }: Props) {
             {tabs.map((tab) => <option key={tab.name} value={tab.to}>{t(tab.name)}</option>)}
           </select>
         </div>
-        <div className="hidden sm:block">
+        <div className="hidden flex justify-between sm:block">
           <nav className="-mb-px flex space-x-8">
-            {tabs.map((tab) => (
+            {primary.map((tab) => (
               <Fragment key={tab.name}>
                 {tab.hidden ? null :
                   tab.disabled
@@ -70,6 +126,7 @@ export default function Tabs({ tabs }: Props) {
                       )}</NavLink>}
               </Fragment>
             ))}
+            <Dropdown tabs={secondary} />
             {tabs.length === 0 && <div className="pb-3" />}
           </nav>
         </div>

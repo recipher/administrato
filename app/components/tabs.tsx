@@ -67,7 +67,7 @@ export default ({ tabs, selected, onClick }: Props) => {
               </label>
               <select
                 name="tabs"
-                className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                className="block w-full rounded-md border-gray-300 mb-4 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 defaultValue={selected}
                 onChange={(e) => onClick(e.target.value)}
               >

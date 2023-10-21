@@ -126,23 +126,33 @@ const Service = (u: User) => {
       ORDER BY ${'date'} ASC`
     .run(pool);
   };
-
-  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }: ListOptions & EntityOptions) => {
+  
+  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }: ListOptions & EntityOptions, { includeMain }: { includeMain: boolean } = { includeMain: true }, txOrPool: TxOrPool = pool) => {
     const byYear = db.sql`DATE_PART('year', ${'date'}) = ${db.param(year)}`;
     const byMonth = month === undefined ? db.sql`` 
       : db.sql`AND DATE_PART('month', ${'date'}) = ${db.param(month)}`;
-    const holidays = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+    
+    const main = db.sql<s.holidays.SQL>`
       SELECT * FROM ${'holidays'} 
       WHERE 
         ${{locality}} AND ${'entityId'} IS NULL AND 
         ${byYear} ${byMonth}
-      UNION ALL
+    `;
+
+    const entity = db.sql<s.holidays.SQL>`
       SELECT * from ${'holidays'}
       WHERE 
         ${{locality}} AND ${{entityId}} AND
         ${byYear} ${byMonth}
+    `;
+
+    if (includeMain === false) 
+      return db.sql`${entity} ORDER BY ${'date'} ASC`.run(txOrPool);
+
+    const holidays = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
+      ${main} UNION ALL ${entity}
       ORDER BY ${'date'} ASC`
-    .run(pool);
+    .run(txOrPool);
 
     return holidays.reduce((holidays: Array<Holiday>, holiday: Holiday) => {
       const existing = holidays.find(h => isSameDate(h.date, holiday.date));

@@ -16,7 +16,7 @@ export type CountryData = { id: string, countries: Array<string>};
 
 type HolidayProps = {
   countries: Array<CountryData>;
-  month: number;
+  month?: number;
   year: number;
 };
 
@@ -127,6 +127,7 @@ const Service = (u: User) => {
     saveWorkingDays, 
     removeWorkingDays,
     getWorkingDays,
+    listHolidays,
     listWorkingDays 
   };
 };

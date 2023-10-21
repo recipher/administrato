@@ -127,11 +127,10 @@ const Favourites = ({ favourites }: { favourites: Array<Favourite> }) => {
 
   return (
     <>
-      {favourites.length === 0 && <Alert title='No favourites' level={Level.Info} />}
-      {favourites.length > 0 && <ul role="list" className="space-y-3 divide-y divide-gray-100 text-md leading-6">
+      {(favourites === undefined || favourites.length === 0) && <Alert title='No favourites' level={Level.Info} />}
+      {favourites?.length > 0 && <ul role="list" className="space-y-3 divide-y divide-gray-100 text-md leading-6">
         {favourites.map((favourite: Favourite) => (
           <li key={favourite.pathname} className="group pt-3 sm:flex cursor-pointer">
-
             <Link to={favourite.pathname} className="mt-1 flex justify-between gap-x-4 sm:mt-0 sm:flex-auto">
               <div className="text-gray-800 group-hover:text-gray-600">
                 {favourite.name}

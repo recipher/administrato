@@ -181,9 +181,9 @@ const Service = (u: User) => {
   const byIndexAsc = (l: GSD, r: GSD) => l.index - r.index;
   const byIndexDesc = (l: GSD, r: GSD) => r.index - l.index;
 
-  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
+  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }, txOrPool: TxOrPool = pool) => {
     const service = MilestoneService(u);
-    return service.getCountriesForMilestone({ milestone, legalEntityId });
+    return service.getCountriesForMilestone({ milestone, legalEntityId }, txOrPool);
   };
 
   const determinePeriods = async ({ legalEntity, countries, start, end }: GeneratePeriodProps) => {
@@ -403,6 +403,35 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
+  const listHolidaysForSchedules = async ({ legalEntityId, year, status }: { legalEntityId: string, year: number, status: Status }, txOrPool: TxOrPool = pool) => {
+    const service = HolidaysService(u);
+
+    return db.serializable(txOrPool, async tx => {
+      const milestones = await MilestoneService(u).listMilestonesForLegalEntityId({ legalEntityId }, undefined, tx);
+      const schedules = await listSchedulesByLegalEntity({ legalEntityId, year, status }, tx);
+
+      const countries = await Promise.all(milestones.map(async (milestone) => {
+        return getCountriesForMilestone({ milestone, legalEntityId }, tx);
+      }));
+
+      const localities = countries.reduce((localities: Array<string>, country) =>
+        localities.concat(country.reduce((localities: Array<string>, country: any) =>
+          localities.concat(country.countries), [])), [])
+        .reduce((localities: Array<string>, locality) => 
+          localities.includes(locality) ? localities : [ ...localities, locality ], []);
+
+      const holidays = await Promise.all(localities.map(async (locality: string) => {
+        const holidays = await Promise.all(schedules.map(async ({ id: entityId }) => {
+          return service.listHolidaysByCountryForEntity({ year, locality, entityId }, { includeMain: false }, tx);
+        }));
+        return holidays.flat();
+      }));
+      return holidays.flat().reduce((holidays: Array<Holiday>, holiday) =>
+        holidays.filter(h => isSameDate(h.date, holiday.date) && h.locality === holiday.locality).length > 0
+          ? holidays : [ ...holidays, holiday ], []);
+    });
+  };
+
   return { 
     generate, 
     changeDate, 
@@ -411,7 +440,8 @@ const Service = (u: User) => {
     getScheduleByIdentity,
     getSchedules, 
     deleteSchedule, 
-    listSchedulesByLegalEntity 
+    listSchedulesByLegalEntity,
+    listHolidaysForSchedules,
   };
 };
 

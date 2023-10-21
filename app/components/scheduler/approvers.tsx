@@ -1,14 +1,10 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { json, redirect, type LoaderArgs, ActionArgs } from '@remix-run/node';
-import { useLoaderData, useSubmit } from '@remix-run/react';
+import { useSubmit } from '@remix-run/react';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 
-import { notFound, badRequest } from '~/utility/errors';
-
 import { type User } from '~/auth/auth.server';
-import { useUser } from '~/hooks';
 
 import { LegalEntity } from '~/services/manage/legal-entities.server';
 import { type Approver } from '~/services/scheduler/approvals.server';
@@ -26,10 +22,11 @@ type Props = {
   legalEntity: LegalEntity;
   user: User;
   setId?: string | null;
+  schedules?: Array<string> | null;
   className?: string 
 };
 
-export const Approvers = ({ approvers, legalEntity, user, setId = null, className = "" }: Props) => {
+export const Approvers = ({ approvers, legalEntity, user, setId = null, schedules = null, className = "" }: Props) => {
   const { t } = useTranslation();
 
   const modal = useRef<RefModal>(null);
@@ -55,16 +52,16 @@ export const Approvers = ({ approvers, legalEntity, user, setId = null, classNam
              // @ts-ignore
              user: { id: approver.userId, name: approver.userData?.name },
              legalEntity: { id: legalEntity.id, name: legalEntity.name },
-             setId
+             setId, schedules
            },
       { method: "POST", encType: "application/json" });
   };
 
-  const handleAdd = (user: User) => {
+  const handleAdd = (user: User) => {console.log(setId)
     submit({ intent: "add-approver", 
              user: { id: user.id, name: user.name, email: user.email },
              legalEntity: { id: legalEntity.id, name: legalEntity.name },
-             setId
+             setId, schedules
            },
       { method: "POST", encType: "application/json" });
   };
@@ -73,11 +70,11 @@ export const Approvers = ({ approvers, legalEntity, user, setId = null, classNam
 
   return (
     <>
-      {approvers.length <= 0 && 
-        <Alert title='No default approvers' level={Level.Warning} className="-mt-0" />}
+      {approvers?.length <= 0 && 
+        <Alert title='No approvers' level={Level.Warning} className="-mt-0" />}
 
       <ul role="list" className={classnames(className, "text-md leading-6")}>
-        {approvers.map((approver: Approver) => (
+        {approvers?.map((approver: Approver) => (
           <li key={approver.id} className="group flex justify-between gap-x-6 py-4 cursor-pointer">
             <div>
               {/* @ts-ignore */}

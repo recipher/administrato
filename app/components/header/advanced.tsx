@@ -207,13 +207,13 @@ export default function Header({ title, navigation = [], subtitle, icon, tabs = 
         <div className={classnames(icon ? "-ml-1" : "", "flex items-center")}>
           <Title title={title} subtitle={subtitle} icon={icon} navigation={navigation} />
         </div>
-        <div className="ml-4 flex flex-shrink-0 pt-3">
+        <div className="-ml-3 sm:ml-4 flex flex-shrink-0 pt-3">
           {actions.length > 0 && <Buttons actions={actions} group={group} />}
         </div>
       </div>
-      <div className="-ml-4 flex flex-wrap items-center justify-between sm:flex-nowrap">
+      <div className="-ml-4 flex flex-auto items-center justify-between sm:flex-nowrap">
         <div className="ml-4 mt-4">
-          <div className="flex items-center">
+          <div className="flex flex-auto items-center">
             {tabs.length > 0 && <Tabs tabs={tabs} />}
             {additionalFilters && <AdditionalFilter {...additionalFilters} />}
           </div>

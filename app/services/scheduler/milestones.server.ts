@@ -18,25 +18,25 @@ export type Milestone = s.milestones.Selectable;
 export type MilestoneSet = s.milestoneSets.Selectable & { milestones: Array<Milestone>};
 
 const Service = (u: User) => {
-  const addMilestoneSet = async (milestoneSet: s.milestoneSets.Insertable) => {
+  const addMilestoneSet = async (milestoneSet: s.milestoneSets.Insertable, txOrPool: TxOrPool = pool) => {
     const [inserted] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       INSERT INTO ${'milestoneSets'} (${db.cols(milestoneSet)})
       VALUES (${db.vals(milestoneSet)}) RETURNING *
-    `.run(pool);
+    `.run(txOrPool);
 
     return inserted;
   };
 
   const addMilestone = async (milestone: s.milestones.Insertable, txOrPool: TxOrPool = pool) => {
-    const latest = await getLatestMilestonesForSet({ setId: milestone.setId as string })
-
-    milestone.index = latest === undefined ? 0 : (latest.index || 0) + 1;
-    milestone.identifier = (milestone.identifier as string)
-      .replace(/([a-z])([A-Z])/g, "$1-$2")
-      .replace(/[\s_]+/g, '-')
-      .toLowerCase();
-
     return db.serializable(txOrPool, async tx => {
+      const latest = await getLatestMilestonesForSet({ setId: milestone.setId as string }, tx)
+
+      milestone.index = latest === undefined ? 0 : (latest.index || 0) + 1;
+      milestone.identifier = (milestone.identifier as string)
+        .replace(/([a-z])([A-Z])/g, "$1-$2")
+        .replace(/[\s_]+/g, '-')
+        .toLowerCase();
+
       if (milestone.target) await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
         UPDATE ${'milestones'} 
         SET ${'target'} = FALSE, ${'updatedAt'} = now() 
@@ -52,32 +52,32 @@ const Service = (u: User) => {
     });
   };
 
-  const getMilestoneSetById = async ({ id }: { id: string }) => {
+  const getMilestoneSetById = async ({ id }: { id: string }, txOrPool: TxOrPool = pool) => {
     const [ milestoneSet ] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       SELECT * FROM ${'milestoneSets'} 
       WHERE ${'id'} = ${db.param(id)} OR 
             LOWER(${'identifier'}) = ${db.param(id.toLowerCase())}
-    `.run(pool);
+    `.run(txOrPool);
     return milestoneSet;
   };
 
-  const getDefaultMilestoneSet = async () => {
+  const getDefaultMilestoneSet = async (txOrPool: TxOrPool = pool) => {
     const [ milestoneSet ] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       SELECT * FROM ${'milestoneSets'} 
       ORDER BY ${'isDefault'} DESC
       LIMIT 1
-    `.run(pool);
+    `.run(txOrPool);
     return milestoneSet;
   };
 
-  const listMilestonesByDefaultSet = async ({ sortDirection }: QueryOptions = { sortDirection: DESC }) => {
+  const listMilestonesByDefaultSet = async ({ sortDirection }: QueryOptions = { sortDirection: DESC }, txOrPool: TxOrPool = pool) => {
     if (sortDirection == null) sortDirection = DESC;
     const milestones = await db.sql<s.milestones.SQL | s.milestoneSets.SQL, s.milestones.Selectable[]>`
       SELECT ${'milestones'}.* FROM ${'milestones'} 
       LEFT JOIN ${'milestoneSets'} ON ${'milestoneSets'}.${'id'} = ${'milestones'}.${'setId'}
       WHERE ${'milestoneSets'}.${'isDefault'} = TRUE
       ORDER BY ${'index'} ${db.raw(sortDirection)}
-    `.run(pool);
+    `.run(txOrPool);
 
     if (milestones.length) return milestones;
 
@@ -89,31 +89,36 @@ const Service = (u: User) => {
         LIMIT 1
       )
       ORDER BY ${'index'} ${db.raw(sortDirection)}
-    `.run(pool);
+    `.run(txOrPool);
   };
 
-  const listMilestonesBySet = async ({ setId }: { setId: string }, { sortDirection }: QueryOptions = { sortDirection: DESC }) => {
+  const listMilestonesBySet = async ({ setId }: { setId: string }, { sortDirection }: QueryOptions = { sortDirection: DESC }, txOrPool: TxOrPool = pool) => {
     if (sortDirection == null) sortDirection = DESC;
     return db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
       SELECT * FROM ${'milestones'} 
       WHERE ${{setId}}
       ORDER BY ${'index'} ${db.raw(sortDirection)}
-    `.run(pool);
+    `.run(txOrPool);
   };
 
   const getMilestoneSetByIdOrDefault = async ({ id }: { id: string | null }) => {
     return id === null ? getDefaultMilestoneSet() : getMilestoneSetById({ id });
   };
 
-  const listMilestonesBySetOrDefault = async ({ setId }: { setId: string | null }, options: QueryOptions = {}) => {
-    return setId === null ? listMilestonesByDefaultSet(options) : listMilestonesBySet({ setId }, options);
+  const listMilestonesBySetOrDefault = async ({ setId }: { setId: string | null }, options: QueryOptions = {}, txOrPool: TxOrPool = pool) => {
+    return setId === null ? listMilestonesByDefaultSet(options, txOrPool) : listMilestonesBySet({ setId }, options, txOrPool);
   };
 
-  const listMilestonesForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }, options: QueryOptions = {}) => {
-    const { milestoneSetId: setId } = legalEntity;
-    const milestones = await listMilestonesBySetOrDefault({ setId }, options);
+  const listMilestonesForLegalEntity = async ({ legalEntity }: { legalEntity: LegalEntity }, options: QueryOptions = {}, txOrPool: TxOrPool = pool) => {
+      const { milestoneSetId: setId } = legalEntity;
+    const milestones = await listMilestonesBySetOrDefault({ setId }, options, txOrPool);
     if (milestones.length === 0) throw new Error('No milestones found');
     return milestones;
+  };
+
+  const listMilestonesForLegalEntityId = async ({ legalEntityId: id }: { legalEntityId: string }, options: QueryOptions = {}, txOrPool: TxOrPool = pool) => {
+    const legalEntity = await LegalEntityService(u).getLegalEntity({ id }, { bypassKeyCheck: false }, txOrPool);
+    return listMilestonesForLegalEntity({ legalEntity }, options, txOrPool);
   };
 
   const getMilestonesBySetAboveIndex = async ({ setId, index }: { setId: string, index: number }, txOrPool: TxOrPool = pool) => {
@@ -222,8 +227,8 @@ const Service = (u: User) => {
     });
   };
 
-  const getLatestMilestonesForSet = async ({ setId }: { setId: string }) => {
-    const milestones = await listMilestonesBySet({ setId });
+  const getLatestMilestonesForSet = async ({ setId }: { setId: string }, txOrPool: TxOrPool = pool) => {
+    const milestones = await listMilestonesBySet({ setId }, undefined, txOrPool);
     if (milestones.length === 0) return;
 
     return milestones.reduce((latest: Milestone, milestone: Milestone) =>
@@ -240,17 +245,17 @@ const Service = (u: User) => {
     }).run(pool);
   };
 
-  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }) => {
+  const getCountriesForMilestone = async ({ milestone, legalEntityId }: { milestone: Milestone, legalEntityId: string }, txOrPool: TxOrPool = pool) => {
     const legalEntity = await LegalEntityService(u).getLegalEntity({ id: legalEntityId });
     
     const entities = await Promise.all((milestone.entities || []).map(async entity => {
       if (entity === "legal-entity") return legalEntity;
       if (entity === "security-group")
-        return SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId });
+        return SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId }, { bypassKeyCheck: false }, txOrPool);
       if (entity === "provider" && legalEntity.providerId !== null)
-        return ProviderService(u).getProvider({ id: legalEntity.providerId });
+        return ProviderService(u).getProvider({ id: legalEntity.providerId }, { bypassKeyCheck: false }, txOrPool);
       if (entity === "client" && legalEntity.clientId !== null)
-        return ClientService(u).getClient({ id: legalEntity.clientId });
+        return ClientService(u).getClient({ id: legalEntity.clientId }, { bypassKeyCheck: false }, txOrPool);
     }));
 
     return entities.map(entity => {
@@ -270,6 +275,7 @@ const Service = (u: User) => {
     listMilestonesByDefaultSet,
     listMilestonesBySetOrDefault,
     listMilestonesForLegalEntity,
+    listMilestonesForLegalEntityId,
     removeMilestone,
     increaseMilestoneIndex,
     decreaseMilestoneIndex,

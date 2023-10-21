@@ -31,7 +31,10 @@ export async function handler (event: any) {
     const to = users.map(user => ({ 
       user_id: user.id, 
       courier: { channel: user.id },
-      data: { name: user.name }
+      data: { name: user.name, schedules: [
+        { name: "January", year: "2023" },
+        { name: "February", year: "2023" },
+      ]}
     }));
 
     await courier.send({
@@ -46,6 +49,11 @@ export async function handler (event: any) {
             {
               "type": "text",
               "content": "Hello {{name}}, you have pending schedule approvals."
+            },
+            {
+              "type": "text",
+              "content": "* {{$.item.name}} {{$.item.year}}",
+              "loop": "data.schedules"
             }
           ],
           "version": "2022-01-01",

@@ -132,7 +132,7 @@ export default function Provider() {
               <div>Are you sure you want to approve these schedules?</div>
               <ol className="mt-6 absolute columns-2">{list}</ol>
             </>
-          } />
+          }/>
         <Group>
           <Field>
             <Hidden value="approve" name="intent" />

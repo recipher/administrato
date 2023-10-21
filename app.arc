@@ -18,6 +18,8 @@ architect/plugin-typescript
 @static
 
 @queues
+approval-added
+  src app/queues/approval-added
 schedule-requested
   src app/queues/schedule-requested
 schedules-generated

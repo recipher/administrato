@@ -1,6 +1,7 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
+import arc from '@architect/functions';
 
 import { IdProp, TxOrPool } from '../types';
 
@@ -53,6 +54,12 @@ const Service = (u: User) => {
 
   const removeApproval = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     return db.deletes('approvals', { id }).run(txOrPool);
+  };
+  
+  const removeApprovalByEntityIdAndUserId = async ({ entityId, userId }: { entityId: string, userId: string }, txOrPool: TxOrPool = pool) => {
+    return db.deletes('approvals', 
+      db.sql<s.approvals.SQL>`${{userId}} AND ${db.param(entityId)} = ANY(${'entityId'})`
+    ).run(txOrPool);  
   };
 
   const listApproversByEntityId = async ({ entityId }: { entityId: string }, txOrPool: TxOrPool = pool) => {
@@ -132,12 +139,17 @@ const Service = (u: User) => {
     return db.serializable(txOrPool, async tx => {
       const approvals = await db.select('approvals', { setId }).run(tx);
 
-      return Promise.all(approvals.map(async ({ entity, entityId, status }: any) => {
+      await Promise.all(approvals.map(async ({ entity, entityId, status }: any) => {
         return db.upsert('approvals', 
           create({ entity, entityId, setId, userId, userData, status, notes: db.param([], true) }), 
           [ "entityId", "userId" ])
         .run(tx);
       }));
+
+      arc.queues.publish({
+        name: "approval-added",
+        payload: { setId, userId, userData,  meta: { user: u }}
+      });
     });
   };
 
@@ -198,14 +210,15 @@ const Service = (u: User) => {
     })));
 
     const approvers = users
-      .reduce((users: Array<any>, user) => user === undefined ? users : [ ...users, user ], [])
+      .reduce((users: Array<any>, user) => 
+        user === undefined || users.find(u => u.id === user.id) ? users : [ ...users, user ], [])
       .map((user: any) => (create({
         entity: 'legal-entity',
         entityId: id,
         userId: user.id,
         userData: user,
       })));
-    
+    console.log(approvers);
     return addApprovers(approvers, txOrPool);
   };
 
@@ -217,6 +230,7 @@ const Service = (u: User) => {
     addApprovals,
     removeApprover,
     removeApproval,
+    removeApprovalByEntityIdAndUserId,
     removeApproverFromSet,
     addApproverToSet,
     approve,

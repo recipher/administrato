@@ -6,7 +6,7 @@ create table
     "userId" text null,
     "userData" json null,
     "isOptional" boolean null,
-    "setId" text not null,
+    "setId" text null,
     status text not null,
     notes json null,
     "createdAt" timestamp with time zone not null default now(),

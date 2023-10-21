@@ -45,7 +45,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
-  const status = url.searchParams.get("status") || Status.Draft;
+  const status = url.searchParams.get("status") || Status.Approved;
 
   const u = await requireUser(request);
 
@@ -211,6 +211,14 @@ const Schedules = () => {
       { method: "POST", action: `./approve`, encType: "multipart/form-data" });
   };
 
+  const handleSelectApprovers = (schedule: ScheduleWithDates | Array<ScheduleWithDates>) => {
+    if (Array.isArray(schedule) === false) return navigate(`./approvers?schedule=${(schedule as ScheduleWithDates).id}`)
+    // @ts-ignore
+    if (Array.isArray(schedule) && schedule.length === 1) return navigate(`./approvers?schedule=${schedule.at(0).id}`)
+    submit({ intent: "init", schedule: (schedule as Array<ScheduleWithDates>).map(s => s.id) },
+      { method: "POST", action: `./approvers`, encType: "application/json" });
+  };
+
   const handleReject = (schedule: ScheduleWithDates | Array<ScheduleWithDates>) => {
     submit({ intent: "init", schedule: Array.isArray(schedule) ? schedule.map(s => s.id) : schedule.id },
       { method: "POST", action: `./reject`, encType: "multipart/form-data" });
@@ -223,7 +231,7 @@ const Schedules = () => {
   const actions = [
     { name: "approve", icon: CheckIcon,
       className: "text-gray-500", multiSelect: true,
-      condition: (schedule: ScheduleWithDates) => ['draft', 'rejected'].includes(schedule.status) && schedule.status === "draft" && can(scheduler.edit.schedule, schedule.approvals),
+      condition: (schedule: ScheduleWithDates) => ['draft', 'rejected'].includes(schedule.status) && can(scheduler.edit.schedule, schedule.approvals),
       onClick: handleApprove 
     },
     { name: "unapprove",
@@ -236,8 +244,9 @@ const Schedules = () => {
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && can(scheduler.edit.schedule, schedule.approvals),
       onClick: handleReject
     },
-    { name: "show-holidays", to: 'holidays', className: "text-gray-500" },
-    { name: "select-approvers", to: 'approvers', condition: () => hasPermission(scheduler.edit.schedule) && status === "draft",
+    { name: "show-holidays", onClick: ({ id }: ScheduleWithDates) => navigate(`../holidays?schedule=${id}`), className: "text-gray-500" },
+    { name: "select-approvers", onClick: handleSelectApprovers, 
+      condition: () => hasPermission(scheduler.edit.schedule) && status === "draft",
       className: "text-gray-500", multiSelect: true, icon: ChatBubbleBottomCenterTextIcon },
     { name: "delete", 
       condition: (schedule: ScheduleWithDates) => schedule.status === "draft" && hasPermission(scheduler.delete.schedule),
