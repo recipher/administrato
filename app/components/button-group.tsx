@@ -13,6 +13,8 @@ import buildTo from '~/helpers/build-to';
 export type ButtonGroupButton = {
   title: string,
   to?: string,
+  href?: string;
+  download?: string;
   icon?: any,
   onClick?: Function,
   permission?: string;
@@ -83,11 +85,14 @@ export default function ButtonGroup({ title = '', buttons }: ButtonGroupProps) {
                           {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
                           {t(button.title)}
                         </div>
-                      : <Link to={buildTo(searchParams, button.to)}
-                          className={className}>
-                          {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
-                          {t(button.title)}
-                        </Link>
+                      : button.href 
+                        ? <a href={button.href} download={button.download} className={className}>
+                            {t(button.title)}
+                          </a>
+                        : <Link to={buildTo(searchParams, button.to)} className={className}>
+                           {/* {button.icon && <button.icon className="inline -ml-0.5 mr-2 h-4 w-4 text-gray-400" aria-hidden="true" />}  */}
+                           {t(button.title)}
+                          </Link>
                   }}
                 </Menu.Item>
               ))}

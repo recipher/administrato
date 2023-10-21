@@ -78,7 +78,7 @@ export default function Schedules() {
   ];
 
   const actions = [
-    { title: 'download-schedule-file', to: `schedules/download?year=${year}`,
+    { title: 'download-schedule-file', href: `schedules/download?year=${year}`, download: `${year}.xlsx`,
       icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
     { title: 'generate-schedules', to: `schedules/generate?year=${year}`,
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
@@ -88,7 +88,7 @@ export default function Schedules() {
 
   return (
     <>
-      <Header title={legalEntity.name} tabs={tabs} actions={actions} group={false} icon={icon} />
+      <Header title={legalEntity.name} tabs={tabs} actions={actions} icon={icon} />
       <Outlet />
       <GenerateSingleModal modal={modal} onGenerate={handleGenerate}
         legalEntity={legalEntity} year={year} />
