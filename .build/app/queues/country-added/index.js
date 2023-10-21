@@ -22992,20 +22992,26 @@ var Service = (u) => {
         DATE_PART('year', ${"date"}) = ${param(year)}
       ORDER BY ${"date"} ASC`.run(db_server_default);
   };
-  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }) => {
+  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }, { includeMain } = { includeMain: true }, txOrPool = db_server_default) => {
     const byYear = sql`DATE_PART('year', ${"date"}) = ${param(year)}`;
     const byMonth = month === void 0 ? sql`` : sql`AND DATE_PART('month', ${"date"}) = ${param(month)}`;
-    const holidays = await sql`
+    const main = sql`
       SELECT * FROM ${"holidays"} 
       WHERE 
         ${{ locality }} AND ${"entityId"} IS NULL AND 
         ${byYear} ${byMonth}
-      UNION ALL
+    `;
+    const entity = sql`
       SELECT * from ${"holidays"}
       WHERE 
         ${{ locality }} AND ${{ entityId }} AND
         ${byYear} ${byMonth}
-      ORDER BY ${"date"} ASC`.run(db_server_default);
+    `;
+    if (includeMain === false)
+      return sql`${entity} ORDER BY ${"date"} ASC`.run(txOrPool);
+    const holidays = await sql`
+      ${main} UNION ALL ${entity}
+      ORDER BY ${"date"} ASC`.run(txOrPool);
     return holidays.reduce((holidays2, holiday) => {
       const existing = holidays2.find((h) => isSameDate(h.date, holiday.date));
       if (existing) {

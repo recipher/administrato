@@ -66,7 +66,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
   const namespace = url.searchParams.get("namespace") || Array.from(namespaces.keys()).at(0)
 
-  if (namespace === undefined) return badRequest("Error");
+  if (namespace === undefined) return badRequest("Inavlid data");
 
   const permissions = await service.listPermissions({ namespace });
   const rolePermissions = await service.getRolePermissions({ id })
