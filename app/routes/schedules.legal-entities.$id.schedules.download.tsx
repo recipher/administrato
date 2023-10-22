@@ -11,6 +11,11 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderArgs) =>
 
   if (id === undefined) return badRequest('Invalid request');
   
+  const url = new URL(request.url);
+  const start = url.searchParams.get("start")
+  const end = url.searchParams.get("end")
+  const status = url.searchParams.get("status");
+
   const workbook = await ExcelService().generate();
   const buffer = await workbook.xlsx.writeBuffer();
   

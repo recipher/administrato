@@ -1,22 +1,23 @@
+import { useRef } from 'react';
 import { json, type LoaderArgs, type ActionArgs, redirect } from '@remix-run/node';
-import { useLoaderData, Outlet, useSearchParams, useSubmit } from '@remix-run/react';
+import { useLoaderData, Outlet, useSubmit } from '@remix-run/react';
 
 import { WalletIcon, PlusIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ScheduleService from '~/services/scheduler/schedules.server';
+import ScheduleService, { Status  } from '~/services/scheduler/schedules.server';
 import LegalEntityService from '~/services/manage/legal-entities.server';
+
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
-import { GenerateSingleModal, validator } from '~/components/scheduler/generate';
+import { DownloadModal, validator } from '~/components/scheduler/download';
+import { RefModal } from '~/components/modals/modal';
+import { ButtonType } from '~/components';
 
 import { scheduler } from '~/auth/permissions';
-import { useRef } from 'react';
-import { RefModal } from '~/components/modals/modal';
 import toNumber from '~/helpers/to-number';
-import { ButtonType } from '~/components';
 
 export const handle = {
   name: ({ legalEntity }: { legalEntity: any }) => legalEntity?.name,
@@ -31,6 +32,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const url = new URL(request.url);
   const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
+  const status = url.searchParams.get("status") || Status.Approved;
 
   const u = await requireUser(request);
 
@@ -39,34 +41,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (legalEntity === undefined) return notFound('Legal entity not found');
 
-  return json({ legalEntity, year });
-};
+  const statuses = Object.values(Status).filter(item => isNaN(Number(item)));
 
-export const action = async ({ request, params }: ActionArgs) => {
-  const url = new URL(request.url);
-  const year = toNumber(url.searchParams.get("year") as string) || new Date().getFullYear();
-
-  const u = await requireUser(request);
-  const formData = await request.formData();
-  const result = await validator.validate(formData);
-  
-  if (result.error) return;
-
-  const service = ScheduleService(u);
-  await service.generate(result.data);
-
-  return redirect(`schedules?year=${year}`);
+  return json({ legalEntity, year, status, statuses });
 };
 
 export default function Schedules() {
-  const submit = useSubmit();
-  const { legalEntity: { logo, ...legalEntity }, year } = useLoaderData();
+  const { legalEntity: { logo, ...legalEntity }, year, status, statuses } = useLoaderData();
 
   const modal = useRef<RefModal>(null);
-
-  const handleGenerate = (data: FormData) => {
-    submit(data, { method: "POST", action: `/schedules/${legalEntity.id}?year=${year}` });
-  };
 
   const tabs = [
     { name: 'info', to: 'info' },
@@ -78,7 +61,9 @@ export default function Schedules() {
   ];
 
   const actions = [
-    { title: 'download-schedule-file', href: `schedules/download?year=${year}`, download: `${year}.xlsx`,
+    // { title: 'download-schedule-file', href: `schedules/download?year=${year}`, download: `${year}.xlsx`,
+    //   icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
+    { title: 'download-schedule-file', onClick: () => modal.current?.show(),
       icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
     { title: 'generate-schedules', to: `schedules/generate?year=${year}`,
       default: true, icon: PlusIcon, permission: scheduler.create.schedule },
@@ -90,8 +75,7 @@ export default function Schedules() {
     <>
       <Header title={legalEntity.name} tabs={tabs} actions={actions} icon={icon} />
       <Outlet />
-      <GenerateSingleModal modal={modal} onGenerate={handleGenerate}
-        legalEntity={legalEntity} year={year} />
+      <DownloadModal modal={modal} legalEntity={legalEntity} year={year} status={status} statuses={statuses} />
     </>
   );
 };
