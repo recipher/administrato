@@ -166,7 +166,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
       {label && <label htmlFor="date" className="block text-sm font-medium leading-6 text-gray-900">
         {label}
       </label>}
-      <div className="inline-block relative mt-2 rounded-md shadow-sm font-normal">
+      <div className="inline-block relative mt-1 rounded-md shadow-sm font-normal">
         <input
           type="text"
           {...getInputProps({ id: name })}

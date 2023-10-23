@@ -53,7 +53,7 @@ export default function Select({ name, label, data = [], defaultValue = null, va
             <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
               {label}
             </Listbox.Label>
-            <div className="relative mt-2">
+            <div className="relative mt-1">
               <Listbox.Button 
                 className={classnames(
                   selected?.image ? "pl-3" : "h-9",

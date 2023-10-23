@@ -4,9 +4,9 @@ import { type ActionArgs, type LoaderArgs, redirect, json, type UploadHandler,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react'
-import { Form, validationError, withZod, zfd, z, Combo } from '~/components/form';
+import { Form, validationError, withZod, zfd, z } from '~/components/form';
 import { useTranslation } from 'react-i18next';
-import NameConfigurator from 'i18n-postal-address';
+import NameConfigurator from '@recipher/i18n-postal-address';
 
 import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
@@ -132,11 +132,6 @@ const names = new Map<string, ReactNode>([
 ]);
 
 const spans = new Map<string, number>([
-  [ "firstName", 3 ],
-  [ "secondName", 3 ],
-  [ "firstLastName", 3 ],
-  [ "secondLastName", 3 ],
-  [ "lastName", 3 ],
   [ "honorific", 2 ],
 ]);
 
@@ -165,15 +160,9 @@ const Add = () => {
     if (localityChanged === false) setLocality(nationality);
 
     const name = new NameConfigurator();
-    name
-      .setFirstName("firstName")
-      .setSecondName("secondName")
-      .setFirstLastName("firstLastName")
-      .setSecondLastName("secondLastName")
-      .setLastName("lastName")
-      .setHonorific("honorific")
-      .setFormat({ country: nationality.id });
-
+    Array.from(names.keys()).forEach((key: string) => 
+      name.setProperty(key, key));
+    name.setFormat({ country: nationality.id });
     setNameConfig(name.toArray());
   };
 

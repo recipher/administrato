@@ -3,8 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
-import ContactService, { Contact } from '~/services/manage/contacts.server';
-import { ContactClassifier } from '~/services/manage';
+import AddressService, { Address } from '~/services/manage/addresses.server';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -33,51 +32,28 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const person = await service.getPerson({ id });
   if (person === undefined) return notFound('Person not found');
     
-  const contactService = ContactService(u);
-  const contacts = await contactService.listContactsByEntityId({ entityId: id });
+  const addressesService = AddressService(u);
+  const addresses = await addressesService.listAddressesByEntityId({ entityId: id });
 
-  return json({ person, classifier, contacts });
-};
-
-const ContactLink = ({ contact }: { contact: Contact }) => {
-  const { value, classifier, sub } = contact;
-  
-  const href = {
-    [ContactClassifier.Email]: `mailto:${value}`,
-    [ContactClassifier.Phone]: `tel:${value}`,
-    [ContactClassifier.Web]: value,
-    [ContactClassifier.Social]: {
-      "twitter": `https://twitter.com/${value}`,
-      "facebook": `https://facebook.com/${value}`,
-      "instagram": `https://instagram.com/${value}`,
-      "whatsapp": `https://wa.me/${value}`,
-      "snapchat": `https://snapchat.com/add/${value}`,
-      "linkedin": `https://linkedin.com/in/${value}`,
-    }[sub as string],
-  }[classifier as ContactClassifier];
-
-  const handleClick = (e: any) => e.stopPropagation();
-
-  return <a href={href} target="_blank" onClick={handleClick}>{value}</a>;
+  return json({ person, classifier, addresses });
 };
 
 const Addresses = () => {
   const { t } = useTranslation();
-  const { person, contacts } = useLoaderData();
+  const { person, addresses } = useLoaderData();
 
-  const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} sub={t(contact.classifier)} className="font-medium" />;
-  const Context = (contact: Contact) => <ListContext data={t(contact.sub || "")} select={false} />;
+  const Item = (address: Address) => <ListItem data={address.address} className="font-normal" />;
+  const Context = (address: Address) => <ListContext select={false} />;
 
   return (
     <>
       <Layout>
         <Heading heading={t('addresses')} explanation={`Manage ${person.firstName}'s addresses.`} />
-        {contacts.length === 0 && <Alert title="No addresses" level={Level.Info} /> }
-        <List data={contacts} renderItem={Item} renderContext={Context} noNavigate={true} />
+        {addresses.length === 0 && <Alert title="No addresses" level={Level.Info} /> }
+        <List data={addresses} renderItem={Item} renderContext={Context} noNavigate={true} />
       </Layout>
     </>
   );
 };
-
 
 export default Addresses;

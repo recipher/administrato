@@ -25,14 +25,14 @@ export default function Input({ name, label, value, focus = false, disabled = fa
   }, [focus]);
 
   return (
-    <div className="mb-3">
+    <div className="mb-2">
       <label htmlFor={name} className={classnames(
         disabled ? "text-gray-400" : "text-gray-900",
         "block text-sm font-medium leading-6")}>
         {label}
       </label>
       <div className={classnames(width ? `w-${width}` : "",
-        "relative mt-2 rounded-md shadow-sm")}>
+        "relative mt-1 rounded-md shadow-sm")}>
         <input
           ref={inputRef} 
           disabled={disabled}

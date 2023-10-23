@@ -4,8 +4,8 @@ import classnames from "~/helpers/classnames";
 
 export const Body = ({ border = true, children }: PropsWithChildren<{ border?: boolean }>) => {
   return (
-    <div className="space-y-12">
-      <div className={classnames(border ? "border-b border-gray-900/10" : "", `grid grid-cols-1 gap-x-8 gap-y-6 pb-12 md:grid-cols-3`)}>
+    <div className="space-y-3">
+      <div className={classnames(border ? "border-b border-gray-900/10" : "", `grid grid-cols-1 gap-x-8 gap-y-3 pb-12 md:grid-cols-3`)}>
         {children}
       </div>
     </div>
@@ -43,7 +43,7 @@ export const Field = ({ span = 4, width, className = "", children }: PropsWithCh
 
 export const Footer = ({ children }: PropsWithChildren<{}>) => {
   return (
-    <div className="mt-6 flex items-center justify-end gap-x-6">
+    <div className="mt-4 flex items-center justify-end gap-x-6">
       {children}
     </div>
   );

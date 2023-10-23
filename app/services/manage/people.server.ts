@@ -1,7 +1,7 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
-import NameConfigurator from 'i18n-postal-address';
+import NameConfigurator from '@recipher/i18n-postal-address';
 
 import { default as create } from '../id.server';
 export { default as create } from '../id.server';
@@ -46,7 +46,7 @@ type SearchOptions = {
 const generateIdentifier = ({ firstName, lastName, identifier }: s.people.Insertable) =>
   identifier !== "" && identifier != null
     ? identifier
-    : `${firstName} ${lastName}`
+    : `${firstName} ${lastName as string}`
         .replace(/([a-z])([A-Z])/g, "$1-$2")
         .replace(/[\s_]+/g, '-')
         .toLowerCase();
@@ -77,17 +77,26 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 
 const Service = (u: User) => {
 
+  const fields = [ 
+    'firstName', 
+    'secondName', 
+    'firstLastName', 
+    'secondLastName', 
+    'lastName', 
+    'honorific' 
+  ];
+  
   const withName = (person: Person) => {
-    const name = new NameConfigurator();
-    if (person.honorific) name.setHonorific(person.honorific)
-    name.setFirstName(person.firstName);
-    if (person.secondName) name.setSecondName(person.secondName)
-    name.setLastName(person.lastName);
-    if (person.firstLastName) name.setFirstLastName(person.firstLastName)
-    if (person.secondLastName) name.setSecondLastName(person.secondLastName)
+    type PersonKey = keyof Person;
+    const config = new NameConfigurator();
+    
+    fields.forEach((field: string) => {
+      const fieldKey = field as PersonKey;
+      if (person[fieldKey]) config.setProperty(field, person[fieldKey] as string);
+    });
 
-    name.setFormat({ country: person.nationality });
-    return { ...person, name: name.toString() };
+    config.setFormat({ country: person.nationality });
+    return { ...person, name: config.toString() };
   };
 
   const getLatestForClient = async (clientId: string, txOrPool: TxOrPool = pool) => {
