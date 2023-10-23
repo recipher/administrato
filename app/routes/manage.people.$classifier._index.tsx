@@ -61,7 +61,7 @@ export default function People() {
       : <ListContext data={person.legalEntity} select={false} />;
 
   const Item = (person: Person) =>
-    <ListItem data={`${person.firstName} ${person.lastName}`} sub={<Flags localities={[person.locality]} countries={countries} />} />
+    <ListItem data={person.name} sub={<Flags localities={[person.locality]} countries={countries} />} />
 
   const actions = [
     { title: `add-${classifier}`, to: "add", icon: PlusIcon, permission: manage.create.person },

@@ -67,19 +67,21 @@ export default function Person() {
     { name: 'info', to: 'info' },
     { name: 'salary', to: 'salary', classifier: [ "worker", "employee" ] },
     { name: 'contracts', to: 'contracts', classifier: [ "contractor" ] },
+    { name: 'addresses', to: 'addresses' },
     { name: 'contacts', to: 'contacts' },
     { name: 'documents', to: 'documents' },
   ];
 
   const actions = [
     { title: 'add-document', to: 'documents/add', default: true, icon: PlusIcon, permission: manage.edit.person },
+    { title: 'add-address', to: 'addresses/add', permission: manage.edit.person },
     { title: 'add-contact', to: 'contacts/add', permission: manage.edit.person },
     { title: 'add-salary', to: 'salary/add', permission: manage.edit.person },
   ];
 
   return (
     <>
-      <Header title={`${person.firstName} ${person.lastName}`} actions={actions} group={true}
+      <Header title={person.name} actions={actions} group={true}
         tabs={tabs.filter((tab) => tab.classifier === undefined || tab.classifier.includes(classifier))} 
           icon={<EditableImage name="photo" image={person.photo} Icon={UserCircleIcon} intent="change-photo" />} />
       <Outlet />

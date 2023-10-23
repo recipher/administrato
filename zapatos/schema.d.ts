@@ -23,6 +23,719 @@ declare module 'zapatos/schema' {
   /* --- tables --- */
 
   /**
+   * **addresses**
+   * - Table in database
+   */
+  export namespace addresses {
+    export type Table = 'addresses';
+    export interface Selectable {
+      /**
+      * **addresses.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string;
+      /**
+      * **addresses.address1**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address1: string | null;
+      /**
+      * **addresses.address2**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address2: string | null;
+      /**
+      * **addresses.addressNum**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      addressNum: string | null;
+      /**
+      * **addresses.country**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      country: string | null;
+      /**
+      * **addresses.countryIsoCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      countryIsoCode: string | null;
+      /**
+      * **addresses.city**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      city: string | null;
+      /**
+      * **addresses.do**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      do: string | null;
+      /**
+      * **addresses.dong**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      dong: string | null;
+      /**
+      * **addresses.gu**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      gu: string | null;
+      /**
+      * **addresses.postalCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      postalCode: string | null;
+      /**
+      * **addresses.prefecture**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      prefecture: string | null;
+      /**
+      * **addresses.province**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      province: string | null;
+      /**
+      * **addresses.region**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      region: string | null;
+      /**
+      * **addresses.republic**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      republic: string | null;
+      /**
+      * **addresses.si**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      si: string | null;
+      /**
+      * **addresses.state**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      state: string | null;
+      /**
+      * **addresses.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred: boolean | null;
+      /**
+      * **addresses.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier: string | null;
+      /**
+      * **addresses.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string;
+      /**
+      * **addresses.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity: string;
+      /**
+      * **addresses.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: Date;
+      /**
+      * **addresses.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
+    }
+    export interface JSONSelectable {
+      /**
+      * **addresses.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string;
+      /**
+      * **addresses.address1**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address1: string | null;
+      /**
+      * **addresses.address2**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address2: string | null;
+      /**
+      * **addresses.addressNum**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      addressNum: string | null;
+      /**
+      * **addresses.country**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      country: string | null;
+      /**
+      * **addresses.countryIsoCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      countryIsoCode: string | null;
+      /**
+      * **addresses.city**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      city: string | null;
+      /**
+      * **addresses.do**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      do: string | null;
+      /**
+      * **addresses.dong**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      dong: string | null;
+      /**
+      * **addresses.gu**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      gu: string | null;
+      /**
+      * **addresses.postalCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      postalCode: string | null;
+      /**
+      * **addresses.prefecture**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      prefecture: string | null;
+      /**
+      * **addresses.province**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      province: string | null;
+      /**
+      * **addresses.region**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      region: string | null;
+      /**
+      * **addresses.republic**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      republic: string | null;
+      /**
+      * **addresses.si**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      si: string | null;
+      /**
+      * **addresses.state**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      state: string | null;
+      /**
+      * **addresses.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred: boolean | null;
+      /**
+      * **addresses.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier: string | null;
+      /**
+      * **addresses.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string;
+      /**
+      * **addresses.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity: string;
+      /**
+      * **addresses.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: db.TimestampTzString;
+      /**
+      * **addresses.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
+    }
+    export interface Whereable {
+      /**
+      * **addresses.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.address1**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address1?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.address2**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address2?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.addressNum**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      addressNum?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.country**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      country?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.countryIsoCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      countryIsoCode?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.city**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      city?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.do**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      do?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.dong**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      dong?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.gu**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      gu?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.postalCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      postalCode?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.prefecture**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      prefecture?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.province**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      province?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.region**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      region?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.republic**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      republic?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.si**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      si?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.state**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      state?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **addresses.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **addresses.address1**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address1?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.address2**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address2?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.addressNum**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      addressNum?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.country**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      country?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.countryIsoCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      countryIsoCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.city**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      city?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.do**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      do?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.dong**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      dong?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.gu**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      gu?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.postalCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      postalCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.prefecture**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      prefecture?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.province**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      province?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.region**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      region?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.republic**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      republic?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.si**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      si?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.state**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      state?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **addresses.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **addresses.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **addresses.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **addresses.address1**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address1?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.address2**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      address2?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.addressNum**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      addressNum?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.country**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      country?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.countryIsoCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      countryIsoCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.city**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      city?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.do**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      do?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.dong**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      dong?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.gu**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      gu?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.postalCode**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      postalCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.prefecture**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      prefecture?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.province**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      province?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.region**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      region?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.republic**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      republic?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.si**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      si?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.state**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      state?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **addresses.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **addresses.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'address_pkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
    * **approvals**
    * - Table in database
    */
@@ -68,9 +781,9 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.setId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      setId: string;
+      setId: string | null;
       /**
       * **approvals.status**
       * - `text` in database
@@ -136,9 +849,9 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.setId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      setId: string;
+      setId: string | null;
       /**
       * **approvals.status**
       * - `text` in database
@@ -204,7 +917,7 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.setId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       setId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -272,9 +985,9 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.setId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      setId: string | db.Parameter<string> | db.SQLFragment;
+      setId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **approvals.status**
       * - `text` in database
@@ -340,9 +1053,9 @@ declare module 'zapatos/schema' {
       /**
       * **approvals.setId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      setId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      setId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **approvals.status**
       * - `text` in database
@@ -1549,11 +2262,11 @@ declare module 'zapatos/schema' {
       */
       sub: string | null;
       /**
-      * **contacts.isPrimary**
+      * **contacts.isPreferred**
       * - `bool` in database
       * - Nullable, no default
       */
-      isPrimary: boolean | null;
+      isPreferred: boolean | null;
       /**
       * **contacts.entityId**
       * - `text` in database
@@ -1605,11 +2318,11 @@ declare module 'zapatos/schema' {
       */
       sub: string | null;
       /**
-      * **contacts.isPrimary**
+      * **contacts.isPreferred**
       * - `bool` in database
       * - Nullable, no default
       */
-      isPrimary: boolean | null;
+      isPreferred: boolean | null;
       /**
       * **contacts.entityId**
       * - `text` in database
@@ -1661,11 +2374,11 @@ declare module 'zapatos/schema' {
       */
       sub?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **contacts.isPrimary**
+      * **contacts.isPreferred**
       * - `bool` in database
       * - Nullable, no default
       */
-      isPrimary?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      isPreferred?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
       * **contacts.entityId**
       * - `text` in database
@@ -1717,11 +2430,11 @@ declare module 'zapatos/schema' {
       */
       sub?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
-      * **contacts.isPrimary**
+      * **contacts.isPreferred**
       * - `bool` in database
       * - Nullable, no default
       */
-      isPrimary?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
+      isPreferred?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
       /**
       * **contacts.entityId**
       * - `text` in database
@@ -1773,11 +2486,11 @@ declare module 'zapatos/schema' {
       */
       sub?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
-      * **contacts.isPrimary**
+      * **contacts.isPreferred**
       * - `bool` in database
       * - Nullable, no default
       */
-      isPrimary?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
+      isPreferred?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **contacts.entityId**
       * - `text` in database
@@ -3893,17 +4606,29 @@ declare module 'zapatos/schema' {
       */
       firstName: string;
       /**
+      * **people.secondName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      secondName: string | null;
+      /**
       * **people.lastName**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       lastName: string;
       /**
-      * **people.title**
+      * **people.secondLastName**
       * - `text` in database
       * - Nullable, no default
       */
-      title: string | null;
+      secondLastName: string | null;
+      /**
+      * **people.honorific**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      honorific: string | null;
       /**
       * **people.gender**
       * - `text` in database
@@ -3922,6 +4647,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       photo: string | null;
+      /**
+      * **people.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      locality: string;
+      /**
+      * **people.nationality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      nationality: string;
       /**
       * **people.isArchived**
       * - `bool` in database
@@ -3952,12 +4689,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       legalEntityKeyEnd: db.Int8String | null;
-      /**
-      * **people.locality**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      locality: string | null;
       /**
       * **people.createdAt**
       * - `timestamptz` in database
@@ -3997,17 +4728,29 @@ declare module 'zapatos/schema' {
       */
       firstName: string;
       /**
+      * **people.secondName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      secondName: string | null;
+      /**
       * **people.lastName**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       lastName: string;
       /**
-      * **people.title**
+      * **people.secondLastName**
       * - `text` in database
       * - Nullable, no default
       */
-      title: string | null;
+      secondLastName: string | null;
+      /**
+      * **people.honorific**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      honorific: string | null;
       /**
       * **people.gender**
       * - `text` in database
@@ -4026,6 +4769,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       photo: string | null;
+      /**
+      * **people.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      locality: string;
+      /**
+      * **people.nationality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      nationality: string;
       /**
       * **people.isArchived**
       * - `bool` in database
@@ -4056,12 +4811,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       legalEntityKeyEnd: number | null;
-      /**
-      * **people.locality**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      locality: string | null;
       /**
       * **people.createdAt**
       * - `timestamptz` in database
@@ -4101,17 +4850,29 @@ declare module 'zapatos/schema' {
       */
       firstName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **people.secondName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      secondName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **people.lastName**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       lastName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **people.title**
+      * **people.secondLastName**
       * - `text` in database
       * - Nullable, no default
       */
-      title?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      secondLastName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **people.honorific**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      honorific?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **people.gender**
       * - `text` in database
@@ -4130,6 +4891,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       photo?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **people.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      locality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **people.nationality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      nationality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **people.isArchived**
       * - `bool` in database
@@ -4160,12 +4933,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | db.SQLFragment | db.ParentColumn>;
-      /**
-      * **people.locality**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      locality?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **people.createdAt**
       * - `timestamptz` in database
@@ -4205,17 +4972,29 @@ declare module 'zapatos/schema' {
       */
       firstName: string | db.Parameter<string> | db.SQLFragment;
       /**
+      * **people.secondName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      secondName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **people.lastName**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       lastName: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **people.title**
+      * **people.secondLastName**
       * - `text` in database
       * - Nullable, no default
       */
-      title?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      secondLastName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **people.honorific**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      honorific?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **people.gender**
       * - `text` in database
@@ -4234,6 +5013,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **people.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      locality: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **people.nationality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      nationality: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **people.isArchived**
       * - `bool` in database
@@ -4264,12 +5055,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment;
-      /**
-      * **people.locality**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **people.createdAt**
       * - `timestamptz` in database
@@ -4309,17 +5094,29 @@ declare module 'zapatos/schema' {
       */
       firstName?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
+      * **people.secondName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      secondName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **people.lastName**
       * - `text` in database
       * - `NOT NULL`, no default
       */
       lastName?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **people.title**
+      * **people.secondLastName**
       * - `text` in database
       * - Nullable, no default
       */
-      title?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      secondLastName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **people.honorific**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      honorific?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.gender**
       * - `text` in database
@@ -4338,6 +5135,18 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       photo?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **people.locality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      locality?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **people.nationality**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      nationality?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **people.isArchived**
       * - `bool` in database
@@ -4368,12 +5177,6 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       legalEntityKeyEnd?: (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (number | db.Int8String) | db.Parameter<(number | db.Int8String)> | null | db.DefaultType | db.SQLFragment>;
-      /**
-      * **people.locality**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      locality?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.createdAt**
       * - `timestamptz` in database
@@ -6155,20 +6958,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = approvals.Table | approvers.Table | authorizations.Table | clientPeople.Table | clients.Table | contacts.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
-    export type Selectable = approvals.Selectable | approvers.Selectable | authorizations.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
-    export type JSONSelectable = approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
-    export type Whereable = approvals.Whereable | approvers.Whereable | authorizations.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
-    export type Insertable = approvals.Insertable | approvers.Insertable | authorizations.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
-    export type Updatable = approvals.Updatable | approvers.Updatable | authorizations.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
-    export type UniqueIndex = approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
-    export type Column = approvals.Column | approvers.Column | authorizations.Column | clientPeople.Column | clients.Column | contacts.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
+    export type Table = addresses.Table | approvals.Table | approvers.Table | authorizations.Table | clientPeople.Table | clients.Table | contacts.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
+    export type Selectable = addresses.Selectable | approvals.Selectable | approvers.Selectable | authorizations.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
+    export type JSONSelectable = addresses.JSONSelectable | approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
+    export type Whereable = addresses.Whereable | approvals.Whereable | approvers.Whereable | authorizations.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
+    export type Insertable = addresses.Insertable | approvals.Insertable | approvers.Insertable | authorizations.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
+    export type Updatable = addresses.Updatable | approvals.Updatable | approvers.Updatable | authorizations.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
+    export type UniqueIndex = addresses.UniqueIndex | approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
+    export type Column = addresses.Column | approvals.Column | approvers.Column | authorizations.Column | clientPeople.Column | clients.Column | contacts.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
   
-    export type AllBaseTables = [approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
+    export type AllBaseTables = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
+    export type AllTablesAndViews = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
   }
 
 
@@ -6196,6 +6999,7 @@ declare module 'zapatos/schema' {
   /* === lookups === */
 
   export type SelectableForTable<T extends Table> = {
+    "addresses": addresses.Selectable;
     "approvals": approvals.Selectable;
     "approvers": approvers.Selectable;
     "authorizations": authorizations.Selectable;
@@ -6219,6 +7023,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type JSONSelectableForTable<T extends Table> = {
+    "addresses": addresses.JSONSelectable;
     "approvals": approvals.JSONSelectable;
     "approvers": approvers.JSONSelectable;
     "authorizations": authorizations.JSONSelectable;
@@ -6242,6 +7047,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type WhereableForTable<T extends Table> = {
+    "addresses": addresses.Whereable;
     "approvals": approvals.Whereable;
     "approvers": approvers.Whereable;
     "authorizations": authorizations.Whereable;
@@ -6265,6 +7071,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type InsertableForTable<T extends Table> = {
+    "addresses": addresses.Insertable;
     "approvals": approvals.Insertable;
     "approvers": approvers.Insertable;
     "authorizations": authorizations.Insertable;
@@ -6288,6 +7095,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type UpdatableForTable<T extends Table> = {
+    "addresses": addresses.Updatable;
     "approvals": approvals.Updatable;
     "approvers": approvers.Updatable;
     "authorizations": authorizations.Updatable;
@@ -6311,6 +7119,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type UniqueIndexForTable<T extends Table> = {
+    "addresses": addresses.UniqueIndex;
     "approvals": approvals.UniqueIndex;
     "approvers": approvers.UniqueIndex;
     "authorizations": authorizations.UniqueIndex;
@@ -6334,6 +7143,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type ColumnForTable<T extends Table> = {
+    "addresses": addresses.Column;
     "approvals": approvals.Column;
     "approvers": approvers.Column;
     "authorizations": authorizations.Column;
@@ -6357,6 +7167,7 @@ declare module 'zapatos/schema' {
   }[T];
 
   export type SQLForTable<T extends Table> = {
+    "addresses": addresses.SQL;
     "approvals": approvals.SQL;
     "approvers": approvers.SQL;
     "authorizations": authorizations.SQL;

@@ -50,10 +50,10 @@ values
   ('01HCBKBH3V6QXD01YNRG6X684K', 'Widget Inc', 'widget-inc', 0, 90071993, ARRAY ['FR'], '01HCBJVVNC04DA94ZYXEEXX75C'),
   ('01HCBKC9524YW5395EY1FB53QT', 'Foobar LLC', 'foobar-llc', 90071992547411, 90072172691396, ARRAY['GB'], '01HCBJWYAGFTDT8E8RZ3SVSB5A');
 
-insert into people (id, identifier, "firstName", "lastName", classifier, "clientKeyStart", "clientKeyEnd", "legalEntityKeyStart", "legalEntityKeyEnd", "locality")
+insert into people (id, identifier, "firstName", "lastName", "honorific", classifier, "clientKeyStart", "clientKeyEnd", "legalEntityKeyStart", "legalEntityKeyEnd", "locality", "nationality")
 values
-  ('01HCHFEYGT9SKDSPQWQKPXJN2S', 'john-doe', 'John', 'Doe', 'worker', 90071992547411, 90072172691396, 90071992547411, 90090006945920, 'GB'),
-  ('01HCHFN24FTVCJMATWBTHYQRN8', 'jane-doe', 'Jane', 'Doe', 'worker', 0, 90072172691396, 0, 9007199255, 'FR');
+  ('01HCHFEYGT9SKDSPQWQKPXJN2S', 'john-doe', 'John', 'Doe', 'Mr', 'worker', 90071992547411, 90072172691396, 90071992547411, 90090006945920, 'GB', 'GB'),
+  ('01HCHFN24FTVCJMATWBTHYQRN8', 'jane-doe', 'Jane', 'Doe', 'Ms', 'worker', 0, 90072172691396, 0, 9007199255, 'FR', 'FR');
 
 insert into "clientPeople" (id, "clientId", "personId", "startOn")
 values

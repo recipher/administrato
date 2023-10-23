@@ -4,7 +4,7 @@ create table
     value text not null,
     classifier text not null,
     sub text null,
-    "isPrimary" boolean null,
+    "isPreferred" boolean null,
     "entityId" text not null,
     entity text not null,
     "createdAt" timestamp with time zone not null default now(),

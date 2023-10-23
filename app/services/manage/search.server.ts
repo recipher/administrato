@@ -95,6 +95,6 @@ const Service = (u: User) => {
   };
 
   return { search };
-}
+};
 
 export default Service;

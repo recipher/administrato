@@ -1,6 +1,7 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
+import PostalAddress from 'i18n-postal-address';
 
 import { default as create } from '../id.server';
 export { default as create } from '../id.server';
@@ -23,7 +24,11 @@ export type PersonSecurityKey = {
 
 import { extractKeys } from './shared.server';
 
-export type Person = s.people.Selectable & { legalEntity: string, client: string };
+export type Person = s.people.Selectable & { 
+  name?: string;
+  legalEntity?: string; 
+  client?: string;
+};
 
 export enum Classifier {
   Worker = "worker",
@@ -71,6 +76,19 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 };
 
 const Service = (u: User) => {
+
+  const withName = (person: Person) => {
+    const address = new PostalAddress();
+    if (person.honorific) address.setHonorific(person.honorific)
+    address.setFirstName(person.firstName);
+    if (person.secondName) address.setSecondName(person.secondName)
+    address.setLastName(person.lastName);
+    if (person.secondLastName) address.setSecondLastName(person.secondLastName)
+
+    address.setFormat({ country: person.nationality });
+    return { ...person, name: address.toString() };
+  };
+
   const getLatestForClient = async (clientId: string, txOrPool: TxOrPool = pool) => {
     const query = db.sql<db.SQL>`cp.${'clientId'} = ${db.param(clientId)}`;
 
@@ -177,7 +195,7 @@ const Service = (u: User) => {
   const listPeople = async (txOrPool: TxOrPool = pool) => {
     const clientKeys = extractKeys(u, "securityGroup", "client");
     const legalEntityKeys = extractKeys(u, "securityGroup", "legalEntity");
-    return db.sql<peopleSQL, s.people.Selectable[]>`
+    const people = await db.sql<peopleSQL, s.people.Selectable[]>`
       SELECT ${'people'}.*, c.name AS client, le.name AS "legalEntity" 
       FROM ${'people'}
       LEFT JOIN ${'legalEntityPeople'} AS lep ON lep.${'personId'} = ${'people'}.${'id'}
@@ -187,6 +205,8 @@ const Service = (u: User) => {
       WHERE (${whereClientKeys({ keys: clientKeys })} OR 
              ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(txOrPool);
+
+    return people.map(withName);
   };
 
   const searchQuery = ({ search, clientId, legalEntityId, classifier, isArchived }: SearchOptions) => {
@@ -245,7 +265,7 @@ const Service = (u: User) => {
     `.run(txOrPool);
     const count = await countPeople(search, txOrPool);
 
-    return { people, metadata: { count }};
+    return { people: people.map(withName), metadata: { count }};
   };
 
   const searchWorkers =  async (search: SearchOptions, meta: QueryOptions, txOrPool: TxOrPool = pool) =>
@@ -274,7 +294,7 @@ const Service = (u: User) => {
          ${whereLegalEntityKeys({ keys: legalEntityKeys })})
     `.run(txOrPool);
 
-    return person;
+    return withName(person);
   };
 
   return {

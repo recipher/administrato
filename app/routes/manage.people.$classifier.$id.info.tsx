@@ -3,7 +3,7 @@ import { Link, useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
-import CountryService from '~/services/countries.server';
+import CountryService, { type Country } from '~/services/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -35,30 +35,34 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (person === undefined) return notFound('Person not found');
   
   const countryService = CountryService();
-  const country = await countryService.getCountry({ isoCode: person.locality as string });
+  const countries = await countryService.getCountries({ isoCodes: [ person.locality, person.nationality ] });
   
-  return json({ person, classifier, config, country });
+  return json({ person, classifier, config, countries });
 };
 
 const Info = () => {
   const { t } = useTranslation();
-  const { person, config, country } = useLoaderData();
-
-  const name = `${person.firstName} ${person.lastName}`;
+  const { person, config, countries } = useLoaderData();
 
   return (
     <>
       <Layout>
-        <Heading heading={t('info')} explanation={`Manage ${name}'s information.`} />
+        <Heading heading={t('info')} explanation={`Manage ${person.firstName}'s information.`} />
         <Section>
           <Field title="Worker Name">
-            <p className="text-gray-900">{name}</p>
+            <p className="text-gray-900">{person.name}</p>
+            <button type="button" className="hidden group-hover:hidden font-medium text-indigo-600 hover:text-indigo-500">
+              Update
+            </button>
+          </Field>
+          <Field title="Nationality">
+            <p className="text-gray-900">{countries.find((c: Country) => c.isoCode === person.nationality).name}</p>
             <button type="button" className="hidden group-hover:hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
           </Field>
           <Field title="Location">
-            <p className="text-gray-900">{country.name}</p>
+            <p className="text-gray-900">{countries.find((c: Country) => c.isoCode === person.locality).name}</p>
             <button type="button" className="hidden group-hover:hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>

@@ -14,7 +14,6 @@ import { notFound, badRequest } from '~/utility/errors';
 import { List, ListItem, ListContext } from '~/components/list';
 import Alert, { Level } from '~/components/alert';
 import { Layout, Heading } from '~/components/info/info';
-import { nullable } from 'zod';
 
 export const handle = {
   i18n: "contacts",

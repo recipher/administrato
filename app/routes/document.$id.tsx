@@ -24,6 +24,7 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderArgs) =>
 
   const data = await fetch(document.document);
   const blob = await data.blob();
+  
   return new Response(blob, {
     status: 200,
     headers: {

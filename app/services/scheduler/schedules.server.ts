@@ -426,6 +426,7 @@ const Service = (u: User) => {
         }));
         return holidays.flat();
       }));
+      
       return holidays.flat().reduce((holidays: Array<Holiday>, holiday) =>
         holidays.filter(h => isSameDate(h.date, holiday.date) && h.locality === holiday.locality).length > 0
           ? holidays : [ ...holidays, holiday ], []);

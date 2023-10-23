@@ -53,6 +53,7 @@
     "exceljs": "^4.4.0",
     "file-type": "^18.5.0",
     "holidayapi": "^6.0.1",
+    "i18n-postal-address": "^0.8.0",
     "i18next": "^23.5.1",
     "i18next-browser-languagedetector": "^7.1.0",
     "i18next-fs-backend": "^2.1.5",
