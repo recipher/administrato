@@ -1,7 +1,7 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
-import PostalAddress from 'i18n-postal-address';
+import NameConfigurator from 'i18n-postal-address';
 
 import { default as create } from '../id.server';
 export { default as create } from '../id.server';
@@ -78,15 +78,16 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 const Service = (u: User) => {
 
   const withName = (person: Person) => {
-    const address = new PostalAddress();
-    if (person.honorific) address.setHonorific(person.honorific)
-    address.setFirstName(person.firstName);
-    if (person.secondName) address.setSecondName(person.secondName)
-    address.setLastName(person.lastName);
-    if (person.secondLastName) address.setSecondLastName(person.secondLastName)
+    const name = new NameConfigurator();
+    if (person.honorific) name.setHonorific(person.honorific)
+    name.setFirstName(person.firstName);
+    if (person.secondName) name.setSecondName(person.secondName)
+    name.setLastName(person.lastName);
+    if (person.firstLastName) name.setFirstLastName(person.firstLastName)
+    if (person.secondLastName) name.setSecondLastName(person.secondLastName)
 
-    address.setFormat({ country: person.nationality });
-    return { ...person, name: address.toString() };
+    name.setFormat({ country: person.nationality });
+    return { ...person, name: name.toString() };
   };
 
   const getLatestForClient = async (clientId: string, txOrPool: TxOrPool = pool) => {

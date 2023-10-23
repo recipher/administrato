@@ -1,11 +1,12 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, ReactNode } from 'react';
 import { type ActionArgs, type LoaderArgs, redirect, json, type UploadHandler,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react'
-import { Form, validationError, withZod, zfd, z } from '~/components/form';
+import { Form, validationError, withZod, zfd, z, Combo } from '~/components/form';
 import { useTranslation } from 'react-i18next';
+import NameConfigurator from 'i18n-postal-address';
 
 import { UserCircleIcon } from "@heroicons/react/24/solid";
 
@@ -54,6 +55,8 @@ z.setErrorMap((issue, ctx) => {
   if (issue.code === "invalid_type") {
     if (issue.path.includes("locality"))
       return { message: "Country is required" };
+    if (issue.path.includes("nationality"))
+      return { message: "Nationality is required" };
   }
   return { message: ctx.defaultError };
 });
@@ -63,13 +66,17 @@ const validator = (config: Config) => {
     firstName: z
       .string()
       .nonempty("First name is required"),
-    lastName: z
-      .string()
-      .nonempty("Last name is required"),
+    secondName: z.string().optional(),
+    firstLastName: z.string().optional(),
+    secondLastName: z.string().optional(),
+    lastName: z.string().optional(),
+    honorific: z
+      .object({ id: z.string()})
+      .optional(),
+    nationality: z
+      .object({ id: z.string()}),
     locality: z
-      .object({
-        id: z.string()
-      }),
+      .object({ id: z.string()}),
     photo: z.any()
   };
 
@@ -103,15 +110,37 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator(config).validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { locality: { id: isoCode }, clientId, legalEntityId, ...data }} = result;
+  const { data: { locality: { id: locality }, nationality: { id: nationality },
+    honorific: { id: honorific }, 
+    clientId, legalEntityId, ...data }} = result;
   
   const service = PersonService(u);
   const person = await service.addPerson(
-    create({ locality: isoCode, identifier: "", classifier, ...data }), 
+    create({ nationality, locality, honorific, identifier: "", classifier, ...data }), 
     { clientId, legalEntityId });
   
   return redirect(`/manage/people/${classifier}/${person.id}/info`);
 };
+
+const honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Dr" ];
+const names = new Map<string, ReactNode>([
+  [ "firstName", <Input label="First Name" name="firstName" /> ],
+  [ "secondName", <Input label="Second Name" name="secondName" /> ],
+  [ "firstLastName", <Input label="First Last Name" name="firstLastName" /> ],
+  [ "secondLastName", <Input label="Second Last Name" name="secondLastName" /> ],
+  [ "lastName", <Input label="Last Name" name="lastName" /> ],
+  [ "honorific", <Select label="Title" name="honorific" 
+                    data={honorifics.map(id => ({ id, name: id }))} /> ],
+]);
+
+const spans = new Map<string, number>([
+  [ "firstName", 3 ],
+  [ "secondName", 3 ],
+  [ "firstLastName", 3 ],
+  [ "secondLastName", 3 ],
+  [ "lastName", 3 ],
+  [ "honorific", 2 ],
+]);
 
 const Add = () => {
   const { t } = useTranslation();
@@ -121,7 +150,8 @@ const Add = () => {
   const [ locality, setLocality ] = useState<SelectItem>();
   const [ localityChanged, setLocalityChanged ] = useState<boolean>(false);
   const [ legalEntity, setLegalEntity ] = useState<LegalEntity>();
-  
+  const [ nameConfig, setNameConfig ] = useState<Array<Array<string>>>();
+
   const clientModal = useRef<RefSelectorModal>(null);
   const legalEntityModal = useRef<RefSelectorModal>(null);
 
@@ -135,6 +165,18 @@ const Add = () => {
 
   const handleChangeNationality = (nationality: any) => {
     if (localityChanged === false) setLocality(nationality);
+
+    const name = new NameConfigurator();
+    name
+      .setFirstName("firstName")
+      .setSecondName("secondName")
+      .setFirstLastName("firstLastName")
+      .setSecondLastName("secondLastName")
+      .setLastName("lastName")
+      .setHonorific("honorific")
+      .setFormat({ country: nationality.id });
+
+    setNameConfig(name.toArray());
   };
 
   return (
@@ -150,18 +192,22 @@ const Add = () => {
                 data={withFlag} />
             </Field>
           </Group>
-          <Section />
-          <Group>
-            <Field span={3}>
-              <Input label="First Name" name="firstName" />
-            </Field>
-            <Field span={3}>
-              <Input label="Last Name" name="lastName" />
-            </Field>
-            <Field>
-              <Image label="Upload Photo" name="photo" accept="image/*" Icon={UserCircleIcon} />
-            </Field>
-          </Group>
+          {nameConfig?.map((properties: Array<string>) => {
+            return (
+              <>
+                <Section />
+                <Group cols={11}>
+                  {properties.map((property: string) => {
+                    const input = names.get(property);
+                    const span = spans.get(property);
+                    return (
+                    <Field span={span || 3}>
+                      {input}
+                    </Field>
+                  )})}
+                </Group>
+              </>
+            )})}
           <Section size="md" heading={config.heading} explanation={config.explanation} />
           <Group>
             {config.client &&<Field span={3}>

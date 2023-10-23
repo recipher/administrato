@@ -5,7 +5,7 @@ import classnames from "~/helpers/classnames";
 export const Body = ({ border = true, children }: PropsWithChildren<{ border?: boolean }>) => {
   return (
     <div className="space-y-12">
-      <div className={classnames(border ? "border-b border-gray-900/10" : "", "grid grid-cols-1 gap-x-8 gap-y-6 pb-12 md:grid-cols-3")}>
+      <div className={classnames(border ? "border-b border-gray-900/10" : "", `grid grid-cols-1 gap-x-8 gap-y-6 pb-12 md:grid-cols-3`)}>
         {children}
       </div>
     </div>
@@ -25,9 +25,9 @@ export const Section = ({ heading, explanation, size = "lg" }: { heading?: strin
   );
 };
 
-export const Group = ({ children }: PropsWithChildren<{}>) => {
+export const Group = ({ cols = 6, children }: PropsWithChildren<{ cols?: number }>) => {
   return (
-    <div className="grid max-w-3xl grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-6 md:col-span-2">
+    <div className={`grid max-w-4xl grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-${cols} md:col-span-2`}>
       {children}
     </div>
   );

@@ -57,6 +57,12 @@ export default function Combo({ name, label, data = [], defaultValue = [] }: Pro
 
           {filtered.length > 0 && (
             <Combobox.Options className="absolute z-10 mt-1 max-h-64 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              {/* {query.length > 0 && (
+                <Combobox.Option className='relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900'
+                  key={query} value={{ id: query, name: query }}>
+                  Create "{query}"
+                </Combobox.Option>
+              )} */}
               {filtered.map(item => (
                 <Combobox.Option
                   key={item.id}
