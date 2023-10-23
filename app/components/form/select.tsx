@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { useField } from 'remix-validated-form';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -11,19 +11,24 @@ type ItemProps = {
   name: string;
   image?: string;
 };
+
+export type SelectItem = ItemProps;
+
 type DataProps = Array<ItemProps>;
 
 type Props = {
   name: string;
   label: string;
   data?: DataProps;
-  defaultValue?: ItemProps | undefined | null;
+  defaultValue?: SelectItem | undefined | null;
+  value?: SelectItem | undefined | null;
+  idKey?: string | undefined;
   onChange?: Function;
 };
 
 const noOp = () => null!
 
-export default function Select({ name, label, data = [], defaultValue = null, onChange = noOp }: Props) {
+export default function Select({ name, label, data = [], defaultValue = null, value = null, idKey = "id", onChange = noOp }: Props) {
   const { error, getInputProps } = useField(name);
   const [selected, setSelected] = useState<ItemProps | null>(defaultValue);
 
@@ -31,6 +36,10 @@ export default function Select({ name, label, data = [], defaultValue = null, on
     onChange(value);
     setSelected(value);
   };
+
+  useEffect(() => {
+    if (value) setSelected(value);
+  }, [value]);
 
   return (
     <>

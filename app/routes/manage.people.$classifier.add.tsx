@@ -25,7 +25,7 @@ import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import { flag } from '~/components/countries/flag';
 
-import { Input, Select, Cancel, Submit, Image,
+import { Input, Select, type SelectItem, Cancel, Submit, Image,
   Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
 
@@ -118,6 +118,8 @@ const Add = () => {
   const { countries, classifier, config } = useLoaderData();
 
   const [ client, setClient ] = useState<Client>();
+  const [ locality, setLocality ] = useState<SelectItem>();
+  const [ localityChanged, setLocalityChanged ] = useState<boolean>(false);
   const [ legalEntity, setLegalEntity ] = useState<LegalEntity>();
   
   const clientModal = useRef<RefSelectorModal>(null);
@@ -131,11 +133,24 @@ const Add = () => {
   const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
 
+  const handleChangeNationality = (nationality: any) => {
+    if (localityChanged === false) setLocality(nationality);
+  };
+
   return (
     <>
       <Form method="post" validator={validator(config)} id="add-person" encType="multipart/form-data">
         <Body>
           <Section heading={`New ${t(classifier)}`} explanation={`Please enter the new ${classifier} details.`} />
+          <Group>
+            <Field span={3}>
+              <Select onChange={handleChangeNationality}
+                label='Select Nationality'
+                name="nationality" 
+                data={withFlag} />
+            </Field>
+          </Group>
+          <Section />
           <Group>
             <Field span={3}>
               <Input label="First Name" name="firstName" />
@@ -161,10 +176,10 @@ const Add = () => {
           <Section heading='Specify Country' explanation='Enter the country where the worker resides.' size="md" />
           <Group>
             <Field span={3}>
-              <Select 
+              <Select onChange={() => setLocalityChanged(true)}
                 label='Select Country'
                 name="locality" 
-                data={withFlag} />
+                data={withFlag} value={locality} />
             </Field>
           </Group>
         </Body>
