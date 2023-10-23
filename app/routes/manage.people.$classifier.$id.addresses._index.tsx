@@ -16,10 +16,10 @@ import Alert, { Level } from '~/components/alert';
 import { Layout, Heading } from '~/components/info/info';
 
 export const handle = {
-  i18n: "contacts",
-  name: "contacts",
+  i18n: "addresses",
+  name: "addresses",
   breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/contacts`} name={name} current={current} />
+    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/addresses`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -61,8 +61,8 @@ const ContactLink = ({ contact }: { contact: Contact }) => {
   return <a href={href} target="_blank" onClick={handleClick}>{value}</a>;
 };
 
-const Contacts = () => {
-  const { t } = useTranslation("contacts");
+const Addresses = () => {
+  const { t } = useTranslation();
   const { person, contacts } = useLoaderData();
 
   const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} sub={t(contact.classifier)} className="font-medium" />;
@@ -71,8 +71,8 @@ const Contacts = () => {
   return (
     <>
       <Layout>
-        <Heading heading={t('contacts')} explanation={`Manage ${person.firstName}'s contact information.`} />
-        {contacts.length === 0 && <Alert title="No contacts" level={Level.Info} /> }
+        <Heading heading={t('addresses')} explanation={`Manage ${person.firstName}'s addresses.`} />
+        {contacts.length === 0 && <Alert title="No addresses" level={Level.Info} /> }
         <List data={contacts} renderItem={Item} renderContext={Context} noNavigate={true} />
       </Layout>
     </>
@@ -80,4 +80,4 @@ const Contacts = () => {
 };
 
 
-export default Contacts;
+export default Addresses;

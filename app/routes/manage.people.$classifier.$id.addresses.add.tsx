@@ -6,7 +6,7 @@ import { type ActionArgs, type LoaderArgs, redirect, json, type UploadHandler,
 import { useLoaderData } from '@remix-run/react'
 import { Form, validationError, withZod, zfd, z, Combo } from '~/components/form';
 import { useTranslation } from 'react-i18next';
-import NameConfigurator from 'i18n-postal-address';
+import AddressConfigurator from 'i18n-postal-address';
 
 import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
@@ -51,10 +51,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 z.setErrorMap((issue, ctx) => {
   if (issue.code === "invalid_type") {
-    if (issue.path.includes("locality"))
+    if (issue.path.includes("country"))
       return { message: "Country is required" };
-    if (issue.path.includes("nationality"))
-      return { message: "Nationality is required" };
   }
   return { message: ctx.defaultError };
 });
@@ -73,17 +71,8 @@ const validator = (config: Config) => {
       .optional(),
     nationality: z
       .object({ id: z.string()}),
-    locality: z
+    country: z
       .object({ id: z.string()}),
-    photo: z.any()
-  };
-
-  if (config.client) schema = { ...schema, 
-    clientId: z.string().nonempty("The client is required")
-  };
-
-  if (config.legalEntity) schema = { ...schema, 
-    legalEntityId: z.string().nonempty("The legal entity is required")
   };
 
   return withZod(zfd.formData(schema));
@@ -121,82 +110,79 @@ export const action = async ({ request, params }: ActionArgs) => {
 };
 
 const honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Dr" ];
-const names = new Map<string, ReactNode>([
-  [ "firstName", <Input label="First Name" name="firstName" /> ],
-  [ "secondName", <Input label="Second Name" name="secondName" /> ],
-  [ "firstLastName", <Input label="First Last Name" name="firstLastName" /> ],
-  [ "secondLastName", <Input label="Second Last Name" name="secondLastName" /> ],
-  [ "lastName", <Input label="Last Name" name="lastName" /> ],
-  [ "honorific", <Select label="Title" name="honorific" 
-                    data={honorifics.map(id => ({ id, name: id }))} /> ],
+const addresses = new Map<string, ReactNode>([
+  [ "address1", <Input label="Address Line 1" name="address1" /> ],
+  [ "address2", <Input label="Address Line 2" name="address2" /> ],
+  [ "addressNum", <Input label="Number" name="addressNum" /> ],
+  [ "city", <Input label="City" name="city" /> ],
+  [ "country", <Input label="Country" name="country" /> ],
+  [ "region", <Input label="Region" name="region" /> ],
+  [ "republic", <Input label="Republic" name="republic" /> ],
+  [ "province", <Input label="Province" name="province" /> ],
+  [ "prefecture", <Input label="Prefecture" name="prefecture" /> ],
+  [ "state", <Input label="State" name="state" /> ],
+  [ "postalCode", <Input label="Postal Code" name="postalCode" /> ],
 ]);
 
 const spans = new Map<string, number>([
-  [ "firstName", 3 ],
-  [ "secondName", 3 ],
-  [ "firstLastName", 3 ],
-  [ "secondLastName", 3 ],
-  [ "lastName", 3 ],
-  [ "honorific", 2 ],
+  [ "address1", 3 ],
+  [ "address2", 3 ],
+  [ "city", 3 ],
+  [ "region", 2 ],
+  [ "province", 2 ],
+  [ "state", 2 ],
+  [ "prefecture", 2 ],
+  [ "postalCode", 2 ],
 ]);
 
 const Add = () => {
   const { t } = useTranslation();
-  const { countries, classifier, config } = useLoaderData();
+  const { countries, config } = useLoaderData();
 
-  const [ client, setClient ] = useState<Client>();
-  const [ locality, setLocality ] = useState<SelectItem>();
-  const [ localityChanged, setLocalityChanged ] = useState<boolean>(false);
-  const [ legalEntity, setLegalEntity ] = useState<LegalEntity>();
-  const [ nameConfig, setNameConfig ] = useState<Array<Array<string>>>();
-
-  const clientModal = useRef<RefSelectorModal>(null);
-  const legalEntityModal = useRef<RefSelectorModal>(null);
+  const [ addressConfig, setAddressConfig ] = useState<Array<Array<string>>>();
 
   const withFlag = countries.map((country: Country) => ({
     id: country.isoCode, name: country.name, 
     image: flag(country.isoCode)
   }));
 
-  const showClientModal = () => clientModal.current?.show('client');
-  const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
+  const handleChangeCountry = (country: any) => {
+    const address = new AddressConfigurator();
+    address
+      .setAddress1("address1")
+      .setAddress2("address2")
+      .setCity("city")
+      .setRegion("region")
+      .setProvince("province")
+      .setPrefecture("prefecture")
+      .setPostalCode("postalCode")
+      .setState("state")
+      .setRepublic("republic")
+      .setFormat({ country: country.id, useTransforms: false });
 
-  const handleChangeNationality = (nationality: any) => {
-    if (localityChanged === false) setLocality(nationality);
-
-    const name = new NameConfigurator();
-    name
-      .setFirstName("firstName")
-      .setSecondName("secondName")
-      .setFirstLastName("firstLastName")
-      .setSecondLastName("secondLastName")
-      .setLastName("lastName")
-      .setHonorific("honorific")
-      .setFormat({ country: nationality.id });
-
-    setNameConfig(name.toArray());
+    setAddressConfig(address.toArray());
   };
 
   return (
     <>
-      <Form method="post" validator={validator(config)} id="add-person" encType="multipart/form-data">
+      <Form method="post" validator={validator(config)} id="add-address" encType="multipart/form-data" className="mt-6">
         <Body>
-          <Section heading={`New ${t(classifier)}`} explanation={`Please enter the new ${classifier} details.`} />
+          <Section heading='New Address' explanation='Please enter the new address details.' />
           <Group>
             <Field span={3}>
-              <Select onChange={handleChangeNationality}
-                label='Select Nationality'
-                name="nationality" 
+              <Select onChange={handleChangeCountry}
+                label='Select Country'
+                name="country" 
                 data={withFlag} />
             </Field>
           </Group>
-          {nameConfig?.map((properties: Array<string>) => {
+          {addressConfig?.map((properties: Array<string>) => {
             return (
               <>
                 <Section />
-                <Group cols={11}>
+                <Group cols={6}>
                   {properties.map((property: string) => {
-                    const input = names.get(property);
+                    const input = addresses.get(property);
                     const span = spans.get(property);
                     return (
                     <Field span={span || 3}>
@@ -206,36 +192,14 @@ const Add = () => {
                 </Group>
               </>
             )})}
-          <Section size="md" heading={config.heading} explanation={config.explanation} />
-          <Group>
-            {config.client &&<Field span={3}>
-              <Lookup label="Client" name="clientId" onClick={showClientModal} 
-                icon={IdentificationIcon} value={client} placeholder="Select a Client" />
-            </Field>}
-            {config.legalEntity &&<Field span={3}>
-              <Lookup label="Legal Entity" name="legalEntityId" onClick={showLegalEntityModal} 
-                icon={WalletIcon} value={legalEntity} placeholder="Select a Legal Entity" />
-            </Field>}
-          </Group>
-          <Section heading='Specify Country' explanation='Enter the country where the worker resides.' size="md" />
-          <Group>
-            <Field span={3}>
-              <Select onChange={() => setLocalityChanged(true)}
-                label='Select Country'
-                name="locality" 
-                data={withFlag} value={locality} />
-            </Field>
-          </Group>
         </Body>
         <Footer>
           <Cancel />
-          <Submit text="Save" submitting="Saving..." permission={manage.create.person} />
+          <Submit text="Save" submitting="Saving..." permission={manage.edit.person} />
         </Footer>
       </Form>
-      <SelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
-      <SelectorModal ref={legalEntityModal} onSelect={setLegalEntity} allowChange={false} />
     </>
   );
 }
 
-export default withAuthorization(manage.create.person)(Add);
+export default withAuthorization(manage.edit.person)(Add);

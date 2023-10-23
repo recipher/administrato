@@ -36,12 +36,10 @@ const Info = () => {
   const { t } = useTranslation();
   const { person } = useLoaderData();
 
-  const name = `${person.firstName} ${person.lastName}`;
-
   return (
     <>
       <Layout>
-        <Heading heading={t('salary')} explanation={`Manage ${name}'s salary.`} />
+        <Heading heading={t('salary')} explanation={`Manage ${person.firstName}'s salary.`} />
       </Layout>
     </>
   );

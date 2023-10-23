@@ -27,7 +27,7 @@ export const Section = ({ heading, explanation, size = "lg" }: { heading?: strin
 
 export const Group = ({ cols = 6, children }: PropsWithChildren<{ cols?: number }>) => {
   return (
-    <div className={`grid max-w-4xl grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-${cols} md:col-span-2`}>
+    <div className={`grid max-w-4xl grid-cols-1 gap-x-6 sm:grid-cols-${cols} md:col-span-2`}>
       {children}
     </div>
   );

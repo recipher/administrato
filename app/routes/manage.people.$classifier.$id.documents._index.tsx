@@ -90,7 +90,6 @@ const Documents = () => {
   const confirm = useRef<RefConfirmModal>(null);
 
   const { person, documents, folders, folder, count, offset, limit, search, sort } = useLoaderData();
-  const name = `${person.firstName} ${person.lastName}`;
 
   const tabs: Array<{ name: string, icon: any; value: string, selectable?: boolean }> = 
     folders.map((folder: string) => ({ name: folder, value: folder }));
@@ -124,7 +123,7 @@ const Documents = () => {
 
   return (
     <Layout>
-      <Heading heading={t('documents')} explanation={`Manage ${name}'s documents.`} />
+      <Heading heading={t('documents')} explanation={`Manage ${person.firstName}'s documents.`} />
       {folders.length > 0 && <Tabs tabs={tabs} selected={folder} onClick={handleClick} />}
 
       <Filter className="pt-6" filterTitle='Search documents' filterParam='q' allowSort={true} sort={sort} filter={search} />
