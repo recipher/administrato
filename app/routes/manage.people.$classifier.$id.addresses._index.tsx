@@ -10,7 +10,7 @@ import { requireUser } from '~/auth/auth.server';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
-import { List, ListItem, ListContext } from '~/components/list';
+import { Cards, List, ListItem, ListContext } from '~/components/list';
 import Alert, { Level } from '~/components/alert';
 import { Layout, Heading } from '~/components/info/info';
 
@@ -40,9 +40,13 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 const Addresses = () => {
   const { t } = useTranslation();
+  const { t: ta } = useTranslation("address");
   const { person, addresses } = useLoaderData();
 
-  const Item = (address: Address) => <ListItem data={address.address} className="font-normal" />;
+  const Address = ({ address } : { address: string | undefined }) =>
+    <>{address?.split('\n').map((line: string) => <div>{line}</div>)}</>
+
+  const Item = (address: Address) => <ListItem data={ta(address.classifier as string)} sub={<Address address={address.address} />} className="font-normal" />;
   const Context = (address: Address) => <ListContext select={false} />;
 
   return (
@@ -50,7 +54,8 @@ const Addresses = () => {
       <Layout>
         <Heading heading={t('addresses')} explanation={`Manage ${person.firstName}'s addresses.`} />
         {addresses.length === 0 && <Alert title="No addresses" level={Level.Info} /> }
-        <List data={addresses} renderItem={Item} renderContext={Context} noNavigate={true} />
+        {/* <List data={addresses} renderItem={Item} renderContext={Context} noNavigate={true} /> */}
+        <Cards />
       </Layout>
     </>
   );
