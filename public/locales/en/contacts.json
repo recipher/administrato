@@ -1,6 +1,6 @@
 {
   "contacts": "Contacts",
-  "phone": "Phone",
+  "phone": "Phone Number",
   "email": "Email Address",
   "social": "Social Media",
   "web": "Website",
@@ -15,7 +15,7 @@
   "personal": "Personal",
   "work": "Work",
   "other": "Other",
-  "twitter": "Twitter / X",
+  "twitter": "Twitter",
   "facebook": "Facebook",
   "whatsapp": "WhatsApp",
   "snapchat": "Snapchat",

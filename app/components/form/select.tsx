@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { useField } from 'remix-validated-form';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 
 import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
@@ -65,7 +65,7 @@ export default function Select({ name, label, data = [], defaultValue = null, va
                   <span className={classnames("ml-3 block truncate")}>{selected?.name}</span>
                 </span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                  <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                  <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </span>
               </Listbox.Button>
 

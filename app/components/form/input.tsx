@@ -14,9 +14,10 @@ type Props = {
   placeholder?: string;
   type?: string | undefined;
   width?: string;
+  pre?: string | undefined
 };
 
-export default function Input({ name, label, value, focus = false, disabled = false, placeholder, type = "text", width }: Props) {
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder, type = "text", width, pre }: Props) {
   const { error, getInputProps } = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,7 +33,9 @@ export default function Input({ name, label, value, focus = false, disabled = fa
         {label}
       </label>
       <div className={classnames(width ? `w-${width}` : "",
-        "relative mt-1 rounded-md shadow-sm")}>
+            error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "ring-gray-300 placeholder:text-gray-400 focus-within:ring-indigo-600 focus:ring-indigo-600 ", 
+            "mt-1 relative flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset sm:max-w-md")}>
+        <span className={classnames(pre ? "" : "hidden", "flex select-none items-center pl-3 text-gray-500 sm:text-sm")}>{pre}</span>
         <input
           ref={inputRef} 
           disabled={disabled}
@@ -44,10 +47,10 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           autoComplete="off"
           type={type}
           className={classnames(
-            error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
             disabled ? "text-gray-400 bg-gray-100" : "",
             !error && !disabled ? "text-gray-900 bg-white": "",
-            "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
+            pre ? "pl-1" : "pl-3",
+            "block flex-1 border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6")}
         />
         {error && <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />

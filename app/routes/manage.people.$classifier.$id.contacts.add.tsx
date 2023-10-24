@@ -107,6 +107,10 @@ const Add = () => {
     [ContactClassifier.Phone]: <Phone label={t(`${classifier}-value`)} name="value" countries={countryData} />,
   }[classifier || ContactClassifier.Web];
 
+  const pre = {
+    [ContactClassifier.Web]: "http://",
+  }[classifier || ContactClassifier.Web];
+
   const type = {
     [ContactClassifier.Email]: "email",
     [ContactClassifier.Social]: "text",
@@ -131,7 +135,7 @@ const Add = () => {
               {subData.length === 0 && <Input label={t(`${classifier}-sub`)} name="sub" />}
             </Field>
             <Field span={3} className={classifier === undefined ? "hidden" : ""}>
-              {input || <Input label={t(`${classifier}-value`)} name="value" type={type} />}
+              {input || <Input label={t(`${classifier}-value`)} name="value" type={type} pre={pre} />}
             </Field>
           </Group>
         </Body>
