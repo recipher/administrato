@@ -35,7 +35,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
       <div className={classnames(width ? `w-${width}` : "",
             error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "ring-gray-300 placeholder:text-gray-400 focus-within:ring-indigo-600 focus:ring-indigo-600 ", 
             "mt-1 relative flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset sm:max-w-md")}>
-        <span className={classnames(pre ? "" : "hidden", "flex select-none items-center pl-3 text-gray-500 sm:text-sm")}>{pre}</span>
+        {pre && <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">{pre}</span>}
         <input
           ref={inputRef} 
           disabled={disabled}

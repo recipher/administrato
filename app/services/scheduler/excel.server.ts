@@ -1,28 +1,62 @@
 import ExcelJS, { type Worksheet } from 'exceljs';
 import fs from 'node:fs/promises';
+import { format } from 'date-fns';
+
+import { adjustForUTCOffset, format as formatISO9075 } from './date';
 
 import { type LegalEntity } from '../manage/legal-entities.server';
-import { Milestone } from './milestones.server';
+import { type Milestone } from './milestones.server';
+import { type ScheduleWithDates } from './schedules.server';
+import { type Holiday } from './holidays.server';
+import { type Country } from '../countries.server';
 
 const COLUMNS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const FONT = { name: 'Arial', family: 2, size: 14 };
 
 const byIndexAsc = (l: any, r: any) => l.index - r.index;
+const byIndexDesc = (l: any, r: any) => r.index - l.index;
+
+const uniq = (items: Array<any>) => items.reduce((acc, i) => acc.includes(i) ? acc : acc.concat([i]), []);
+const byDate = adjustForUTCOffset;
+
+// const range = (start, stop, step = 1) => 
+//   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
+
+// const payOn = due => {
+//   if (due === undefined) return null;
+
+//   const out = ({ when = null, day }) => day === undefined ? when : [ when, day ].join(' ');
+
+//   if (Array.isArray(due)) return [ out(due[0]), out(due[1]) ].join(',');
+//   return out(due); 
+// };
+
+const toDate = (date: Date) => new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+
+const toDateFromString = (s: string) => {
+  const [ y, m, d ] = s.split('-');
+  return new Date(Date.UTC(y, m-1, d));
+};
+
+const byPayrollCountry = country => c => c === country ? -1 : 1;
+
 
 const Service = () => {
 
   type ScheduleProps = {
     legalEntity: LegalEntity ;
     milestones: Array<Milestone>;
+    schedules: Array<ScheduleWithDates>;
+    start: Date;
+    end: Date;
   };
 
-  // const addScheduleSheet = (worksheet, schedule, info, country, holidays, year, options = { useFormula: true }) => {
-  const addScheduleSheet = (worksheet: Worksheet, { legalEntity, milestones }: ScheduleProps) => {
+  const addScheduleSheet = (worksheet: Worksheet, { legalEntity, milestones, schedules, start, end }: ScheduleProps) => {
     worksheet.properties.defaultColWidth = 20;
-  
-    // const toSchedule = s => [ s.period, ...s.dates.sort(byIndexDesc).map((date, i) => date.due) ];
-    // // const toSchedule = s => [ s.period, ...s.dates.sort(byIndexDesc).map((date, i) => i === s.dates.length-1 ? date.due : null) ];
+
+    const toSchedule = (s: ScheduleWithDates) => 
+      [ s.name, ...s.scheduleDates.sort(byIndexAsc).map((date, i) => date.date) ];
 
   const toScheduleHeader = (milestones: Array<Milestone>) => [
     [ 'Milestone', ...milestones.map(ms => ms.description) ], 
@@ -31,15 +65,21 @@ const Service = () => {
   ];
 
     const header = [ 
-      [ 'Client', '' ], 
+      [ 'Client', legalEntity.clientId ], 
       [ 'Payroll', legalEntity.name ], 
       [ 'Country', '' ], 
       [ 'Pay Frequency', legalEntity.frequency ],
       [ 'Pay Date', legalEntity.target ],
-      [ 'Period', '' ],
+      [ 'Period', `${format(start, 'd MMM yyyy')} to ${format(end, 'd MMM yyyy')}` ],
     ];
   
-    const data = [ ...header, [], ...toScheduleHeader(milestones.sort(byIndexAsc)) ] //, ...schedule.map(toSchedule) ]
+    const data = [ 
+      ...header, 
+      [], 
+      ...toScheduleHeader(milestones.sort(byIndexAsc)), 
+      [], 
+      ...schedules.map(toSchedule),
+    ];
   
     data.forEach(d => {
       const row = worksheet.addRow(d);
@@ -52,16 +92,14 @@ const Service = () => {
     return worksheet;
   };
   
-  const addHolidaySheet = (worksheet: Worksheet) => { //, holidays, info) => {
+  const addHolidaySheet = (worksheet: Worksheet, { holidays, countries }: { holidays: Array<Holiday>, countries: Array<Country> }) => { 
     worksheet.properties.defaultColWidth = 20;
-
-    // const { country, countries, errors } = info;
       
-    // const grouped = countries.concat([ country ]).sort(byPayrollCountry(country))
-    //   .map(c => ({
-    //     country: c,
-    //     holidays: uniq(holidays.filter(h => h.country === c).map(h => format(h.date)).sort(byDate)),
-    //   }));
+    const grouped = countries.sort(byPayrollCountry(country))
+      .map(c => ({
+        country: c,
+        holidays: uniq(holidays.filter(h => h.locality === c.isoCode).map(h => formatISO9075(h.date)).sort(byDate)),
+      }));
   
     // const longest = grouped.reduce((c, next) => next.holidays.length > c.holidays.length ? next : c, grouped[0]);
   
@@ -91,13 +129,18 @@ const Service = () => {
   type GenerateProps = {
     legalEntity: LegalEntity;
     milestones: Array<Milestone>;
+    schedules: Array<ScheduleWithDates>;
+    holidays: Array<Holiday>;
+    countries: Array<Country>;
+    start: Date;
+    end: Date;
   };
   
-  const generate = async ({ legalEntity, milestones }: GenerateProps) => {
+  const generate = async ({ legalEntity, milestones, schedules, holidays, countries, start, end }: GenerateProps) => {
     const workbook = new ExcelJS.Workbook();
 
-    const scheduleSheet = addScheduleSheet(workbook.addWorksheet('schedule'), { legalEntity, milestones }) //, schedule, info, payrollCountry, holidays, year);
-    addHolidaySheet(workbook.addWorksheet('holidays'));
+    const scheduleSheet = addScheduleSheet(workbook.addWorksheet('schedule'), { legalEntity, milestones, schedules, start, end }) //, schedule, info, payrollCountry, holidays, year);
+    addHolidaySheet(workbook.addWorksheet('holidays'), { holidays, countries });
 
     await addLogo(scheduleSheet);
 

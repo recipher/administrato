@@ -61,8 +61,6 @@ export default function Schedules() {
   ];
 
   const actions = [
-    // { title: 'download-schedule-file', href: `schedules/download?year=${year}`, download: `${year}.xlsx`,
-    //   icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
     { title: 'download-schedule-file', onClick: () => modal.current?.show(),
       icon: ArrowDownIcon, permission: scheduler.read.schedule, type: ButtonType.Secondary },
     { title: 'generate-schedules', to: `schedules/generate?year=${year}`,

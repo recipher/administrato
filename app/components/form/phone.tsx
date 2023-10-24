@@ -61,11 +61,11 @@ const Select = ({ data = [], defaultValue = null, value = null, onChange = noOp 
               className={classnames(
                 selected?.image ? "pl-3" : "h-9",
                 "text-gray-900 placeholder:text-gray-400 outline-none", 
-                "relative w-[7rem] cursor-default rounded-md py-1.5 pr-10 text-left sm:text-sm sm:leading-6")}>
+                "relative w-[6rem] cursor-default rounded-md py-1.5 pr-2 text-left sm:text-sm sm:leading-6")}>
               <span className="flex items-center">
                 <img src={selected?.image} alt={selected?.name} 
                   className={classnames(selected?.image ? "" : "hidden", "h-6 w-6 flex-shrink-0")} />
-                <span className={classnames("ml-3 block truncate")}>{selected?.id}</span>
+                <span className={classnames("ml-2.5 block truncate")}>{selected?.id}</span>
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                 <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -95,9 +95,7 @@ const Select = ({ data = [], defaultValue = null, value = null, onChange = noOp 
                           <span
                             className={classnames(
                               selected ? 'font-semibold' : 'font-normal',
-                              item.image ? 'ml-3' : '',
-                              'block truncate')}
-                          >
+                              item.image ? 'ml-3' : '', 'block truncate')}>
                             {item.name}
                           </span>
                           <span className={classnames(active 
@@ -182,7 +180,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
             (error || invalid) ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
             disabled ? "text-gray-400 bg-gray-100" : "",
             !(error || invalid) && !disabled ? "text-gray-900 bg-white": "",
-            "block w-full rounded-md border-0 py-1.5 pl-[7rem] pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
+            "block w-full rounded-md border-0 py-1.5 pl-[6rem] pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
         />
         {(error || invalid) && <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
           <ExclamationCircleIcon className="h-5 w-5 text-red-500" aria-hidden="true" />

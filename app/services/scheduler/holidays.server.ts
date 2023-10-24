@@ -3,6 +3,7 @@ import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
 
+import { format } from 'date-fns';
 import { isSameDate } from './date';
 
 import { type User } from '../access/users.server';
@@ -18,13 +19,10 @@ export type Holiday = s.holidays.Selectable;
 
 type ListOptions = { 
   month?: number | undefined | null;
-  year: number;
+  year?: number | undefined;
+  start?: Date | undefined;
+  end?: Date | undefined;
   locality: string;
-};
-
-type RangeOptions = { 
-  start: Date;
-  end: Date;
 };
 
 type EntityOptions = {
@@ -127,23 +125,26 @@ const Service = (u: User) => {
     .run(pool);
   };
   
-  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }: ListOptions & EntityOptions, { includeMain }: { includeMain: boolean } = { includeMain: true }, txOrPool: TxOrPool = pool) => {
-    const byYear = db.sql`DATE_PART('year', ${'date'}) = ${db.param(year)}`;
+  const listHolidaysByCountryForEntity = async ({ month, year, start, end, locality, entityId }: ListOptions & EntityOptions, { includeMain }: { includeMain: boolean } = { includeMain: true }, txOrPool: TxOrPool = pool) => {
+    const byYear = year === undefined ? db.sql`` 
+      : db.sql`DATE_PART('year', ${'date'}) = ${db.param(year)}`;
     const byMonth = month === undefined ? db.sql`` 
       : db.sql`AND DATE_PART('month', ${'date'}) = ${db.param(month)}`;
+    const byRange = start === undefined || end === undefined ? db.sql`` 
+      : db.sql`AND ${'date'}) BETWEEN ${db.param(format(start, 'yyyy-MM-dd'))} AND ${db.param(format(end, 'yyyy-MM-dd'))}`;
     
     const main = db.sql<s.holidays.SQL>`
       SELECT * FROM ${'holidays'} 
       WHERE 
         ${{locality}} AND ${'entityId'} IS NULL AND 
-        ${byYear} ${byMonth}
+        ${byYear} ${byMonth} ${byRange}
     `;
 
     const entity = db.sql<s.holidays.SQL>`
       SELECT * from ${'holidays'}
       WHERE 
         ${{locality}} AND ${{entityId}} AND
-        ${byYear} ${byMonth}
+        ${byYear} ${byMonth} ${byRange}
     `;
 
     if (includeMain === false) 
@@ -163,7 +164,7 @@ const Service = (u: User) => {
     }, []);
   };
   
-  const syncHolidays = async ({ year, locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
+  const syncHolidays = async ({ year = new Date().getUTCFullYear(), locality }: ListOptions, { shouldDelete = false }: QueryOptions = {}) => {
     if (shouldDelete) await deleteHolidaysByCountry({ year, locality });
 
     const { holidays = [] } = await holidayAPI.holidays({ country: locality, year, public: true });

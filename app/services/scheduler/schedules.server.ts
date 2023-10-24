@@ -364,13 +364,22 @@ const Service = (u: User) => {
     });
   };
 
-  type ListProps = { legalEntityId: string; year?: number, status: Status | null };
+  type ListProps = { 
+    legalEntityId: string; 
+    year?: number; 
+    start?: Date;
+    end?: Date;
+    status: Status | null; 
+  };
 
-  const listSchedulesByLegalEntity = async ({ legalEntityId, year, status = Status.Draft }: ListProps, txOrPool: TxOrPool = pool) => {
+  const listSchedulesByLegalEntity = async ({ legalEntityId, year, start, end, status = Status.Draft }: ListProps, txOrPool: TxOrPool = pool) => {
     if (!status) status = Status.Draft;
 
-    const yearQuery = year === undefined ? db.sql``
+    const yearQuery = year === undefined || start !== undefined ? db.sql``
       : db.sql`AND DATE_PART('year', ${'schedules'}.${'date'}) = ${db.param(year)}`;
+
+    const dateQuery = start === undefined || end === undefined ? db.sql`` 
+      : db.sql`AND ${'schedules'}.${'date'} BETWEEN ${db.param(format(start, 'yyyy-MM-dd'))} AND ${db.param(format(end, 'yyyy-MM-dd'))}`
 
     return db.sql<s.schedules.SQL | s.scheduleDates.SQL | s.approvals.SQL, Array<ScheduleWithDates>>`
       SELECT ${'schedules'}.*, a.*, sd.*
@@ -399,6 +408,7 @@ const Service = (u: User) => {
         ${'schedules'}.${'legalEntityId'} = ${db.param(legalEntityId)} AND 
         ${'schedules'}.${'status'} = ${db.param(status)}
         ${yearQuery}
+        ${dateQuery}
       ORDER BY ${'schedules'}.${'date'} ASC
     `.run(txOrPool);
   };
