@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { badRequest } from '~/utility/errors';
 
+import CountryService, { type Country } from '~/services/countries.server';
 import { Classifier } from '~/services/manage/people.server';
 import ContactService, { create } from '~/services/manage/contacts.server';
 import { ContactClassifier, Subs } from '~/services/manage';
@@ -16,9 +17,10 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
-import { Input, Select, Cancel, Submit,
+import { Input, Phone, Select, Cancel, Submit,
   Body, Section, Group, Field, Footer } from '~/components/form';
-
+import { flag } from '~/components/countries/flag';
+  
 export const handle = {
   i18n: 'contacts',
   name: 'add-contact',
@@ -31,8 +33,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (id === undefined || classifier === undefined) return badRequest('Invalid data');
 
   const classifiers = Object.values(ContactClassifier).filter(item => isNaN(Number(item)));
+  const { countries } = await CountryService().listCountries({ limit: 300 });
 
-  return json({ id, classifier, classifiers, subs: Subs });
+  return json({ id, classifier, classifiers, subs: Subs, countries });
 };
 
 z.setErrorMap((issue, ctx) => {
@@ -85,10 +88,12 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const Add = () => {
   const { t } = useTranslation("contacts");
-  const { classifiers, subs } = useLoaderData();
+  const { classifiers, subs, countries } = useLoaderData();
 
   const [ classifier, setClassifier ] = useState<string>();
   const [ subData, setSubData ] = useState<Array<{ id: string, name: string }>>([]);
+
+  const countryData = countries.map(({ isoCode: id, name, diallingCode }: Country) => ({ id, diallingCode, name, image: flag(id)  }));
 
   const toSelectable = (id: string) => ({ id, name: t(id, { ns: "contacts" }) });
   const classifierData = classifiers?.map(toSelectable);
@@ -98,9 +103,12 @@ const Add = () => {
     setClassifier(c);
   };
 
+  const input = {
+    [ContactClassifier.Phone]: <Phone label={t(`${classifier}-value`)} name="value" countries={countryData} />,
+  }[classifier || ContactClassifier.Web];
+
   const type = {
     [ContactClassifier.Email]: "email",
-    [ContactClassifier.Phone]: "tel",
     [ContactClassifier.Social]: "text",
     [ContactClassifier.Web]: "text",
   }[classifier || ContactClassifier.Web];
@@ -122,8 +130,8 @@ const Add = () => {
               {subData.length > 0 && <Select label={t(`${classifier}-sub`)} name="sub" data={subData} />}
               {subData.length === 0 && <Input label={t(`${classifier}-sub`)} name="sub" />}
             </Field>
-            <Field span={4} className={classifier === undefined ? "hidden" : ""}>
-              <Input label={t(`${classifier}-value`)} name="value" type={type} />
+            <Field span={3} className={classifier === undefined ? "hidden" : ""}>
+              {input || <Input label={t(`${classifier}-value`)} name="value" type={type} />}
             </Field>
           </Group>
         </Body>

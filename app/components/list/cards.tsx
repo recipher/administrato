@@ -1,48 +1,69 @@
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import { classnames } from '~/helpers';
+import { ReactNode } from 'react';
+import { Link } from '@remix-run/react';
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-const projects = [
-  { name: 'Graph API', initials: 'GA', href: '#', members: 16, bgColor: 'bg-pink-600' },
-  { name: 'Component Design', initials: 'CD', href: '#', members: 12, bgColor: 'bg-purple-600' },
-  { name: 'Templates', initials: 'T', href: '#', members: 16, bgColor: 'bg-yellow-500' },
-  { name: 'React Components', initials: 'RC', href: '#', members: 8, bgColor: 'bg-green-500' },
-]
+import Image from '~/components/image';  
+import classnames from '~/helpers/classnames';
 
-export default function Example() {
+type ToProps = {
+  item: any;
+  idKey?: string;
+};
+
+type Props = {
+  data?: Array<any>,
+  idKey?: string;
+  onClick?: Function;
+  renderItem(item: any): ReactNode,
+  buildTo?(props: ToProps): string;
+  noNavigate?: boolean | undefined;
+};
+
+export const CardItem = ({ className = "text-md font-semibold", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
+  if (typeof image === "string") 
+    image = image.length 
+      ? <Image src={image} className="h-12 w-12 rounded-full" />
+      : <div className="h-12 w-12 rounded-full border-solid border-2 border-gray-100" />;
+
   return (
-    <div>
-      <h2 className="text-sm font-medium text-gray-500">Pinned Projects</h2>
-      <ul role="list" className="mt-3 grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
-        {projects.map((project) => (
-          <li key={project.name} className="col-span-1 flex rounded-md shadow-sm">
-            <div
-              className={classnames(
-                project.bgColor,
-                'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium text-white'
-              )}
-            >
-              {project.initials}
-            </div>
-            <div className="flex flex-1 items-center justify-between truncate rounded-r-md border-b border-r border-t border-gray-200 bg-white">
-              <div className="flex-1 truncate px-4 py-2 text-sm">
-                <a href={project.href} className="font-medium text-gray-900 hover:text-gray-600">
-                  {project.name}
-                </a>
-                <p className="text-gray-500">{project.members} Members</p>
-              </div>
-              <div className="flex-shrink-0 pr-2">
-                <button
-                  type="button"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-transparent bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  <span className="sr-only">Open options</span>
-                  <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <>
+      {image}
+      <div className={classnames(className, "min-w-0 flex-auto")}>
+        <p className="leading-6 text-gray-900 font-medium">
+          {data}
+        </p>
+        <p className="mt-1 text-sm leading-5 font-normal text-gray-500">
+          {sub}
+        </p>
+      </div>
+    </>
+  );
+};
+
+const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey].toString();
+
+export default function List({ data = [], idKey = "id", onClick, renderItem, buildTo = defaultTo, noNavigate = false }: Props) {
+  const Item = ({ item }: any) => (
+    <div className="flex justify-between gap-x-6 py-3">
+      <div className="flex min-w-0 gap-x-4">
+        {renderItem(item)}
+      </div>
     </div>
-  )
-}
+  );
+
+  return (
+    <ul className="mt-3 grid grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-6">
+      {data.map((item: any, index: number) => (
+        <li key={`${item[idKey]}-${index}`} className="group">
+          {onClick 
+            ? <div className={classnames(item[idKey] && noNavigate !== true ? "cursor-pointer" : "")} onClick={() => item[idKey] && onClick(item) }>
+                <Item item={item} />
+              </div>
+            : noNavigate === true 
+                ? <Item item={item} />
+                : <Link to={buildTo({ item, idKey })}><Item item={item} /></Link>}
+        </li>
+      ))}
+    </ul>
+  );
+};

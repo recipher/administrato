@@ -60,6 +60,7 @@
     "i18next-fs-backend": "^2.1.5",
     "i18next-http-backend": "^2.2.2",
     "isbot": "^3.6.12",
+    "libphonenumber-js": "^1.10.48",
     "ow": "^1.1.1",
     "pg": "^8.11.3",
     "ramda": "^0.29.0",

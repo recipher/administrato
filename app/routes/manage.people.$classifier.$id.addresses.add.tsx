@@ -40,9 +40,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const u = await requireUser(request);
 
   const person = await PersonService(u).getPerson({ id });
-
-  const service = CountryService();
-  const { countries } = await service.listCountries({ limit: 300 });
+  const { countries } = await CountryService().listCountries({ limit: 300 });
 
   return json({ person, countries, classifier });
 };
@@ -67,10 +65,10 @@ const validator = withZod(
     gu: z.string().optional(),
     si: z.string().optional(),
     postalCode: z.string().optional(),
-    prefecture: z.object({ id: z.string() }).optional().or(z.string().optional()),
-    province: z.object({ id: z.string() }).optional().or(z.string().optional()),
-    region: z.object({ id: z.string() }).optional().or(z.string().optional()),
-    state: z.object({ id: z.string() }).optional().or(z.string().optional()),
+    prefecture: z.object({ name: z.string() }).optional().or(z.string().optional()),
+    province: z.object({ name: z.string() }).optional().or(z.string().optional()),
+    region: z.object({ name: z.string() }).optional().or(z.string().optional()),
+    state: z.object({ name: z.string() }).optional().or(z.string().optional()),
     companyName: z.string().optional(),
     classifier: z.object({ id: z.string() }),
     country: z.object({ id: z.string(), name: z.string() }),
@@ -92,8 +90,17 @@ export const action = async ({ request, params }: ActionArgs) => {
     country: { id: countryIsoCode, name: country }, 
     classifier: { id: addressClassifier }, ...data }} = result;
   
+  type FieldKey = keyof typeof data;
+  const getRegion = (field: FieldKey) => 
+    typeof data[field] === "string" ? data[field] : (data[field] as { name: string })?.name;
+
+  const state = getRegion('state'), province = getRegion('province'),
+        prefecture = getRegion('prefecture'), region = getRegion('region');
+
   const service = AddressService(u);
-  await service.addAddress(create({ country, countryIsoCode, classifier: addressClassifier, entityId: id, entity: classifier, ...data }));
+  await service.addAddress(create({ country, countryIsoCode,
+    classifier: addressClassifier, entityId: id, entity: classifier, 
+    ...data, state, prefecture, province, region }));
   
   return redirect('../addresses');
 };
