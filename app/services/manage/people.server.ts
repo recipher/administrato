@@ -14,6 +14,7 @@ import type { SearchOptions as BaseSearchOptions, Count, TxOrPool,
 import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
+import { NameFields } from './common';
 
 export type PersonSecurityKey = {
   clientKeyStart: number | undefined;
@@ -77,20 +78,11 @@ export const whereLegalEntityKeys = ({ keys }: KeyQueryOptions) => {
 
 const Service = (u: User) => {
 
-  const fields = [ 
-    'firstName', 
-    'secondName', 
-    'firstLastName', 
-    'secondLastName', 
-    'lastName', 
-    'honorific' 
-  ];
-  
   const withName = (person: Person) => {
     type PersonKey = keyof Person;
     const config = new NameConfigurator();
     
-    fields.forEach((field: string) => {
+    NameFields.forEach((field: string) => {
       const fieldKey = field as PersonKey;
       if (person[fieldKey]) config.setProperty(field, person[fieldKey] as string);
     });

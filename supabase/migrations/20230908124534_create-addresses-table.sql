@@ -17,6 +17,7 @@ create table
     republic text null,
     si text null,
     state text null,
+    "companyName" text null,
     "isPreferred" boolean null,
     classifier text null,
     "entityId" text not null,

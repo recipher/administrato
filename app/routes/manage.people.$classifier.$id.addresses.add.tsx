@@ -1,4 +1,4 @@
-import { useRef, useState, ReactNode } from 'react';
+import { useRef, useState, ReactNode, useEffect } from 'react';
 import { type ActionArgs, type LoaderArgs, redirect, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react'
 import { Form, validationError, withZod, zfd, z } from '~/components/form';
@@ -7,9 +7,10 @@ import AddressConfigurator from '@recipher/i18n-postal-address';
 
 import { badRequest } from '~/utility/errors';
 
-import { type Person, Classifier } from '~/services/manage/people.server';
+import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
 import AddressService, { create } from '~/services/manage/addresses.server';
 import CountryService, { type Country } from '~/services/countries.server';
+import { AddressFields, AddressClassifiers } from '~/services/manage/common';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -21,23 +22,29 @@ import { flag } from '~/components/countries/flag';
 import { Input, Select, Cancel, Submit,
   Body, Section, Group, Field, Footer } from '~/components/form';
 
-import { type Config } from './manage.people';
+const toKebab = (str: string) => 
+  str.replace(/([a-z0-9])([A-Z0-9])/g, '$1-$2').toLowerCase();
 
 export const handle = {
+  i18n: 'address',
   name: 'add-address',
   breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/documents/add`} name={name} current={current} />
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
-  const { classifier } = params;
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const { id, classifier } = params;
 
-  if (classifier === undefined) return badRequest('Invalid data');
+  if (id === undefined || classifier === undefined) return badRequest('Invalid request');
+
+  const u = await requireUser(request);
+
+  const person = await PersonService(u).getPerson({ id });
 
   const service = CountryService();
   const { countries } = await service.listCountries({ limit: 300 });
 
-  return json({ countries, classifier });
+  return json({ person, countries, classifier });
 };
 
 z.setErrorMap((issue, ctx) => {
@@ -64,6 +71,8 @@ const validator = withZod(
     postalCode: z.string().optional(),
     prefecture: z.string().optional(),
     province: z.string().optional(),
+    companyName: z.string().optional(),
+    classifier: z.object({ id: z.string() }),
     country: z.object({ id: z.string(), name: z.string() }),
   })
 );
@@ -79,67 +88,63 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { country: { id: countryIsoCode, name: country }, ...data }} = result;
+  const { data: { 
+    country: { id: countryIsoCode, name: country }, 
+    classifier: { id: addressClassifier }, ...data }} = result;
   
   const service = AddressService(u);
-  await service.addAddress(create({ country, countryIsoCode, entityId: id, entity: classifier, ...data }));
+  await service.addAddress(create({ country, countryIsoCode, classifier: addressClassifier, entityId: id, entity: classifier, ...data }));
   
   return redirect('../addresses');
 };
 
 const Add = () => {
-  const { t } = useTranslation();
-  const { countries } = useLoaderData();
+  const { t } = useTranslation("address");
+  const { person, countries } = useLoaderData();
+
+  const countryData = countries.map((country: Country) => ({
+    id: country.isoCode, name: country.name, 
+    image: flag(country.isoCode)
+  }));
 
   const [ addressConfig, setAddressConfig ] = useState<Array<Array<string>>>();
-  const [ country, setCountry ] = useState();
+  const [ country, setCountry ] = useState(countryData.find((c: any) => c.id === person.locality ));
+  const [ classifier, setClassifier ] = useState(AddressClassifiers.at(0) as string);
 
   const state = (country: string | undefined) => {
-    if (country === 'GB') return 'County';
-    return 'State';
+    if (country === 'GB') return t('county');
+    return t('state');
   };
 
   const postalCode = (country: string | undefined) => {
-    if (country === undefined) return 'Postal code';
+    if (country === undefined) return t('postal-code');
 
     const map = new Map<string, string>([
-      [ 'US', 'ZIP Code' ],
-      [ 'NL', 'Postcode' ],
-      [ 'GB', 'Postcode' ],
-      [ 'PH', 'ZIP Code' ],
-      [ 'IR', 'Eircode' ],
-      [ 'IT', 'CAP' ],
-      [ 'BR', 'CEP' ],
-      [ 'IN', 'PIN' ],
-      [ 'DE', 'PLZ' ],
-      [ 'CH', 'PLZ' ],
-      [ 'AT', 'PLZ' ],
-      [ 'LI', 'PLZ' ],
-      [ 'SK', 'PSČ' ],
-      [ 'CZ', 'PSČ' ],
-      [ 'MD', 'Postal index' ],
-      [ 'UA', 'Postal index' ],
-      [ 'BY', 'Postal index' ],
+      [ 'US', t('zipcode') ],
+      [ 'NL', t('postcode') ],
+      [ 'GB', t('postcode') ],
+      [ 'PH', t('zipcode') ],
+      [ 'IR', t('eircode') ],
+      [ 'IT', t('cap') ],
+      [ 'BR', t('cep') ],
+      [ 'IN', t('pin') ],
+      [ 'DE', t('plz') ],
+      [ 'CH', t('plz') ],
+      [ 'AT', t('plz') ],
+      [ 'LI', t('plz') ],
+      [ 'SK', t('psc') ],
+      [ 'CZ', t('psc') ],
+      [ 'MD', t('postal-index') ],
+      [ 'UA', t('postal-index') ],
+      [ 'BY', t('postal-index') ],
     ]);
-    return map.get(country) || 'Postal code';
+    return map.get(country) || t('postal-code');
   };
 
   const FormConfig = (country: string | undefined) => ({ 
     fields: new Map<string, ReactNode>([
-      [ "address1", <Input label="Address Line 1" name="address1" /> ],
-      [ "address2", <Input label="Address Line 2" name="address2" /> ],
-      [ "addressNum", <Input label="Number" name="addressNum" /> ],
-      [ "city", <Input label="City" name="city" /> ],
-      [ "region", <Input label="Region" name="region" /> ],
-      [ "republic", <Input label="Republic" name="republic" /> ],
-      [ "province", <Input label="Province" name="province" /> ],
-      [ "prefecture", <Input label="Prefecture" name="prefecture" /> ],
       [ "state", <Input label={state(country)} name="state" /> ],
       [ "postalCode", <Input label={postalCode(country)} name="postalCode" /> ],
-      [ "si", <Input label="Si" name="si" /> ],
-      [ "gu", <Input label="Gu" name="gu" /> ],
-      [ "do", <Input label="Do" name="do" /> ],
-      [ "dong", <Input label="Dong" name="dong" /> ],
     ]),
     spans: new Map<string, number>([
       [ "address1", 5 ],
@@ -148,36 +153,43 @@ const Add = () => {
       [ "postalCode", 2 ],
     ]),
   });  
-
-  const withFlag = countries.map((country: Country) => ({
-    id: country.isoCode, name: country.name, 
-    image: flag(country.isoCode)
-  }));
-
-  const handleChangeCountry = ({ id: country }: any) => {
+  
+  const changeAddressFormat = ({ country, classifier }: any) => {
     const address = new AddressConfigurator();
 
-    const config = FormConfig(country);
-
-    Array.from(config.fields.keys()).forEach((key: string) => 
-      address.setProperty(key, key));
-      
-    address.setFormat({ country, useTransforms: false });
+    AddressFields.forEach((field: string) => {
+      if (field === 'companyName' && classifier !== 'business') return;
+      address.setProperty(field, field);
+    });
+    // @ts-ignore
+    address.setFormat({ country, type: classifier, useTransforms: false });
     setAddressConfig(address.toArray());
-    setCountry(country);
   };
+
+  useEffect(() => {
+    changeAddressFormat({ country, classifier })
+  }, [ country, classifier ]);
+
+  const classifierData = AddressClassifiers.map((id: string) => ({ id, name: t(id) }));
 
   return (
     <>
       <Form method="POST" validator={validator} id="add-address" encType="multipart/form-data" className="mt-6">
         <Body>
-          <Section heading='New Address' explanation='Please enter the new address details.' />
+          <Section heading='New Address' explanation='Please select a country and then enter the new address.' />
           <Group>
             <Field span={3}>
-              <Select onChange={handleChangeCountry}
+              <Select onChange={({ id }: any) => setClassifier(id)}
+                label='Select Address Type'
+                name="classifier" 
+                data={classifierData} 
+                defaultValue={classifierData.at(0)} />
+            </Field>
+            <Field span={3}>
+              <Select onChange={({ id }: any) => setCountry(id)}
                 label='Select Country'
                 name="country" 
-                data={withFlag} />
+                data={countryData} defaultValue={country} />
             </Field>
           </Group>
           {addressConfig?.map((properties: Array<string>) => {
@@ -187,13 +199,14 @@ const Add = () => {
                 <Section />
                 <Group cols={6}>
                   {properties.map((property: string) => {
-                    const input = fields.get(property);
-                    const span = spans.get(property);
+                    if (property === 'country') return null;
+                    const input = fields.get(property),
+                          span = spans.get(property);
                     return (
-                    <Field span={span || 3}>
-                      {input}
-                    </Field>
-                  )})}
+                      <Field key={property} span={span || 3}>
+                        {input || <Input label={t(toKebab(property))} name={property} />}
+                      </Field>
+                    )})}
                 </Group>
               </>
             )})}

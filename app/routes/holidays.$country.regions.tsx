@@ -27,7 +27,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   return json({ country: { isoCode }, regions, region, countries: regions });
 };
 
-export default function Holidays() {
+export default function Regions() {
   const { regions, region } = useLoaderData();
 
   return (

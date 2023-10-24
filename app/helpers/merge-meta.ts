@@ -36,3 +36,5 @@ export const mergeMeta = (
     return mergedMeta;
   };
 };
+
+export default mergeMeta;

@@ -15,6 +15,7 @@ import PersonService, { create, Classifier } from '~/services/manage/people.serv
 import { type Client } from '~/services/manage/clients.server';
 import { type LegalEntity } from '~/services/manage/legal-entities.server';
 import CountryService, { type Country } from '~/services/countries.server';
+import { NameFields, Honorifics } from '~/services/manage/common';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -24,19 +25,23 @@ import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import { flag } from '~/components/countries/flag';
 
-import { Input, Select, type SelectItem, Cancel, Submit, Image,
+import { Input, Select, type SelectItem, Cancel, Submit,
   Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
 
 import { configs, type Config } from './manage.people';
 
+const toKebab = (str: string) => 
+  str.replace(/([a-z0-9])([A-Z0-9])/g, '$1-$2').toLowerCase();
+
 export const handle = {
+  i18n: 'address',
   name: ({ classifier }: { classifier: Classifier }) => `add-${classifier}`,
   breadcrumb: ({ classifier, current, name }: { classifier: Classifier } & BreadcrumbProps) => 
     <Breadcrumb to={`/manage/people/${classifier}/add`} name={name} current={current} />
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const { classifier } = params;
 
   if (classifier === undefined) return badRequest('Invalid data');
@@ -120,23 +125,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   return redirect(`/manage/people/${classifier}/${person.id}/info`);
 };
 
-const honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Dr" ];
-const names = new Map<string, ReactNode>([
-  [ "firstName", <Input label="First Name" name="firstName" /> ],
-  [ "secondName", <Input label="Second Name" name="secondName" /> ],
-  [ "firstLastName", <Input label="First Last Name" name="firstLastName" /> ],
-  [ "secondLastName", <Input label="Second Last Name" name="secondLastName" /> ],
-  [ "lastName", <Input label="Last Name" name="lastName" /> ],
-  [ "honorific", <Select label="Title" name="honorific" 
-                    data={honorifics.map(id => ({ id, name: id }))} /> ],
-]);
-
-const spans = new Map<string, number>([
-  [ "honorific", 2 ],
-]);
-
 const Add = () => {
   const { t } = useTranslation();
+  const { t: tn } = useTranslation("address");
   const { countries, classifier, config } = useLoaderData();
 
   const [ client, setClient ] = useState<Client>();
@@ -153,6 +144,14 @@ const Add = () => {
     image: flag(country.isoCode)
   }));
 
+  const names = new Map<string, ReactNode>([
+    [ "honorific", <Select label={tn('honorific')} name="honorific" 
+                      data={Honorifics.map(id => ({ id, name: id }))} /> ],
+  ]);
+  const spans = new Map<string, number>([
+    [ "honorific", 2 ],
+  ]);
+
   const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
 
@@ -160,8 +159,7 @@ const Add = () => {
     if (localityChanged === false) setLocality(nationality);
 
     const name = new NameConfigurator();
-    Array.from(names.keys()).forEach((key: string) => 
-      name.setProperty(key, key));
+    NameFields.forEach((key: string) => name.setProperty(key, key));
     name.setFormat({ country: nationality.id });
     setNameConfig(name.toArray());
   };
@@ -185,13 +183,13 @@ const Add = () => {
                 <Section />
                 <Group cols={11}>
                   {properties.map((property: string) => {
-                    const input = names.get(property);
-                    const span = spans.get(property);
+                    const input = names.get(property),
+                          span = spans.get(property);
                     return (
-                    <Field span={span || 3}>
-                      {input}
-                    </Field>
-                  )})}
+                      <Field span={span || 3}>
+                        {input || <Input label={tn(toKebab(property))} name={property} />}
+                      </Field>
+                    )})}
                 </Group>
               </>
             )})}

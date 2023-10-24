@@ -7,27 +7,9 @@ export { default as create } from '../id.server';
 
 import { TxOrPool, type IdProp } from '../types';
 import { type User } from '../access/users.server';
+import { AddressFields } from './common';
 
 export type Address = s.addresses.Selectable & { address?: string };
-
-const fields = [
-  'address1',
-  'address2',
-  'addressNum',
-  'city',
-  'country',
-  'countryIsoCode',
-  'postalCode',
-  'region',
-  'state',
-  'province',
-  'prefecture',
-  'republic',
-  'do',
-  'dong',
-  'gu',
-  'si',
-];
 
 const Service = (u: User) => {
 
@@ -35,27 +17,10 @@ const Service = (u: User) => {
     type AddressKey = keyof Address;
     const config = new AddressConfigurator();
     
-    fields.forEach((field: string) => {
+    AddressFields.forEach((field: string) => {
       const fieldKey = field as AddressKey;
       if (address[fieldKey]) config.setProperty(field, address[fieldKey] as string);
     });
-
-    // if (address.address1) config.setAddress1(address.address1);
-    // if (address.address2) config.setAddress2(address.address2);
-    // if (address.addressNum) config.setAddressNum(address.addressNum);
-    // if (address.city) config.setCity(address.city);
-    // if (address.region) config.setRegion(address.region);
-    // if (address.state) config.setState(address.state);
-    // if (address.province) config.setProvince(address.province);
-    // if (address.prefecture) config.setAddress2(address.prefecture);
-    // if (address.republic) config.setAddress2(address.republic);
-    // if (address.do) config.setDo(address.do);
-    // if (address.dong) config.setDong(address.dong);
-    // if (address.gu) config.setGu(address.gu);
-    // if (address.si) config.setSi(address.si);
-    // if (address.postalCode) config.setAddress2(address.postalCode);
-    // if (address.country) config.setAddress2(address.country);
-    // if (address.countryIsoCode) config.setAddress2(address.countryIsoCode);
 
     config.setFormat({ country: address.countryIsoCode as string });
     return { ...address, address: config.toString() };
