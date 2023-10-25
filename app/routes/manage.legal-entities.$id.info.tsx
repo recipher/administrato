@@ -57,6 +57,11 @@ const Info = () => {
               return `${ts(type)} ${value == null ? "" : t(value)}`;
             }).join(' and ')}
           </Field>
+          {legalEntity.clientId && <Field title="Client">
+            <Link className="text-indigo-900" to={`/manage/clients/${legalEntity.clientId}/info`}>
+              {legalEntity.client}
+            </Link>
+          </Field>}
           <Field title="Provider">
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>
               {legalEntity.provider}

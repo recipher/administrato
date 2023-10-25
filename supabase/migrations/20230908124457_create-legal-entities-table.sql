@@ -16,13 +16,14 @@ create table
     localities text[] null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint legal_entities_pkey primary key (id),
-    constraint legalEntities_clientId_fkey foreign key ("clientId") references clients (id),
-    constraint legalEntities_providerId_fkey foreign key ("providerId") references providers (id),
-    constraint legalEntities_securityGroupId_fkey foreign key ("securityGroupId") references "securityGroups" (id),
-    constraint legalEntities_milestoneSetId_fkey foreign key ("milestoneSetId") references "milestoneSets" (id)
+    constraint "legalEntitiesPkey" primary key (id),
+    constraint "legalEntitiesClientIdFkey" foreign key ("clientId") references clients (id),
+    constraint "legalEntitiesProviderIdFkey" foreign key ("providerId") references providers (id),
+    constraint "legalEntitiesSecurityGroupIdFkey" foreign key ("securityGroupId") references "securityGroups" (id),
+    constraint "legalEntitiesMilestoneSetIdFkey" foreign key ("milestoneSetId") references "milestoneSets" (id)
   ) tablespace pg_default;
+
 alter table public."legalEntities" enable row level security;
 
-create trigger update_timestamp before update on public."legalEntities"
+create trigger "updateTimestamp" before update on public."legalEntities"
 for each row execute procedure moddatetime("updatedAt");

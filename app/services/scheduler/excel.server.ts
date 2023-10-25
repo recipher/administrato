@@ -18,32 +18,41 @@ const byIndexAsc = (l: any, r: any) => l.index - r.index;
 const byIndexDesc = (l: any, r: any) => r.index - l.index;
 
 const uniq = (items: Array<any>) => items.reduce((acc, i) => acc.includes(i) ? acc : acc.concat([i]), []);
-const byDate = adjustForUTCOffset;
+const byDate = (l: string, r: string) => new Date(r).getTime() - new Date(l).getTime();
 
-// const range = (start, stop, step = 1) => 
-//   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
+// // const range = (start, stop, step = 1) => 
+// //   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + (i * step));
 
-// const payOn = due => {
-//   if (due === undefined) return null;
+// // const payOn = due => {
+// //   if (due === undefined) return null;
 
-//   const out = ({ when = null, day }) => day === undefined ? when : [ when, day ].join(' ');
+// //   const out = ({ when = null, day }) => day === undefined ? when : [ when, day ].join(' ');
 
-//   if (Array.isArray(due)) return [ out(due[0]), out(due[1]) ].join(',');
-//   return out(due); 
+// //   if (Array.isArray(due)) return [ out(due[0]), out(due[1]) ].join(',');
+// //   return out(due); 
+// // };
+
+// const toDateFromString = (s: string) => {
+//   const [ y, m, d ] = s.split('-');
+//   return new Date(Date.UTC(y, m-1, d));
 // };
 
-const toDate = (date: Date) => new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+// const determineLocations = (country, info) => {
+//   const LOCATIONS = {
+//     // country: 'Payroll',
+//     client: 'Client',
+//     provider: 'ICP',
+//     securityGroup: 'Safeguard',
+//     // fxCountry: 'FX',
+//   };
 
-const toDateFromString = (s: string) => {
-  const [ y, m, d ] = s.split('-');
-  return new Date(Date.UTC(y, m-1, d));
-};
+//   const match = (location, country) => info[location]?.split(',').includes(country);
 
-const byPayrollCountry = country => c => c === country ? -1 : 1;
-
+//   return Object.keys(LOCATIONS).reduce((locations, location) => 
+//     match(location, country) ? locations.concat([ LOCATIONS[location ]]) : locations, []).join(', ');
+// };
 
 const Service = () => {
-
   type ScheduleProps = {
     legalEntity: LegalEntity ;
     milestones: Array<Milestone>;
@@ -95,19 +104,18 @@ const Service = () => {
   const addHolidaySheet = (worksheet: Worksheet, { holidays, countries }: { holidays: Array<Holiday>, countries: Array<Country> }) => { 
     worksheet.properties.defaultColWidth = 20;
       
-    const grouped = countries.sort(byPayrollCountry(country))
-      .map(c => ({
-        country: c,
-        holidays: uniq(holidays.filter(h => h.locality === c.isoCode).map(h => formatISO9075(h.date)).sort(byDate)),
-      }));
+    const grouped = countries.map(c => ({
+      country: c,
+      holidays: uniq(holidays.filter(h => h.locality === c.isoCode).map(h => formatISO9075(h.date)).sort(byDate)),
+    }));
   
-    // const longest = grouped.reduce((c, next) => next.holidays.length > c.holidays.length ? next : c, grouped[0]);
+    const longest = grouped.reduce((c, next) => next.holidays.length > c.holidays.length ? next : c, grouped[0]);
   
-    // const findHolidayName = (c, date) => holidays.find(h => date === format(h.date) && c === h.country).name;
+    // const findHolidayName = (c, date) => holidays.find(h => date === formatISO9075(h.date) && c === h.country).name;
     // const toHolidays = (_, i) => 
     //   grouped.map(c => i < c.holidays.length ? [ toDateFromString(c.holidays[i]), findHolidayName(c.country, c.holidays[i]) ] : [ null, null ] ).flat();
   
-    // const heading = (c, i) => i === 0 ? `Holidays for ${c} (Payroll)` : `Holidays for ${c} (${determineLocations(c, info)})`;
+    // const heading = (c, i) => i === 0 ? `Holidays for ${c} (Legal Entity)` : `Holidays for ${c} (${determineLocations(c, info)})`;
   
     // [ grouped.map((c, index) => [ heading(c.country, index), null ]).flat(), ...longest.holidays.map(toHolidays) ]
     //   .forEach(d => {

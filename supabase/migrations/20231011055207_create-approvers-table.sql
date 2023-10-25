@@ -8,10 +8,11 @@ create table
     "isOptional" boolean null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint approvers_pkey primary key (id),
-    constraint approvers_entityId_userId_uniq unique ("entityId", "userId")
+    constraint "approversPkey" primary key (id),
+    constraint "approversEntityIdUserIdUniq" unique ("entityId", "userId")
   ) tablespace pg_default;
+
 alter table public.approvers enable row level security;
 
-create trigger update_timestamp before update on public.approvers
+create trigger "updateTimestamp" before update on public.approvers
 for each row execute procedure moddatetime("updatedAt");

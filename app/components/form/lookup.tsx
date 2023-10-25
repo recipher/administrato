@@ -26,7 +26,7 @@ export default function Lookup({ name, label, value, placeholder, ...props }: Pr
         "block text-sm font-medium leading-6")}>
         {label}
       </label>
-      <div className="relative mt-2 rounded-md shadow-sm">
+      <>
         <input
           value={value?.id}
           name={name}
@@ -48,7 +48,7 @@ export default function Lookup({ name, label, value, placeholder, ...props }: Pr
             {props.icon && <props.icon className={classnames(props.disabled ? "" : "hover:text-indigo-500", "-ml-0.5 mr-1.5 h-5 w-5 text-gray-500")} aria-hidden="true" />}
           </div>
         </div>
-      </div>
+      </>
       <ErrorMessage name={name} error={error} />
     </div>
   );

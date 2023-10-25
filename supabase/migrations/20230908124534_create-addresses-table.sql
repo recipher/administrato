@@ -24,9 +24,10 @@ create table
     entity text not null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint address_pkey primary key (id)
+    constraint "addressPkey" primary key (id)
   ) tablespace pg_default;
+
 alter table public.addresses enable row level security;
 
-create trigger update_timestamp before update on public.addresses
+create trigger "updateTimestamp" before update on public.addresses
 for each row execute procedure moddatetime("updatedAt");

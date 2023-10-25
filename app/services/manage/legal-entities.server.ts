@@ -6,7 +6,7 @@ export { default as create } from '../id.server';
 
 import SecurityGroupService, { type SecurityGroup } from './security-groups.server';
 import ProviderService, { type Provider } from './providers.server';
-import ClientService from './clients.server';
+import ClientService, { type Client } from './clients.server';
 
 import type { SecurityKey, SearchOptions as BaseSearchOptions, Count, TxOrPool,
   QueryOptions, IdProp, NameProp, KeyQueryOptions, BypassKeyCheck } from '../types';
@@ -21,7 +21,9 @@ export type LegalEntity = s.legalEntities.Selectable & { provider?: string, secu
 type SearchOptions = {
   securityGroup?: SecurityGroup | undefined;
   provider?: Provider | undefined;
+  client?: Client | undefined;
   securityGroupId?: string | null | undefined;
+  clientId?: string | null | undefined;
   providerId?: string | null | undefined;
 } & BaseSearchOptions;
 
@@ -74,30 +76,34 @@ const Service = (u: User) => {
   const listLegalEntities = async (query: KeyQueryOptions = { isArchived: false }, txOrPool: TxOrPool = pool) => {
     const keys = query.keys || extractKeys(u, "securityGroup", "legalEntity"); 
     
-    return await db.sql<s.legalEntities.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.*, p.${'name'} AS provider FROM ${'legalEntities'} AS main
+    return await db.sql<s.legalEntities.SQL | s.securityGroups.SQL | s.clients.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS "client" 
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
+      LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
+      LEFT JOIN ${'clients'} AS c ON main.${'clientId'} = c.${'id'}
       WHERE ${whereKeys({ keys, ...query })}
     `.run(txOrPool);
   };
 
-  const searchQuery = ({ search, securityGroupId, providerId, isArchived }: SearchOptions) => {
+  const searchQuery = ({ search, securityGroupId, providerId, clientId, isArchived }: SearchOptions) => {
     const name = search == null ? db.sql<db.SQL>`main.${'name'} IS NOT NULL` : db.sql<db.SQL>`
       LOWER(main.${'name'}) LIKE LOWER(${db.param(`${search}%`)})`;
 
-    const whereSecurityGroup = securityGroupId == null ? db.sql<db.SQL>`main.${'securityGroupId'} IS NOT NULL`
-      : db.sql<db.SQL>`main.${'securityGroupId'} = ${db.param(securityGroupId)}`;
-    const whereProvider = providerId == null ? db.sql<db.SQL>`main.${'providerId'} IS NOT NULL`
-      : db.sql<db.SQL>`main.${'providerId'} = ${db.param(providerId)}`;
+    const whereSecurityGroup = securityGroupId == null ? db.sql<db.SQL>``
+      : db.sql<db.SQL>`AND main.${'securityGroupId'} = ${db.param(securityGroupId)}`;
+    const whereProvider = providerId == null ? db.sql<db.SQL>``
+      : db.sql<db.SQL>`AND main.${'providerId'} = ${db.param(providerId)}`;
+    const whereClient = clientId == null ? db.sql<db.SQL>``
+      : db.sql<db.SQL>`AND main.${'clientId'} = ${db.param(clientId)}`;
 
     const archived = db.sql` AND main.${'isArchived'} = ${db.raw(isArchived ? 'TRUE' : 'FALSE')}`;
 
-    return db.sql<db.SQL>`${name} ${archived} AND ${whereSecurityGroup} AND ${whereProvider}`;    
+    return db.sql<db.SQL>`${name} ${archived} ${whereClient} ${whereSecurityGroup} ${whereProvider}`;    
   };
 
   const countLegalEntities = async (search: SearchOptions, txOrPool: TxOrPool = pool) => {
     const keys = pickKeys(search.securityGroup) || pickKeys(search.provider) || 
-      extractKeys(u, "securityGroup", "legalEntity");
+      extractKeys(u, "securityGroup", "legalEntity", "client");
     
     const [ item ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT COUNT(main.${'id'}) AS count FROM ${'legalEntities'} AS main
@@ -110,14 +116,15 @@ const Service = (u: User) => {
 
   const searchLegalEntities = async (search: SearchOptions, { offset = 0, limit = 8, sortDirection = ASC }: QueryOptions, txOrPool: TxOrPool = pool) => {  
     const keys = pickKeys(search.securityGroup) || pickKeys(search.provider) || 
-       extractKeys(u, "securityGroup", "legalEntity");
+       extractKeys(u, "securityGroup", "legalEntity", "client");
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
-    const legalEntities = await db.sql<s.legalEntities.SQL | s.providers.SQL | s.securityGroups.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup" 
+    const legalEntities = await db.sql<s.legalEntities.SQL | s.providers.SQL | s.clients.SQL | s.securityGroups.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS "client" 
       FROM ${'legalEntities'} AS main
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
+      LEFT JOIN ${'clients'} AS c ON main.${'clientId'} = c.${'id'}
       WHERE ${searchQuery(search)} AND ${whereKeys({ keys })}
       ORDER BY main.${'name'} ${db.raw(sortDirection)}
       OFFSET ${db.param(offset)}
@@ -129,13 +136,14 @@ const Service = (u: User) => {
   };
 
   const getLegalEntity = async ({ id }: IdProp, { bypassKeyCheck = false }: BypassKeyCheck = {}, txOrPool: TxOrPool = pool) => {
-    const keys = extractKeys(u, "securityGroup", "legalEntity");
+    const keys = extractKeys(u, "securityGroup", "legalEntity", "client");
 
-    const [ client ] = await db.sql<s.legalEntities.SQL | s.providers.SQL | s.securityGroups.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup" 
+    const [ client ] = await db.sql<s.legalEntities.SQL | s.clients.SQL | s.providers.SQL | s.securityGroups.SQL, s.legalEntities.Selectable[]>`
+      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS "client" 
       FROM ${'legalEntities'} AS main
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
+      LEFT JOIN ${'clients'} AS c ON main.${'clientId'} = c.${'id'}
       WHERE ${whereKeys({ keys, bypassKeyCheck })} AND  
       (main.${'id'} = ${db.param(id)} OR LOWER(main.${'identifier'}) = ${db.param(id.toLowerCase())})
     `.run(txOrPool);

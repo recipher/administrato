@@ -14,6 +14,8 @@ import { Separator } from '~/layout/breadcrumbs';
 import Sort from './sort';
 import classnames from '~/helpers/classnames';
 
+export { TabType } from '../navigation-tabs';
+
 export type TitleProps = {
   title: string;
   subtitle?:  string | undefined;

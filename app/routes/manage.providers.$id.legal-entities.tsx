@@ -30,6 +30,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const limit = toNumber(url.searchParams.get("limit") as string) || LIMIT;
   const search = url.searchParams.get("q");
   const sort = url.searchParams.get("sort");
+  const all = url.searchParams.get("all") === "true";
 
   const { id } = params;
 
@@ -44,7 +45,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const legalEntityService = LegalEntityService(u);
   const { legalEntities, metadata: { count }} = 
-    await legalEntityService.searchLegalEntities({ search, provider }, { offset, limit, sortDirection: sort });
+    await legalEntityService.searchLegalEntities({ search, 
+      providerId: all ? undefined : id,
+      provider: all ? provider : undefined
+    }, { offset, limit, sortDirection: sort });
 
   const isoCodes = legalEntities.map(le => le.localities || []).flat();
   const countryService = CountryService();

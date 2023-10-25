@@ -29,7 +29,7 @@ export const handle = {
   i18n: 'address',
   name: 'add-address',
   breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/documents/add`} name={name} current={current} />
+    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/addresses/add`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

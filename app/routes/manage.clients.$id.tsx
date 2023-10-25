@@ -13,7 +13,7 @@ import { requireUser } from '~/auth/auth.server';
 
 import ClientService, { Client } from '~/services/manage/clients.server';
 import { useLoaderData, Outlet, useSearchParams } from '@remix-run/react';
-import Header from '~/components/header';
+import Header, { TabType } from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 import { EditableImage } from '~/components';
 
@@ -77,9 +77,10 @@ export default () => {
     { name: 'info', to: 'info' },
     { name: 'summary', to: 'summary' },
     { name: 'groups', to: 'groups', hidden: parentId !== null },
+    { name: 'contacts', to: 'contacts' },
+    { name: 'locations', to: 'locations' },
     { name: 'people', to: 'people/worker' },
     { name: 'legal-entities', to: 'legal-entities' },
-    { name: 'locations', to: 'locations' },
     { name: 'holidays', to: 'holidays' },
   ];
 

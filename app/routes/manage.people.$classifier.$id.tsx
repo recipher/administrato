@@ -63,13 +63,17 @@ export const action = async ({ request, params }: ActionArgs) => {
 export default function Person() {
   const { person, classifier } = useLoaderData();
 
+  const working = [ "worker", "employee", "contractor" ];
   const tabs = [
     { name: 'info', to: 'info' },
     { name: 'salary', to: 'salary', classifier: [ "worker", "employee" ] },
     { name: 'contracts', to: 'contracts', classifier: [ "contractor" ] },
     { name: 'addresses', to: 'addresses' },
     { name: 'contacts', to: 'contacts' },
-    { name: 'documents', to: 'documents' },
+    { name: 'documents', to: 'documents', classifier: working },
+    { name: 'banking', to: 'banking', classifier: working },
+    { name: 'dependents', to: 'dependents', classifier: working },
+    { name: 'education', to: 'education', classifier: working },
   ];
 
   const actions = [

@@ -79,7 +79,7 @@ const schema =
       }),
     securityGroupId: z
       .string()
-      .nonempty("The service centre is required"),
+      .nonempty("The security group is required"),
     providerId: z
       .string()
       .nonempty("The provider is required"),
@@ -240,8 +240,8 @@ const Add = () => {
           <Section size="md" />
           <Group>
             <Field span={3}>
-              <Lookup label="Service Centre" name="securityGroupId" onClick={showSecurityGroupModal} 
-                icon={MapIcon} value={securityGroup} placeholder="Select a Service Centre" />
+              <Lookup label="Security Group" name="securityGroupId" onClick={showSecurityGroupModal} 
+                icon={MapIcon} value={securityGroup} placeholder="Select a Security Group" />
             </Field>
             <Field span={3}>
               <Lookup label="Provider" name="providerId" onClick={showProviderModal} 

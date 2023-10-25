@@ -14,7 +14,10 @@ import { type User } from './access/users.server';
 const key = process.env.HOLIDAY_API_KEY as string;
 const holidayAPI = new HolidayAPI({ key });
 
-export type Country = s.localities.Selectable & { regionCount: number | undefined };
+export type Country = s.localities.Selectable & { 
+  regionCount?: number | undefined;
+  parentName?: string | undefined;
+};
 
 type IsoCodeOptions = {
   isoCode: string;

@@ -9,9 +9,10 @@ create table
     entity text not null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint contact_pkey primary key (id)
+    constraint "contactPkey" primary key (id)
   ) tablespace pg_default;
+
 alter table public.contacts enable row level security;
 
-create trigger update_timestamp before update on public.contacts
+create trigger "updateTimestamp" before update on public.contacts
 for each row execute procedure moddatetime("updatedAt");

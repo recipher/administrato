@@ -33,8 +33,8 @@ export default function Input({ name, label, value, focus = false, disabled = fa
         {label}
       </label>
       <div className={classnames(width ? `w-${width}` : "",
-            error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "ring-gray-300 placeholder:text-gray-400 focus-within:ring-indigo-600 focus:ring-indigo-600 ", 
-            "mt-1 relative flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset sm:max-w-md")}>
+            "mt-1 relative flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset sm:max-w-md",
+            error ? "text-red-900 ring-red-300 focus:ring-red-500 focus-within:ring-red-500 placeholder:text-red-300" : "ring-gray-300 placeholder:text-gray-400 focus-within:ring-indigo-600 focus:ring-indigo-600 ")}>
         {pre && <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">{pre}</span>}
         <input
           ref={inputRef} 
@@ -48,7 +48,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           type={type}
           className={classnames(
             disabled ? "text-gray-400 bg-gray-100" : "",
-            !error && !disabled ? "text-gray-900 bg-white": "",
+            !error && !disabled ? "text-gray-900": "",
             pre ? "pl-1" : "pl-3",
             "block flex-1 border-0 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6")}
         />

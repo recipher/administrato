@@ -12,11 +12,12 @@ create table
     "securityGroupId" text not null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint clients_pkey primary key (id),
-    constraint clients_parentId_fkey foreign key ("parentId") references clients (id) on delete cascade,
-    constraint clients_securityGroupId_fkey foreign key ("securityGroupId") references "securityGroups" (id)
+    constraint "clientsPkey" primary key (id),
+    constraint "clientsParentIdFkey" foreign key ("parentId") references clients (id) on delete cascade,
+    constraint "clientsSecurityGroupIdFkey" foreign key ("securityGroupId") references "securityGroups" (id)
   ) tablespace pg_default;
+
 alter table public.clients enable row level security;
 
-create trigger update_timestamp before update on public.clients
+create trigger "updateTimestamp" before update on public.clients
 for each row execute procedure moddatetime("updatedAt");

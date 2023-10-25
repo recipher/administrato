@@ -56,15 +56,15 @@ declare module 'zapatos/schema' {
       /**
       * **addresses.country**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      country: string | null;
+      country: string;
       /**
       * **addresses.countryIsoCode**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      countryIsoCode: string | null;
+      countryIsoCode: string;
       /**
       * **addresses.city**
       * - `text` in database
@@ -131,6 +131,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       state: string | null;
+      /**
+      * **addresses.companyName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      companyName: string | null;
       /**
       * **addresses.isPreferred**
       * - `bool` in database
@@ -196,15 +202,15 @@ declare module 'zapatos/schema' {
       /**
       * **addresses.country**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      country: string | null;
+      country: string;
       /**
       * **addresses.countryIsoCode**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      countryIsoCode: string | null;
+      countryIsoCode: string;
       /**
       * **addresses.city**
       * - `text` in database
@@ -272,6 +278,12 @@ declare module 'zapatos/schema' {
       */
       state: string | null;
       /**
+      * **addresses.companyName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      companyName: string | null;
+      /**
       * **addresses.isPreferred**
       * - `bool` in database
       * - Nullable, no default
@@ -336,13 +348,13 @@ declare module 'zapatos/schema' {
       /**
       * **addresses.country**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       country?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **addresses.countryIsoCode**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
       countryIsoCode?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -412,6 +424,12 @@ declare module 'zapatos/schema' {
       */
       state?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **addresses.companyName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      companyName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **addresses.isPreferred**
       * - `bool` in database
       * - Nullable, no default
@@ -476,15 +494,15 @@ declare module 'zapatos/schema' {
       /**
       * **addresses.country**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      country?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      country: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **addresses.countryIsoCode**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      countryIsoCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      countryIsoCode: string | db.Parameter<string> | db.SQLFragment;
       /**
       * **addresses.city**
       * - `text` in database
@@ -552,6 +570,12 @@ declare module 'zapatos/schema' {
       */
       state?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **addresses.companyName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      companyName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **addresses.isPreferred**
       * - `bool` in database
       * - Nullable, no default
@@ -616,15 +640,15 @@ declare module 'zapatos/schema' {
       /**
       * **addresses.country**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      country?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      country?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **addresses.countryIsoCode**
       * - `text` in database
-      * - Nullable, no default
+      * - `NOT NULL`, no default
       */
-      countryIsoCode?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      countryIsoCode?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
       * **addresses.city**
       * - `text` in database
@@ -692,6 +716,12 @@ declare module 'zapatos/schema' {
       */
       state?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
+      * **addresses.companyName**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      companyName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **addresses.isPreferred**
       * - `bool` in database
       * - Nullable, no default
@@ -728,7 +758,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'address_pkey';
+    export type UniqueIndex = 'addressPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -1081,7 +1111,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'approvals_entityid_userid_uniq' | 'approvals_pkey';
+    export type UniqueIndex = 'approvalsEntityIdUserIdUniq' | 'approvalsPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -1344,7 +1374,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'approvers_entityid_userid_uniq' | 'approvers_pkey';
+    export type UniqueIndex = 'approversEntityIdUserIdUniq' | 'approversPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -1607,7 +1637,300 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'authorizations_pkey';
+    export type UniqueIndex = 'authorizationsPkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
+   * **bankAccounts**
+   * - Table in database
+   */
+  export namespace bankAccounts {
+    export type Table = 'bankAccounts';
+    export interface Selectable {
+      /**
+      * **bankAccounts.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string;
+      /**
+      * **bankAccounts.bban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      bban: string | null;
+      /**
+      * **bankAccounts.iban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      iban: string | null;
+      /**
+      * **bankAccounts.countryIsoCode**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      countryIsoCode: string;
+      /**
+      * **bankAccounts.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string;
+      /**
+      * **bankAccounts.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity: string;
+      /**
+      * **bankAccounts.isArchived**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      isArchived: boolean;
+      /**
+      * **bankAccounts.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: Date;
+      /**
+      * **bankAccounts.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: Date;
+    }
+    export interface JSONSelectable {
+      /**
+      * **bankAccounts.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string;
+      /**
+      * **bankAccounts.bban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      bban: string | null;
+      /**
+      * **bankAccounts.iban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      iban: string | null;
+      /**
+      * **bankAccounts.countryIsoCode**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      countryIsoCode: string;
+      /**
+      * **bankAccounts.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string;
+      /**
+      * **bankAccounts.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity: string;
+      /**
+      * **bankAccounts.isArchived**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      isArchived: boolean;
+      /**
+      * **bankAccounts.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt: db.TimestampTzString;
+      /**
+      * **bankAccounts.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt: db.TimestampTzString;
+    }
+    export interface Whereable {
+      /**
+      * **bankAccounts.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.bban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      bban?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.iban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      iban?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.countryIsoCode**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      countryIsoCode?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.isArchived**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      isArchived?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **bankAccounts.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **bankAccounts.bban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      bban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.iban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      iban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.countryIsoCode**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      countryIsoCode: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **bankAccounts.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **bankAccounts.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **bankAccounts.isArchived**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      isArchived?: boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **bankAccounts.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **bankAccounts.bban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      bban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.iban**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      iban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.countryIsoCode**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      countryIsoCode?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **bankAccounts.entityId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entityId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **bankAccounts.entity**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      entity?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **bankAccounts.isArchived**
+      * - `bool` in database
+      * - `NOT NULL`, default: `false`
+      */
+      isArchived?: boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.createdAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.updatedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'bankAccountPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -1840,7 +2163,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'clientpeople_pkey';
+    export type UniqueIndex = 'clientPeoplePkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2223,7 +2546,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'clients_pkey';
+    export type UniqueIndex = 'clientsPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2516,7 +2839,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'contact_pkey';
+    export type UniqueIndex = 'contactPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -2839,7 +3162,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'document_pkey';
+    export type UniqueIndex = 'documentPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -3162,7 +3485,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'holiday_pkey' | 'holidays_locality_name_date_entity_uniq';
+    export type UniqueIndex = 'holidayPkey' | 'holidaysLocalityNameDateEntityUniq';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -3665,7 +3988,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'legal_entities_pkey';
+    export type UniqueIndex = 'legalEntitiesPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -3898,7 +4221,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'legalentityid_pkey';
+    export type UniqueIndex = 'legalEntityIdPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -4041,7 +4364,7 @@ declare module 'zapatos/schema' {
       */
       parent?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'localities_pkey';
+    export type UniqueIndex = 'localitiesPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -4394,7 +4717,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'milestones_pkey';
+    export type UniqueIndex = 'milestonesPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -4567,7 +4890,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'milestonesets_pkey';
+    export type UniqueIndex = 'milestoneSetsPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -5220,7 +5543,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'person_pkey';
+    export type UniqueIndex = 'personPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -5573,7 +5896,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'providers_pkey';
+    export type UniqueIndex = 'providersPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -5866,7 +6189,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'salaries_pkey';
+    export type UniqueIndex = 'salariesPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -6219,7 +6542,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'schedule_dates_pkey' | 'scheduledates_scheduleid_milestoneid_uniq';
+    export type UniqueIndex = 'scheduleDatesPkey' | 'scheduleDatesScheduleIdMilestoneIdUniq';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -6482,7 +6805,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'schedules_legalentityid_date_status_version_uniq' | 'schedules_pkey';
+    export type UniqueIndex = 'schedules_legalentityid_date_status_versionuniq' | 'schedulespkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -6805,7 +7128,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'security_groups_pkey';
+    export type UniqueIndex = 'securityGroupsPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -6978,7 +7301,7 @@ declare module 'zapatos/schema' {
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
     }
-    export type UniqueIndex = 'workingdays_country_uniq' | 'workingdays_pkey';
+    export type UniqueIndex = 'workingDaysCountryUniq' | 'workingDaysPkey';
     export type Column = keyof Selectable;
     export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
     export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
@@ -6988,20 +7311,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = addresses.Table | approvals.Table | approvers.Table | authorizations.Table | clientPeople.Table | clients.Table | contacts.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
-    export type Selectable = addresses.Selectable | approvals.Selectable | approvers.Selectable | authorizations.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
-    export type JSONSelectable = addresses.JSONSelectable | approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
-    export type Whereable = addresses.Whereable | approvals.Whereable | approvers.Whereable | authorizations.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
-    export type Insertable = addresses.Insertable | approvals.Insertable | approvers.Insertable | authorizations.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
-    export type Updatable = addresses.Updatable | approvals.Updatable | approvers.Updatable | authorizations.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
-    export type UniqueIndex = addresses.UniqueIndex | approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
-    export type Column = addresses.Column | approvals.Column | approvers.Column | authorizations.Column | clientPeople.Column | clients.Column | contacts.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
+    export type Table = addresses.Table | approvals.Table | approvers.Table | authorizations.Table | bankAccounts.Table | clientPeople.Table | clients.Table | contacts.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
+    export type Selectable = addresses.Selectable | approvals.Selectable | approvers.Selectable | authorizations.Selectable | bankAccounts.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
+    export type JSONSelectable = addresses.JSONSelectable | approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | bankAccounts.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
+    export type Whereable = addresses.Whereable | approvals.Whereable | approvers.Whereable | authorizations.Whereable | bankAccounts.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
+    export type Insertable = addresses.Insertable | approvals.Insertable | approvers.Insertable | authorizations.Insertable | bankAccounts.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
+    export type Updatable = addresses.Updatable | approvals.Updatable | approvers.Updatable | authorizations.Updatable | bankAccounts.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
+    export type UniqueIndex = addresses.UniqueIndex | approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | bankAccounts.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
+    export type Column = addresses.Column | approvals.Column | approvers.Column | authorizations.Column | bankAccounts.Column | clientPeople.Column | clients.Column | contacts.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
   
-    export type AllBaseTables = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
+    export type AllBaseTables = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, bankAccounts.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
+    export type AllTablesAndViews = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, bankAccounts.Table, clientPeople.Table, clients.Table, contacts.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
   }
 
 
@@ -7033,6 +7356,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.Selectable;
     "approvers": approvers.Selectable;
     "authorizations": authorizations.Selectable;
+    "bankAccounts": bankAccounts.Selectable;
     "clientPeople": clientPeople.Selectable;
     "clients": clients.Selectable;
     "contacts": contacts.Selectable;
@@ -7057,6 +7381,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.JSONSelectable;
     "approvers": approvers.JSONSelectable;
     "authorizations": authorizations.JSONSelectable;
+    "bankAccounts": bankAccounts.JSONSelectable;
     "clientPeople": clientPeople.JSONSelectable;
     "clients": clients.JSONSelectable;
     "contacts": contacts.JSONSelectable;
@@ -7081,6 +7406,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.Whereable;
     "approvers": approvers.Whereable;
     "authorizations": authorizations.Whereable;
+    "bankAccounts": bankAccounts.Whereable;
     "clientPeople": clientPeople.Whereable;
     "clients": clients.Whereable;
     "contacts": contacts.Whereable;
@@ -7105,6 +7431,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.Insertable;
     "approvers": approvers.Insertable;
     "authorizations": authorizations.Insertable;
+    "bankAccounts": bankAccounts.Insertable;
     "clientPeople": clientPeople.Insertable;
     "clients": clients.Insertable;
     "contacts": contacts.Insertable;
@@ -7129,6 +7456,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.Updatable;
     "approvers": approvers.Updatable;
     "authorizations": authorizations.Updatable;
+    "bankAccounts": bankAccounts.Updatable;
     "clientPeople": clientPeople.Updatable;
     "clients": clients.Updatable;
     "contacts": contacts.Updatable;
@@ -7153,6 +7481,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.UniqueIndex;
     "approvers": approvers.UniqueIndex;
     "authorizations": authorizations.UniqueIndex;
+    "bankAccounts": bankAccounts.UniqueIndex;
     "clientPeople": clientPeople.UniqueIndex;
     "clients": clients.UniqueIndex;
     "contacts": contacts.UniqueIndex;
@@ -7177,6 +7506,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.Column;
     "approvers": approvers.Column;
     "authorizations": authorizations.Column;
+    "bankAccounts": bankAccounts.Column;
     "clientPeople": clientPeople.Column;
     "clients": clients.Column;
     "contacts": contacts.Column;
@@ -7201,6 +7531,7 @@ declare module 'zapatos/schema' {
     "approvals": approvals.SQL;
     "approvers": approvers.SQL;
     "authorizations": authorizations.SQL;
+    "bankAccounts": bankAccounts.SQL;
     "clientPeople": clientPeople.SQL;
     "clients": clients.SQL;
     "contacts": contacts.SQL;

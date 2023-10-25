@@ -5,10 +5,11 @@ create table
     days int4[] not null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint workingDays_pkey primary key (id),
-    constraint workingDays_country_uniq unique ("country")
+    constraint "workingDaysPkey" primary key (id),
+    constraint "workingDaysCountryUniq" unique ("country")
   ) tablespace pg_default;
+
 alter table public."workingDays" enable row level security;
 
-create trigger update_timestamp before update on public."workingDays"
+create trigger "updateTimestamp" before update on public."workingDays"
 for each row execute procedure moddatetime("updatedAt");

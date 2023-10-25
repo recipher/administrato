@@ -10,11 +10,12 @@ create table
     "isRemoved" boolean null,    
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint holiday_pkey primary key (id),
-    constraint holidays_locality_fkey foreign key (locality) references localities ("isoCode"),
-    constraint holidays_locality_name_date_entity_uniq unique (locality, name, date, entity, "entityId")
+    constraint "holidayPkey" primary key (id),
+    constraint "holidaysLocalityFkey" foreign key (locality) references localities ("isoCode"),
+    constraint "holidaysLocalityNameDateEntityUniq" unique (locality, name, date, entity, "entityId")
   ) tablespace pg_default;
+
 alter table public.holidays enable row level security;
 
-create trigger update_timestamp before update on public.holidays
+create trigger "updateTimestamp" before update on public.holidays
 for each row execute procedure moddatetime("updatedAt");

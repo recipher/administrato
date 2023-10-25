@@ -5044,19 +5044,19 @@ var require_pg_types = __commonJS({
     function noParse(val) {
       return String(val);
     }
-    function getTypeParser(oid, format) {
-      format = format || "text";
-      if (!typeParsers[format]) {
+    function getTypeParser(oid, format2) {
+      format2 = format2 || "text";
+      if (!typeParsers[format2]) {
         return noParse;
       }
-      return typeParsers[format][oid] || noParse;
+      return typeParsers[format2][oid] || noParse;
     }
-    function setTypeParser(oid, format, parseFn) {
-      if (typeof format == "function") {
-        parseFn = format;
-        format = "text";
+    function setTypeParser(oid, format2, parseFn) {
+      if (typeof format2 == "function") {
+        parseFn = format2;
+        format2 = "text";
       }
-      typeParsers[format][oid] = parseFn;
+      typeParsers[format2][oid] = parseFn;
     }
     textParsers.init(function(oid, converter) {
       typeParsers.text[oid] = converter;
@@ -5534,8 +5534,8 @@ var require_type_overrides = __commonJS({
       this.text = {};
       this.binary = {};
     }
-    TypeOverrides.prototype.getOverrides = function(format) {
-      switch (format) {
+    TypeOverrides.prototype.getOverrides = function(format2) {
+      switch (format2) {
         case "text":
           return this.text;
         case "binary":
@@ -5544,16 +5544,16 @@ var require_type_overrides = __commonJS({
           return {};
       }
     };
-    TypeOverrides.prototype.setTypeParser = function(oid, format, parseFn) {
-      if (typeof format === "function") {
-        parseFn = format;
-        format = "text";
+    TypeOverrides.prototype.setTypeParser = function(oid, format2, parseFn) {
+      if (typeof format2 === "function") {
+        parseFn = format2;
+        format2 = "text";
       }
-      this.getOverrides(format)[oid] = parseFn;
+      this.getOverrides(format2)[oid] = parseFn;
     };
-    TypeOverrides.prototype.getTypeParser = function(oid, format) {
-      format = format || "text";
-      return this.getOverrides(format)[oid] || this._types.getTypeParser(oid, format);
+    TypeOverrides.prototype.getTypeParser = function(oid, format2) {
+      format2 = format2 || "text";
+      return this.getOverrides(format2)[oid] || this._types.getTypeParser(oid, format2);
     };
     module2.exports = TypeOverrides;
   }
@@ -6132,14 +6132,14 @@ var require_messages = __commonJS({
     };
     exports.CopyResponse = CopyResponse;
     var Field = class {
-      constructor(name, tableID, columnID, dataTypeID, dataTypeSize, dataTypeModifier, format) {
+      constructor(name, tableID, columnID, dataTypeID, dataTypeSize, dataTypeModifier, format2) {
         this.name = name;
         this.tableID = tableID;
         this.columnID = columnID;
         this.dataTypeID = dataTypeID;
         this.dataTypeSize = dataTypeSize;
         this.dataTypeModifier = dataTypeModifier;
-        this.format = format;
+        this.format = format2;
       }
     };
     exports.Field = Field;
@@ -7790,11 +7790,11 @@ var require_client = __commonJS({
           client.queryQueue.splice(client.queryQueue.indexOf(query), 1);
         }
       }
-      setTypeParser(oid, format, parseFn) {
-        return this._types.setTypeParser(oid, format, parseFn);
+      setTypeParser(oid, format2, parseFn) {
+        return this._types.setTypeParser(oid, format2, parseFn);
       }
-      getTypeParser(oid, format) {
-        return this._types.getTypeParser(oid, format);
+      getTypeParser(oid, format2) {
+        return this._types.getTypeParser(oid, format2);
       }
       // escapeIdentifier and escapeLiteral moved to utility functions & exported
       // on PG
@@ -8688,11 +8688,11 @@ var require_client2 = __commonJS({
     };
     Client.prototype.unref = function() {
     };
-    Client.prototype.setTypeParser = function(oid, format, parseFn) {
-      return this._types.setTypeParser(oid, format, parseFn);
+    Client.prototype.setTypeParser = function(oid, format2, parseFn) {
+      return this._types.setTypeParser(oid, format2, parseFn);
     };
-    Client.prototype.getTypeParser = function(oid, format) {
-      return this._types.getTypeParser(oid, format);
+    Client.prototype.getTypeParser = function(oid, format2) {
+      return this._types.getTypeParser(oid, format2);
     };
   }
 });
@@ -12546,15 +12546,15 @@ var require_protectedTokens = __commonJS({
     function isProtectedWeekYearToken(token) {
       return protectedWeekYearTokens.indexOf(token) !== -1;
     }
-    function throwProtectedError(token, format, input) {
+    function throwProtectedError(token, format2, input) {
       if (token === "YYYY") {
-        throw new RangeError("Use `yyyy` instead of `YYYY` (in `".concat(format, "`) for formatting years to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
+        throw new RangeError("Use `yyyy` instead of `YYYY` (in `".concat(format2, "`) for formatting years to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
       } else if (token === "YY") {
-        throw new RangeError("Use `yy` instead of `YY` (in `".concat(format, "`) for formatting years to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
+        throw new RangeError("Use `yy` instead of `YY` (in `".concat(format2, "`) for formatting years to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
       } else if (token === "D") {
-        throw new RangeError("Use `d` instead of `D` (in `".concat(format, "`) for formatting days of the month to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
+        throw new RangeError("Use `d` instead of `D` (in `".concat(format2, "`) for formatting days of the month to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
       } else if (token === "DD") {
-        throw new RangeError("Use `dd` instead of `DD` (in `".concat(format, "`) for formatting days of the month to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
+        throw new RangeError("Use `dd` instead of `DD` (in `".concat(format2, "`) for formatting days of the month to the input `").concat(input, "`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md"));
       }
     }
   }
@@ -12668,8 +12668,8 @@ var require_buildFormatLongFn = __commonJS({
       return function() {
         var options = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
         var width = options.width ? String(options.width) : args.defaultWidth;
-        var format = args.formats[width] || args.formats[args.defaultWidth];
-        return format;
+        var format2 = args.formats[width] || args.formats[args.defaultWidth];
+        return format2;
       };
     }
     module2.exports = exports.default;
@@ -13175,7 +13175,7 @@ var require_format = __commonJS({
     Object.defineProperty(exports, "__esModule", {
       value: true
     });
-    exports.default = format;
+    exports.default = format2;
     var _index = _interopRequireDefault(require_isValid());
     var _index2 = _interopRequireDefault(require_subMilliseconds());
     var _index3 = _interopRequireDefault(require_toDate());
@@ -13192,7 +13192,7 @@ var require_format = __commonJS({
     var escapedStringRegExp = /^'([^]*?)'?$/;
     var doubleQuoteRegExp = /''/g;
     var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
-    function format(dirtyDate, dirtyFormatStr, options) {
+    function format2(dirtyDate, dirtyFormatStr, options) {
       var _ref, _options$locale, _ref2, _ref3, _ref4, _options$firstWeekCon, _options$locale2, _options$locale2$opti, _defaultOptions$local, _defaultOptions$local2, _ref5, _ref6, _ref7, _options$weekStartsOn, _options$locale3, _options$locale3$opti, _defaultOptions$local3, _defaultOptions$local4;
       (0, _index9.default)(2, arguments);
       var formatStr = String(dirtyFormatStr);
@@ -13580,13 +13580,13 @@ var require_formatDuration = __commonJS({
       }
       var defaultOptions = (0, _index.getDefaultOptions)();
       var locale = (_ref = (_options$locale = options === null || options === void 0 ? void 0 : options.locale) !== null && _options$locale !== void 0 ? _options$locale : defaultOptions.locale) !== null && _ref !== void 0 ? _ref : _index2.default;
-      var format = (_options$format = options === null || options === void 0 ? void 0 : options.format) !== null && _options$format !== void 0 ? _options$format : defaultFormat;
+      var format2 = (_options$format = options === null || options === void 0 ? void 0 : options.format) !== null && _options$format !== void 0 ? _options$format : defaultFormat;
       var zero = (_options$zero = options === null || options === void 0 ? void 0 : options.zero) !== null && _options$zero !== void 0 ? _options$zero : false;
       var delimiter = (_options$delimiter = options === null || options === void 0 ? void 0 : options.delimiter) !== null && _options$delimiter !== void 0 ? _options$delimiter : " ";
       if (!locale.formatDistance) {
         return "";
       }
-      var result = format.reduce(function(acc, unit) {
+      var result = format2.reduce(function(acc, unit) {
         var token = "x".concat(unit.replace(/(^.)/, function(m) {
           return m.toUpperCase();
         }));
@@ -13621,9 +13621,9 @@ var require_formatISO = __commonJS({
       if (isNaN(originalDate.getTime())) {
         throw new RangeError("Invalid time value");
       }
-      var format = String((_options$format = options === null || options === void 0 ? void 0 : options.format) !== null && _options$format !== void 0 ? _options$format : "extended");
+      var format2 = String((_options$format = options === null || options === void 0 ? void 0 : options.format) !== null && _options$format !== void 0 ? _options$format : "extended");
       var representation = String((_options$representati = options === null || options === void 0 ? void 0 : options.representation) !== null && _options$representati !== void 0 ? _options$representati : "complete");
-      if (format !== "extended" && format !== "basic") {
+      if (format2 !== "extended" && format2 !== "basic") {
         throw new RangeError("format must be 'extended' or 'basic'");
       }
       if (representation !== "date" && representation !== "time" && representation !== "complete") {
@@ -13631,8 +13631,8 @@ var require_formatISO = __commonJS({
       }
       var result = "";
       var tzOffset = "";
-      var dateDelimiter = format === "extended" ? "-" : "";
-      var timeDelimiter = format === "extended" ? ":" : "";
+      var dateDelimiter = format2 === "extended" ? "-" : "";
+      var timeDelimiter = format2 === "extended" ? ":" : "";
       if (representation !== "time") {
         var day = (0, _index2.default)(originalDate.getDate(), 2);
         var month = (0, _index2.default)(originalDate.getMonth() + 1, 2);
@@ -13684,17 +13684,17 @@ var require_formatISO9075 = __commonJS({
       if (!(0, _index2.default)(originalDate)) {
         throw new RangeError("Invalid time value");
       }
-      var format = String((_options$format = options === null || options === void 0 ? void 0 : options.format) !== null && _options$format !== void 0 ? _options$format : "extended");
+      var format2 = String((_options$format = options === null || options === void 0 ? void 0 : options.format) !== null && _options$format !== void 0 ? _options$format : "extended");
       var representation = String((_options$representati = options === null || options === void 0 ? void 0 : options.representation) !== null && _options$representati !== void 0 ? _options$representati : "complete");
-      if (format !== "extended" && format !== "basic") {
+      if (format2 !== "extended" && format2 !== "basic") {
         throw new RangeError("format must be 'extended' or 'basic'");
       }
       if (representation !== "date" && representation !== "time" && representation !== "complete") {
         throw new RangeError("representation must be 'date', 'time', or 'complete'");
       }
       var result = "";
-      var dateDelimiter = format === "extended" ? "-" : "";
-      var timeDelimiter = format === "extended" ? ":" : "";
+      var dateDelimiter = format2 === "extended" ? "-" : "";
+      var timeDelimiter = format2 === "extended" ? ":" : "";
       if (representation !== "time") {
         var day = (0, _index3.default)(originalDate.getDate(), 2);
         var month = (0, _index3.default)(originalDate.getMonth() + 1, 2);
@@ -22905,6 +22905,9 @@ var pool = new import_pg.default.Pool({ connectionString: DATABASE_URL });
 pool.on("error", (err) => console.error(err));
 var db_server_default = pool;
 
+// app/services/scheduler/holidays.server.ts
+var import_date_fns2 = __toESM(require_date_fns());
+
 // app/services/scheduler/date.ts
 var import_date_fns = __toESM(require_date_fns());
 var isSameDate = (left, right) => (0, import_date_fns.isSameDay)(left, right) && (0, import_date_fns.isSameMonth)(left, right) && (0, import_date_fns.isSameYear)(left, right);
@@ -22992,20 +22995,21 @@ var Service = (u) => {
         DATE_PART('year', ${"date"}) = ${param(year)}
       ORDER BY ${"date"} ASC`.run(db_server_default);
   };
-  const listHolidaysByCountryForEntity = async ({ month, year, locality, entityId }, { includeMain } = { includeMain: true }, txOrPool = db_server_default) => {
-    const byYear = sql`DATE_PART('year', ${"date"}) = ${param(year)}`;
+  const listHolidaysByCountryForEntity = async ({ month, year, start, end, locality, entityId }, { includeMain } = { includeMain: true }, txOrPool = db_server_default) => {
+    const byYear = year === void 0 ? sql`` : sql`DATE_PART('year', ${"date"}) = ${param(year)}`;
     const byMonth = month === void 0 ? sql`` : sql`AND DATE_PART('month', ${"date"}) = ${param(month)}`;
+    const byRange = start === void 0 || end === void 0 ? sql`` : sql`AND ${"date"}) BETWEEN ${param((0, import_date_fns2.format)(start, "yyyy-MM-dd"))} AND ${param((0, import_date_fns2.format)(end, "yyyy-MM-dd"))}`;
     const main = sql`
       SELECT * FROM ${"holidays"} 
       WHERE 
         ${{ locality }} AND ${"entityId"} IS NULL AND 
-        ${byYear} ${byMonth}
+        ${byYear} ${byMonth} ${byRange}
     `;
     const entity = sql`
       SELECT * from ${"holidays"}
       WHERE 
         ${{ locality }} AND ${{ entityId }} AND
-        ${byYear} ${byMonth}
+        ${byYear} ${byMonth} ${byRange}
     `;
     if (includeMain === false)
       return sql`${entity} ORDER BY ${"date"} ASC`.run(txOrPool);
@@ -23020,7 +23024,7 @@ var Service = (u) => {
       return [...holidays2, holiday];
     }, []);
   };
-  const syncHolidays = async ({ year, locality }, { shouldDelete = false } = {}) => {
+  const syncHolidays = async ({ year = (/* @__PURE__ */ new Date()).getUTCFullYear(), locality }, { shouldDelete = false } = {}) => {
     if (shouldDelete)
       await deleteHolidaysByCountry({ year, locality });
     const { holidays = [] } = await holidayAPI.holidays({ country: locality, year, public: true });

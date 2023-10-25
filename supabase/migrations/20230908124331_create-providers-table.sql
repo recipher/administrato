@@ -11,9 +11,10 @@ create table
     localities text[] null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint providers_pkey primary key (id)
+    constraint "providersPkey" primary key (id)
   ) tablespace pg_default;
+
 alter table public.providers enable row level security;
 
-create trigger update_timestamp before update on public.providers
+create trigger "updateTimestamp" before update on public.providers
 for each row execute procedure moddatetime("updatedAt");

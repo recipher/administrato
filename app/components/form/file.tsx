@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState, ReactNode } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useField } from "remix-validated-form";
 import ErrorMessage from './error';
+import { type EventFor } from "~/helpers";
 
 type Props = {
   name: string;
@@ -25,7 +26,7 @@ export default function File({ name, label, accept, Icon }: Props) {
     return () => URL.revokeObjectURL(url);
   }, [selectedFile]);
 
-  const handleSelectFile = (e: any) => {
+  const handleSelectFile = (e: EventFor<"input", "onChange">) => {
     if (!e.target.files || e.target.files.length === 0) {
       return setSelectedFile(undefined)
     }

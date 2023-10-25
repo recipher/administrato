@@ -11,10 +11,11 @@ create table
     notes json null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint approvals_pkey primary key (id),
-    constraint approvals_entityId_userId_uniq unique ("entityId", "userId")
+    constraint "approvalsPkey" primary key (id),
+    constraint "approvalsEntityIdUserIdUniq" unique ("entityId", "userId")
   ) tablespace pg_default;
+
 alter table public.approvals enable row level security;
 
-create trigger update_timestamp before update on public.approvals
+create trigger "updateTimestamp" before update on public.approvals
 for each row execute procedure moddatetime("updatedAt");

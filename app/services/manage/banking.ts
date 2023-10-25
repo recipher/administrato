@@ -1,0 +1,61 @@
+export const banking = [
+  { country: "DE",
+    bban: {
+      structure: "8!n10!n",
+      length: 18,
+      bankPosition: [ 1, 8 ],
+      bankIdentifierLength: "8!n",
+    },
+    iban: {
+      structure: "DE2!n8!n10!n",
+      length: 22,
+      checkDigits: "89",
+    },
+  },   
+  { country: "ES",
+    bban: {
+      structure: "4!n4!n1!n1!n10!n",
+      length: 20,
+      bankPosition: [ 1, 4 ],
+      bankIdentifierLength: "4!n",
+      branchPosition: [ 5, 8 ],
+      branchIdentifierLength: "4!n",
+    },
+    iban: {
+      structure: "ES2!n4!n4!n1!n1!n10!n",
+      length: 24,
+      checkDigits: "91",
+    },
+  },  
+  { country: "FR",
+    otherCountries: [ "GF", "GP", "MQ", "RE", "PF", "TF", "YT", "NC", "BL", "MF", "PM", "WF" ],
+    bban: {
+      structure: "5!n5!n11!c2!n",
+      length: 23,
+      bankPosition: [ 1, 5 ],
+      bankIdentifierLength: "5!n",
+    },
+    iban: {
+      structure: "FR2!n5!n5!n11!c2!n",
+      length: 27,
+      checkDigits: "14",
+    },
+  },
+  { country: "GB",
+    otherCountries: [ "JE", "IM", "GG" ],
+    bban: {
+      structure: "4!a6!n8!n",
+      length: 18,
+      bankPosition: [ 1, 4 ],
+      bankIdentifierLength: "4!a",
+      branchPosition: [ 5, 10 ],
+      branchIdentifierLength: "6!n",
+
+    },
+    iban: {
+      structure: "GB2!n4!a6!n8!n",
+      length: 22,
+      checkDigits: "29",
+    },
+  },
+];

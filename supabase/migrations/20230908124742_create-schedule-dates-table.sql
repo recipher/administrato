@@ -11,13 +11,14 @@ create table
     target boolean not null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint schedule_dates_pkey primary key (id),
-    constraint scheduleDates_clientId_fkey foreign key ("clientId") references clients (id),
-    constraint scheduleDates_scheduleId_fkey foreign key ("scheduleId") references schedules (id) on delete cascade,
-    constraint scheduleDates_milestoneId_fkey foreign key ("milestoneId") references milestones (id) on delete cascade,
-    constraint scheduleDates_scheduleId_milestoneId_uniq unique ("scheduleId", "milestoneId")
+    constraint "scheduleDatesPkey" primary key (id),
+    constraint "scheduleDatesClientIdFkey" foreign key ("clientId") references clients (id),
+    constraint "scheduleDatesScheduleIdFkey" foreign key ("scheduleId") references schedules (id) on delete cascade,
+    constraint "scheduleDatesMilestoneIdFkey" foreign key ("milestoneId") references milestones (id) on delete cascade,
+    constraint "scheduleDatesScheduleIdMilestoneIdUniq" unique ("scheduleId", "milestoneId")
   ) tablespace pg_default;
+
 alter table public."scheduleDates" enable row level security;
 
-create trigger update_timestamp before update on public."scheduleDates"
+create trigger "updateTimestamp" before update on public."scheduleDates"
 for each row execute procedure moddatetime("updatedAt");

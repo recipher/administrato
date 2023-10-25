@@ -7,11 +7,17 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
 import classnames from '~/helpers/classnames';
 
+export enum TabType {
+  Primary,
+  Secondary
+};
+
 type TabProp = {
   name: string;
   to: string;
   disabled?: boolean;
   hidden?: boolean;
+  type?: TabType;
   count?: string | number | undefined;
 };
 export type TabsProps = Array<TabProp>;
@@ -19,15 +25,14 @@ type Props = { tabs: TabsProps, max?: number };
 
 const Dropdown = ({ tabs }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   if (tabs.length === 0) return null;
 
   return (
     <Menu as="div" className="relative">
-      <Menu.Button className="-m-2 block py-2.5 text-gray-500 hover:text-gray-900 outline-none">
-        <span className="sr-only">Open options</span>
-        <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true" />
+      <Menu.Button className="-m-2 flex block py-2 text-gray-500 hover:text-gray-900 outline-none">
+        <span className="whitespace-nowrap mr-3 pb-2 text-md font-medium border-transparent text-gray-500 hover:text-gray-700">More</span>
+        <EllipsisVerticalIcon className="h-5 w-5 mt-0.5" aria-hidden="true" />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -38,30 +43,33 @@ const Dropdown = ({ tabs }: Props) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-4 min-w-[10rem] origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-10 mt-2 min-w-[10rem] origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
           {tabs.map(tab => {
             return (
-              <Menu.Item key={tab.name} >
-                <NavLink to={tab.to}>
-                  {({ isActive, isPending }) => (
-                    <div aria-current={isActive ? 'page' : undefined}
-                      className={classnames(isActive
-                        ? 'text-indigo-600'
-                        : 'text-gray-500 hover:text-gray-700',
-                      'block px-3 py-1 text-sm leading-6'
-                    )}>
-                      {t(tab.name)}
-                      {tab.count ? (
-                        <div
-                          className={classnames(
-                            isActive ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
-                            'ml-3 hidden rounded-full px-2 text-md md:inline-block'
-                          )}
-                        >
-                          {tab.count}
-                        </div>) : null}
-                    </div>
-                )}</NavLink>
+              <Menu.Item key={tab.name}>
+                {({ active }) => (
+                  <NavLink to={tab.to}>
+                    {({ isActive, isPending }) => (
+                      <div aria-current={isActive ? 'page' : undefined}
+                        className={classnames(isActive
+                          ? 'text-indigo-600'
+                          : 'text-gray-500 hover:text-gray-700',
+                          active ? 'bg-gray-100' : '',
+                        'block px-3 py-1 text-sm leading-6'
+                      )}>
+                        {t(tab.name)}
+                        {tab.count ? (
+                          <div
+                            className={classnames(
+                              isActive ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
+                              'ml-3 hidden rounded-full px-2 text-md md:inline-block'
+                            )}
+                          >
+                            {tab.count}
+                          </div>) : null}
+                      </div>
+                  )}</NavLink>
+                )}
               </Menu.Item>
             );
           })} 
@@ -75,8 +83,13 @@ export default function Tabs({ tabs, max = 6 }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const primary = tabs.slice(0, max);
-  const secondary = tabs.slice(max, tabs.length);
+  let primary = tabs.slice(0, max),
+      secondary = tabs.slice(max, tabs.length);
+
+  if (tabs.filter(t => t.type !== undefined).length > 0) {
+    primary = tabs.filter(t => t.type === TabType.Primary || t.type === undefined);
+    secondary = tabs.filter(t => t.type === TabType.Secondary);
+  }
 
   return (
     <>
@@ -133,4 +146,4 @@ export default function Tabs({ tabs, max = 6 }: Props) {
       </div>
     </>
   );
-}
+};

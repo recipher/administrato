@@ -10,9 +10,10 @@ create table
     "isArchived" boolean not null default FALSE,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint document_pkey primary key (id)
+    constraint "documentPkey" primary key (id)
   ) tablespace pg_default;
+
 alter table public.documents enable row level security;
 
-create trigger update_timestamp before update on public.documents
+create trigger "updateTimestamp" before update on public.documents
 for each row execute procedure moddatetime("updatedAt");
