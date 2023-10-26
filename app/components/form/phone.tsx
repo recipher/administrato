@@ -3,7 +3,7 @@ import { useField } from "remix-validated-form";
 import { Listbox, Transition } from '@headlessui/react'
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import parsePhoneNumber, { isValidPhoneNumber, AsYouType } from 'libphonenumber-js';
+import { isValidPhoneNumber, AsYouType, type CountryCode } from 'libphonenumber-js';
 
 import ErrorMessage from './error';
 import { type EventFor, classnames } from "~/helpers";
@@ -17,6 +17,7 @@ type Props = {
   placeholder?: string;
   width?: string;
   countries: Array<{ id: string; name: string; diallingCode: string}>;
+  isoCode?: string;
 };
 
 type ItemProps = {
@@ -43,13 +44,16 @@ const Select = ({ data = [], defaultValue = null, value = null, onChange = noOp 
   const [selected, setSelected] = useState<ItemProps | null>(defaultValue);
 
   const handleChange = (value: ItemProps) => {
-    onChange(value);
     setSelected(value);
   };
 
   useEffect(() => {
     if (value) setSelected(value);
-  }, [value]);
+  }, [ value ]);
+
+  useEffect(() => {
+    onChange(selected);
+  }, [ selected ]);
 
   return (
     <Listbox
@@ -126,11 +130,11 @@ const Select = ({ data = [], defaultValue = null, value = null, onChange = noOp 
   )
 };
 
-export default function Input({ name, label, value, focus = false, disabled = false, placeholder, width, countries }: Props) {
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder, width, countries, isoCode }: Props) {
   const { error, getInputProps } = useField(name);  
   const inputRef = useRef<HTMLInputElement>(null);
   const [ number, setNumber ] = useState(value);
-  const [ country, setCountry ] = useState();
+  const [ country, setCountry ] = useState(isoCode);
   const [ invalid, setInvalid ] = useState<string | undefined>();
 
   useEffect(() => {
@@ -145,8 +149,9 @@ export default function Input({ name, label, value, focus = false, disabled = fa
   const handleChange = (e: EventFor<"input", "onChange">) => {
     e.preventDefault();
     const value = e.currentTarget?.value;
-    setNumber(new AsYouType(country).input(value));
-    setInvalid(isValidPhoneNumber(value, country) ? undefined : 'Not a valid number');
+    if (country === undefined) return setNumber(value);
+    setNumber(new AsYouType(country as CountryCode).input(value));
+    setInvalid(isValidPhoneNumber(value, country as CountryCode) ? undefined : 'Not a valid number');
   };
 
   return (
@@ -162,7 +167,8 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           <label htmlFor="country" className="sr-only">
             Country
           </label>
-          <Select name="country" data={countries} onChange={handleChangeCountry} />
+          <Select name="country" data={countries} defaultValue={countries.find(c => c.id === country)} 
+            onChange={handleChangeCountry} />
         </div>
 
         <input

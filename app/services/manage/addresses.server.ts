@@ -7,7 +7,7 @@ export { default as create } from '../id.server';
 
 import { TxOrPool, type IdProp } from '../types';
 import { type User } from '../access/users.server';
-import { AddressFields } from './common';
+import { AddressFields } from './';
 
 export type Address = s.addresses.Selectable & { address?: string };
 

@@ -15,7 +15,7 @@ import PersonService, { create, Classifier } from '~/services/manage/people.serv
 import { type Client } from '~/services/manage/clients.server';
 import { type LegalEntity } from '~/services/manage/legal-entities.server';
 import CountryService, { type Country } from '~/services/countries.server';
-import { NameFields, Honorifics } from '~/services/manage/common';
+import { NameFields, Honorifics } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
 

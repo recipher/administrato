@@ -366,9 +366,9 @@ const Service = (u: User) => {
 
   type ListProps = { 
     legalEntityId: string; 
-    year?: number; 
-    start?: Date;
-    end?: Date;
+    year?: number | undefined; 
+    start?: Date | undefined;
+    end?: Date | undefined;
     status: Status | null; 
   };
 
@@ -413,12 +413,12 @@ const Service = (u: User) => {
     `.run(txOrPool);
   };
 
-  const listHolidaysForSchedules = async ({ legalEntityId, year, status }: { legalEntityId: string, year: number, status: Status }, txOrPool: TxOrPool = pool) => {
+  const listHolidaysForSchedules = async ({ legalEntityId, year, start, end, status }: ListProps, txOrPool: TxOrPool = pool) => {
     const service = HolidaysService(u);
 
     return db.serializable(txOrPool, async tx => {
       const milestones = await MilestoneService(u).listMilestonesForLegalEntityId({ legalEntityId }, undefined, tx);
-      const schedules = await listSchedulesByLegalEntity({ legalEntityId, year, status }, tx);
+      const schedules = await listSchedulesByLegalEntity({ legalEntityId, year, start, end, status }, tx);
 
       const countries = await Promise.all(milestones.map(async (milestone) => {
         return getCountriesForMilestone({ milestone, legalEntityId }, tx);
@@ -432,7 +432,7 @@ const Service = (u: User) => {
 
       const holidays = await Promise.all(localities.map(async (locality: string) => {
         const holidays = await Promise.all(schedules.map(async ({ id: entityId }) => {
-          return service.listHolidaysByCountryForEntity({ year, locality, entityId }, { includeMain: false }, tx);
+          return service.listHolidaysByCountryForEntity({ year, start, end, locality, entityId }, { includeMain: false }, tx);
         }));
         return holidays.flat();
       }));

@@ -45,7 +45,7 @@ export default function Lookup({ name, label, value, placeholder, ...props }: Pr
               "block w-full rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
           />
           <div className={classnames(props.disabled ? "" : "cursor-pointer", "group absolute inset-y-0 right-0 flex items-center")}>
-            {props.icon && <props.icon className={classnames(props.disabled ? "" : "hover:text-indigo-500", "-ml-0.5 mr-1.5 h-5 w-5 text-gray-500")} aria-hidden="true" />}
+            {props.icon && <props.icon className={classnames(props.disabled ? "" : "hover:text-indigo-500", "-ml-0.5 mr-2 h-5 w-5 text-gray-500")} aria-hidden="true" />}
           </div>
         </div>
       </>

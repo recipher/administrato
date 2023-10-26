@@ -4,10 +4,10 @@ import { useLoaderData } from '@remix-run/react'
 import { Form, validationError, withZod, zfd, z } from '~/components/form';
 import { useTranslation } from 'react-i18next';
 
-import { badRequest } from '~/utility/errors';
+import { badRequest, notFound } from '~/utility/errors';
 
 import CountryService, { type Country } from '~/services/countries.server';
-import { Classifier } from '~/services/manage/people.server';
+import PersonService, { Classifier } from '~/services/manage/people.server';
 import ContactService, { create } from '~/services/manage/contacts.server';
 import { ContactClassifier, Subs } from '~/services/manage';
 
@@ -29,13 +29,19 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+  
   const { id, classifier } = params;
   if (id === undefined || classifier === undefined) return badRequest('Invalid data');
+
+  const person = await PersonService(u).getPerson({ id });
+  
+  if (person === undefined) return notFound('Person not found');
 
   const classifiers = Object.values(ContactClassifier).filter(item => isNaN(Number(item)));
   const { countries } = await CountryService().listCountries({ limit: 300 });
 
-  return json({ id, classifier, classifiers, subs: Subs, countries });
+  return json({ person, classifier, classifiers, subs: Subs, countries });
 };
 
 z.setErrorMap((issue, ctx) => {
@@ -88,7 +94,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const Add = () => {
   const { t } = useTranslation("contacts");
-  const { classifiers, subs, countries } = useLoaderData();
+  const { person, classifiers, subs, countries } = useLoaderData();
 
   const [ classifier, setClassifier ] = useState<string>();
   const [ subData, setSubData ] = useState<Array<{ id: string, name: string }>>([]);
@@ -104,7 +110,7 @@ const Add = () => {
   };
 
   const input = {
-    [ContactClassifier.Phone]: <Phone label={t(`${classifier}-value`)} name="value" countries={countryData} />,
+    [ContactClassifier.Phone]: <Phone label={t(`${classifier}-value`)} name="value" countries={countryData} isoCode={person.locality} />,
   }[classifier || ContactClassifier.Web];
 
   const pre = {

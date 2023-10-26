@@ -10,7 +10,7 @@ import { badRequest } from '~/utility/errors';
 import ClientService, { type Client } from '~/services/manage/clients.server';
 import AddressService, { create } from '~/services/manage/addresses.server';
 import CountryService, { type Country } from '~/services/countries.server';
-import { AddressFields } from '~/services/manage/common';
+import { AddressFields } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
 

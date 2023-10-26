@@ -5,7 +5,7 @@ import classnames from "~/helpers/classnames";
 export const Body = ({ border = true, children }: PropsWithChildren<{ border?: boolean }>) => {
   return (
     <div className="space-y-3">
-      <div className={classnames(border ? "border-b border-gray-900/10" : "", `grid grid-cols-1 gap-x-8 gap-y-3 pb-12 md:grid-cols-3`)}>
+      <div className={classnames(border ? "border-b border-gray-900/10" : "", `grid grid-cols-1 gap-x-8 gap-y-3 pb-9 md:grid-cols-3`)}>
         {children}
       </div>
     </div>

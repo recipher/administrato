@@ -202,4 +202,4 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
       <ErrorMessage name={name} error={error} />
     </>
   );
-}
+};

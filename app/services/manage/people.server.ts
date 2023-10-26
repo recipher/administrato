@@ -14,7 +14,7 @@ import type { SearchOptions as BaseSearchOptions, Count, TxOrPool,
 import { ASC, DESC } from '../types';
   
 import { type User } from '../access/users.server';
-import { NameFields } from './common';
+import { NameFields } from './';
 
 export type PersonSecurityKey = {
   clientKeyStart: number | undefined;

@@ -93,7 +93,6 @@ export async function action({ request, params }: ActionArgs) {
 
   const url = new URL(request.url);
   const entity = url.searchParams.get("entity") || null;
-  // const entityId = url.searchParams.get("entity-id");
 
   const { country: isoCode } = params;
 
@@ -165,7 +164,7 @@ export default function Add() {
               <Group>
                 <Field span={3}>
                   <Lookup label={t(entityType)} name="entityId" onClick={noOp} 
-                    value={entity} placeholder={`Selected ${t(entityType)}`} />
+                    value={entity} placeholder={`Selected ${t(entityType)}`} icon={icon} />
                 </Field>
               </Group>
             </>}

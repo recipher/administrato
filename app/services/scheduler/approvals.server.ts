@@ -191,10 +191,13 @@ const Service = (u: User) => {
   const addDefaultApprovers = async ({ entityId: id }: { entityId: string }, txOrPool: TxOrPool = pool) => {
     const { keyStart, keyEnd } = await LegalEntityService(u).getLegalEntity({ id });
 
+    const orgKey = u.organization ? u.organization.auth0id : 'default';
+
     const authorizations = await db.sql<s.authorizations.SQL, s.authorizations.Selectable[]>`
       SELECT * FROM ${'authorizations'}
       WHERE ${db.param(keyStart)} >= ${'keyStart'} AND
             ${'keyEnd'} >= ${db.param(keyEnd)} AND
+            ${'organization'} = ${db.param(orgKey)} AND
             (${'entity'} = 'legal-entity' OR ${'entity'} = 'security-group')`
       .run(txOrPool);
 
