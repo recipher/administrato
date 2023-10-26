@@ -85,10 +85,7 @@ const schema =
       .object({
         id: z.string().or(z.array(z.string()))
       }),
-    securityGroupId: z
-      .string()
-      .nonempty("The security group is required"),
-      providerId: z
+    providerId: z
       .string()
       .nonempty("The provider is required"),
     clientId: z
@@ -174,7 +171,6 @@ const Add = () => {
 
   const [ autoGenerateIdentifier, setAutoGenerateIdentifier ] = useState(true);
   const [ provider, setProvider ] = useState<Provider>();
-  const [ securityGroup, setSecurityGroup ] = useState<SecurityGroup>(loaderData.securityGroup);
   const [ client, setClient ] = useState<SecurityGroup>(loaderData.client);
 
   const [ target, setTarget ] = useState<Array<string>>([ "last", "last", "last" ]);
@@ -186,9 +182,6 @@ const Add = () => {
 
   const providerModal = useRef<RefSelectorModal>(null);
   const showProviderModal = () => providerModal.current?.show('provider');
-
-  const securityGroupModal = useRef<RefSelectorModal>(null);
-  const showSecurityGroupModal = () => securityGroupModal.current?.show('security-group');
 
   const clientModal = useRef<RefSelectorModal>(null);
   const showClientModal = () => clientModal.current?.show('client');
@@ -238,13 +231,6 @@ const Add = () => {
                 checkUrl="/manage/legal-entities/name" property="legalEntity" message="This name is already in use" />
             </Field>
             <Field span={3}>
-              <Lookup label="Client" name="clientId" onClick={showClientModal} 
-                icon={IdentificationIcon} value={client} placeholder="Select a Client" />
-            </Field>
-          </Group>
-          <Section />
-          <Group>
-            <Field span={3}>
               <UniqueInput label="Identifier" name="identifier" 
                 checkUrl="/manage/legal-entities" property="legalEntity" message="This identifier is already in use"
                 disabled={autoGenerateIdentifier} placeholder="leave blank to auto-generate" />
@@ -261,8 +247,8 @@ const Add = () => {
           <Section size="md" />
           <Group>
             <Field span={3}>
-              <Lookup label="Security Group" name="securityGroupId" onClick={showSecurityGroupModal} 
-                icon={MapIcon} value={securityGroup} placeholder="Select a Security Group" />
+              <Lookup label="Client" name="clientId" onClick={showClientModal} 
+                icon={IdentificationIcon} value={client} placeholder="Select a Client" />
             </Field>
             <Field span={3}>
               <Lookup label="Provider" name="providerId" onClick={showProviderModal} 
@@ -305,8 +291,6 @@ const Add = () => {
       </Form>
       <SelectorModal ref={providerModal} onSelect={setProvider} allowChange={false} />
       <SelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
-      <SelectorModal ref={securityGroupModal} forAuthorization={false}
-        onSelect={setSecurityGroup} allowChange={false} />
     </>
   );
 }

@@ -44,8 +44,8 @@ const Info = () => {
         <Section>
         <Field title="Legal Entity Name">
             <p className="text-gray-900">{legalEntity.name}</p>
-            <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
-              Update
+            <button type="button" className="hidden group-hover:block font-medium text-indigo-600 hover:text-indigo-500">
+              Change
             </button>
           </Field>
           <Field title="Schedule Frequency">
@@ -66,15 +66,18 @@ const Info = () => {
             <Link className="text-indigo-900" to={`/manage/providers/${legalEntity.providerId}/info`}>
               {legalEntity.provider}
             </Link>
+            <button type="button" className="hidden group-hover:block font-medium text-indigo-600 hover:text-indigo-500">
+              Change
+            </button>
           </Field>
-          <Field title="Security Group Name">
+          {legalEntity.securityGroupId && <Field title="Security Group Name">
             <Link className="text-indigo-900" to={`/manage/security-groups/${legalEntity.securityGroupId}/info`}>
               {legalEntity.securityGroup}
             </Link>
             <button type="button" className="hidden font-medium text-indigo-600 hover:text-indigo-500">
               Update
             </button>
-          </Field>
+          </Field>}
         </Section>
       </Layout>
     </>

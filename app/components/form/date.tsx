@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useField } from 'remix-validated-form';
 import { useLocale } from 'remix-i18next';
-import { format, addMonths, addDays, lastDayOfMonth, 
+import { format, addMonths, addDays, lastDayOfMonth, isValid,
          isSameDay, isSameMonth, isSameYear, isToday } from 'date-fns';
 
 import {
@@ -13,13 +13,14 @@ import {
 
 import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
+import { EventFor } from '~/helpers';
 
 type CalendarProps = {
   date: Date | undefined;
   onSelect (d: Date): void;
 };
 
-const DAYS = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
+const Days = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
 
 type CalendarDate = {
   date: Date;
@@ -86,7 +87,7 @@ export function Calendar({ date = new Date(), onSelect }: CalendarProps) {
             </button>
           </div>
           <div className="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-500">
-            {DAYS.map(d => <div key={d}>{t(d).at(0)}</div>)}
+            {Days.map(d => <div key={d}>{t(d).at(0)}</div>)}
           </div>
           <div className="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1 ring-gray-200">
             {dates.map((day, i) => (
@@ -148,17 +149,29 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
   const { error, getInputProps } = useField(name);
 
   const [ open, setOpen ] = useState(false);
-  const [ date, setDate ] = useState<Date | undefined>(value);
+  const [ date, setDate ] = useState<string | undefined>(value && format(value, displayFormat));
 
   const handleSelect = (d: Date) => {
-    setDate(d);
+    setDate(format(d, displayFormat));
     setOpen(false);
     onChange(d);
   };
 
-  const handleClick = (e: any) => {
+  const handleClick = (e: EventFor<"input", "onClick">) => {
     e.stopPropagation();
     setOpen(!open);
+  };
+
+  const handleChange = (e: EventFor<"input", "onChange">) => {
+    e.preventDefault();
+    const d = e.currentTarget?.value;
+    setDate(d);
+  };
+
+  const toDate = (d: string | undefined) => {
+    if (d === undefined) return new Date();
+    const date = new Date(d);
+    return isValid(date) ? date : undefined;
   };
 
   return (
@@ -170,8 +183,9 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
         <input
           type="text"
           {...getInputProps({ id: name })}
+          onChange={handleChange}
           placeholder={placeholder}
-          value={(date && format(date, displayFormat)) || ""}
+          value={date}
           className={classnames(`w-[${width}rem]`,
             error ? "text-red-900 ring-red-300 focus:ring-red-500 placeholder:text-red-300" : "text-gray-900 shadow-sm ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 ", 
             "block rounded-md border-0 py-1.5 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6")}
@@ -182,7 +196,7 @@ export default function DatePicker({ label = 'Select Date', name = 'date', place
       </div>
       <div className={classnames(open ? "block" : "hidden", "z-10 absolute")}>
         <div className={classnames(`w-[24rem]`, "mt-2 bg-white divide-y divide-gray-100 rounded-lg shadow")}>
-          <Calendar date={date || defaultValue} onSelect={handleSelect} />
+          <Calendar date={toDate(date) || defaultValue} onSelect={handleSelect} />
         </div>
       </div>
       <ErrorMessage name={name} error={error} />

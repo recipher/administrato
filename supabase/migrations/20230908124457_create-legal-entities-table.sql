@@ -6,7 +6,7 @@ create table
     logo text null,
     frequency text null default 'monthly'::text,
     "target" text null default 'last'::text,
-    "securityGroupId" text not null,
+    "securityGroupId" text null,
     "providerId" text null,
     "clientId" text null,
     "milestoneSetId" text null,

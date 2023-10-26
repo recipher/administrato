@@ -7,7 +7,7 @@ import classnames from '~/helpers/classnames';
 
 type Props = {
   name: string;
-  label: string;
+  label?: string;
   value?: string;
   focus?: boolean;
   disabled?: boolean;
@@ -27,11 +27,11 @@ export default function Input({ name, label, value, focus = false, disabled = fa
 
   return (
     <div className="mb-2">
-      <label htmlFor={name} className={classnames(
+      {label && <label htmlFor={name} className={classnames(
         disabled ? "text-gray-400" : "text-gray-900",
         "block text-sm font-medium leading-6")}>
         {label}
-      </label>
+      </label>}
       <div className={classnames(width ? `w-${width}` : "",
             "mt-1 relative flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset sm:max-w-md",
             error ? "text-red-900 ring-red-300 focus:ring-red-500 focus-within:ring-red-500 placeholder:text-red-300" : "ring-gray-300 placeholder:text-gray-400 focus-within:ring-indigo-600 focus:ring-indigo-600 ")}>

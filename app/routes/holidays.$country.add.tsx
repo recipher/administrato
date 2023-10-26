@@ -25,7 +25,7 @@ import toNumber from '~/helpers/to-number';
 import pluralize from '~/helpers/pluralize';
 
 export const handle = {
-  name: "add",
+  name: "add-holiday",
   breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
     <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name={name} current={current} />
 };

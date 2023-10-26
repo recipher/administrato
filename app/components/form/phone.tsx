@@ -6,7 +6,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import parsePhoneNumber, { isValidPhoneNumber, AsYouType } from 'libphonenumber-js';
 
 import ErrorMessage from './error';
-import classnames from '~/helpers/classnames';
+import { type EventFor, classnames } from "~/helpers";
 
 type Props = {
   name: string;
@@ -142,7 +142,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
     setCountry(id);
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: EventFor<"input", "onChange">) => {
     e.preventDefault();
     const value = e.currentTarget?.value;
     setNumber(new AsYouType(country).input(value));

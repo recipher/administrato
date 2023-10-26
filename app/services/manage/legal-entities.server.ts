@@ -29,7 +29,9 @@ type SearchOptions = {
 
 const Service = (u: User) => {
   const getLatest = async (legalEntity: s.legalEntities.Insertable, txOrPool: TxOrPool = pool) => {
-    const query = db.sql<db.SQL>`${'securityGroupId'} = ${db.param(legalEntity.securityGroupId)}`;
+    const query = legalEntity.securityGroupId
+      ? db.sql<db.SQL>`${'securityGroupId'} = ${db.param(legalEntity.securityGroupId)}`
+      : db.sql<db.SQL>`${'clientId'} = ${db.param(legalEntity.clientId)}`;
 
     const [ latest ] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       SELECT * FROM ${'legalEntities'}
@@ -41,9 +43,10 @@ const Service = (u: User) => {
   };
 
   const generateKey = async (legalEntity: s.legalEntities.Insertable, txOrPool: TxOrPool = pool): Promise<SecurityKey> => {
-    const service = SecurityGroupService(u);
-
-    const parent = await service.getSecurityGroup({ id: legalEntity.securityGroupId as string }, { bypassKeyCheck: true }, txOrPool)
+    const parent = legalEntity.securityGroupId
+      ? await SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId as string }, { bypassKeyCheck: true }, txOrPool)
+      : await ClientService(u).getClient({ id: legalEntity.clientId as string }, { bypassKeyCheck: true }, txOrPool)
+      
     const maxEntities = 10000; // Move to constants
     const latest = await getLatest(legalEntity, txOrPool);
 

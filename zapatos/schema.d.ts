@@ -3538,9 +3538,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.securityGroupId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      securityGroupId: string;
+      securityGroupId: string | null;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -3636,9 +3636,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.securityGroupId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      securityGroupId: string;
+      securityGroupId: string | null;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -3734,7 +3734,7 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.securityGroupId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
       securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
@@ -3832,9 +3832,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.securityGroupId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      securityGroupId: string | db.Parameter<string> | db.SQLFragment;
+      securityGroupId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **legalEntities.providerId**
       * - `text` in database
@@ -3930,9 +3930,9 @@ declare module 'zapatos/schema' {
       /**
       * **legalEntities.securityGroupId**
       * - `text` in database
-      * - `NOT NULL`, no default
+      * - Nullable, no default
       */
-      securityGroupId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      securityGroupId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **legalEntities.providerId**
       * - `text` in database
