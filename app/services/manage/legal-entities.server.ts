@@ -169,9 +169,11 @@ const Service = (u: User) => {
     return db.serializable(txOrPool, async tx => {
       const bypass = { bypassKeyCheck: true };
       const legalEntity = await getLegalEntity({ id }, bypass, tx);
-      const securityGroup = await SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId }, bypass, tx);
       const provider = legalEntity.providerId ? await ProviderService(u).getProvider({ id: legalEntity.providerId }, bypass, tx) : undefined;
       const client = legalEntity.clientId ? await ClientService(u).getClient({ id: legalEntity.clientId }, bypass, tx) : undefined;
+      const securityGroup = legalEntity.securityGroupId 
+        ? await SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId as string }, bypass, tx) 
+        : client ? await SecurityGroupService(u).getSecurityGroup({ id: client.securityGroupId }, bypass, tx) : undefined;
       return { legalEntity, securityGroup, provider, client };
     });
   };

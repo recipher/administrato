@@ -11,12 +11,12 @@ import { type EventFor, classnames } from "~/helpers";
 type Props = {
   name: string;
   label: string;
-  value?: string;
+  value?: string | undefined;
   focus?: boolean;
   disabled?: boolean;
   placeholder?: string;
   width?: string;
-  countries: Array<{ id: string; name: string; diallingCode: string}>;
+  countries: Array<{ id: string; name: string; diallingCode: string | null }>;
   isoCode?: string;
 };
 
@@ -24,7 +24,7 @@ type ItemProps = {
   id: string;
   name: string;
   image?: string;
-  diallingCode: string;
+  diallingCode: string | null;
 };
 
 type DataProps = Array<ItemProps>;

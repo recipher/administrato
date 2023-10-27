@@ -14,7 +14,7 @@ import toNumber from '~/helpers/to-number';
 import { whereKeys, whereExactKeys, generateIdentifier } from './shared.server';
 
 const KEY_MIN = 0;
-const KEY_MAX = Number.MAX_SAFE_INTEGER;
+const KEY_MAX = Number.MAX_SAFE_INTEGER; // 9007199254740991
 const MAX_ENTITIES = 100;
 
 type KeyQueryOptions = BaseKeyQueryOptions & {

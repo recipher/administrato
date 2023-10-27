@@ -8,7 +8,7 @@ import classnames from '~/helpers/classnames';
 type Props = {
   name: string;
   label?: string;
-  value?: string;
+  value?: string | null | undefined;
   focus?: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -40,7 +40,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           ref={inputRef} 
           disabled={disabled}
           placeholder={placeholder}
-          defaultValue={value}
+          defaultValue={value || ""}
           {...getInputProps({ id: name })}
           autoCorrect="off"
           autoCapitalize="off"

@@ -38,7 +38,7 @@ export default function Select({ name, label, data = [], defaultValue = null, va
 
   useEffect(() => {
     if (value) setSelected(value);
-  }, [value]);
+  }, [ value ]);
 
   useEffect(() => {
     if (selected) onChange(selected);

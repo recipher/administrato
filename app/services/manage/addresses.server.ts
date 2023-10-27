@@ -12,7 +12,6 @@ import { AddressFields } from './';
 export type Address = s.addresses.Selectable & { address?: string };
 
 const Service = (u: User) => {
-
   const withAddress = (address: Address) => {
     type AddressKey = keyof Address;
     const config = new AddressConfigurator();
@@ -30,9 +29,13 @@ const Service = (u: User) => {
     return db.insert('addresses', address).run(txOrPool);
   };
 
+  const updateAddress = (address: s.addresses.Updatable, txOrPool: TxOrPool = pool) => {
+    return db.update('addresses', address, { id: address.id as string }).run(txOrPool);
+  };
+
   const getAddress = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     const [ address ] = await db.sql<s.addresses.SQL, s.addresses.Selectable[]>`
-      SELECT * FROM ${'addresses'} WHERE ${{id}}}
+      SELECT * FROM ${'addresses'} WHERE ${{id}}
     `.run(txOrPool);
     return withAddress(address);
   };
@@ -50,6 +53,7 @@ const Service = (u: User) => {
 
   return {
     addAddress,
+    updateAddress,
     deleteAddress,
     getAddress,
     listAddressesByEntityId,

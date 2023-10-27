@@ -53,7 +53,7 @@ const Addresses = () => {
       <Layout>
         <Heading heading={t('addresses')} explanation={`Manage ${person.firstName}'s addresses.`} />
         {addresses.length === 0 && <Alert title="No addresses" level={Level.Info} /> }
-        <Cards data={addresses} renderItem={Item} noNavigate={true} />
+        <Cards data={addresses} renderItem={Item} />
       </Layout>
     </>
   );

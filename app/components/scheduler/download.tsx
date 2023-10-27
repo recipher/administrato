@@ -123,13 +123,8 @@ const GenerateForm = ({ legalEntity, year = new Date().getFullYear(), initialSta
 };
 
 export const DownloadModal = ({ modal, legalEntity, year, status, statuses }: Props) => {
-  const handleCancel = () => {
-    modal.current?.hide();
-  };
-
-  const handleDownload = () => {
-    modal.current?.hide();
-  };
+  const handleCancel = () => modal.current?.hide();
+  const handleDownload = () => modal.current?.hide();
 
   return (
     <Modal ref={modal}>
