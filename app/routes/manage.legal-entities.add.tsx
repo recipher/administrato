@@ -23,7 +23,7 @@ import { Input, UniqueInput, Select, Cancel, Submit, Checkbox, Image,
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 import { CountryFormManager, buildValidationError, changeCodes } from '~/components/countries/form';
 
-import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
+import { RefSelectorModal, SelectorModal } from '~/components/manage/entity-selector';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';

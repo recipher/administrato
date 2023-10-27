@@ -33,13 +33,16 @@ export default function Select({ name, label, data = [], defaultValue = null, va
   const [selected, setSelected] = useState<ItemProps | null>(defaultValue);
 
   const handleChange = (value: ItemProps) => {
-    onChange(value);
     setSelected(value);
   };
 
   useEffect(() => {
     if (value) setSelected(value);
   }, [value]);
+
+  useEffect(() => {
+    if (selected) onChange(selected);
+  }, [ selected ]);
 
   return (
     <>
@@ -68,7 +71,6 @@ export default function Select({ name, label, data = [], defaultValue = null, va
                   <ChevronDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
                 </span>
               </Listbox.Button>
-
               <Transition
                 show={open}
                 as={Fragment}

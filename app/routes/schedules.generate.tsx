@@ -17,7 +17,7 @@ import { type Provider } from '~/services/manage/providers.server';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
 
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
-import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/selector';
+import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/entity-selector';
 
 import { Alert, Level } from '~/components';
 import ButtonGroup, { type ButtonGroupButton } from '~/components/button-group';

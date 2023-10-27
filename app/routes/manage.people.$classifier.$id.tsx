@@ -81,6 +81,7 @@ export default function Person() {
     { title: 'add-address', to: 'addresses/add', permission: manage.edit.person },
     { title: 'add-contact', to: 'contacts/add', permission: manage.edit.person },
     { title: 'add-salary', to: 'salary/add', permission: manage.edit.person },
+    { title: 'add-bank-account', to: 'bank-accounts/add', permission: manage.edit.person },
   ];
 
   return (

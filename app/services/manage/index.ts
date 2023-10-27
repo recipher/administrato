@@ -1,3 +1,10 @@
+export enum Classifier {
+  Worker = "worker",
+  Employee = "employee",
+  Contractor = "contractor",
+  Person = "person",
+};
+
 export enum ContactClassifier {
   Phone = "phone",
   Email = "email",
@@ -11,6 +18,8 @@ export const Subs = {
   [ContactClassifier.Social]: [ "twitter", "facebook", "whatsapp", "snapchat", "linkedin", "instagram" ],
   [ContactClassifier.Web]: [],
 };
+
+export const BankAccountClassifiers = [ 'personal', 'business' ];
 
 export const AddressClassifiers = [ 'personal', 'business' ];
 export const AddressFields = [

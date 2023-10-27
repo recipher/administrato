@@ -16,7 +16,7 @@ import ProviderService, { type Provider } from '~/services/manage/providers.serv
 import { useUser } from '~/hooks';
 
 import ConfirmModal, { RefConfirmModal } from "~/components/modals/confirm";
-import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/selector';
+import { SelectorModal, RefSelectorModal, entities } from '~/components/manage/entity-selector';
 import Alert, { Level } from '~/components/alert';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";

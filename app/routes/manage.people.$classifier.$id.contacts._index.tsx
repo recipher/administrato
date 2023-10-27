@@ -45,7 +45,7 @@ const ContactLink = ({ contact }: { contact: Contact }) => {
   const href = {
     [ContactClassifier.Email]: `mailto:${value}`,
     [ContactClassifier.Phone]: `tel:${value}`,
-    [ContactClassifier.Web]: value,
+    [ContactClassifier.Web]: `http://${value}`,
     [ContactClassifier.Social]: {
       "twitter": `https://twitter.com/${value}`,
       "facebook": `https://facebook.com/${value}`,
@@ -73,7 +73,7 @@ const Contacts = () => {
       <Layout>
         <Heading heading={t('contacts')} explanation={`Manage ${person.firstName}'s contact information.`} />
         {contacts.length === 0 && <Alert title="No contacts" level={Level.Info} /> }
-        <List data={contacts} renderItem={Item} renderContext={Context} noNavigate={true} />
+        <List data={contacts} renderItem={Item} renderContext={Context} />
       </Layout>
     </>
   );

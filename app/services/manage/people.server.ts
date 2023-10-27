@@ -25,17 +25,13 @@ export type PersonSecurityKey = {
 
 import { extractKeys } from './shared.server';
 
+import { Classifier } from './';
+export { Classifier } from './';
+
 export type Person = s.people.Selectable & { 
   name?: string;
   legalEntity?: string; 
   client?: string;
-};
-
-export enum Classifier {
-  Worker = "worker",
-  Employee = "employee",
-  Contractor = "contractor",
-  Person = "person",
 };
 
 type SearchOptions = {

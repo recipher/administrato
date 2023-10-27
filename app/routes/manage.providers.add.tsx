@@ -20,7 +20,7 @@ import { CountryFormManager, buildValidationError, changeCodes } from '~/compone
 import { UniqueInput, Cancel, Submit, Checkbox, Image, 
          Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
 
-import { SelectorModal, RefSelectorModal } from '~/components/manage/selector';
+import { SelectorModal, RefSelectorModal } from '~/components/manage/entity-selector';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { manage } from '~/auth/permissions';

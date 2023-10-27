@@ -142,8 +142,10 @@ export default function Input({ name, label, value, focus = false, disabled = fa
   }, [focus]);
 
   const handleChangeCountry = ({ id, diallingCode }: any) => {
-    setNumber(diallingCode + ' ');
+    const value = diallingCode + ' ' + (number ? number.slice(number.indexOf(' ')+1, number.length) : "");
+    setNumber(value);
     setCountry(id);
+    setInvalid(isValidPhoneNumber(value, country as CountryCode) ? undefined : 'Not a valid number');
   };
 
   const handleChange = (e: EventFor<"input", "onChange">) => {
@@ -176,7 +178,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           disabled={disabled}
           placeholder={placeholder}
           {...getInputProps({ id: name, value: number })}
-          defaultValue={value}
+          defaultValue={number}
           onChange={handleChange}
           autoCorrect="off"
           autoCapitalize="off"

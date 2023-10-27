@@ -11,7 +11,7 @@ import NameConfigurator from '@recipher/i18n-postal-address';
 import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
 
-import PersonService, { create, Classifier } from '~/services/manage/people.server';
+import PersonService, { create, Classifier, type Person } from '~/services/manage/people.server';
 import { type Client } from '~/services/manage/clients.server';
 import { type LegalEntity } from '~/services/manage/legal-entities.server';
 import CountryService, { type Country } from '~/services/countries.server';
@@ -19,7 +19,10 @@ import { NameFields, Honorifics } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
 
-import { RefSelectorModal, SelectorModal } from '~/components/manage/selector';
+import { RefSelectorModal as RefEntitySelectorModal, 
+  SelectorModal as EntitySelectorModal } from '~/components/manage/entity-selector';
+import { RefSelectorModal as RefPersonSelectorModal, 
+  SelectorModal as PersonSelectorModal } from '~/components/manage/person-selector';
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
@@ -27,7 +30,7 @@ import { flag } from '~/components/countries/flag';
 
 import { Input, Select, type SelectItem, Cancel, Submit,
   Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
-import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
+import { IdentificationIcon, UserCircleIcon, WalletIcon } from '@heroicons/react/24/outline';
 
 import { configs, type Config } from './manage.people';
 
@@ -80,7 +83,8 @@ const validator = (config: Config) => {
       .object({ id: z.string()}),
     locality: z
       .object({ id: z.string()}),
-    photo: z.any()
+    photo: z.any(),
+    supervisorId: z.string().optional()
   };
 
   if (config.client) schema = { ...schema, 
@@ -115,7 +119,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   const { data: { locality: { id: locality }, nationality: { id: nationality },
     honorific: { id: honorific }, 
-    clientId, legalEntityId, ...data }} = result;
+    clientId, legalEntityId, supervisorId, ...data }} = result;
   
   const service = PersonService(u);
   const person = await service.addPerson(
@@ -130,14 +134,16 @@ const Add = () => {
   const { t: tn } = useTranslation("address");
   const { countries, classifier, config } = useLoaderData();
 
+  const [ supervisor, setSupervisor ] = useState<Person>();
   const [ client, setClient ] = useState<Client>();
   const [ locality, setLocality ] = useState<SelectItem>();
   const [ localityChanged, setLocalityChanged ] = useState<boolean>(false);
   const [ legalEntity, setLegalEntity ] = useState<LegalEntity>();
   const [ nameConfig, setNameConfig ] = useState<Array<Array<string>>>();
 
-  const clientModal = useRef<RefSelectorModal>(null);
-  const legalEntityModal = useRef<RefSelectorModal>(null);
+  const clientModal = useRef<RefEntitySelectorModal>(null);
+  const legalEntityModal = useRef<RefEntitySelectorModal>(null);
+  const supervisorModal = useRef<RefPersonSelectorModal>(null);
 
   const withFlag = countries.map((country: Country) => ({
     id: country.isoCode, name: country.name, 
@@ -154,6 +160,7 @@ const Add = () => {
 
   const showClientModal = () => clientModal.current?.show('client');
   const showLegalEntityModal = () => legalEntityModal.current?.show('legal-entity');
+  const showSupervisorModal = () => supervisorModal.current?.show('employee');
 
   const handleChangeNationality = (nationality: any) => {
     if (localityChanged === false) setLocality(nationality);
@@ -193,6 +200,13 @@ const Add = () => {
                 </Group>
               </>
             )})}
+          <Section size="md" heading="Select Supervisor" explanation="" />
+          <Group>
+            <Field span={3}>
+              <Lookup label="Supervisor" name="supervisorId" onClick={showSupervisorModal} 
+                icon={UserCircleIcon} value={supervisor} placeholder="Select a Person" />
+            </Field>
+          </Group>
           <Section size="md" heading={config.heading} explanation={config.explanation} />
           <Group>
             {config.client &&<Field span={3}>
@@ -219,8 +233,9 @@ const Add = () => {
           <Submit text="Save" submitting="Saving..." permission={manage.create.person} />
         </Footer>
       </Form>
-      <SelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
-      <SelectorModal ref={legalEntityModal} onSelect={setLegalEntity} allowChange={false} />
+      <EntitySelectorModal ref={clientModal} onSelect={setClient} allowChange={false} />
+      <EntitySelectorModal ref={legalEntityModal} onSelect={setLegalEntity} allowChange={false} />
+      <PersonSelectorModal ref={supervisorModal} onSelect={setSupervisor} />
     </>
   );
 }

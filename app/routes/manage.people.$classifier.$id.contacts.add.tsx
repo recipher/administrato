@@ -30,7 +30,7 @@ export const handle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const u = await requireUser(request);
-  
+
   const { id, classifier } = params;
   if (id === undefined || classifier === undefined) return badRequest('Invalid data');
 

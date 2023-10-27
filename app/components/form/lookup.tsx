@@ -8,7 +8,7 @@ type Props = {
   label: string;
   value?: {
     id: string;
-    name: string;
+    name?: string;
   } | undefined;
   placeholder?: string;
   disabled?: boolean;

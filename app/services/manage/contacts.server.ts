@@ -14,6 +14,10 @@ const Service = (u: User) => {
     return db.insert('contacts', contact).run(txOrPool);
   };
 
+  const updateContact = (contact: s.contacts.Updatable, txOrPool: TxOrPool = pool) => {
+    return db.update('contacts', contact, { id: contact.id as string }).run(txOrPool);
+  };
+
   const getContact = ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
     return db.selectExactlyOne('contacts', { id }).run(txOrPool);
   };
@@ -28,6 +32,7 @@ const Service = (u: User) => {
 
   return {
     addContact,
+    updateContact,
     deleteContact,
     getContact,
     listContactsByEntityId,

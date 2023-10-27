@@ -8,6 +8,7 @@ create table
     "lastName" text null,
     "firstLastName" text null,
     "secondLastName" text null,
+    "supervisorId" text null,
     honorific text null,
     gender text null,
     dob date null,
@@ -21,7 +22,8 @@ create table
     "legalEntityKeyEnd" bigint null,
     "createdAt" timestamp with time zone not null default now(),
     "updatedAt" timestamp with time zone not null default now(),
-    constraint "personPkey" primary key (id)
+    constraint "personPkey" primary key (id),
+    constraint "supervisorIdFkey" foreign key ("supervisorId") references people (id)
   ) tablespace pg_default;
 
 alter table public.people enable row level security;
