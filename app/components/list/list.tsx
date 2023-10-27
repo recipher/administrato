@@ -1,13 +1,28 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef, Fragment } from 'react';
 import { Link } from '@remix-run/react';
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
+import { useUser } from '~/hooks';
 
+import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+ 
 import Image from '~/components/image';  
-import classnames from '~/helpers/classnames';
+import ConfirmModal, { RefConfirmModal } from '../modals/confirm';
+
+import { type EventFor, classnames } from '~/helpers';
 
 type ToProps = {
   item: any;
   idKey?: string;
+};
+
+type ActionProps = {
+  name: string;
+  to?: string | Function;
+  condition?: Function;
+  permission?: string;
+  onClick?: Function;
+  className?: string | Function;
+  confirm?: string | Function;
 };
 
 type Props = {
@@ -15,9 +30,10 @@ type Props = {
   idKey?: string;
   onClick?: Function;
   renderItem(item: any): ReactNode,
-  renderContext(item: any): ReactNode,
+  renderContext?(item: any): ReactNode,
   buildTo?(props: ToProps): string;
   noNavigate?: boolean | undefined;
+  actions?: Array<ActionProps>;
 };
 
 export const ListItem = ({ className = "text-md font-semibold", image, data, sub }: { className?: string, data: any, sub?: any, image?: ReactNode | string }) => {
@@ -58,16 +74,60 @@ export const ListContext = ({ data, sub, select = true, open = false }: { data?:
   );
 };
 
+const Actions = ({ actions, item }: { actions: Array<ActionProps>, item: any }) => {
+  const { t } = useTranslation();
+  const u = useUser();
+  const confirm = useRef<RefConfirmModal>(null);
+  
+  const hasPermission = (permission: string | undefined) => 
+    permission === undefined || u.permissions.includes(permission);
+
+  const handleClick = (e: EventFor<"button", "onClick">, action: ActionProps) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (action.confirm) {
+      const message = typeof action.confirm === "function" ? action.confirm(item) : action.confirm;
+      confirm.current?.show(`${message}?`, `Yes, ${t(action.name)}`, "Cancel", `Are you sure you want to ${message.toLowerCase()}?`);
+    } else onConfirm(action);
+  };
+
+  const onConfirm = (action: ActionProps) => {
+    if (action.onClick) action.onClick(item);
+  };
+
+  return (
+    <>
+      <ul className="group-hover:block hidden">
+        {actions
+          .filter(action => hasPermission(action.permission) && 
+                 (action.condition === undefined || action.condition(item)))
+          .map((action: ActionProps) => (
+          <Fragment key={action.name}>
+            <button onClick={(e) => handleClick(e, action)} type="button" 
+              className={classnames(action.className 
+                ? typeof action.className === "function" ? action.className(item) : action.className 
+                : "font-medium text-red-600 hover:text-red-500", "hidden group-hover:block float-right pl-3")}>
+              {t(action.name)}
+            </button>
+            <ConfirmModal ref={confirm} onYes={() => onConfirm(action)} />
+          </Fragment>
+        ))}
+      </ul>
+    </>
+  );
+};
+
 const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey].toString();
 
-export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo, noNavigate = false }: Props) {
+export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo, noNavigate = false, actions }: Props) {
   const Item = ({ item }: any) => (
     <div className="flex justify-between gap-x-6 py-3">
       <div className="flex min-w-0 gap-x-4">
         {renderItem(item)}
       </div>
-      <div className="flex shrink-0 items-center gap-x-6">
-        {renderContext(item)}
+      <div className="flex shrink-0 items-center gap-x-6">        
+        {actions ? <Actions actions={actions} item={item} /> : renderContext ? renderContext(item) : null}
       </div>
     </div>
   );
@@ -87,4 +147,4 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
       ))}
     </ul>
   );
-}
+};

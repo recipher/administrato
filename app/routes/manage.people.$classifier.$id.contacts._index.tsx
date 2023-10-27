@@ -1,5 +1,5 @@
-import { json, type LoaderArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { json, redirect, type LoaderArgs } from '@remix-run/node';
+import { useLoaderData, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
@@ -7,13 +7,16 @@ import ContactService, { Contact } from '~/services/manage/contacts.server';
 import { ContactClassifier } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
+import { setFlashMessage, storage } from '~/utility/flash.server';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
-import { List, ListItem, ListContext } from '~/components/list';
+import { List, ListItem } from '~/components/list';
 import Alert, { Level } from '~/components/alert';
 import { Layout, Heading } from '~/components/info/info';
+
+import { manage } from '~/auth/permissions';
 
 export const handle = {
   i18n: "contacts",
@@ -37,6 +40,32 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const contacts = await contactService.listContactsByEntityId({ entityId: id });
 
   return json({ person, classifier, contacts });
+};
+
+
+export const action = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
+
+  const { id, classifier } = params;
+  if (id === undefined || classifier === undefined) return badRequest('Invalid request');
+
+  let message = "", level = Level.Success;
+  const { intent, ...data } = await request.json();
+
+  if (intent === "remove-contact") {
+    const { contact } = data;
+
+    try {
+      await ContactService(u).deleteContact({ id: contact.id });
+      message = `Contact Removed:The ${contact.classifier} has been removed.`;
+    } catch(e: any) {
+      message = `Add Contact Error:${e.message}`;
+      level = Level.Error;
+    }
+  }
+  
+  const session = await setFlashMessage({ request, message, level });
+  return redirect(".", { headers: { "Set-Cookie": await storage.commitSession(session) } });
 };
 
 const ContactLink = ({ contact }: { contact: Contact }) => {
@@ -63,21 +92,29 @@ const ContactLink = ({ contact }: { contact: Contact }) => {
 
 const Contacts = () => {
   const { t } = useTranslation("contacts");
+  const submit = useSubmit();
   const { person, contacts } = useLoaderData();
 
-  const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} sub={t(contact.classifier)} className="font-medium" />;
-  const Context = (contact: Contact) => <ListContext data={t(contact.sub || "")} select={false} />;
+  const Item = (contact: Contact) => <ListItem data={<ContactLink contact={contact} />} sub={`${t(contact.sub || '')} ${t(contact.classifier)}`} className="font-medium" />;
+
+  const actions = [
+    { name: "remove", confirm: (contact: Contact) => `Remove this ${t(contact.classifier)}`, 
+      permission: manage.edit.person,
+      onClick: (contact: Contact) => {
+        submit({ intent: "remove-contact", contact: { id: contact.id, classifier: t(contact.classifier).toLowerCase() }}, 
+          { encType: "application/json", method: "POST" }) 
+    }},
+  ];
 
   return (
     <>
       <Layout>
         <Heading heading={t('contacts')} explanation={`Manage ${person.firstName}'s contact information.`} />
         {contacts.length === 0 && <Alert title="No contacts" level={Level.Info} /> }
-        <List data={contacts} renderItem={Item} renderContext={Context} />
+        <List data={contacts} renderItem={Item} actions={actions} />
       </Layout>
     </>
   );
 };
-
 
 export default Contacts;
