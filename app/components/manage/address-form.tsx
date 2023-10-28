@@ -4,8 +4,6 @@ import { Form, withZod, zfd, z } from '~/components/form';
 import { useTranslation } from 'react-i18next';
 import AddressConfigurator from '@recipher/i18n-postal-address';
 
-
-import { type Person } from '~/services/manage/people.server';
 import { type Address } from '~/services/manage/addresses.server';
 import { type Country } from '~/services/countries.server';
 import { AddressFields, AddressClassifiers } from '~/services/manage';
@@ -14,6 +12,7 @@ import { flag } from '~/components/countries/flag';
 
 import { Input, Select, Cancel, Submit,
   Body, Section, Group, Field, Footer } from '~/components/form';
+import { classnames } from '~/helpers';
 
 const toKebab = (str: string) => 
   str.replace(/([a-z0-9])([A-Z0-9])/g, '$1-$2').toLowerCase();
@@ -27,7 +26,7 @@ export const getValidator = (z: any) => {
     return { message: ctx.defaultError };
   });
 
-  const validator = withZod(
+  return withZod(
     zfd.formData({
       address1: z.string().optional(),
       address2: z.string().optional(),
@@ -44,23 +43,23 @@ export const getValidator = (z: any) => {
       region: z.object({ name: z.string() }).optional().or(z.string().optional()),
       state: z.object({ name: z.string() }).optional().or(z.string().optional()),
       companyName: z.string().optional(),
-      classifier: z.object({ id: z.string() }),
+      classifier: z.object({ id: z.string() }).optional(),
       country: z.object({ id: z.string(), name: z.string() }),
     })
   );
-  return validator;
 };
 
 type Props = {
-  person: Person;
-  address: Address;
+  isoCode: string;
+  address?: Address | undefined;
   countries: Array<Country>;
   heading: string;
   subHeading: string;
   permission: string;
+  selectClassifier?: boolean;
 };
 
-export const AddressForm = ({ person, address, countries, heading, subHeading, permission }: Props) => {
+export const AddressForm = ({ isoCode, address, countries, heading, subHeading, permission, selectClassifier = true }: Props) => {
   const { t } = useTranslation("address");
   const fetcher = useFetcher();
 
@@ -70,7 +69,7 @@ export const AddressForm = ({ person, address, countries, heading, subHeading, p
   }));
 
   const [ addressConfig, setAddressConfig ] = useState<Array<Array<string>>>();
-  const [ country, setCountry ] = useState(countryData.find((c: any) => c.id === address?.countryIsoCode || c.id === person.locality ));
+  const [ country, setCountry ] = useState(countryData.find((c: any) => c.id === isoCode ));
   const [ classifier, setClassifier ] = useState(AddressClassifiers.at(0) as string);
   const [ regionData, setRegionData ] = useState<Array<{ id: string, name: string }> | undefined>();
 
@@ -104,7 +103,7 @@ export const AddressForm = ({ person, address, countries, heading, subHeading, p
     return map.get(country) || t('postal-code');
   };
 
-  const Region = ({ field, value }: { field: string, value: string | null }) => {
+  const Region = ({ field, value }: { field: string, value: string | undefined | null }) => {
     return regionData && regionData?.length
       ? <Select label={state(country?.id)} name={field} data={regionData} defaultValue={regionData.find(r => r.name === value)} /> 
       : <Input label={state(country?.id)} name={field} value={value} />;
@@ -160,13 +159,13 @@ export const AddressForm = ({ person, address, countries, heading, subHeading, p
         <Body>
           <Section heading={heading} explanation={subHeading} />
           <Group>
-            <Field span={3}>
+            {selectClassifier && <Field span={3}>
               <Select onChange={({ id }: any) => setClassifier(id)}
                 label='Select Address Type'
                 name="classifier" 
                 data={classifierData} 
                 defaultValue={classifierData.find(c => c.id === address?.classifier)} />
-            </Field>
+            </Field>}
             <Field span={3}>
               <Select onChange={setCountry}
                 label='Select Country'

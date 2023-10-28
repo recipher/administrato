@@ -72,7 +72,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 const Add = () => {
   const data = useLoaderData();
-  return <AddressForm {...data} heading="New Address" permission={manage.edit.person}
+  return <AddressForm {...data} isoCode={data.person.locality} heading="New Address" permission={manage.edit.person}
     subHeading="Please select a country and then enter the new address."  />;
 };
 

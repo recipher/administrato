@@ -25,7 +25,7 @@ export const getValidator = (z: any) => {
     return { message: ctx.defaultError };
   });
 
-  const validator = withZod(
+  return withZod(
     zfd.formData({
       value: z
         .string()
@@ -34,10 +34,9 @@ export const getValidator = (z: any) => {
         .object({ id: z.string() })
         .required(),
       sub: z
-        .object({ id: z.string() }).required().or(z.string().nonempty('Required'))
+        .object({ id: z.string() }).required().or(z.string().nonempty('Additional data is required'))
     })
   );
-  return validator;
 };
 
 type Props = {
