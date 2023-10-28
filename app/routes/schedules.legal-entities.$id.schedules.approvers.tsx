@@ -20,11 +20,10 @@ import { Level } from '~/components';
 
 import { Approvers } from '~/components/scheduler/approvers';
 
-
 export const handle = {
   name: "select-approvers",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/approvers`} name={name} current={current} />
+  path: "approvers",
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

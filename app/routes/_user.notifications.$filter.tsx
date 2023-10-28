@@ -18,8 +18,9 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 
 export const handle = {
   name: "my-notifications",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={BellIcon} to='/notifications/unread' name={name} current={current} />
+  path: "notifications",
+  breadcrumb: (props: BreadcrumbProps) => 
+    <Breadcrumb Icon={BellIcon} to='/notifications/unread' {...props} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

@@ -23,8 +23,8 @@ import { Input, Select, Cancel, Submit, Image,
 
 export const handle = {
   name: 'add-salary',
-  breadcrumb: ({ id, classifier, current, name }: { id: string, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${id}/${classifier}/add-salary`} name={name} current={current} />
+  path: 'add',
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

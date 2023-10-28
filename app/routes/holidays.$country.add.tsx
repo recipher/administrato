@@ -26,8 +26,8 @@ import pluralize from '~/helpers/pluralize';
 
 export const handle = {
   name: "add-holiday",
-  breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} name={name} current={current} />
+  breadcrumb: ({ country, year, ...props }: { country: any, year: number } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/add?year=${year}`} {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

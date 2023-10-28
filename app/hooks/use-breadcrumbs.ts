@@ -11,7 +11,10 @@ export default () => {
         current, ...match.data, 
         name: typeof match.handle?.name === 'function' 
           ? match.handle.name({ ...match.data })
-          : match.handle.name 
+          : match.handle.name,
+        path: typeof match.handle?.path === 'function' 
+          ? match.handle.path({ ...match.data })
+          : match.handle.path,
       })
     })
     .flat();

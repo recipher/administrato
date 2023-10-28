@@ -11,8 +11,8 @@ import pluralize from "~/helpers/pluralize";
 
 export const handle = {
   name: ({ classifier }: { classifier: Classifier }) => pluralize(classifier),
-  breadcrumb: ({ classifier, current, name }: { classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb Icon={CubeIcon} to={`/manage/people/${classifier}`} name={name} current={current} />
+  path: ({ classifier }: { classifier: Classifier }) => classifier,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={CubeIcon} {...props} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

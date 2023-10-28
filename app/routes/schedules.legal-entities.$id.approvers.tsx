@@ -20,8 +20,7 @@ import { Approvers } from '~/components/scheduler/approvers';
 export const handle = {
   i18n: "schedule",
   name: "approvers",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/approvers`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

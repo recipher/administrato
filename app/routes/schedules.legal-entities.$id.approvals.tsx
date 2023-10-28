@@ -18,13 +18,11 @@ import { Alert, Level, Table } from '~/components';
 import { ApprovalsSummary } from '~/components/scheduler/approvals';
 
 import { scheduler } from '~/auth/permissions';
-import toNumber from '~/helpers/to-number';
 
 export const handle = {
   i18n: "schedule",
   name: "approvals",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/approvals`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

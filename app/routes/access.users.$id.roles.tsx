@@ -23,8 +23,7 @@ import { security } from '~/auth/permissions';
 
 export const handle = {
   name: "roles",
-  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/roles`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 type MemberRole = Role & { isMember: boolean };

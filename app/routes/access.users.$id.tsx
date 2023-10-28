@@ -19,8 +19,8 @@ import { useUser } from '~/hooks';
 
 export const handle = {
   name: ({ user }: { user: User }) => user.name,
-  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user?.id}`} name={name} current={current} />
+  path: ({ user }: { user: User }) => user.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

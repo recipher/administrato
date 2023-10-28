@@ -20,8 +20,7 @@ const LIMIT = 6;
 
 export const handle = {
   name: "legal-entities",
-  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}/legal-entities`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

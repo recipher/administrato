@@ -1,4 +1,4 @@
-import { type LoaderArgs } from '@remix-run/node';
+import { json, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,8 +13,7 @@ import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
   name: "profile",
-  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -28,7 +27,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (profile === undefined) return notFound();
   const user = mapProfileToUser(id, profile);
 
-  return { user, profile };
+  return json({ user, profile });
 };
 
 export default function Profile() {

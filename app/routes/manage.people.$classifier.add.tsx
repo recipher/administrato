@@ -40,8 +40,8 @@ const toKebab = (str: string) =>
 export const handle = {
   i18n: 'address',
   name: ({ classifier }: { classifier: Classifier }) => `add-${classifier}`,
-  breadcrumb: ({ classifier, current, name }: { classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/add`} name={name} current={current} />
+  path: 'add',
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ params }: LoaderArgs) => {

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, cloneElement } from "react";
 import { Link, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
@@ -10,7 +10,8 @@ import classnames from '~/helpers/classnames';
 
 type PageProps = {
   name: string;
-  to: string;
+  path?: string;
+  to?: string;
   current?: boolean;
   Icon?: any;
 };
@@ -31,16 +32,17 @@ type Props = {
 export type BreadcrumbProps = {
   current: boolean; 
   name: string;
+  path: string;
 };
 
-export const Breadcrumb = ({ name, to, Icon, current = false }: PageProps) => {
+export const Breadcrumb = ({ name, path, to, Icon, current = false }: PageProps) => {
   const { t } = useTranslation();
 
   return (
     <>
       {Icon && <Icon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />}
       <Link
-        to={to}
+        to={to || path || "/"}
         className={classnames(Icon ? "ml-4" : "", current ? "text-indigo-500 hover:text-indigo-700" : "text-gray-500 hover:text-gray-700",
           "text-md font-medium whitespace-nowrap")}
         aria-current={current ? 'page' : undefined}
@@ -86,6 +88,12 @@ export default function Breadcrumbs({ breadcrumbs, page, favourites, submitting,
     onFavourite(pathname, page.map((p: string) => t(p)).join(String.fromCharCode(0x2800, 0x2192, 0x2800 )));
   };
 
+  const generatePath = (max: number) => breadcrumbs.reduce((paths: Array<string>, breadcrumb, index) => {
+    // @ts-ignore
+    const path = breadcrumb?.props.path || breadcrumb?.props.name;
+    return index <= max && path ? [ ...paths, path ] : paths;
+  }, []).join('/');
+
   return (
     <nav className="flex" aria-label="breadcrumb">
       <ol role="list" className="flex items-center space-x-4">
@@ -93,7 +101,8 @@ export default function Breadcrumbs({ breadcrumbs, page, favourites, submitting,
           <li key={index}>
             <span className="flex items-center">
               {index !== 0 && <Separator />}
-              {breadcrumb}
+              {/* @ts-ignore */}
+              {cloneElement(breadcrumb, { path: `/${generatePath(index)}` })}
             </span>
           </li>
         ))}

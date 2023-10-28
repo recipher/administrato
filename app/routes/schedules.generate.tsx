@@ -31,8 +31,8 @@ import toNumber from '~/helpers/to-number';
 
 export const handle = {
   name: "generate-schedules",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/${legalEntity?.id}/generate`} name={name} current={current} />
+  path: "generate",
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 type Schedulable = (LegalEntity | Client | Provider | SecurityGroup);

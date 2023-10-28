@@ -7,15 +7,13 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import { notFound, badRequest } from '~/utility/errors';
 
-import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
+import PersonService from '~/services/manage/people.server';
 import DocumentService, { type Document } from '~/services/manage/documents.server';
 
 import { requireUser } from '~/auth/auth.server';
 import { useUser } from '~/hooks';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
-
-import { Breadcrumb, type BreadcrumbProps } from "~/layout/breadcrumbs";
 import { Filter } from '~/components/header/advanced';
 import Alert, { Level } from '~/components/alert';
 import Tabs from '~/components/tabs';
@@ -28,12 +26,6 @@ import { manage } from '~/auth/permissions';
 import toNumber from '~/helpers/to-number';
 
 const LIMIT = 10;
-
-export const handle = {
-  name: "documents",
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/documents`} name={name} current={current} />
-};
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);

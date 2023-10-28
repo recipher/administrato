@@ -5,8 +5,8 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 export const handle = {
   help: "manage",
   name: "manage",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb to='/manage' name={name} current={current} />
+  path: "manage",
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb to='/manage' {...props} />
 };
 
 export default () => <Outlet />;

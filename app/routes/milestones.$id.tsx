@@ -14,9 +14,9 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import { scheduler } from '~/auth/permissions';
 
 export const handle = {
-  name: ({ milestoneSet }: { milestoneSet: any }) => milestoneSet?.identifier,
-  breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/milestones/${milestoneSet?.id}`} name={name} current={current} />
+  name: ({ milestoneSet }: { milestoneSet: MilestoneSet }) => milestoneSet?.identifier,
+  path: ({ milestoneSet }: { milestoneSet: MilestoneSet }) => milestoneSet?.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

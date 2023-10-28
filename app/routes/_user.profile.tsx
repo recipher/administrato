@@ -23,8 +23,8 @@ import i18n from "~/i18n";
 export const handle = {
   i18n: "language",
   name: "my-profile",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={UserCircleIcon} to='/profile' name={name} current={current} />
+  path: "profile",
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={UserCircleIcon} {...props} />
 };
 
 export async function action({ request }: ActionArgs) {

@@ -10,8 +10,8 @@ import RoleService, { type Role } from '~/services/access/roles.server';
 
 export const handle = {
   name: ({ role }: { role: Role }) => role.description,
-  breadcrumb: ({ role, current, name }: { role: Role } & BreadcrumbProps) =>
-    <Breadcrumb key={role.id} to={`/access/roles/${role.id}`} name={name} current={current} />
+  path: ({ role }: { role: Role }) => role.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

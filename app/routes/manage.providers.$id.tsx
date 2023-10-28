@@ -11,7 +11,7 @@ import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
-import ProviderService from '~/services/manage/providers.server';
+import ProviderService, { type Provider } from '~/services/manage/providers.server';
 
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
@@ -20,9 +20,9 @@ import { EditableImage } from '~/components';
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  name: ({ provider }: { provider: any }) => provider?.name,
-  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}`} name={name} current={current} />
+  name: ({ provider }: { provider: Provider }) => provider?.name,
+  path: ({ provider }: { provider: Provider }) => provider?.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

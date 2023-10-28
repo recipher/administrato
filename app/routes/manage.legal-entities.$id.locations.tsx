@@ -12,8 +12,7 @@ import { requireUser } from '~/auth/auth.server';
 
 export const handle = {
   name: "locations",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/locations`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

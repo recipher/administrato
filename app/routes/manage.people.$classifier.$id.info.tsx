@@ -16,8 +16,7 @@ import { configs } from './manage.people';
 
 export const handle = {
   name: "info",
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/info`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

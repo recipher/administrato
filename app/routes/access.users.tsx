@@ -7,8 +7,7 @@ import { security } from "~/auth/permissions";
 
 export const handle = {
   name: "users",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={UserCircleIcon} to="/access/users" name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={UserCircleIcon} {...props} />
 };
 
 const Users = () => <Outlet />;

@@ -27,8 +27,7 @@ import { security } from '~/auth/permissions';
 
 export const handle = {
   name: "authorizations",
-  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/profile`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 type Authorizable = (LegalEntity | Client | Provider | SecurityGroup);

@@ -5,7 +5,7 @@ import { badRequest, notFound } from '~/utility/errors';
 
 import CountryService from '~/services/countries.server';
 import PersonService, { Classifier } from '~/services/manage/people.server';
-import ContactService from '~/services/manage/contacts.server';
+import ContactService, { type Contact} from '~/services/manage/contacts.server';
 import { ContactClassifier, Subs } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
@@ -19,9 +19,9 @@ import { getValidator, ContactForm } from '~/components/manage/contact-form';
 
 export const handle = {
   i18n: 'contacts',
-  name: 'add-contact',
-  breadcrumb: ({ id, classifier, current, name }: { id: string, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${id}/${classifier}/add-contact`} name={name} current={current} />
+  name: ({ contact }: { contact: Contact }) => contact.value,
+  path: ({ contact }: { contact: Contact }) => contact.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

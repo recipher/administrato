@@ -26,6 +26,7 @@ import Layout from '~/layout/layout';
 import Progress from '~/components/progress';
 import Toast from "./components/toast";
 import { NotFound, Error } from "~/pages";
+import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import stylesheet from "~/tailwind.css";
 
@@ -43,7 +44,7 @@ export const links: LinksFunction = () => [
 
 export const handle = {
   i18n: [ "common", "date" ],
-  help: "app",
+  help: "app"
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

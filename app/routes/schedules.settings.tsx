@@ -25,8 +25,7 @@ import classnames from "~/helpers/classnames";
 
 export const handle = {
   name: "settings",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb to='/schedules/settings' name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 const Days = [ ...Array(7).keys() ];

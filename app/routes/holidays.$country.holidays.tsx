@@ -15,8 +15,8 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
   name: "holidays",
-  breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name={name} current={current} />
+  breadcrumb: ({ country, year, ...props }: { country: any, year: number } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

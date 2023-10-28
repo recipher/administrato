@@ -8,8 +8,7 @@ import Header from '~/components/header';
 
 export const handle = {
   name: "summary",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb to='/schedules/summary' name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 const Summary = () => {

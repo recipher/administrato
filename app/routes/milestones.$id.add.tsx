@@ -21,8 +21,8 @@ const ENTITIES = [ "security-group", "provider", "client", "legal-entity" ];
 
 export const handle = {
   name: "add-milestone",
-  breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/milestones/${milestoneSet.id}/add`} name={name} current={current} />
+  path: "add",
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

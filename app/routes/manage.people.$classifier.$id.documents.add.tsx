@@ -26,8 +26,8 @@ import { Input, UniqueInput, Cancel, Submit, File,
 
 export const handle = {
   name: 'add-document',
-  breadcrumb: ({ id, classifier, current, name }: { id: string, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${id}/add-document`} name={name} current={current} />
+  path: 'add',
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -97,7 +97,7 @@ const Add = () => {
     <>
       <Form method="post" validator={clientValidator} id="add-document" encType="multipart/form-data" className="mt-6">
         <Body>
-          <Section heading='New Document' explanation='Please enter the new document details.' />
+          <Section heading='Upload New Document' explanation='Please enter the details of the new document to upload.' />
           <Group>
             <Field>
               <UniqueInput label="Document Name" name="identifier"
@@ -106,6 +106,9 @@ const Add = () => {
             <Field>
               <Input label="Folder Name" name="folder" />
             </Field>
+          </Group>
+          <Section size="md" heading='Select a File' explanation='Please click the choose button to select a file from your filesystem.' />
+          <Group>
             <Field>
               <File label="Upload Document" name="document" accept="*/*" Icon={DocumentArrowUpIcon} />
             </Field>

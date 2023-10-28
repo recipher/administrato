@@ -8,7 +8,7 @@ import { badRequest, notFound } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
 
 import ScheduleService, { Status  } from '~/services/scheduler/schedules.server';
-import LegalEntityService from '~/services/manage/legal-entities.server';
+import LegalEntityService, { type LegalEntity } from '~/services/manage/legal-entities.server';
 
 import Header from '~/components/header';
 import { Breadcrumb, BreadcrumbProps } from '~/layout/breadcrumbs';
@@ -20,9 +20,9 @@ import { scheduler } from '~/auth/permissions';
 import toNumber from '~/helpers/to-number';
 
 export const handle = {
-  name: ({ legalEntity }: { legalEntity: any }) => legalEntity?.name,
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}`} name={name} current={current} />
+  name: ({ legalEntity }: { legalEntity: LegalEntity }) => legalEntity?.name,
+  path: ({ legalEntity }: { legalEntity: LegalEntity }) => legalEntity?.id,
+  breadcrumb: ({ path, ...props}: BreadcrumbProps) => <Breadcrumb to={`/schedules/legal-entities/${path}/info`} path={path}  {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

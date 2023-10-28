@@ -27,8 +27,7 @@ import { security } from '~/auth/permissions';
 
 export const handle = {
   name: "organizations",
-  breadcrumb: ({ user, current, name }: { user: User } & BreadcrumbProps) =>
-    <Breadcrumb key={user.id} to={`/access/users/${user.id}/organizations`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

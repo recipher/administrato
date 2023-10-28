@@ -5,8 +5,8 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
   name: "schedules",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={CalendarDaysIcon} to='/schedules' name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => 
+    <Breadcrumb Icon={CalendarDaysIcon} to='/schedules/legal-entities' {...props} />
 };
 
 export default () => <Outlet/>;

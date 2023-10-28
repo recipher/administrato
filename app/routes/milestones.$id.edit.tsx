@@ -21,8 +21,7 @@ import pluralize from '~/helpers/pluralize';
 
 export const handle = {
   name: "edit",
-  breadcrumb: ({ milestoneSet, current, name }: { milestoneSet: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/milestones/${milestoneSet.id}/edit`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

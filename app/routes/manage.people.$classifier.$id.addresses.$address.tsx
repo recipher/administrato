@@ -5,7 +5,7 @@ import { validationError, z } from '~/components/form';
 import { badRequest, notFound } from '~/utility/errors';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
-import AddressService from '~/services/manage/addresses.server';
+import AddressService, { type Address } from '~/services/manage/addresses.server';
 import CountryService from '~/services/countries.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -18,9 +18,9 @@ import { AddressForm, getValidator } from '~/components/manage/address-form';
 
 export const handle = {
   i18n: 'address',
-  name: 'add-address',
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/addresses/add`} name={name} current={current} />
+  name: ({ address }: { address: Address }) => address.address1,
+  path: ({ address }: { address: Address }) => address.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

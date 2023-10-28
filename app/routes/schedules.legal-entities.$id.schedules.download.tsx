@@ -13,7 +13,6 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderArgs) =>
   const u = await requireUser(request);
 
   const { id } = params;
-
   if (id === undefined) return badRequest('Invalid request');
   
   const legalEntity = await LegalEntityService(u).getLegalEntity({ id });

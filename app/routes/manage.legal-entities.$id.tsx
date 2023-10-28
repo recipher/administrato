@@ -20,8 +20,8 @@ import { manage } from '~/auth/permissions';
 
 export const handle = {
   name: ({ legalEntity }: { legalEntity: LegalEntity }) => legalEntity?.name,
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}`} name={name} current={current} />
+  path: ({ legalEntity }: { legalEntity: LegalEntity }) => legalEntity?.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -8,8 +8,7 @@ import { manage } from '~/auth/permissions';
 
 export const handle = {
   name: "clients",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={IdentificationIcon} to="/manage/clients" name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={IdentificationIcon} {...props} />
 };
 
 const Clients = () => <Outlet />;

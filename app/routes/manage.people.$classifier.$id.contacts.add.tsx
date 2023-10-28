@@ -21,8 +21,8 @@ import { getValidator, ContactForm } from '~/components/manage/contact-form';
 export const handle = {
   i18n: 'contacts',
   name: 'add-contact',
-  breadcrumb: ({ id, classifier, current, name }: { id: string, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${id}/${classifier}/add-contact`} name={name} current={current} />
+  path: 'add',
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -22,14 +22,11 @@ import { flag } from '~/components/countries/flag';
 import { Input, Select, Cancel, Submit,
   Body, Section, Group, Field, Footer } from '~/components/form';
 
-const toKebab = (str: string) => 
-  str.replace(/([a-z0-9])([A-Z0-9])/g, '$1-$2').toLowerCase();
-
 export const handle = {
   i18n: 'address',
   name: 'add-address',
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/addresses/add`} name={name} current={current} />
+  path: 'add',
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

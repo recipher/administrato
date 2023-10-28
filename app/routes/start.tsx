@@ -17,8 +17,7 @@ import classnames from '~/helpers/classnames';
 
 export const handle = {
   name: "start",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb to={`/start`} name={name} current={current} Icon={GlobeAmericasIcon} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={GlobeAmericasIcon} {...props} />
 };
 
 const actions = [

@@ -19,8 +19,7 @@ import { Level } from '~/components/toast';
 
 export const handle = {
   name: "holidays",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/legal-entities/${legalEntity?.id}/holidays`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -6,8 +6,7 @@ import withAuthorization from "~/auth/with-authorization";
 
 export const handle = {
   name: "holidays",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={GlobeEuropeAfricaIcon} to="/holidays" name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 const Holidays = () => <Outlet />;

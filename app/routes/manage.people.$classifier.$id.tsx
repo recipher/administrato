@@ -20,9 +20,9 @@ import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/solid';
 import { manage } from '~/auth/permissions';
 
 export const handle = {
-  name: ({ person }: { person: Person }) => `${person?.firstName} ${person?.lastName}`,
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/info`} name={name} current={current} />
+  name: ({ person }: { person: Person }) => person?.name,
+  path: ({ person }: { person: Person }) => person?.id,
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -7,18 +7,13 @@ import AddressService, { Address } from '~/services/manage/addresses.server';
 
 import { requireUser } from '~/auth/auth.server';
 
-import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-
 import { notFound, badRequest } from '~/utility/errors';
 import { Cards, CardItem } from '~/components/list';
 import Alert, { Level } from '~/components/alert';
 import { Layout, Heading } from '~/components/info/info';
 
 export const handle = {
-  i18n: "addresses",
-  name: "addresses",
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/addresses`} name={name} current={current} />
+  i18n: "addresses"
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

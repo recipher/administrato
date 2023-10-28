@@ -5,8 +5,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 export const handle = {
   name: "milestones",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={Bars3BottomLeftIcon} to='/milestones' name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={Bars3BottomLeftIcon} {...props} />
 };
 
 export default () => <Outlet />;

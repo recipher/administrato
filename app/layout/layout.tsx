@@ -1,10 +1,7 @@
 import { useFetcher, useLocation } from '@remix-run/react';
 import { useState, PropsWithChildren, useEffect, useContext } from 'react';
-import { CourierProvider } from "@trycourier/react-provider";
 
 import { Bars3Icon } from '@heroicons/react/24/outline';
-
-import { useBreadcrumbs, useName } from '~/hooks';
 import ToastContext from '~/hooks/use-toast';
 
 import Breadcrumbs from './breadcrumbs';
@@ -14,7 +11,7 @@ import Help from './help';
 
 import { User } from '~/auth/auth.server';
 import { Slideover } from '~/components/modals';
-import { useHelp } from '~/hooks';
+import { useHelp, useBreadcrumbs, useName, usePath } from '~/hooks';
 
 type Props = { user: User };
 

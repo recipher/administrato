@@ -2,14 +2,12 @@ import { json, redirect, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
-import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
+import PersonService from '~/services/manage/people.server';
 import ContactService, { Contact } from '~/services/manage/contacts.server';
 import { ContactClassifier } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
 import { setFlashMessage, storage } from '~/utility/flash.server';
-
-import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 
 import { notFound, badRequest } from '~/utility/errors';
 import { List, ListItem } from '~/components/list';
@@ -20,9 +18,6 @@ import { manage } from '~/auth/permissions';
 
 export const handle = {
   i18n: "contacts",
-  name: "contacts",
-  breadcrumb: ({ person, classifier, current, name }: { person: Person, classifier: Classifier } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/people/${classifier}/${person?.id}/contacts`} name={name} current={current} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { json, type LoaderArgs } from '@remix-run/node';
-import { Link, useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
+import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 import { intlFormat } from 'date-fns';
+import { useLocale } from 'remix-i18next';
 
 import { notFound, badRequest } from '~/utility/errors';
 import { requireUser } from '~/auth/auth.server';
@@ -22,16 +23,13 @@ import { Tabs } from '~/components';
 import { Flag } from '~/components/countries/flag';
 
 import toNumber from '~/helpers/to-number';
-import classnames from '~/helpers/classnames';
-import { useLocale } from 'remix-i18next';
 
 type HasLocality = SecurityGroup | Provider | Client | LegalEntity;
 
 export const handle = {
   i18n: "schedule",
   name: "holidays",
-  breadcrumb: ({ legalEntity, current, name }: { legalEntity: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/schedules/legal-entities/${legalEntity?.id}/holidays`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

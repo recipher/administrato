@@ -19,8 +19,7 @@ import { Level } from '~/components/toast';
 
 export const handle = {
   name: "holidays",
-  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}/holidays`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

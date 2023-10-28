@@ -19,8 +19,8 @@ import pluralize from '~/helpers/pluralize';
 
 export const handle = {
   name: "overrides",
-  breadcrumb: ({ country, year, current, name }: { country: any, year: number } & BreadcrumbProps) => 
-    <Breadcrumb to={`/holidays/${country?.isoCode}/holidays?year=${year}`} name={name} current={current} />
+  breadcrumb: ({ country, year, ...props }: { country: any, year: number } & BreadcrumbProps) => 
+    <Breadcrumb to={`/holidays/${country?.isoCode}/overrides?year=${year}`} {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

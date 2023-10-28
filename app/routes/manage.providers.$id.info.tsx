@@ -12,8 +12,7 @@ import { Layout, Heading, Section, Field } from '~/components/info/info';
 
 export const handle = {
   name: "info",
-  breadcrumb: ({ provider, current, name }: { provider: any } & BreadcrumbProps) => 
-    <Breadcrumb to={`/manage/providers/${provider?.id}/info`} name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

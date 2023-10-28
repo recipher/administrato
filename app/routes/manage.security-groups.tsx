@@ -8,8 +8,7 @@ import { manage } from '~/auth/permissions';
 
 export const handle = {
   name: "security-groups",
-  breadcrumb: ({ current, name }: BreadcrumbProps) => 
-    <Breadcrumb Icon={MapIcon} to="/manage/security-groups" name={name} current={current} />
+  breadcrumb: (props: BreadcrumbProps) => <Breadcrumb Icon={MapIcon} {...props} />
 };
 
 const SecurityGroups = () => <Outlet />;
