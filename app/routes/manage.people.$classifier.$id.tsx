@@ -72,6 +72,7 @@ export default function Person() {
     { name: 'contacts', to: 'contacts' },
     { name: 'documents', to: 'documents', classifier: working },
     { name: 'banking', to: 'banking', classifier: working },
+    { name: 'benefits', to: 'benefits', classifier: [ "worker", "employee" ] },
     { name: 'dependents', to: 'dependents', classifier: working },
     { name: 'education', to: 'education', classifier: working },
   ];

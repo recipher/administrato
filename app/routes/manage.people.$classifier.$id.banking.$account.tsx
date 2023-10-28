@@ -25,23 +25,27 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { id, classifier } = params;
+  const { id, classifier, account: accountId } = params;
 
-  if (id === undefined || classifier === undefined) return badRequest('Invalid request');
+  if (id === undefined || classifier === undefined || accountId === undefined) 
+    return badRequest('Invalid request');
 
   const u = await requireUser(request);
 
   const person = await PersonService(u).getPerson({ id });
   const { countries } = await CountryService().listCountries({ limit: 300 });
 
-  return json({ person, countries, classifier });
+  const bankAccount = await BankingService(u).getBankAccount({ id: accountId });
+
+  return json({ bankAccount, person, countries, classifier });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const u = await requireUser(request);
 
-  const { id, classifier } = params;
-  if (id === undefined || classifier === undefined) return badRequest('Invalid data');
+  const { id, classifier, account: accountId } = params;
+  if (id === undefined || classifier === undefined || accountId === undefined) 
+    return badRequest('Invalid request');
 
   const validator = getValidator(z);
   const formData = await request.formData();
@@ -64,13 +68,13 @@ export const action = async ({ request, params }: ActionArgs) => {
   return redirect('../');
 };
 
-const Add = () => {
-  const { person, countries } = useLoaderData();
+const Edit = () => {
+  const { bankAccount, person, countries } = useLoaderData();
 
-  return <BankAccountForm isoCode={person.locality} countries={countries} 
+  return <BankAccountForm bankAccount={bankAccount} isoCode={person.locality} countries={countries} 
             permission={manage.edit.person} 
-            heading="New Bank Account" 
+            heading="Edit Bank Account" 
             subHeading="Please select a country and then enter bank account details." />;
 };
 
-export default withAuthorization(manage.edit.person)(Add);
+export default withAuthorization(manage.edit.person)(Edit);
