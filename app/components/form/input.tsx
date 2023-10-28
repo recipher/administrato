@@ -4,6 +4,7 @@ import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 import ErrorMessage from './error';
 import classnames from '~/helpers/classnames';
+import { EventFor } from "~/helpers";
 
 type Props = {
   name: string;
@@ -14,10 +15,13 @@ type Props = {
   placeholder?: string;
   type?: string | undefined;
   width?: string;
-  pre?: string | undefined
+  pre?: string | undefined;
+  onChange?(e: EventFor<"input", "onChange">): void;
 };
 
-export default function Input({ name, label, value, focus = false, disabled = false, placeholder, type = "text", width, pre }: Props) {
+const noOp = () => null!
+
+export default function Input({ name, label, value, focus = false, disabled = false, placeholder, type = "text", width, pre, onChange = noOp }: Props) {
   const { error, getInputProps } = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +50,7 @@ export default function Input({ name, label, value, focus = false, disabled = fa
           autoCapitalize="off"
           autoComplete="off"
           type={type}
+          onChange={onChange}
           className={classnames(
             disabled ? "text-gray-400 bg-gray-100" : "",
             !error && !disabled ? "text-gray-900": "",

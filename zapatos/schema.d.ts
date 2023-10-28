@@ -1658,17 +1658,23 @@ declare module 'zapatos/schema' {
       */
       id: string;
       /**
-      * **bankAccounts.bban**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      bban: string | null;
-      /**
       * **bankAccounts.iban**
       * - `text` in database
       * - Nullable, no default
       */
       iban: string | null;
+      /**
+      * **bankAccounts.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier: string | null;
+      /**
+      * **bankAccounts.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred: boolean | null;
       /**
       * **bankAccounts.countryIsoCode**
       * - `text` in database
@@ -1714,17 +1720,23 @@ declare module 'zapatos/schema' {
       */
       id: string;
       /**
-      * **bankAccounts.bban**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      bban: string | null;
-      /**
       * **bankAccounts.iban**
       * - `text` in database
       * - Nullable, no default
       */
       iban: string | null;
+      /**
+      * **bankAccounts.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier: string | null;
+      /**
+      * **bankAccounts.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred: boolean | null;
       /**
       * **bankAccounts.countryIsoCode**
       * - `text` in database
@@ -1770,17 +1782,23 @@ declare module 'zapatos/schema' {
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **bankAccounts.bban**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      bban?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
-      /**
       * **bankAccounts.iban**
       * - `text` in database
       * - Nullable, no default
       */
       iban?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred?: boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, boolean | db.Parameter<boolean> | db.SQLFragment | db.ParentColumn>;
       /**
       * **bankAccounts.countryIsoCode**
       * - `text` in database
@@ -1826,17 +1844,23 @@ declare module 'zapatos/schema' {
       */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **bankAccounts.bban**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      bban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
-      /**
       * **bankAccounts.iban**
       * - `text` in database
       * - Nullable, no default
       */
       iban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment;
       /**
       * **bankAccounts.countryIsoCode**
       * - `text` in database
@@ -1882,17 +1906,23 @@ declare module 'zapatos/schema' {
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **bankAccounts.bban**
-      * - `text` in database
-      * - Nullable, no default
-      */
-      bban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
-      /**
       * **bankAccounts.iban**
       * - `text` in database
       * - Nullable, no default
       */
       iban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.classifier**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      classifier?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.isPreferred**
+      * - `bool` in database
+      * - Nullable, no default
+      */
+      isPreferred?: boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, boolean | db.Parameter<boolean> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **bankAccounts.countryIsoCode**
       * - `text` in database
@@ -4953,6 +4983,12 @@ declare module 'zapatos/schema' {
       */
       secondLastName: string | null;
       /**
+      * **people.supervisorId**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      supervisorId: string | null;
+      /**
       * **people.honorific**
       * - `text` in database
       * - Nullable, no default
@@ -5080,6 +5116,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       secondLastName: string | null;
+      /**
+      * **people.supervisorId**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      supervisorId: string | null;
       /**
       * **people.honorific**
       * - `text` in database
@@ -5209,6 +5251,12 @@ declare module 'zapatos/schema' {
       */
       secondLastName?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **people.supervisorId**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      supervisorId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **people.honorific**
       * - `text` in database
       * - Nullable, no default
@@ -5337,6 +5385,12 @@ declare module 'zapatos/schema' {
       */
       secondLastName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
+      * **people.supervisorId**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      supervisorId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **people.honorific**
       * - `text` in database
       * - Nullable, no default
@@ -5464,6 +5518,12 @@ declare module 'zapatos/schema' {
       * - Nullable, no default
       */
       secondLastName?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      /**
+      * **people.supervisorId**
+      * - `text` in database
+      * - Nullable, no default
+      */
+      supervisorId?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **people.honorific**
       * - `text` in database

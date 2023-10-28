@@ -3,7 +3,7 @@ import { useLoaderData, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
 
 import PersonService from '~/services/manage/people.server';
-import ContactService, { Contact } from '~/services/manage/contacts.server';
+import ContactService, { type Contact } from '~/services/manage/contacts.server';
 import { ContactClassifier } from '~/services/manage';
 
 import { requireUser } from '~/auth/auth.server';
@@ -54,7 +54,7 @@ export const action = async ({ request, params }: LoaderArgs) => {
       await ContactService(u).deleteContact({ id: contact.id });
       message = `Contact Removed:The ${contact.classifier} has been removed.`;
     } catch(e: any) {
-      message = `Add Contact Error:${e.message}`;
+      message = `Remove Contact Error:${e.message}`;
       level = Level.Error;
     }
   }

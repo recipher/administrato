@@ -8,9 +8,10 @@ import AddressConfigurator from '@recipher/i18n-postal-address';
 import { badRequest } from '~/utility/errors';
 
 import PersonService, { type Person, Classifier } from '~/services/manage/people.server';
-import AddressService, { create } from '~/services/manage/addresses.server';
+import BankingService, { create } from '~/services/manage/banking.server';
 import CountryService, { type Country } from '~/services/countries.server';
-import { AddressFields, BankAccountClassifiers } from '~/services/manage';
+import { BankAccountClassifiers } from '~/services/manage';
+import { getBankingConfig, type BankingConfig } from '~/services/manage/banking';
 
 import { requireUser } from '~/auth/auth.server';
 
@@ -21,10 +22,11 @@ import { flag } from '~/components/countries/flag';
 
 import { Input, Select, Cancel, Submit,
   Body, Section, Group, Field, Footer } from '~/components/form';
+import { type EventFor } from '~/helpers';
 
 export const handle = {
-  i18n: 'address',
-  name: 'add-address',
+  i18n: 'banking',
+  name: 'add-bank-account',
   path: 'add',
   breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
@@ -54,6 +56,7 @@ const validator = withZod(
   zfd.formData({
     classifier: z.object({ id: z.string() }),
     country: z.object({ id: z.string(), name: z.string() }),
+    iban: z.string().min(1),
   })
 );
 
@@ -68,7 +71,19 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
   
-  return redirect('../bank-accounts');
+  const { data: { 
+    country: { id: countryIsoCode }, 
+    classifier: { id: accountClassifier }, ...data }} = result;
+
+  const config = getBankingConfig(countryIsoCode);
+  if (config === undefined) return null; // TEMP
+   
+  const iban = `${config?.country}${config?.iban.checkDigits}${data.iban}`;
+
+  await BankingService(u).addBankAccount(create({ entityId: id, entity: classifier,
+    classifier: accountClassifier, countryIsoCode, ...data, iban }));
+
+  return redirect('../');
 };
 
 const Add = () => {
@@ -76,15 +91,37 @@ const Add = () => {
   const { person, countries } = useLoaderData();
 
   const [ classifier, setClassifier ] = useState(BankAccountClassifiers.at(0) as string);
-
+  
   const countryData = countries.map((country: Country) => ({
     id: country.isoCode, name: country.name, 
     image: flag(country.isoCode)
   }));
 
   const [ country, setCountry ] = useState(countryData.find((c: any) => c.id === person.locality ));
+  const [ config, setConfig ] = useState<BankingConfig | undefined>();
+  const [ iban, setIban ] = useState<string>();
+  const [ ibanPrefix, setIbanPrefix ] = useState<string>();
 
   const classifierData = BankAccountClassifiers.map((id: string) => ({ id, name: t(id) }));
+
+  const handleChangeCountry = (country: any) => {
+    setCountry(country);
+  };
+
+  useEffect(() => {
+    setConfig(getBankingConfig(country.id));
+  }, [ country ]);
+
+
+  useEffect(() => {
+    const ibanConfig = config?.iban;
+    setIbanPrefix(`${country.id}${ibanConfig?.checkDigits}`);
+  }, [ config ]);
+
+  const handleChangeBban = (e: EventFor<"input", "onChange">) => {
+    const value = e.currentTarget.value;
+    setIban(value);
+  };
 
   return (
     <>
@@ -100,10 +137,19 @@ const Add = () => {
                 defaultValue={classifierData.at(0)} />
             </Field>
             <Field span={3}>
-              <Select onChange={(country: any) => setCountry(country)}
+              <Select onChange={handleChangeCountry}
                 label='Select Country'
                 name="country" 
                 data={countryData} defaultValue={country} />
+            </Field>
+          </Group>
+          <Section size="md" />
+          <Group>
+            <Field>
+              <Input name="bban" label="BBAN" onChange={handleChangeBban} />
+            </Field>
+            <Field>
+              <Input name="iban" label="IBAN" pre={ibanPrefix} value={iban} />
             </Field>
           </Group>
         </Body>

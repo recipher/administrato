@@ -2,6 +2,8 @@ create table
   public."bankAccounts" (
     id text not null,
     iban text null,
+    classifier text null,
+    "isPreferred" boolean null,
     "countryIsoCode" text not null,
     "entityId" text not null,
     entity text not null,

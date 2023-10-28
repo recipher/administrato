@@ -1,10 +1,28 @@
+export type BankingConfig = {
+  country: string;
+  otherCountries: Array<string>;
+  bban: {
+    structure: string;
+    length: number;
+    bankPosition?: [ number, number ];
+    bankIdentifier?: string;
+    branchPosition?: [ number, number ];
+    branchIdentifier?: string;
+  };
+  iban: {
+    structure: string;
+    length: number;
+    checkDigits: string;
+  };
+};
+
 export const banking = [
   { country: "DE",
     bban: {
       structure: "8!n10!n",
       length: 18,
       bankPosition: [ 1, 8 ],
-      bankIdentifierLength: "8!n",
+      bankIdentifier: "8!n",
     },
     iban: {
       structure: "DE2!n8!n10!n",
@@ -17,9 +35,9 @@ export const banking = [
       structure: "4!n4!n1!n1!n10!n",
       length: 20,
       bankPosition: [ 1, 4 ],
-      bankIdentifierLength: "4!n",
+      bankIdentifier: "4!n",
       branchPosition: [ 5, 8 ],
-      branchIdentifierLength: "4!n",
+      branchIdentifier: "4!n",
     },
     iban: {
       structure: "ES2!n4!n4!n1!n1!n10!n",
@@ -33,7 +51,7 @@ export const banking = [
       structure: "5!n5!n11!c2!n",
       length: 23,
       bankPosition: [ 1, 5 ],
-      bankIdentifierLength: "5!n",
+      bankIdentifier: "5!n",
     },
     iban: {
       structure: "FR2!n5!n5!n11!c2!n",
@@ -47,9 +65,9 @@ export const banking = [
       structure: "4!a6!n8!n",
       length: 18,
       bankPosition: [ 1, 4 ],
-      bankIdentifierLength: "4!a",
+      bankIdentifier: "4!a",
       branchPosition: [ 5, 10 ],
-      branchIdentifierLength: "6!n",
+      branchIdentifier: "6!n",
 
     },
     iban: {
@@ -58,4 +76,7 @@ export const banking = [
       checkDigits: "29",
     },
   },
-];
+] as Array<BankingConfig>;
+
+export const getBankingConfig = (isoCode: string): BankingConfig | undefined =>
+  banking.find(b => b.country === isoCode);
