@@ -62,8 +62,8 @@ export const action = async ({ request, params }: ActionArgs) => {
    
   const iban = `${config?.country}${config?.iban.checkDigits}${data.iban}`;
 
-  await BankingService(u).addBankAccount(create({ entityId: id, entity: classifier,
-    classifier: accountClassifier, countryIsoCode, ...data, iban }));
+  await BankingService(u).updateBankAccount({ id: accountId, entityId: id, entity: classifier,
+    classifier: accountClassifier, countryIsoCode, ...data, iban });
 
   return redirect('../');
 };
