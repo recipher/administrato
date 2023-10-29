@@ -65,7 +65,6 @@ export const action = async ({ request, params }: LoaderArgs) => {
 
 const BankAccounts = () => {
   const { t } = useTranslation();
-  const { t: tb } = useTranslation("banking");
   const submit = useSubmit();
   const { person, bankAccounts } = useLoaderData();
 

@@ -24,7 +24,7 @@ export const getValidator = (z: any) => {
     zfd.formData({
       classifier: z.object({ id: z.string() }),
       country: z.object({ id: z.string(), name: z.string() }),
-      iban: z.string().min(1),
+      number: z.string().min(1),
     })
   );
 };
@@ -53,7 +53,7 @@ export const BankAccountForm = ({ bankAccount, isoCode, countries, permission, h
   const [ bank, setBank ] = useState<string>('');
   const [ branch, setBranch ] = useState<string>('');
   const [ account, setAccount ] = useState<string>('');
-  const [ iban, setIban ] = useState<string>(bankAccount?.iban || '');
+  const [ number, setNumber ] = useState<string>(bankAccount?.number || '');
   const [ ibanPrefix, setIbanPrefix ] = useState<string>('');
 
   const classifierData = BankAccountClassifiers.map((id: string) => ({ id, name: t(id) }));
@@ -72,7 +72,7 @@ export const BankAccountForm = ({ bankAccount, isoCode, countries, permission, h
   }, [ config ]);
 
   useEffect(() => {
-    setIban(`${bank}${branch}${account}`);
+    setNumber(`${bank}${branch}${account}`);
   }, [ bank, branch, account ]);
 
   const handleChangeBank = (e: EventFor<"input", "onChange">) => {
@@ -122,7 +122,7 @@ export const BankAccountForm = ({ bankAccount, isoCode, countries, permission, h
               <Input name="account" label="Account Number" onChange={handleChangeAccount} />
             </Field>
             <Field>
-              <Input name="iban" label="IBAN" pre={ibanPrefix} value={iban} />
+              <Input name="number" label="IBAN" pre={ibanPrefix} value={number} />
             </Field>
           </Group>
         </Body>

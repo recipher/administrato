@@ -1658,11 +1658,11 @@ declare module 'zapatos/schema' {
       */
       id: string;
       /**
-      * **bankAccounts.iban**
+      * **bankAccounts.number**
       * - `text` in database
       * - Nullable, no default
       */
-      iban: string | null;
+      number: string | null;
       /**
       * **bankAccounts.classifier**
       * - `text` in database
@@ -1720,11 +1720,11 @@ declare module 'zapatos/schema' {
       */
       id: string;
       /**
-      * **bankAccounts.iban**
+      * **bankAccounts.number**
       * - `text` in database
       * - Nullable, no default
       */
-      iban: string | null;
+      number: string | null;
       /**
       * **bankAccounts.classifier**
       * - `text` in database
@@ -1782,11 +1782,11 @@ declare module 'zapatos/schema' {
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
-      * **bankAccounts.iban**
+      * **bankAccounts.number**
       * - `text` in database
       * - Nullable, no default
       */
-      iban?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      number?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
       /**
       * **bankAccounts.classifier**
       * - `text` in database
@@ -1844,11 +1844,11 @@ declare module 'zapatos/schema' {
       */
       id: string | db.Parameter<string> | db.SQLFragment;
       /**
-      * **bankAccounts.iban**
+      * **bankAccounts.number**
       * - `text` in database
       * - Nullable, no default
       */
-      iban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
+      number?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment;
       /**
       * **bankAccounts.classifier**
       * - `text` in database
@@ -1906,11 +1906,11 @@ declare module 'zapatos/schema' {
       */
       id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
       /**
-      * **bankAccounts.iban**
+      * **bankAccounts.number**
       * - `text` in database
       * - Nullable, no default
       */
-      iban?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
+      number?: string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | null | db.DefaultType | db.SQLFragment>;
       /**
       * **bankAccounts.classifier**
       * - `text` in database

@@ -53,13 +53,8 @@ export const action = async ({ request, params }: ActionArgs) => {
     country: { id: countryIsoCode }, 
     classifier: { id: accountClassifier }, ...data }} = result;
 
-  const config = getBankingConfig(countryIsoCode);
-  if (config === undefined) return null; // TEMP
-   
-  const iban = `${config?.country}${config?.iban.checkDigits}${data.iban}`;
-
   await BankingService(u).addBankAccount(create({ entityId: id, entity: classifier,
-    classifier: accountClassifier, countryIsoCode, ...data, iban }));
+    classifier: accountClassifier, countryIsoCode, ...data }));
 
   return redirect('../');
 };

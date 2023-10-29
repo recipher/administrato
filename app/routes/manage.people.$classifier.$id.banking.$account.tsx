@@ -56,14 +56,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   const { data: { 
     country: { id: countryIsoCode }, 
     classifier: { id: accountClassifier }, ...data }} = result;
-
-  const config = getBankingConfig(countryIsoCode);
-  if (config === undefined) return null; // TEMP
-   
-  const iban = `${config?.country}${config?.iban.checkDigits}${data.iban}`;
-
+  
   await BankingService(u).updateBankAccount({ id: accountId, entityId: id, entity: classifier,
-    classifier: accountClassifier, countryIsoCode, ...data, iban });
+    classifier: accountClassifier, countryIsoCode, ...data });
 
   return redirect('../');
 };
