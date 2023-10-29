@@ -3477,6 +3477,7 @@ var require_core = __commonJS({
           if (resultListener)
             startMs = timing();
           if (!this.noop || force) {
+            console.log(query);
             const qr = await queryable.query(query);
             result = this.runResultTransform(qr);
           } else {

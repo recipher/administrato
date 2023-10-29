@@ -46,9 +46,9 @@ export default ({ image, name, Icon, intent, action = "." }: Props) => {
         </span>
         {!preview
           ? <Icon className={classnames(fetcher.state === "submitting" ? "opacity-50" : "",
-            "h-12 w-12 text-indigo-300")} aria-hidden="true" />
+            "h-12 w-12 text-indigo-300 hover:opacity-50")} aria-hidden="true" />
           : <Image src={preview} className={classnames(fetcher.state === "submitting" ? "opacity-50" : "",
-              "h-12 w-12 rounded-full")} />}
+              "h-12 w-12 rounded-full hover:opacity-50")} />}
         <fetcher.Form encType="multipart/form-data" method="POST" action={action}>  
           <input type="hidden" name="intent" value={intent} />   
           <input type="file" ref={fileRef} name={name}

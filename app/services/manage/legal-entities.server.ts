@@ -80,7 +80,7 @@ const Service = (u: User) => {
     const keys = query.keys || extractKeys(u, "securityGroup", "legalEntity"); 
     
     return await db.sql<s.legalEntities.SQL | s.securityGroups.SQL | s.clients.SQL | s.providers.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS "client" 
+      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS client 
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
       LEFT JOIN ${'clients'} AS c ON main.${'clientId'} = c.${'id'}
@@ -123,7 +123,7 @@ const Service = (u: User) => {
     if (sortDirection == null || (sortDirection !== ASC && sortDirection !== DESC)) sortDirection = ASC;
 
     const legalEntities = await db.sql<s.legalEntities.SQL | s.providers.SQL | s.clients.SQL | s.securityGroups.SQL, s.legalEntities.Selectable[]>`
-      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS "client" 
+      SELECT main.*, p.${'name'} AS provider, s.${'name'} AS "securityGroup", c.${'name'} AS client 
       FROM ${'legalEntities'} AS main
       LEFT JOIN ${'providers'} AS p ON main.${'providerId'} = p.${'id'}
       LEFT JOIN ${'securityGroups'} AS s ON main.${'securityGroupId'} = s.${'id'}
