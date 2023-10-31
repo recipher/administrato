@@ -81,12 +81,13 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data } = result;
+  const { data: { 
+    document: { name: document, type: contentType }, ...data }} = result;
 
   const service = DocumentService(u);
-  const document = await service.addDocument(create({ entityId: id, entity: classifier, ...data }));
+  await service.addDocument(create({ entityId: id, entity: classifier, document, contentType, ...data }));
   
-  return redirect('../documents');
+  return redirect('../');
 };
 
 const Add = () => {

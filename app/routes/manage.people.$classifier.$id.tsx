@@ -53,8 +53,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   if (formData.get("intent") === "change-photo") {
+    const file = formData.get('photo') as File;
     const service = PersonService(u);
-    const { photo } = await service.updatePerson({ id, photo: formData.get('photo') as string });
+    const { photo } = await service.updatePerson({ id, photo: file.name });
     return json({ photo });
   }
   return null;
@@ -77,12 +78,13 @@ export default function Person() {
     { name: 'education', to: 'education', classifier: working },
   ];
 
-  const actions = [
+  const actions = [ 
     { title: 'add-document', to: 'documents/add', default: true, icon: PlusIcon, permission: manage.edit.person },
     { title: 'add-address', to: 'addresses/add', permission: manage.edit.person },
     { title: 'add-contact', to: 'contacts/add', permission: manage.edit.person },
     { title: 'add-salary', to: 'salary/add', permission: manage.edit.person },
     { title: 'add-bank-account', to: 'banking/add', permission: manage.edit.person },
+    { title: 'add-dependent', to: 'dependents/add', permission: manage.edit.person },
   ];
 
   return (

@@ -58,7 +58,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const service = ContactService(u);
   const contact = await service.addContact(create({ entityId: id, entity: classifier, ...data }));
   
-  return redirect('../contacts');
+  return redirect('../');
 };
 
 const Add = () => {

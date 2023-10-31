@@ -141,7 +141,7 @@ export const action = async ({ request }: ActionArgs) => {
     return buildValidationError(result.error, result.submittedData.localities);
   }
 
-  const { data: { 
+  const { data: { logo: { name: logo },
     frequency: { id: frequency }, targets,
     localities: { id: codes }, identifier = "", ...data }} = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
@@ -150,7 +150,8 @@ export const action = async ({ request }: ActionArgs) => {
 
   const service = LegalEntityService(u);
   const legalEntity = 
-    await service.addLegalEntity(create({ localities, identifier, frequency, target, ...data }));
+    await service.addLegalEntity(create({ 
+      logo, localities, identifier, frequency, target, ...data }));
   
   return legalEntity
     ? redirect(`/manage/legal-entities/${legalEntity.id}/info`)

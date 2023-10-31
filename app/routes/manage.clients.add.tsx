@@ -107,11 +107,13 @@ export const action = async ({ request }: ActionArgs) => {
     return buildValidationError(result.error, result.submittedData.localities);
   }
 
-  const { data: { localities: { id: codes }, identifier = "", ...data } } = result;
+  const { data: { logo: { name: logo },
+    localities: { id: codes }, identifier = "", ...data } } = result;
   const localities = Array.isArray(codes) === false ? [ codes ] as string[] : codes as string[];
 
   const service = ClientService(u);
-  const client = await service.addClient(create({ localities, identifier, ...data }));
+  const client = await service.addClient(
+    create({ logo, localities, identifier, ...data }));
   
   return client
     ? redirect(`/manage/clients/${client.id}/info`)

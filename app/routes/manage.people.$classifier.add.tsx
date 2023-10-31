@@ -118,12 +118,13 @@ export const action = async ({ request, params }: ActionArgs) => {
   if (result.error) return validationError(result.error);
 
   const { data: { locality: { id: locality }, nationality: { id: nationality },
+    photo: { name: photo },
     honorific: { id: honorific }, 
     clientId, legalEntityId, supervisorId, ...data }} = result;
   
   const service = PersonService(u);
   const person = await service.addPerson(
-    create({ nationality, locality, honorific, identifier: "", classifier, ...data }), 
+    create({ nationality, locality, honorific, identifier: "", classifier, photo, ...data }), 
     { clientId, legalEntityId });
   
   return redirect(`/manage/people/${classifier}/${person.id}/info`);

@@ -3,6 +3,7 @@ export enum Classifier {
   Employee = "employee",
   Contractor = "contractor",
   Person = "person",
+  Dependent = "dependent",
 };
 
 export enum ContactClassifier {
@@ -50,3 +51,12 @@ export const NameFields = [
   'honorific' 
 ];
 export const Honorifics = [ "Mr", "Mrs", "Ms", "Miss", "Dr" ];
+
+export const Relationships = [ 
+  "partner",
+  "father",
+  "mother",
+  "son",
+  "daughter",
+  "sibling",
+];

@@ -149,9 +149,11 @@ const Service = (u: User) => {
     return { clientKeyStart, clientKeyEnd, legalEntityKeyStart, legalEntityKeyEnd };
   };
     
-  const addPerson = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) => {
-    const keys = await generateKeys(person, connections);
+  const addPerson = async (person: s.people.Insertable, connections: Connections | undefined, txOrPool: TxOrPool = pool) => {
+    const keys = connections ? await generateKeys(person, connections) : [];
     const withKeys = { ...person, ...keys, identifier: generateIdentifier(person) };
+
+    if (person.classifier === undefined) person.classifier = Classifier.Person;
 
     return await db.serializable(txOrPool, async tx => {
       const [ person ] = await db.sql<s.people.SQL, s.people.Selectable[]>`
@@ -161,6 +163,8 @@ const Service = (u: User) => {
 
       if (person === undefined) throw new Error('Error adding person');
 
+      if (connections === undefined) return person;
+      
       const startOn = new Date();
       const { clientId, legalEntityId } = connections;
       if (clientId) await db.insert('clientPeople', create({ clientId, personId: person.id, startOn })).run(tx);
@@ -178,6 +182,9 @@ const Service = (u: User) => {
 
   const addEmployee = async (person: s.people.Insertable, connections: Connections, txOrPool: TxOrPool = pool) =>
     addPerson({ ...person, classifier: Classifier.Employee }, connections, txOrPool);
+
+  const addDependent = async (person: s.people.Insertable, txOrPool: TxOrPool = pool) =>
+    addPerson({ ...person, classifier: Classifier.Dependent }, undefined, txOrPool);
 
   const updatePerson = async ({ id, ...person }: s.people.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
@@ -300,6 +307,7 @@ const Service = (u: User) => {
     addWorker,
     addContractor,
     addEmployee,
+    addDependent,
     updatePerson,
     getPerson,
     searchPeople,

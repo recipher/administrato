@@ -3,6 +3,7 @@ create table
     id text not null,
     identifier text not null,
     document text not null,
+    "contentType" text not null,
     folder text null,
     tags text[] null,
     "entityId" text not null,

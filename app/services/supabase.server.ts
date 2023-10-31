@@ -61,7 +61,7 @@ async function uploadFile(data: AsyncIterable<Uint8Array>, { filename, contentTy
 
   if (error) throw error;
 
-  return getPublicFileURL(filename, bucket);
+  return new File([ file ], getPublicFileURL(filename, bucket), { type: contentType });
 };
 
 export function createSupabaseUploadHandler({ bucket }: { bucket: string }): UploadHandler {

@@ -54,8 +54,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
 
   if (formData.get("intent") === "change-logo") {
+    const file = formData.get('logo') as File;
     const service = LegalEntityService(u);
-    const { logo } = await service.updateLegalEntity({ id, logo: formData.get('logo') as string });
+    const { logo } = await service.updateLegalEntity({ id, logo: file.name });
     return json({ logo });
   }
   return null;
