@@ -8,6 +8,9 @@ import { Form, validationError, withZod, zfd, z } from '~/components/form';
 import { useTranslation } from 'react-i18next';
 import NameConfigurator from '@recipher/i18n-postal-address';
 
+import { IdentificationIcon, WalletIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
+
 import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
 
@@ -28,9 +31,8 @@ import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 import { flag } from '~/components/countries/flag';
 
-import { Input, Select, type SelectItem, Cancel, Submit,
+import { Input, Select, type SelectItem, Cancel, Submit, Image,
   Body, Section, Group, Field, Footer, Lookup } from '~/components/form';
-import { IdentificationIcon, UserCircleIcon, WalletIcon } from '@heroicons/react/24/outline';
 
 import { configs, type Config } from './manage.people';
 
@@ -201,6 +203,12 @@ const Add = () => {
                 </Group>
               </>
             )})}
+          <Section size="md"/>
+          <Group>
+            <Field>
+              <Image label="Upload Photo" name="photo" accept="image/*" Icon={UserCircleIcon} />
+            </Field>
+          </Group>
           <Section size="md" heading="Select Supervisor" explanation="" />
           <Group>
             <Field span={3}>

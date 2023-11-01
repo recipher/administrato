@@ -28,3 +28,5 @@ schedules-requested
   src app/queues/schedules-requested
 country-added
   src app/queues/country-added
+document-downloaded
+  src app/queues/document-downloaded

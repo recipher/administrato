@@ -17,7 +17,9 @@ type ToProps = {
 
 type ActionProps = {
   name: string;
-  to?: string | Function;
+  to?: Function | string | Function;
+  href?: Function | string | undefined;
+  download?: Function | string | undefined;
   condition?: Function;
   permission?: string;
   onClick?: Function;
@@ -33,6 +35,7 @@ type Props = {
   renderContext?(item: any): ReactNode,
   buildTo?(props: ToProps): string;
   noNavigate?: boolean | undefined;
+  download?: Function | undefined;
   actions?: Array<ActionProps>;
 };
 
@@ -74,7 +77,7 @@ export const ListContext = ({ data, sub, select = true, open = false }: { data?:
   );
 };
 
-const Actions = ({ actions, item }: { actions: Array<ActionProps>, item: any }) => {
+const Actions = ({ actions, item, idKey = "id" }: { actions: Array<ActionProps>, item: any, idKey: string }) => {
   const { t } = useTranslation();
   const u = useUser();
   const confirm = useRef<RefConfirmModal>(null);
@@ -82,10 +85,14 @@ const Actions = ({ actions, item }: { actions: Array<ActionProps>, item: any }) 
   const hasPermission = (permission: string | undefined) => 
     permission === undefined || u.permissions.includes(permission);
 
-  const handleClick = (e: EventFor<"button", "onClick">, action: ActionProps) => {
+  const handleAnchorClick = (e: EventFor<"a", "onClick">, action: ActionProps) => {
+    e.stopPropagation();
+    if (action.onClick) action.onClick(item);
+  };
+
+  const handleButtonClick = (e: EventFor<"button", "onClick">, action: ActionProps) => {
     e.stopPropagation();
     e.preventDefault();
-
     if (action.confirm) {
       const message = typeof action.confirm === "function" ? action.confirm(item) : action.confirm;
       confirm.current?.show(`${message}?`, `Yes, ${t(action.name)}`, "Cancel", `Are you sure you want to ${message.toLowerCase()}?`);
@@ -96,6 +103,10 @@ const Actions = ({ actions, item }: { actions: Array<ActionProps>, item: any }) 
     if (action.onClick) action.onClick(item);
   };
 
+  const className = (action: any) => classnames(action.className 
+    ? typeof action.className === "function" ? action.className(item) : action.className 
+    : "font-medium text-red-600 hover:text-red-500", "hidden group-hover:block float-right pl-3")
+
   return (
     <>
       <ul className="group-hover:block hidden">
@@ -104,12 +115,21 @@ const Actions = ({ actions, item }: { actions: Array<ActionProps>, item: any }) 
                  (action.condition === undefined || action.condition(item)))
           .map((action: ActionProps) => (
           <Fragment key={action.name}>
-            <button onClick={(e) => handleClick(e, action)} type="button" 
-              className={classnames(action.className 
-                ? typeof action.className === "function" ? action.className(item) : action.className 
-                : "font-medium text-red-600 hover:text-red-500", "hidden group-hover:block float-right pl-3")}>
-              {t(action.name)}
-            </button>
+
+            {action.onClick && !action.href
+              ? <button onClick={(e) => handleButtonClick(e, action)} type="button" 
+                  className={className(action)}>
+                  {t(action.name)}
+                </button>
+              : action.download !== undefined || action.href !== undefined
+                ? <a href={typeof action.href === 'function' ? action.href(item) : action.href} 
+                     download={typeof action.download === 'function' ? action.download(item) : action.download} 
+                     className={className(action)}
+                     onClick={(e) => handleAnchorClick(e, action)}>
+                    {t(action.name)}
+                   </a>
+                : <Link to={typeof action.to === 'function' ? action.to(item) : action.to}  
+                        className={className(action)}>{t(action.name)}</Link>}
             <ConfirmModal ref={confirm} onYes={() => onConfirm(action)} />
           </Fragment>
         ))}
@@ -120,14 +140,14 @@ const Actions = ({ actions, item }: { actions: Array<ActionProps>, item: any }) 
 
 const defaultTo = ({ item, idKey = "id" }: ToProps) => item[idKey].toString();
 
-export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo, noNavigate = false, actions }: Props) {
+export default function List({ data = [], idKey = "id", onClick, renderItem, renderContext, buildTo = defaultTo, noNavigate = false, download, actions }: Props) {
   const Item = ({ item }: any) => (
     <div className="flex justify-between gap-x-6 py-3">
       <div className="flex min-w-0 gap-x-4">
         {renderItem(item)}
       </div>
       <div className="flex shrink-0 items-center gap-x-6">        
-        {actions ? <Actions actions={actions} item={item} /> : renderContext ? renderContext(item) : null}
+        {actions ? <Actions actions={actions} item={item} idKey={idKey} /> : renderContext ? renderContext(item) : null}
       </div>
     </div>
   );
@@ -142,7 +162,11 @@ export default function List({ data = [], idKey = "id", onClick, renderItem, ren
               </div>
             : noNavigate === true 
                 ? <Item item={item} />
-                : <Link to={buildTo({ item, idKey })}><Item item={item} /></Link>}
+                : download !== undefined
+                  ? <a href={buildTo({ item, idKey })} download={download(item)}>
+                      <Item item={item} />
+                    </a>
+                  : <Link to={buildTo({ item, idKey })}><Item item={item} /></Link>}
         </li>
       ))}
     </ul>

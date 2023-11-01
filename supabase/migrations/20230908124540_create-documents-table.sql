@@ -10,7 +10,9 @@ create table
     entity text not null,
     "isArchived" boolean not null default FALSE,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "documentPkey" primary key (id)
   ) tablespace pg_default;
 

@@ -1,7 +1,9 @@
 import type * as s from 'zapatos/schema';
 import * as db from 'zapatos/db';
 import pool from '../db.server';
+import arc from '@architect/functions';
 
+import { default as create } from '../id.server';
 export { default as create } from '../id.server';
 
 import { TxOrPool, type IdProp, type QueryOptions, Count, ASC, DESC } from '../types';
@@ -18,7 +20,11 @@ type SearchOptions = {
 
 const Service = (u: User) => {
   const addDocument = async (document: s.documents.Insertable, txOrPool: TxOrPool = pool) => {
-    return db.insert('documents', document).run(txOrPool);
+    return db.insert('documents', { ...document, createdBy: u }).run(txOrPool);
+  };
+
+  const updateDocument = async ({ id, ...update }: s.documents.Updatable, txOrPool: TxOrPool = pool) => {
+    return db.update('documents', { ...update, updatedBy: u }, { id: id as string }).run(txOrPool);
   };
 
   const getDocument = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
@@ -26,13 +32,12 @@ const Service = (u: User) => {
   };
 
   const archiveDocument = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
-    return db.update('documents', { isArchived: true }, { id }).run(txOrPool);
+    return db.update('documents', { isArchived: true, updatedBy: u }, { id }).run(txOrPool);
   };
 
   const listDocumentsByEntityId = async ({ entityId, isArchived = false }: { entityId: string, isArchived?: boolean }, txOrPool: TxOrPool = pool) => {
     return db.select('documents', { entityId, isArchived }).run(txOrPool);
   };
-
 
   const searchQuery = ({ entityId, search, folder, isArchived = false }: SearchOptions) => {
     let query = db.sql<db.SQL>`${{entityId}} AND ${{isArchived}}`;
@@ -84,15 +89,29 @@ const Service = (u: User) => {
     ).run(txOrPool);
   };
 
-  return {
+  const recordAuditRecord = ({ documentId, action }: { documentId: string, action: string }, txOrPool: TxOrPool = pool) => {
+    return db.insert('documentAudits', create({ documentId, user: u, action })).run(txOrPool);
+  };
+
+  const recordDownload = ({ documentId }: { documentId: string }, txOrPool: TxOrPool = pool) =>
+    recordAuditRecord({ documentId, action: 'download' }, txOrPool);
+
+  const triggerDownloadAudit = ({ documentId }: { documentId: string }) => 
+    arc.queues.publish({ name: 'document-downloaded', payload: { documentId, meta: { user : u }}});
+  
+    return {
     addDocument,
+    updateDocument,
     archiveDocument,
     getDocument,
     getDocumentByIdentifierForEntityId,
     listFoldersByEntityId,
     listDocumentsByEntityId,
     searchDocumentsForEntityId,
-  }
+    recordAuditRecord,
+    recordDownload,
+    triggerDownloadAudit,
+  };
 };
 
 export default Service;

@@ -250,7 +250,7 @@ const Service = (u: User) => {
     
     const entities = await Promise.all((milestone.entities || []).map(async entity => {
       if (entity === "legal-entity") return legalEntity;
-      if (entity === "security-group")
+      if (entity === "security-group") // TODO fix this
         return SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId }, { bypassKeyCheck: false }, txOrPool);
       if (entity === "provider" && legalEntity.providerId !== null)
         return ProviderService(u).getProvider({ id: legalEntity.providerId }, { bypassKeyCheck: false }, txOrPool);

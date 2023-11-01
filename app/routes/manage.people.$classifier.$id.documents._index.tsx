@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { ActionArgs, json, redirect, type LoaderArgs } from '@remix-run/node';
 import { useLoaderData, useNavigate, useSearchParams, useSubmit } from '@remix-run/react';
 import { useTranslation } from 'react-i18next';
@@ -11,21 +11,25 @@ import PersonService from '~/services/manage/people.server';
 import DocumentService, { type Document } from '~/services/manage/documents.server';
 
 import { requireUser } from '~/auth/auth.server';
-import { useUser } from '~/hooks';
 
 import { setFlashMessage, storage } from '~/utility/flash.server';
 import { Filter } from '~/components/header/advanced';
 import Alert, { Level } from '~/components/alert';
 import Tabs from '~/components/tabs';
 import Pagination from '~/components/pagination';
-import ConfirmModal, { type RefConfirmModal } from "~/components/modals/confirm";
 import { Layout, Heading } from '~/components/info/info';
+import { List, ListItem } from '~/components/list';
 
 import { manage } from '~/auth/permissions';
 
 import toNumber from '~/helpers/to-number';
+import { Image } from '~/components';
 
 const LIMIT = 10;
+
+const Icons = new Map<string, string>([
+  [ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'excel' ],
+]);
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
@@ -60,8 +64,11 @@ export async function action({ request }: ActionArgs) {
 
   const service = DocumentService(u);
 
+  if (intent === 'audit-document-download') 
+    await service.triggerDownloadAudit({ documentId: id });
+
   if (intent === 'archive-document') {
-    try {
+      try {
       await service.archiveDocument({ id });
       message = `Document Archived:Document ${identifier} has been archived.`;
     } catch(e: any) {
@@ -75,11 +82,8 @@ export async function action({ request }: ActionArgs) {
 };
 
 const Documents = () => {
-  const u = useUser();
   const { t } = useTranslation();
   const submit = useSubmit();
-  const [ document, setDocument ] = useState<Document>();
-  const confirm = useRef<RefConfirmModal>(null);
 
   const { person, documents, folders, folder, count, offset, limit, search, sort } = useLoaderData();
 
@@ -88,22 +92,7 @@ const Documents = () => {
 
   tabs.unshift({ name: 'all', icon: XMarkIcon, value: '', selectable: false });
 
-  const hasPermission = (p: string) => u.permissions.includes(p);
-
-  const handleArchive = (document: Document) => {
-    setDocument(document);
-    confirm.current?.show(
-      "Archive Document?", 
-      "Yes, Archive", "Cancel", 
-      `Are you sure you want to archive this document?`);
-  };
-
-  const onConfirmArchive = () => {
-    if (document === undefined) return;
-    submit({ intent: "archive-document", 
-      document: { id: document.id, identifier: document.identifier } },
-      { method: "post", encType: "application/json" });
-  };
+  const getIcon = (contentType: string) => Icons.get(contentType);
 
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
@@ -113,6 +102,30 @@ const Documents = () => {
     navigate(`?${searchParams.toString()}`);
   };
 
+  const actions = [
+    { name: "remove", confirm: () => 'Archive this document', 
+      permission: manage.edit.person,
+      onClick: (document: Document) => {
+        submit({ intent: "archive-document", 
+                 document: { id: document.id, identifier: document.identifier } },
+               { method: "post", encType: "application/json" });
+      },
+    },
+    { name: "download", permission: manage.read.person,
+      className: "text-indigo-500 hover:text-indigo-400",
+      href: (document: Document) => `/document/${document.id}`,
+      download: (document: Document) => document.identifier,
+      onClick: (document: Document) => {
+        submit({ intent: "audit-document-download", document: { id: document.id }}, 
+               { method: "post", encType: "application/json" });
+        return true;
+      },
+    },
+  ];
+
+  const Item = (document: Document) => 
+    <ListItem data={document.identifier} image={<Image src={`/_static/icons/${getIcon(document.contentType)}.png`} className="h-6 w-6" />} className="font-medium" />;
+
   return (
     <Layout>
       <Heading heading={t('documents')} explanation={`Manage ${person.firstName}'s documents.`} />
@@ -121,30 +134,9 @@ const Documents = () => {
       <Filter className="pt-6" filterTitle='Search documents' filterParam='q' allowSort={true} sort={sort} filter={search} />
 
       {count <= 0 && <Alert title={`No documents found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
-
-      <ul role="list" className="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-md leading-6">
-        {documents.map((document: Document) => (
-          <li key={document.id} className="group flex justify-between gap-x-6 py-4 cursor-pointer">
-            <div>
-              {/* <a href={document.document} target="_blank" download={document.identifier} className="font-medium text-md text-gray-900 pr-3">
-                {document.identifier}
-              </a> */}
-              <a href={`/document/${document.id}`} download={document.identifier} className="font-medium text-md text-gray-900 pr-3">
-                {document.identifier}
-              </a>
-            </div>
-            {hasPermission(manage.edit.person) && <div className="hidden group-hover:block">
-              <button onClick={() => handleArchive(document)}
-                type="button" className="hidden group-hover:block font-medium text-red-600 hover:text-red-500">
-                {t('archive')}
-              </button>
-            </div>}
-          </li>
-        ))}
-      </ul>
+      <List data={documents} renderItem={Item} actions={actions} noNavigate={true} />
 
       <Pagination entity='document' totalItems={count} offset={offset} limit={limit} />
-      <ConfirmModal ref={confirm} onYes={onConfirmArchive} />
     </Layout>
   );
 };

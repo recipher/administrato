@@ -3080,6 +3080,179 @@ declare module 'zapatos/schema' {
   }
 
   /**
+   * **documentAudits**
+   * - Table in database
+   */
+  export namespace documentAudits {
+    export type Table = 'documentAudits';
+    export interface Selectable {
+      /**
+      * **documentAudits.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string;
+      /**
+      * **documentAudits.documentId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      documentId: string;
+      /**
+      * **documentAudits.action**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      action: string;
+      /**
+      * **documentAudits.user**
+      * - `jsonb` in database
+      * - `NOT NULL`, no default
+      */
+      user: db.JSONValue;
+      /**
+      * **documentAudits.auditedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      auditedAt: Date;
+    }
+    export interface JSONSelectable {
+      /**
+      * **documentAudits.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string;
+      /**
+      * **documentAudits.documentId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      documentId: string;
+      /**
+      * **documentAudits.action**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      action: string;
+      /**
+      * **documentAudits.user**
+      * - `jsonb` in database
+      * - `NOT NULL`, no default
+      */
+      user: db.JSONValue;
+      /**
+      * **documentAudits.auditedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      auditedAt: db.TimestampTzString;
+    }
+    export interface Whereable {
+      /**
+      * **documentAudits.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **documentAudits.documentId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      documentId?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **documentAudits.action**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      action?: string | db.Parameter<string> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **documentAudits.user**
+      * - `jsonb` in database
+      * - `NOT NULL`, no default
+      */
+      user?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **documentAudits.auditedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      auditedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+    }
+    export interface Insertable {
+      /**
+      * **documentAudits.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **documentAudits.documentId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      documentId: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **documentAudits.action**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      action: string | db.Parameter<string> | db.SQLFragment;
+      /**
+      * **documentAudits.user**
+      * - `jsonb` in database
+      * - `NOT NULL`, no default
+      */
+      user: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment;
+      /**
+      * **documentAudits.auditedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      auditedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+    }
+    export interface Updatable {
+      /**
+      * **documentAudits.id**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      id?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **documentAudits.documentId**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      documentId?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **documentAudits.action**
+      * - `text` in database
+      * - `NOT NULL`, no default
+      */
+      action?: string | db.Parameter<string> | db.SQLFragment | db.SQLFragment<any, string | db.Parameter<string> | db.SQLFragment>;
+      /**
+      * **documentAudits.user**
+      * - `jsonb` in database
+      * - `NOT NULL`, no default
+      */
+      user?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment>;
+      /**
+      * **documentAudits.auditedAt**
+      * - `timestamptz` in database
+      * - `NOT NULL`, default: `now()`
+      */
+      auditedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+    }
+    export type UniqueIndex = 'documentAuditsPkey';
+    export type Column = keyof Selectable;
+    export type OnlyCols<T extends readonly Column[]> = Pick<Selectable, T[number]>;
+    export type SQLExpression = Table | db.ColumnNames<Updatable | (keyof Updatable)[]> | db.ColumnValues<Updatable> | Whereable | Column | db.ParentColumn | db.GenericSQLExpression;
+    export type SQL = SQLExpression | SQLExpression[];
+  }
+
+  /**
    * **documents**
    * - Table in database
    */
@@ -3147,11 +3320,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **documents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **documents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **documents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -3215,11 +3400,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **documents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **documents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **documents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -3283,11 +3480,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **documents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **documents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **documents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -3351,11 +3560,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **documents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **documents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **documents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -3419,11 +3640,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **documents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **documents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **documents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'documentPkey';
     export type Column = keyof Selectable;
@@ -7604,20 +7837,20 @@ declare module 'zapatos/schema' {
   /* --- aggregate types --- */
 
   export namespace public {  
-    export type Table = addresses.Table | approvals.Table | approvers.Table | authorizations.Table | bankAccounts.Table | clientPeople.Table | clients.Table | contacts.Table | dependents.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
-    export type Selectable = addresses.Selectable | approvals.Selectable | approvers.Selectable | authorizations.Selectable | bankAccounts.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | dependents.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
-    export type JSONSelectable = addresses.JSONSelectable | approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | bankAccounts.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | dependents.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
-    export type Whereable = addresses.Whereable | approvals.Whereable | approvers.Whereable | authorizations.Whereable | bankAccounts.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | dependents.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
-    export type Insertable = addresses.Insertable | approvals.Insertable | approvers.Insertable | authorizations.Insertable | bankAccounts.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | dependents.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
-    export type Updatable = addresses.Updatable | approvals.Updatable | approvers.Updatable | authorizations.Updatable | bankAccounts.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | dependents.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
-    export type UniqueIndex = addresses.UniqueIndex | approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | bankAccounts.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | dependents.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
-    export type Column = addresses.Column | approvals.Column | approvers.Column | authorizations.Column | bankAccounts.Column | clientPeople.Column | clients.Column | contacts.Column | dependents.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
+    export type Table = addresses.Table | approvals.Table | approvers.Table | authorizations.Table | bankAccounts.Table | clientPeople.Table | clients.Table | contacts.Table | dependents.Table | documentAudits.Table | documents.Table | holidays.Table | legalEntities.Table | legalEntityPeople.Table | localities.Table | milestones.Table | milestoneSets.Table | people.Table | providers.Table | salaries.Table | scheduleDates.Table | schedules.Table | securityGroups.Table | workingDays.Table;
+    export type Selectable = addresses.Selectable | approvals.Selectable | approvers.Selectable | authorizations.Selectable | bankAccounts.Selectable | clientPeople.Selectable | clients.Selectable | contacts.Selectable | dependents.Selectable | documentAudits.Selectable | documents.Selectable | holidays.Selectable | legalEntities.Selectable | legalEntityPeople.Selectable | localities.Selectable | milestones.Selectable | milestoneSets.Selectable | people.Selectable | providers.Selectable | salaries.Selectable | scheduleDates.Selectable | schedules.Selectable | securityGroups.Selectable | workingDays.Selectable;
+    export type JSONSelectable = addresses.JSONSelectable | approvals.JSONSelectable | approvers.JSONSelectable | authorizations.JSONSelectable | bankAccounts.JSONSelectable | clientPeople.JSONSelectable | clients.JSONSelectable | contacts.JSONSelectable | dependents.JSONSelectable | documentAudits.JSONSelectable | documents.JSONSelectable | holidays.JSONSelectable | legalEntities.JSONSelectable | legalEntityPeople.JSONSelectable | localities.JSONSelectable | milestones.JSONSelectable | milestoneSets.JSONSelectable | people.JSONSelectable | providers.JSONSelectable | salaries.JSONSelectable | scheduleDates.JSONSelectable | schedules.JSONSelectable | securityGroups.JSONSelectable | workingDays.JSONSelectable;
+    export type Whereable = addresses.Whereable | approvals.Whereable | approvers.Whereable | authorizations.Whereable | bankAccounts.Whereable | clientPeople.Whereable | clients.Whereable | contacts.Whereable | dependents.Whereable | documentAudits.Whereable | documents.Whereable | holidays.Whereable | legalEntities.Whereable | legalEntityPeople.Whereable | localities.Whereable | milestones.Whereable | milestoneSets.Whereable | people.Whereable | providers.Whereable | salaries.Whereable | scheduleDates.Whereable | schedules.Whereable | securityGroups.Whereable | workingDays.Whereable;
+    export type Insertable = addresses.Insertable | approvals.Insertable | approvers.Insertable | authorizations.Insertable | bankAccounts.Insertable | clientPeople.Insertable | clients.Insertable | contacts.Insertable | dependents.Insertable | documentAudits.Insertable | documents.Insertable | holidays.Insertable | legalEntities.Insertable | legalEntityPeople.Insertable | localities.Insertable | milestones.Insertable | milestoneSets.Insertable | people.Insertable | providers.Insertable | salaries.Insertable | scheduleDates.Insertable | schedules.Insertable | securityGroups.Insertable | workingDays.Insertable;
+    export type Updatable = addresses.Updatable | approvals.Updatable | approvers.Updatable | authorizations.Updatable | bankAccounts.Updatable | clientPeople.Updatable | clients.Updatable | contacts.Updatable | dependents.Updatable | documentAudits.Updatable | documents.Updatable | holidays.Updatable | legalEntities.Updatable | legalEntityPeople.Updatable | localities.Updatable | milestones.Updatable | milestoneSets.Updatable | people.Updatable | providers.Updatable | salaries.Updatable | scheduleDates.Updatable | schedules.Updatable | securityGroups.Updatable | workingDays.Updatable;
+    export type UniqueIndex = addresses.UniqueIndex | approvals.UniqueIndex | approvers.UniqueIndex | authorizations.UniqueIndex | bankAccounts.UniqueIndex | clientPeople.UniqueIndex | clients.UniqueIndex | contacts.UniqueIndex | dependents.UniqueIndex | documentAudits.UniqueIndex | documents.UniqueIndex | holidays.UniqueIndex | legalEntities.UniqueIndex | legalEntityPeople.UniqueIndex | localities.UniqueIndex | milestones.UniqueIndex | milestoneSets.UniqueIndex | people.UniqueIndex | providers.UniqueIndex | salaries.UniqueIndex | scheduleDates.UniqueIndex | schedules.UniqueIndex | securityGroups.UniqueIndex | workingDays.UniqueIndex;
+    export type Column = addresses.Column | approvals.Column | approvers.Column | authorizations.Column | bankAccounts.Column | clientPeople.Column | clients.Column | contacts.Column | dependents.Column | documentAudits.Column | documents.Column | holidays.Column | legalEntities.Column | legalEntityPeople.Column | localities.Column | milestones.Column | milestoneSets.Column | people.Column | providers.Column | salaries.Column | scheduleDates.Column | schedules.Column | securityGroups.Column | workingDays.Column;
   
-    export type AllBaseTables = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, bankAccounts.Table, clientPeople.Table, clients.Table, contacts.Table, dependents.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
+    export type AllBaseTables = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, bankAccounts.Table, clientPeople.Table, clients.Table, contacts.Table, dependents.Table, documentAudits.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
     export type AllForeignTables = [];
     export type AllViews = [];
     export type AllMaterializedViews = [];
-    export type AllTablesAndViews = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, bankAccounts.Table, clientPeople.Table, clients.Table, contacts.Table, dependents.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
+    export type AllTablesAndViews = [addresses.Table, approvals.Table, approvers.Table, authorizations.Table, bankAccounts.Table, clientPeople.Table, clients.Table, contacts.Table, dependents.Table, documentAudits.Table, documents.Table, holidays.Table, legalEntities.Table, legalEntityPeople.Table, localities.Table, milestones.Table, milestoneSets.Table, people.Table, providers.Table, salaries.Table, scheduleDates.Table, schedules.Table, securityGroups.Table, workingDays.Table];
   }
 
 
@@ -7654,6 +7887,7 @@ declare module 'zapatos/schema' {
     "clients": clients.Selectable;
     "contacts": contacts.Selectable;
     "dependents": dependents.Selectable;
+    "documentAudits": documentAudits.Selectable;
     "documents": documents.Selectable;
     "holidays": holidays.Selectable;
     "legalEntities": legalEntities.Selectable;
@@ -7680,6 +7914,7 @@ declare module 'zapatos/schema' {
     "clients": clients.JSONSelectable;
     "contacts": contacts.JSONSelectable;
     "dependents": dependents.JSONSelectable;
+    "documentAudits": documentAudits.JSONSelectable;
     "documents": documents.JSONSelectable;
     "holidays": holidays.JSONSelectable;
     "legalEntities": legalEntities.JSONSelectable;
@@ -7706,6 +7941,7 @@ declare module 'zapatos/schema' {
     "clients": clients.Whereable;
     "contacts": contacts.Whereable;
     "dependents": dependents.Whereable;
+    "documentAudits": documentAudits.Whereable;
     "documents": documents.Whereable;
     "holidays": holidays.Whereable;
     "legalEntities": legalEntities.Whereable;
@@ -7732,6 +7968,7 @@ declare module 'zapatos/schema' {
     "clients": clients.Insertable;
     "contacts": contacts.Insertable;
     "dependents": dependents.Insertable;
+    "documentAudits": documentAudits.Insertable;
     "documents": documents.Insertable;
     "holidays": holidays.Insertable;
     "legalEntities": legalEntities.Insertable;
@@ -7758,6 +7995,7 @@ declare module 'zapatos/schema' {
     "clients": clients.Updatable;
     "contacts": contacts.Updatable;
     "dependents": dependents.Updatable;
+    "documentAudits": documentAudits.Updatable;
     "documents": documents.Updatable;
     "holidays": holidays.Updatable;
     "legalEntities": legalEntities.Updatable;
@@ -7784,6 +8022,7 @@ declare module 'zapatos/schema' {
     "clients": clients.UniqueIndex;
     "contacts": contacts.UniqueIndex;
     "dependents": dependents.UniqueIndex;
+    "documentAudits": documentAudits.UniqueIndex;
     "documents": documents.UniqueIndex;
     "holidays": holidays.UniqueIndex;
     "legalEntities": legalEntities.UniqueIndex;
@@ -7810,6 +8049,7 @@ declare module 'zapatos/schema' {
     "clients": clients.Column;
     "contacts": contacts.Column;
     "dependents": dependents.Column;
+    "documentAudits": documentAudits.Column;
     "documents": documents.Column;
     "holidays": holidays.Column;
     "legalEntities": legalEntities.Column;
@@ -7836,6 +8076,7 @@ declare module 'zapatos/schema' {
     "clients": clients.SQL;
     "contacts": contacts.SQL;
     "dependents": dependents.SQL;
+    "documentAudits": documentAudits.SQL;
     "documents": documents.SQL;
     "holidays": holidays.SQL;
     "legalEntities": legalEntities.SQL;
