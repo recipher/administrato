@@ -12,7 +12,6 @@ import { DocumentArrowUpIcon } from '@heroicons/react/24/outline';
 import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
 
-import { Classifier } from '~/services/manage/people.server';
 import DocumentService, { create } from '~/services/manage/documents.server';
 
 import { requireUser } from '~/auth/auth.server';
@@ -21,7 +20,7 @@ import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
 import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
 
-import { Input, UniqueInput, Cancel, Submit, File,
+import { Combo, UniqueInput, Cancel, Submit, File,
   Body, Section, Group, Field, Footer } from '~/components/form';
 
 export const handle = {
@@ -31,11 +30,14 @@ export const handle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const u = await requireUser(request);
   const { id, classifier } = params;
 
   if (id === undefined || classifier === undefined) return badRequest('Invalid data');
 
-  return json({ id, classifier });
+  const folders = await DocumentService(u).listFoldersByEntityId({ entityId: id });
+
+  return json({ id, classifier, folders });
 };
 
 const schema = zfd.formData({
@@ -43,8 +45,7 @@ const schema = zfd.formData({
     .string()
     .nonempty("Document name is required"),
   folder: z
-    .string()
-    .nonempty("Folder name is required"),
+    .object({ id: z.string() }),
   document: z.any()
 });
 
@@ -81,18 +82,20 @@ export const action = async ({ request, params }: ActionArgs) => {
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { 
+  const { data: { folder: { id: folder },
     document: { name: document, type: contentType }, ...data }} = result;
 
   const service = DocumentService(u);
-  await service.addDocument(create({ entityId: id, entity: classifier, document, contentType, ...data }));
+  await service.addDocument(create({ entityId: id, folder, entity: classifier, document, contentType, ...data }));
   
   return redirect('../');
 };
 
 const Add = () => {
   const { t } = useTranslation();
-  const { classifier, id } = useLoaderData();
+  const { classifier, id, folders } = useLoaderData();
+
+  const folderData = folders.map((folder: string) => ({ id: folder, name: folder }));
 
   return (
     <>
@@ -104,8 +107,8 @@ const Add = () => {
               <UniqueInput label="Document Name" name="identifier"
                 checkUrl={`/manage/people/${classifier}/${id}/documents`} property="document" message="A document with this name already exists" />
             </Field>
-            <Field>
-              <Input label="Folder Name" name="folder" />
+            <Field span={3}>
+              <Combo label="Folder Name" name="folder" data={folderData} />
             </Field>
           </Group>
           <Section size="md" heading='Select a File' explanation='Please click the choose button to select a file from your filesystem.' />
