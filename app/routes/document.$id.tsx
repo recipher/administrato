@@ -23,7 +23,7 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderArgs) =>
     status: 200,
     headers: {
       'Content-Type': blob.type,
-      'Content-Disposition': 'attachment'
+      'Content-Disposition': `attachment; filename="${document.identifier}"`
     }
   });
 };

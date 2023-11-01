@@ -26,11 +26,11 @@ const Service = (u: User) => {
   };
 
   const addAddress = (address: s.addresses.Insertable, txOrPool: TxOrPool = pool) => {
-    return db.insert('addresses', address).run(txOrPool);
+    return db.insert('addresses', { ...address, createdBy: u }).run(txOrPool);
   };
 
   const updateAddress = (address: s.addresses.Updatable, txOrPool: TxOrPool = pool) => {
-    return db.update('addresses', address, { id: address.id as string }).run(txOrPool);
+    return db.update('addresses', { ...address, updatedBy: u }, { id: address.id as string }).run(txOrPool);
   };
 
   const getAddress = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {

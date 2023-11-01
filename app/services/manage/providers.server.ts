@@ -51,7 +51,7 @@ const Service = (u: User) => {
 
   const addProvider = async (provider: s.providers.Insertable, txOrPool: TxOrPool = pool) => {
     const key = await generateKey(provider);
-    const withKey = { ...provider, ...key, identifier: generateIdentifier(provider) };
+    const withKey = { ...provider, createdBy: u, ...key, identifier: generateIdentifier(provider) };
 
     const [inserted] = await db.sql<s.providers.SQL, s.providers.Selectable[]>`
       INSERT INTO ${'providers'} (${db.cols(withKey)})
@@ -63,7 +63,8 @@ const Service = (u: User) => {
 
   const updateProvider = async ({ id, ...provider }: s.providers.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('providers', provider, { id: id as string }).run(txOrPool);
+      await db.update('providers', { ...provider, updatedBy: u }, { id: id as string })
+      .run(txOrPool);
     return update;
   };
 

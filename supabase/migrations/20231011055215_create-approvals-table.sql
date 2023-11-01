@@ -10,7 +10,9 @@ create table
     status text not null,
     notes json null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "approvalsPkey" primary key (id),
     constraint "approvalsEntityIdUserIdUniq" unique ("entityId", "userId")
   ) tablespace pg_default;

@@ -18,8 +18,9 @@ export type Milestone = s.milestones.Selectable;
 export type MilestoneSet = s.milestoneSets.Selectable & { milestones: Array<Milestone>};
 
 const Service = (u: User) => {
-  const addMilestoneSet = async (milestoneSet: s.milestoneSets.Insertable, txOrPool: TxOrPool = pool) => {
-    const [inserted] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
+  const addMilestoneSet = async (data: s.milestoneSets.Insertable, txOrPool: TxOrPool = pool) => {
+    const milestoneSet = { ...data, createdBy: u };
+    const [ inserted ] = await db.sql<s.milestoneSets.SQL, s.milestoneSets.Selectable[]>`
       INSERT INTO ${'milestoneSets'} (${db.cols(milestoneSet)})
       VALUES (${db.vals(milestoneSet)}) RETURNING *
     `.run(txOrPool);
@@ -27,7 +28,9 @@ const Service = (u: User) => {
     return inserted;
   };
 
-  const addMilestone = async (milestone: s.milestones.Insertable, txOrPool: TxOrPool = pool) => {
+  const addMilestone = async (data: s.milestones.Insertable, txOrPool: TxOrPool = pool) => {
+    const milestone = { ...data, createdBy: u };
+
     return db.serializable(txOrPool, async tx => {
       const latest = await getLatestMilestonesForSet({ setId: milestone.setId as string }, tx)
 
@@ -43,7 +46,7 @@ const Service = (u: User) => {
         WHERE ${'setId'} = ${db.param(milestone.setId)}
       `.run(tx);
 
-      const [inserted] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
+      const [ inserted ] = await db.sql<s.milestones.SQL, s.milestones.Selectable[]>`
         INSERT INTO ${'milestones'} (${db.cols(milestone)})
         VALUES (${db.vals(milestone)}) RETURNING *
       `.run(tx);
@@ -162,7 +165,7 @@ const Service = (u: User) => {
   const updateMilestoneIndex = async ({ id, index }: { id: string, index: number }, txOrPool: TxOrPool = pool) => {
     return db.sql<s.milestones.SQL>`
       UPDATE ${'milestones'} 
-      SET ${'index'} = ${db.param(index)}, ${'updatedAt'} = now()
+      SET ${'index'} = ${db.param(index)}, ${'updatedBy'} = ${db.param(u)}, 
       WHERE ${'id'} = ${db.param(id)}
     `.run(txOrPool)
   };
@@ -251,7 +254,11 @@ const Service = (u: User) => {
     const entities = await Promise.all((milestone.entities || []).map(async entity => {
       if (entity === "legal-entity") return legalEntity;
       if (entity === "security-group") // TODO fix this
-        return SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId }, { bypassKeyCheck: false }, txOrPool);
+        return legalEntity.securityGroupId
+          ? SecurityGroupService(u).getSecurityGroup({ id: legalEntity.securityGroupId }, { bypassKeyCheck: false }, txOrPool)
+          : legalEntity.clientId 
+            ? SecurityGroupService(u).getSecurityGroup({ id: (await ClientService(u).getClient({ id: legalEntity.clientId }, { bypassKeyCheck: false }, txOrPool)).securityGroupId })
+            : undefined;
       if (entity === "provider" && legalEntity.providerId !== null)
         return ProviderService(u).getProvider({ id: legalEntity.providerId }, { bypassKeyCheck: false }, txOrPool);
       if (entity === "client" && legalEntity.clientId !== null)

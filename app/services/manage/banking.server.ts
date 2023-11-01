@@ -24,11 +24,11 @@ const Service = (u: User) => {
   };
 
   const addBankAccount = async (account: s.bankAccounts.Insertable, txOrPool: TxOrPool = pool) => {
-    return db.insert('bankAccounts', account).run(txOrPool);
+    return db.insert('bankAccounts', { ...account, createdBy: u }).run(txOrPool);
   };
 
   const updateBankAccount = async (account: s.bankAccounts.Updatable, txOrPool: TxOrPool = pool) => {
-    return db.update('bankAccounts', account, { id: account.id as string }).run(txOrPool);
+    return db.update('bankAccounts', { ...account, updatedBy: u }, { id: account.id as string }).run(txOrPool);
   };
 
   const getBankAccount = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
@@ -39,7 +39,7 @@ const Service = (u: User) => {
   };
 
   const deleteBankAccount = async ({ id }: IdProp, txOrPool: TxOrPool = pool) => {
-    return db.update('bankAccounts', { isArchived: true }, { id }).run(txOrPool);
+    return db.update('bankAccounts', { isArchived: true, updatedBy: u }, { id }).run(txOrPool);
   };
 
   const listBankAccountsByEntityId = async ({ entityId }: { entityId: string }, txOrPool: TxOrPool = pool) => {

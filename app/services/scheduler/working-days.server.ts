@@ -32,7 +32,7 @@ export type Country = s.localities.Selectable;
 const Service = (u: User) => {
   const saveWorkingDays = async (workingDays: s.workingDays.Insertable) => {
     if (workingDays.days === undefined) workingDays.days = STANDARD;
-    return db.upsert('workingDays', workingDays, [ 'country' ]).run(pool);
+    return db.upsert('workingDays', { ...workingDays, updatedBy: u }, [ 'country' ]).run(pool);
   };
 
   const removeWorkingDays = async ({ country }: { country: string }) => {

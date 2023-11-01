@@ -11,11 +11,11 @@ export type Contact = s.contacts.Selectable;
 
 const Service = (u: User) => {
   const addContact = (contact: s.contacts.Insertable, txOrPool: TxOrPool = pool) => {
-    return db.insert('contacts', contact).run(txOrPool);
+    return db.insert('contacts', { ...contact, createdBy: u }).run(txOrPool);
   };
 
   const updateContact = (contact: s.contacts.Updatable, txOrPool: TxOrPool = pool) => {
-    return db.update('contacts', contact, { id: contact.id as string }).run(txOrPool);
+    return db.update('contacts', { ...contact, updatedBy: u }, { id: contact.id as string }).run(txOrPool);
   };
 
   const getContact = ({ id }: IdProp, txOrPool: TxOrPool = pool) => {

@@ -39,7 +39,8 @@ type QueryOptions = {
 };
  
 const Service = (u: User) => {
-  const addHoliday = async (holiday: s.holidays.Insertable) => {
+  const addHoliday = async (data: s.holidays.Insertable) => {
+    const holiday = { ...data, createdBy: u };
     const [inserted] = await db.sql<s.holidays.SQL, s.holidays.Selectable[]>`
       INSERT INTO ${'holidays'} (${db.cols(holiday)})
       VALUES (${db.vals(holiday)}) RETURNING *`.run(pool);
@@ -48,7 +49,7 @@ const Service = (u: User) => {
   };
 
   const addHolidays = async (holidays: Array<s.holidays.Insertable>, txOrPool: TxOrPool = pool) => {
-    return db.upsert('holidays', holidays, 
+    return db.upsert('holidays', holidays.map(h => ({ ...h, updatedBy: u })), 
       [ 'name', 'date', 'locality', 'entity', 'entityId' ]).run(txOrPool);
   };
 
@@ -176,7 +177,8 @@ const Service = (u: User) => {
         name: holiday.name, 
         date: new Date(holiday.date), 
         observed: new Date(holiday.observed), 
-        locality: holiday.country 
+        locality: holiday.country,
+        createdBy: u
       })
     ))).run(pool);
 

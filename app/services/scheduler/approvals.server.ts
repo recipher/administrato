@@ -27,23 +27,24 @@ export type Approval = s.approvals.Selectable;
 
 const Service = (u: User) => {
   const addApprover = async (approver: s.approvers.Insertable, txOrPool: TxOrPool = pool) => {
-    return db.upsert('approvers', approver, [ "entityId", "userId" ]).run(txOrPool);
+    return db.upsert('approvers', { ...approver, updatedBy: u }, [ "entityId", "userId" ]).run(txOrPool);
   };
 
   const addApprovers = async (approvers: s.approvers.Insertable[], txOrPool: TxOrPool = pool) => {
-    return db.upsert('approvers', approvers, [ "entityId", "userId" ]).run(txOrPool);
+    return db.upsert('approvers', approvers.map(a => ({ ...a, updatedBy: u })), [ "entityId", "userId" ])
+      .run(txOrPool);
   };
 
   const addApproval = async (approval: s.approvals.Insertable, txOrPool: TxOrPool = pool) => {
     return db.upsert('approvals', 
-      ({ ...approval, notes: db.param([], true) }), 
+      ({ ...approval, notes: db.param([], true), updatedBy: u }), 
       [ "entityId", "userId" ])
     .run(txOrPool);
   };
 
   const addApprovals = async (approvals: s.approvals.Insertable[], txOrPool: TxOrPool = pool) => {
     return db.upsert('approvals', approvals.map(approval => 
-      ({ ...approval, notes: db.param([], true) })), 
+      ({ ...approval, notes: db.param([], true), updatedBy: u })), 
       [ "entityId", "userId" ])
     .run(txOrPool);
   };

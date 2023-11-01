@@ -95,7 +95,7 @@ const Service = (u: User) => {
 
   const changeDate = async ({ scheduleId, milestoneId, date }: { scheduleId: string, milestoneId: string, date: Date }, txOrPool: TxOrPool = pool) => {
     const [ update ] = await db.update('scheduleDates', 
-      { date, isManual: true }, { scheduleId, milestoneId }).run(txOrPool);
+      { date, isManual: true, updatedBy: u }, { scheduleId, milestoneId }).run(txOrPool);
 
     return update;
   };
@@ -269,14 +269,14 @@ const Service = (u: User) => {
   };
 
   const addSchedule = async (schedule: s.schedules.Insertable, txOrPool: TxOrPool = pool) => {
-    return await db.upsert('schedules', schedule, 
+    return await db.upsert('schedules', { ...schedule, updatedBy: u }, 
       [ 'legalEntityId', 'date', 'status', 'version' ],
       { updateColumns: [ 'legalEntityId', 'name', 'date', 'status', 'version' ] }
     ).run(txOrPool);
   };
 
   const addScheduleDate = async (scheduleDate: s.scheduleDates.Insertable, txOrPool: TxOrPool = pool) => {
-    return await db.upsert('scheduleDates', scheduleDate, 
+    return await db.upsert('scheduleDates', { ...scheduleDate, updatedBy: u }, 
       [ 'scheduleId', 'milestoneId' ],
       { updateColumns: [ 'scheduleId', 'milestoneId', 'date', 'status', 'index', 'target' ] }
     ).run(txOrPool);

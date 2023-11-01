@@ -21,7 +21,9 @@ create table
     "legalEntityKeyStart" bigint null,
     "legalEntityKeyEnd" bigint null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "personPkey" primary key (id),
     constraint "supervisorIdFkey" foreign key ("supervisorId") references people (id)
   ) tablespace pg_default;

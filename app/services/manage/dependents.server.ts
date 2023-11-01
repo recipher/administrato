@@ -16,7 +16,7 @@ const Service = (u: User) => {
   const addDependent = ({ dependent, personId, relationship }: { dependent: s.people.Insertable, personId: string, relationship: string }, txOrPool: TxOrPool = pool) => {
     return db.serializable(txOrPool, async tx => {
       const { id: dependentId, ...inserted } = await PeopleService(u).addDependent(dependent, tx);
-      await db.insert('dependents', create({ dependentId, personId, relationship })).run(tx);
+      await db.insert('dependents', create({ dependentId, personId, relationship, createdBy: u })).run(tx);
     
       return { ...inserted };
     });

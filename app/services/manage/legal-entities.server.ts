@@ -60,7 +60,7 @@ const Service = (u: User) => {
 
   const addLegalEntity = async (legalEntity: s.legalEntities.Insertable, txOrPool: TxOrPool = pool) => {
     const key = await generateKey(legalEntity);
-    const withKey = { ...legalEntity, ...key, identifier: generateIdentifier(legalEntity) };
+    const withKey = { ...legalEntity, createdBy: u, ...key, identifier: generateIdentifier(legalEntity) };
 
     const [inserted] = await db.sql<s.legalEntities.SQL, s.legalEntities.Selectable[]>`
       INSERT INTO ${'legalEntities'} (${db.cols(withKey)})
@@ -72,7 +72,8 @@ const Service = (u: User) => {
 
   const updateLegalEntity = async ({ id, ...legalEntity }: s.legalEntities.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('legalEntities', legalEntity, { id: id as string }).run(txOrPool);
+      await db.update('legalEntities', { ...legalEntity, updatedBy: u }, { id: id as string })
+      .run(txOrPool);
     return update;
   };
 

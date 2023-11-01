@@ -6,7 +6,9 @@ create table
     "startOn" date not null,
     "endOn" date null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "legalEntityIdPkey" primary key (id),
     constraint "legalEntityIdLegalEntityIdFkey" foreign key ("legalEntityId") references "legalEntities" (id) on delete cascade,
     constraint "legalEntityIdPersonIdFkey" foreign key ("personId") references people (id) on delete cascade

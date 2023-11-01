@@ -7,7 +7,9 @@ create table
     "keyEnd" bigint null,
     entity text not null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "authorizationsPkey" primary key (id)
   ) tablespace pg_default;
 

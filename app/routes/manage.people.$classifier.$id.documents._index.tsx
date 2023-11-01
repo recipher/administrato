@@ -29,6 +29,12 @@ const LIMIT = 10;
 
 const Icons = new Map<string, string>([
   [ 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'excel' ],
+  [ 'application/vnd.ms-excel', 'excel' ],
+  [ 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'word' ],
+  [ 'application/msword', 'word' ],
+  [ 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'powerpoint' ],
+  [ 'application/vnd.ms-powerpoint', 'powerpoint' ],
+  [ 'application/pdf', 'pdf' ],
 ]);
 
 export const loader = async ({ request, params }: LoaderArgs) => {

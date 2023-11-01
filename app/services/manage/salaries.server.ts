@@ -11,11 +11,11 @@ export type Contact = s.contacts.Selectable;
 
 const Service = (u: User) => {
   const addSalary = (salary: s.salaries.Insertable, txOrPool: TxOrPool = pool) => {
-    return db.insert('salaries', salary).run(txOrPool);
+    return db.insert('salaries', { ...salary, createdBy: u }).run(txOrPool);
   };
 
   const endSalary = ({ id, endOn = new Date() }: IdProp & { endOn?: Date }, txOrPool: TxOrPool = pool) => {
-    return db.update('salaries', { id }, { endOn }).run(txOrPool);
+    return db.update('salaries', { endOn, updatedBy: u }, { id }).run(txOrPool);
   };
 
   const listSalariesByPersonId = ({ personId }: { personId: string }, txOrPool: TxOrPool = pool) => {

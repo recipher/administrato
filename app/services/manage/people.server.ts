@@ -151,7 +151,7 @@ const Service = (u: User) => {
     
   const addPerson = async (person: s.people.Insertable, connections: Connections | undefined, txOrPool: TxOrPool = pool) => {
     const keys = connections ? await generateKeys(person, connections) : [];
-    const withKeys = { ...person, ...keys, identifier: generateIdentifier(person) };
+    const withKeys = { ...person, createdBy: u, ...keys, identifier: generateIdentifier(person) };
 
     if (person.classifier === undefined) person.classifier = Classifier.Person;
 
@@ -164,7 +164,7 @@ const Service = (u: User) => {
       if (person === undefined) throw new Error('Error adding person');
 
       if (connections === undefined) return person;
-      
+
       const startOn = new Date();
       const { clientId, legalEntityId } = connections;
       if (clientId) await db.insert('clientPeople', create({ clientId, personId: person.id, startOn })).run(tx);
@@ -188,7 +188,7 @@ const Service = (u: User) => {
 
   const updatePerson = async ({ id, ...person }: s.people.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('people', person, { id: id as string }).run(txOrPool);
+      await db.update('people', { ...person, updatedBy: u }, { id: id as string }).run(txOrPool);
     return update;
   };
 

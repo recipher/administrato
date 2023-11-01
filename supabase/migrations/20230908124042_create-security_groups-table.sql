@@ -9,7 +9,9 @@ create table
     "keyEnd" bigint null,
     localities text[] null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "securityGroupsPkey" primary key (id),
     constraint "securityGroupsParentIdFkey" foreign key ("parentId") references "securityGroups" (id) on delete cascade
   ) tablespace pg_default;

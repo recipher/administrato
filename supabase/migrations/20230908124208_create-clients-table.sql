@@ -11,7 +11,9 @@ create table
     localities text[] null,
     "securityGroupId" text not null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "clientsPkey" primary key (id),
     constraint "clientsParentIdFkey" foreign key ("parentId") references clients (id) on delete cascade,
     constraint "clientsSecurityGroupIdFkey" foreign key ("securityGroupId") references "securityGroups" (id)

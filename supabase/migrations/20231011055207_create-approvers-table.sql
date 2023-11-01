@@ -7,7 +7,9 @@ create table
     "userData" json null,
     "isOptional" boolean null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "approversPkey" primary key (id),
     constraint "approversEntityIdUserIdUniq" unique ("entityId", "userId")
   ) tablespace pg_default;

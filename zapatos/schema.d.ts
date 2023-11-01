@@ -168,11 +168,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **addresses.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **addresses.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **addresses.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -314,11 +326,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **addresses.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **addresses.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **addresses.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -460,11 +484,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **addresses.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **addresses.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **addresses.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -606,11 +642,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **addresses.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **addresses.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **addresses.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -752,11 +800,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **addresses.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **addresses.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **addresses.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'addressPkey';
     export type Column = keyof Selectable;
@@ -833,11 +893,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **approvals.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **approvals.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **approvals.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -901,11 +973,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **approvals.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **approvals.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **approvals.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -969,11 +1053,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **approvals.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **approvals.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvals.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1037,11 +1133,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **approvals.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **approvals.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvals.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1105,11 +1213,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **approvals.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **approvals.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvals.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'approvalsEntityIdUserIdUniq' | 'approvalsPkey';
     export type Column = keyof Selectable;
@@ -1168,11 +1288,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **approvers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **approvers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **approvers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -1218,11 +1350,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **approvers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **approvers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **approvers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -1268,11 +1412,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **approvers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **approvers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **approvers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1318,11 +1474,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **approvers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **approvers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **approvers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1368,11 +1536,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **approvers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **approvers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **approvers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'approversEntityIdUserIdUniq' | 'approversPkey';
     export type Column = keyof Selectable;
@@ -1431,11 +1611,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **authorizations.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **authorizations.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **authorizations.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -1481,11 +1673,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **authorizations.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **authorizations.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **authorizations.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -1531,11 +1735,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **authorizations.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **authorizations.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **authorizations.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1581,11 +1797,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **authorizations.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **authorizations.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **authorizations.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1631,11 +1859,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **authorizations.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **authorizations.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **authorizations.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'authorizationsPkey';
     export type Column = keyof Selectable;
@@ -1706,11 +1946,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **bankAccounts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **bankAccounts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **bankAccounts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -1768,11 +2020,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **bankAccounts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **bankAccounts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **bankAccounts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -1830,11 +2094,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **bankAccounts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **bankAccounts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **bankAccounts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -1892,11 +2168,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **bankAccounts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **bankAccounts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **bankAccounts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -1954,11 +2242,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **bankAccounts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **bankAccounts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **bankAccounts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'bankAccountPkey';
     export type Column = keyof Selectable;
@@ -2011,11 +2311,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **clientPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **clientPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **clientPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -2055,11 +2367,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **clientPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **clientPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **clientPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -2099,11 +2423,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **clientPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **clientPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **clientPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -2143,11 +2479,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **clientPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **clientPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **clientPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -2187,11 +2535,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **clientPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **clientPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **clientPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'clientPeoplePkey';
     export type Column = keyof Selectable;
@@ -2274,11 +2634,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **clients.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **clients.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **clients.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -2348,11 +2720,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **clients.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **clients.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **clients.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -2422,11 +2806,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **clients.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **clients.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **clients.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -2496,11 +2892,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **clients.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **clients.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **clients.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -2570,11 +2978,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **clients.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **clients.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **clients.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'clientsPkey';
     export type Column = keyof Selectable;
@@ -2639,11 +3059,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **contacts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **contacts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **contacts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -2695,11 +3127,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **contacts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **contacts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **contacts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -2751,11 +3195,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **contacts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **contacts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **contacts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -2807,11 +3263,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **contacts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **contacts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **contacts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -2863,11 +3331,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **contacts.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **contacts.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **contacts.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'contactPkey';
     export type Column = keyof Selectable;
@@ -2914,11 +3394,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **dependents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **dependents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **dependents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -2952,11 +3444,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **dependents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **dependents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **dependents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -2990,11 +3494,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **dependents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **dependents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **dependents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -3028,11 +3544,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **dependents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **dependents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **dependents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -3066,11 +3594,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **dependents.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **dependents.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **dependents.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'dependentsPkey';
     export type Column = keyof Selectable;
@@ -3727,11 +4267,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **holidays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **holidays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **holidays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -3789,11 +4341,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **holidays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **holidays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **holidays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -3851,11 +4415,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **holidays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **holidays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **holidays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -3913,11 +4489,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **holidays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **holidays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **holidays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -3975,11 +4563,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **holidays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **holidays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **holidays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'holidayPkey' | 'holidaysLocalityNameDateEntityUniq';
     export type Column = keyof Selectable;
@@ -4086,11 +4686,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **legalEntities.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **legalEntities.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **legalEntities.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -4184,11 +4796,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **legalEntities.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **legalEntities.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **legalEntities.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -4282,11 +4906,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **legalEntities.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **legalEntities.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **legalEntities.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -4380,11 +5016,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **legalEntities.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **legalEntities.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **legalEntities.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -4478,11 +5126,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **legalEntities.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **legalEntities.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **legalEntities.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'legalEntitiesPkey';
     export type Column = keyof Selectable;
@@ -4535,11 +5195,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **legalEntityPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **legalEntityPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **legalEntityPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -4579,11 +5251,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **legalEntityPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **legalEntityPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **legalEntityPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -4623,11 +5307,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **legalEntityPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **legalEntityPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **legalEntityPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -4667,11 +5363,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **legalEntityPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **legalEntityPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **legalEntityPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -4711,11 +5419,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **legalEntityPeople.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **legalEntityPeople.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **legalEntityPeople.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'legalEntityIdPkey';
     export type Column = keyof Selectable;
@@ -4935,11 +5655,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **milestones.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **milestones.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **milestones.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -5003,11 +5735,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **milestones.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **milestones.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **milestones.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -5071,11 +5815,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **milestones.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **milestones.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **milestones.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -5139,11 +5895,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **milestones.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **milestones.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **milestones.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -5207,11 +5975,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **milestones.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **milestones.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **milestones.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'milestonesPkey';
     export type Column = keyof Selectable;
@@ -5252,11 +6032,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **milestoneSets.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **milestoneSets.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **milestoneSets.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -5284,11 +6076,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **milestoneSets.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **milestoneSets.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **milestoneSets.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -5316,11 +6120,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **milestoneSets.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **milestoneSets.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **milestoneSets.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -5348,11 +6164,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **milestoneSets.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **milestoneSets.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **milestoneSets.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -5380,11 +6208,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **milestoneSets.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **milestoneSets.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **milestoneSets.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'milestoneSetsPkey';
     export type Column = keyof Selectable;
@@ -5527,11 +6367,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **people.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **people.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **people.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -5661,11 +6513,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **people.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **people.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **people.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -5795,11 +6659,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **people.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **people.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **people.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -5929,11 +6805,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **people.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **people.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **people.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -6063,11 +6951,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **people.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **people.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **people.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'personPkey';
     export type Column = keyof Selectable;
@@ -6144,11 +7044,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **providers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **providers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **providers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -6212,11 +7124,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **providers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **providers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **providers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -6280,11 +7204,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **providers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **providers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **providers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -6348,11 +7284,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **providers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **providers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **providers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -6416,11 +7364,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **providers.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **providers.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **providers.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'providersPkey';
     export type Column = keyof Selectable;
@@ -6485,11 +7445,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **salaries.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **salaries.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **salaries.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -6541,11 +7513,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **salaries.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **salaries.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **salaries.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -6597,11 +7581,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **salaries.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **salaries.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **salaries.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -6653,11 +7649,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **salaries.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **salaries.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **salaries.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -6709,11 +7717,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **salaries.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **salaries.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **salaries.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'salariesPkey';
     export type Column = keyof Selectable;
@@ -6790,11 +7810,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **scheduleDates.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **scheduleDates.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **scheduleDates.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -6858,11 +7890,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **scheduleDates.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **scheduleDates.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **scheduleDates.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -6926,11 +7970,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **scheduleDates.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **scheduleDates.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **scheduleDates.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -6994,11 +8050,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **scheduleDates.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **scheduleDates.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **scheduleDates.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -7062,11 +8130,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **scheduleDates.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **scheduleDates.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **scheduleDates.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'scheduleDatesPkey' | 'scheduleDatesScheduleIdMilestoneIdUniq';
     export type Column = keyof Selectable;
@@ -7125,11 +8205,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **schedules.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **schedules.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **schedules.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -7175,11 +8267,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **schedules.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **schedules.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **schedules.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -7225,11 +8329,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **schedules.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **schedules.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **schedules.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -7275,11 +8391,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **schedules.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **schedules.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **schedules.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -7325,11 +8453,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **schedules.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **schedules.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **schedules.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'schedules_legalentityid_date_status_versionuniq' | 'schedulespkey';
     export type Column = keyof Selectable;
@@ -7400,11 +8540,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **securityGroups.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **securityGroups.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -7462,11 +8614,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **securityGroups.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **securityGroups.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -7524,11 +8688,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **securityGroups.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **securityGroups.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -7586,11 +8762,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **securityGroups.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **securityGroups.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -7648,11 +8836,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **securityGroups.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **securityGroups.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **securityGroups.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'securityGroupsPkey';
     export type Column = keyof Selectable;
@@ -7693,11 +8893,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: Date;
       /**
+      * **workingDays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **workingDays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: Date;
+      /**
+      * **workingDays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface JSONSelectable {
       /**
@@ -7725,11 +8937,23 @@ declare module 'zapatos/schema' {
       */
       createdAt: db.TimestampTzString;
       /**
+      * **workingDays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy: db.JSONValue | null;
+      /**
       * **workingDays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt: db.TimestampTzString;
+      /**
+      * **workingDays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy: db.JSONValue | null;
     }
     export interface Whereable {
       /**
@@ -7757,11 +8981,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
       /**
+      * **workingDays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
+      /**
       * **workingDays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.SQLFragment | db.ParentColumn>;
+      /**
+      * **workingDays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | db.SQLFragment | db.ParentColumn>;
     }
     export interface Insertable {
       /**
@@ -7789,11 +9025,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
       /**
+      * **workingDays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
+      /**
       * **workingDays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment;
+      /**
+      * **workingDays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment;
     }
     export interface Updatable {
       /**
@@ -7821,11 +9069,23 @@ declare module 'zapatos/schema' {
       */
       createdAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
       /**
+      * **workingDays.createdBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      createdBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
+      /**
       * **workingDays.updatedAt**
       * - `timestamptz` in database
       * - `NOT NULL`, default: `now()`
       */
       updatedAt?: (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment | db.SQLFragment<any, (db.TimestampTzString | Date) | db.Parameter<(db.TimestampTzString | Date)> | db.DefaultType | db.SQLFragment>;
+      /**
+      * **workingDays.updatedBy**
+      * - `jsonb` in database
+      * - Nullable, no default
+      */
+      updatedBy?: db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment | db.SQLFragment<any, db.JSONValue | db.Parameter<db.JSONValue> | null | db.DefaultType | db.SQLFragment>;
     }
     export type UniqueIndex = 'workingDaysCountryUniq' | 'workingDaysPkey';
     export type Column = keyof Selectable;

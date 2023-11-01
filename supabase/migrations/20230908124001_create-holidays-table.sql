@@ -9,7 +9,9 @@ create table
     "entityId" text null,
     "isRemoved" boolean null,    
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "holidayPkey" primary key (id),
     constraint "holidaysLocalityFkey" foreign key (locality) references localities ("isoCode"),
     constraint "holidaysLocalityNameDateEntityUniq" unique (locality, name, date, entity, "entityId")

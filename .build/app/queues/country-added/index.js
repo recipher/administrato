@@ -22921,7 +22921,8 @@ var id_server_default = (entity) => ({ id: ulid(), ...entity });
 var key = process.env.HOLIDAY_API_KEY;
 var holidayAPI = new import_holidayapi.HolidayAPI({ key });
 var Service = (u) => {
-  const addHoliday = async (holiday) => {
+  const addHoliday = async (data) => {
+    const holiday = { ...data, createdBy: u };
     const [inserted] = await sql`
       INSERT INTO ${"holidays"} (${cols(holiday)})
       VALUES (${vals(holiday)}) RETURNING *`.run(db_server_default);
@@ -22930,7 +22931,7 @@ var Service = (u) => {
   const addHolidays = async (holidays, txOrPool = db_server_default) => {
     return upsert(
       "holidays",
-      holidays,
+      holidays.map((h) => ({ ...h, updatedBy: u })),
       ["name", "date", "locality", "entity", "entityId"]
     ).run(txOrPool);
   };
@@ -23034,7 +23035,8 @@ var Service = (u) => {
       name: holiday.name,
       date: new Date(holiday.date),
       observed: new Date(holiday.observed),
-      locality: holiday.country
+      locality: holiday.country,
+      createdBy: u
     }))).run(db_server_default);
     return listHolidaysByCountry({ year, locality });
   };

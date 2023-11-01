@@ -62,7 +62,7 @@ const Service = (u: User) => {
 
   const addClient = async (client: s.clients.Insertable, txOrPool: TxOrPool = pool) => {
     const key = await generateKey(client, txOrPool);
-    const withKey = { ...client, ...key, identifier: generateIdentifier(client) };
+    const withKey = { ...client, createdBy: u, ...key, identifier: generateIdentifier(client) };
 
     const [inserted] = await db.sql<s.clients.SQL, s.clients.Selectable[]>`
       INSERT INTO ${'clients'} (${db.cols(withKey)})
@@ -73,7 +73,7 @@ const Service = (u: User) => {
 
   const updateClient = async ({ id, ...client }: s.clients.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('clients', client, { id: id as string }).run(txOrPool);
+      await db.update('clients', { ...client, updatedBy: u }, { id: id as string }).run(txOrPool);
     return update;
   };
 

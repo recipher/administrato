@@ -8,7 +8,9 @@ create table
     "startOn" date not null,
     "endOn" date null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "salariesPkey" primary key (id),
     constraint "salariesClientIdFkey" foreign key ("clientId") references clients (id),
     constraint "salariesPersonIdFkey" foreign key ("personId") references people (id)

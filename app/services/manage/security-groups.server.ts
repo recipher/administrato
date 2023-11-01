@@ -13,7 +13,7 @@ import toNumber from '~/helpers/to-number';
 
 import { whereKeys, whereExactKeys, generateIdentifier } from './shared.server';
 
-const KEY_MIN = 0;
+const KEY_MIN = 0; //Number.MIN_SAFE_INTEGER
 const KEY_MAX = Number.MAX_SAFE_INTEGER; // 9007199254740991
 const MAX_ENTITIES = 100;
 
@@ -58,7 +58,7 @@ const Service = (u: User) => {
 
   const addSecurityGroup = async (securityGroup: s.securityGroups.Insertable, txOrPool: TxOrPool = pool) => {
     const key = await generateKey(securityGroup.parentId as string, txOrPool);
-    const withKey = { ...securityGroup, ...key, identifier: generateIdentifier(securityGroup) };
+    const withKey = { ...securityGroup, createdBy: u, ...key, identifier: generateIdentifier(securityGroup) };
 
     const [inserted] = await db.sql<s.securityGroups.SQL, s.securityGroups.Selectable[]>`
       INSERT INTO ${'securityGroups'} (${db.cols(withKey)})
@@ -82,7 +82,8 @@ const Service = (u: User) => {
 
   const updateSecurityGroup = async ({ id, ...securityGroup }: s.securityGroups.Updatable, txOrPool: TxOrPool = pool) => {
     const [ update ] = 
-      await db.update('securityGroups', securityGroup, { id: id as string }).run(txOrPool);
+      await db.update('securityGroups', { ...securityGroup, updatedBy: u }, { id: id as string })
+      .run(txOrPool);
     return update;
   };
   

@@ -7,7 +7,9 @@ create table
     status text not null default 'generated'::text,
     version integer not null default 0,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint schedulesPkey primary key (id),
     constraint schedules_legalEntityIdFkey foreign key ("legalEntityId") references "legalEntities" (id) on delete cascade,
     constraint schedules_legalEntityId_date_status_versionUniq unique ("legalEntityId", date, status, version)

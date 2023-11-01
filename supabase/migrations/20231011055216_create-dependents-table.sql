@@ -5,7 +5,9 @@ create table
     "personId" text not null,
     "dependentId" text not null,
     "createdAt" timestamp with time zone not null default now(),
+    "createdBy" jsonb null,
     "updatedAt" timestamp with time zone not null default now(),
+    "updatedBy" jsonb null,
     constraint "dependentsPkey" primary key (id),
     constraint "dependentsPersonIdFkey" foreign key ("personId") references people (id),
     constraint "dependentsDependentIdFkey" foreign key ("dependentId") references people (id)
