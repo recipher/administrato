@@ -6,7 +6,7 @@ import { requireUser } from '~/auth/auth.server';
 import DocumentService from '~/services/manage/documents.server';
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const { identifier, id: entityId, classifier } = params;
+  const { identifier, id: entityId } = params;
   if (entityId === undefined || identifier === undefined) return badRequest('Invalid data');
 
   const u = await requireUser(request);

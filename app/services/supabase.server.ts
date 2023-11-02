@@ -36,11 +36,11 @@ async function convertToFile(data: AsyncIterable<Uint8Array>) {
 };
 
 const getPublicFileURL = (filePath: string, bucket: string) => {
-  const { data: url } = supabase
+  const { data: { publicUrl }} = supabase
     .storage.from(bucket)
     .getPublicUrl(filePath);
 
-  return url.publicUrl;
+  return publicUrl;
 };
 
 type UploadOptions = {

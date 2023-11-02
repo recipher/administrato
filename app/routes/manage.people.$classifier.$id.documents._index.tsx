@@ -140,7 +140,7 @@ const Documents = () => {
       <Filter className="pt-6" filterTitle='Search documents' filterParam='q' allowSort={true} sort={sort} filter={search} />
 
       {count <= 0 && <Alert title={`No documents found ${search === null ? '' : `for ${search}`}`} level={Level.Warning} />}
-      <List data={documents} renderItem={Item} actions={actions} noNavigate={true} />
+      <List data={documents} renderItem={Item} actions={actions} />
 
       <Pagination entity='document' totalItems={count} offset={offset} limit={limit} />
     </Layout>

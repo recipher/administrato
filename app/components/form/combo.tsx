@@ -18,13 +18,13 @@ type Props = {
   name: string;
   label: string;
   data?: DataProps;
-  defaultValue?: DataProps;
+  defaultValue?: ItemProps | undefined;
 };
 
 export default function Combo({ name, label, data = [], defaultValue }: Props) {
   const { error, getInputProps } = useField(name);
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState(data.length ? data.at(0) : undefined);
+  const [selected, setSelected] = useState(defaultValue);
 
   const filtered =
     query === ""

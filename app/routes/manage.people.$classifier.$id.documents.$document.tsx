@@ -9,37 +9,41 @@ import { validationError, withZod, z } from '~/components/form';
 import { createSupabaseUploadHandler } from '~/services/supabase.server';
 import { badRequest } from '~/utility/errors';
 
-import DocumentService, { create } from '~/services/manage/documents.server';
+import DocumentService, { create, type Document } from '~/services/manage/documents.server';
 
 import { requireUser } from '~/auth/auth.server';
-import withAuthorization from '~/auth/with-authorization';
 
 import { Breadcrumb, BreadcrumbProps } from "~/layout/breadcrumbs";
-import DocumentForm, { getSchema } from '~/components/manage/document-form';
+import withAuthorization from '~/auth/with-authorization';
 import { manage } from '~/auth/permissions';
+import DocumentForm, { getSchema } from '~/components/manage/document-form';
 
 export const handle = {
-  name: 'add-document',
-  path: 'add',
+  name: ({ document }: { document: Document }) => document.identifier,
+  path: ({ document }: { document: Document }) => document.id,
   breadcrumb: (props: BreadcrumbProps) => <Breadcrumb {...props} />
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const u = await requireUser(request);
-  const { id, classifier } = params;
+  const { id, classifier, document: documentId } = params;
 
-  if (id === undefined || classifier === undefined) return badRequest('Invalid data');
+  if (id === undefined || classifier === undefined || documentId === undefined) 
+    return badRequest('Invalid data');
 
-  const folders = await DocumentService(u).listFoldersByEntityId({ entityId: id });
+  const service = DocumentService(u);
+  const document = await service.getDocument({ id: documentId });
+  const folders = await service.listFoldersByEntityId({ entityId: id });
 
-  return json({ id, classifier, folders });
+  return json({ id, classifier, document, folders });
 };
 
 export const action = async ({ request, params }: ActionArgs) => {
   const u = await requireUser(request);
 
-  const { id, classifier } = params;
-  if (id === undefined || classifier === undefined) return badRequest('Invalid data');
+  const { id, classifier, document: documentId } = params;
+  if (id === undefined || classifier === undefined || documentId === undefined) 
+    return badRequest('Invalid data');
 
   const uploadHandler: UploadHandler = composeUploadHandlers(
     createSupabaseUploadHandler({ bucket: "documents" }),
@@ -49,30 +53,18 @@ export const action = async ({ request, params }: ActionArgs) => {
   const formData = await parseMultipartFormData(request, uploadHandler);
   
   const validator = withZod(getSchema(z).and(z.object({ 
-    document: z.object({ name: z.string(), type: z.string() }) }))
-    .superRefine(
-      async (data: any, ctx: any) => {
-        const service = DocumentService(u);
-        if (data.identifier) {
-          const document = await service.getDocumentByIdentifierForEntityId({ entityId: id, identifier: data.identifier });
-          if (document !== undefined) 
-            ctx.addIssue({
-              message: "A document with this name already exists",
-              path: [ "identifier" ],
-              code: z.ZodIssueCode.custom,
-            });
-        }
-      })
-  );
+    document: z.object({ name: z.string(), type: z.string() }).optional().or(z.string()) })));
 
   const result = await validator.validate(formData);
   if (result.error) return validationError(result.error);
 
-  const { data: { folder: { id: folder },
-    document: { name: document, type: contentType }, ...data }} = result;
+  const { data: { document, folder: { id: folder }, ...data }} = result;
 
-  const service = DocumentService(u);
-  await service.addDocument(create({ entityId: id, folder, entity: classifier, document, contentType, ...data }));
+  const update = document // @ts-ignore
+    ? { id: documentId, folder, document: document.name, contentType: document.type, ...data } 
+    : { id: documentId, folder, ...data };
+    
+  await DocumentService(u).updateDocument(update);
   
   return redirect(`../?folder=${folder}`);
 };
@@ -81,7 +73,7 @@ const Add = () => {
   const data = useLoaderData();
 
   return <DocumentForm {...data} permission={manage.edit.person}
-    heading="Upload New Document" subHeading="Please enter the details of the new document to upload." />;
+    heading="Edit Document" subHeading="Please update the details of the document." />;
 };
 
 export default withAuthorization(manage.edit.person)(Add);
